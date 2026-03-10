@@ -1,0 +1,26 @@
+.floating-booking-button{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  z-index:1000;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  min-width:170px;
+  padding:14px 22px;
+  border-radius:999px;
+
+  background:linear-gradient(135deg,#ff4fa3,#7b4dff);
+  color:#ffffff;
+  text-decoration:none;
+  font-weight:700;
+  box-shadow:0 10px 25px rgba(123, 77, 255, 0.28);
+  transition:transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.floating-booking-button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 30px rgba(123, 77, 255, 0.34);
+}

@@ -1,0 +1,107 @@
+.booking-form{
+  background: var(--bg-main);
+  padding: 110px 0;
+}
+
+.booking-wrapper{
+  max-width:1100px;
+  margin:0 auto;
+}
+
+.form-card{
+  max-width:900px;
+  margin:30px auto 0;
+  background:#ffffff;
+  border:1px solid #f1d8e6;
+  border-radius:18px;
+  padding:32px;
+  box-shadow:0 10px 24px rgba(0, 0, 0, 0.04);
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+  margin-bottom:18px;
+}
+
+.form-group label{
+  margin-bottom:8px;
+  font-weight:600;
+  color:#1f1b2d;
+}
+
+.form-group input,
+.form-group textarea{
+  border:1px solid #e7cddd;
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:16px;
+  font-family:inherit;
+  outline:none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus{
+  border-color:#ff4fa3;
+}
+
+.form-card .btn-primary{
+  min-width:220px;
+}
+
+.phone-group{
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:12px;
+}
+
+.phone-code,
+.phone-number{
+  width:100%;
+}
+
+.phone-code{
+  background:#f6eef4;
+  font-weight:700;
+  text-align:center;
+  cursor:not-allowed;
+}
+
+@media (max-width: 768px){
+  .booking-form{
+    padding: 60px 0 80px;
+  }
+
+  .booking-wrapper{
+    max-width: 100%;
+  }
+
+  .form-card{
+    max-width: 100%;
+    margin: 24px auto 0;
+    padding: 22px 18px;
+  }
+
+  .form-grid{
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .phone-group{
+    grid-template-columns: 80px 1fr;
+    gap: 10px;
+  }
+
+  .form-card .btn-primary{
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+

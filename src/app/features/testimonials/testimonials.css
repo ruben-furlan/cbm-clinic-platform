@@ -1,0 +1,139 @@
+.testimonials{
+  background: var(--bg-soft);
+  padding: 110px 0;
+}
+
+.section-heading{
+  text-align:center;
+  max-width:720px;
+  margin:0 auto 56px;
+}
+
+.section-tag{
+  color:#ff4fa3;
+  font-weight:700;
+  margin-bottom:8px;
+}
+
+.section-heading h2{
+  margin:0 0 18px;
+}
+
+.section-description{
+  margin:0;
+  color:#666;
+  line-height:1.7;
+}
+
+.testimonials-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  margin-top:48px;
+}
+
+.testimonial-card{
+  background:white;
+  border-radius:18px;
+  padding:26px;
+  border:1px solid #f1d8e6;
+  box-shadow:0 8px 20px rgba(31,27,45,0.05);
+  transition:all 0.25s ease;
+}
+
+.testimonial-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 18px 40px rgba(31,27,45,0.12);
+}
+
+.testimonial-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.testimonial-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#ff4fa3;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+.testimonial-stars{
+  color:#f5b301;
+  font-size:14px;
+}
+
+.reviews-cta{
+  margin-top:48px;
+  padding:20px 26px;
+  border-radius:16px;
+  background:white;
+  border:1px solid #f1d8e6;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.reviews-stars{
+  color:#f5b301;
+  font-size:18px;
+}
+
+.btn-google-reviews{
+  padding:12px 22px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#ff4fa3,#7b4dff);
+  color:white;
+  text-decoration:none;
+  font-weight:600;
+}
+
+@media (max-width: 768px){
+  .testimonials{
+    padding: 70px 0;
+  }
+
+  .section-heading{
+    margin: 0 auto 36px;
+  }
+
+  .testimonials-grid{
+    grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  .testimonial-card{
+    padding: 20px;
+  }
+
+  .reviews-cta{
+    margin-top: 28px;
+    padding: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .btn-google-reviews{
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+.testimonial-card{
+  transform:translateY(0);
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+
+.testimonial-card:hover{
+  transform:translateY(-6px);
+}

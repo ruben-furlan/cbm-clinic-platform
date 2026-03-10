@@ -1,0 +1,126 @@
+.header{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.nav{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 28px;
+  height: 82px;
+}
+
+.logo{
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.logo img{
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Si ya no usas texto al lado del logo, puedes borrar esta regla */
+.logo span{
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff4fa3;
+  letter-spacing: 0.2px;
+  line-height: 1;
+}
+
+.nav-links{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.nav-links a{
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover{
+  color: var(--color-primary);
+}
+
+.header-cta{
+  padding: 10px 18px;
+  font-size: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+@media (max-width: 992px){
+  .nav{
+    gap: 18px;
+  }
+
+  .logo img{
+    height: 50px;
+  }
+
+  .nav-links{
+    gap: 20px;
+  }
+
+  .nav-links a{
+    font-size: 14px;
+  }
+
+  .header-cta{
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px){
+  .nav{
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    height: 72px;
+    gap: 12px;
+  }
+
+  .logo img{
+    height: 46px;
+  }
+
+  .nav-links{
+    display: none;
+  }
+
+  .header-cta{
+    padding: 9px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px){
+  .nav{
+    height: 68px;
+  }
+
+  .logo img{
+    height: 42px;
+  }
+
+  .header-cta{
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}

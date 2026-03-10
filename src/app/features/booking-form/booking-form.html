@@ -1,0 +1,89 @@
+<section id="reserva" class="booking-form section">
+  <div class="container">
+    <div class="booking-wrapper">
+
+      <div class="section-heading" appRevealOnScroll>
+        <p class="section-tag">Reserva tu cita</p>
+        <h2>Cuéntanos qué necesitas</h2>
+        <p class="section-description">
+          Déjanos tus datos y te llevamos directamente a WhatsApp con el mensaje preparado.
+        </p>
+      </div>
+
+      <form
+        class="form-card reveal-delay-1"
+        appRevealOnScroll
+        (ngSubmit)="sendWhatsApp()"
+        #bookingForm="ngForm"
+      >
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Nombre</label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              [(ngModel)]="formData.name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="surname">Apellido</label>
+            <input
+              id="surname"
+              name="surname"
+              type="text"
+              [(ngModel)]="formData.surname"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Teléfono</label>
+
+          <div class="phone-group">
+            <input
+              id="countryCode"
+              name="countryCode"
+              inputmode="numeric"
+              type="tel"
+              [(ngModel)]="formData.countryCode"
+              value="+34"
+              readonly
+              class="phone-code"
+            />
+
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              [(ngModel)]="formData.phone"
+              placeholder="612 345 678"
+              required
+              class="phone-number"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Breve descripción</label>
+          <textarea
+            id="message"
+            name="message"
+            rows="5"
+            [(ngModel)]="formData.message"
+            placeholder="Ej. dolor lumbar, contractura, rehabilitación..."
+            required
+          ></textarea>
+        </div>
+
+        <button class="btn-primary" type="submit" [disabled]="!bookingForm.form.valid">
+          📅 Pedir cita
+        </button>
+      </form>
+
+    </div>
+  </div>
+</section>
