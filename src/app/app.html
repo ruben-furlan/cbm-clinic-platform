@@ -1,19 +1,24 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
-<app-floating-whatsapp-button></app-floating-whatsapp-button>
-<app-footer></app-footer>
-<div class="social-floating">
+<div class="physio-background" aria-hidden="true">
+  <div class="physio-wave"></div>
+  <div class="physio-orbit physio-orbit-1"></div>
+  <div class="physio-orbit physio-orbit-2"></div>
+  <div class="physio-dot physio-dot-1"></div>
+  <div class="physio-dot physio-dot-2"></div>
+</div>
 
-  <a href="https://instagram.com/cbm.fisioterapia"
-     target="_blank"
-     class="social-btn instagram">
+<div class="app-content">
+  <app-header></app-header>
+  <router-outlet></router-outlet>
+  <app-floating-whatsapp-button></app-floating-whatsapp-button>
+  <app-footer></app-footer>
+</div>
+
+<div class="social-floating">
+  <a href="https://instagram.com/cbm.fisioterapia" target="_blank" class="social-btn instagram">
     <img src="/instagram.svg" alt="Instagram">
   </a>
 
-  <a href="https://tiktok.com/@cbm.fisioterapia"
-     target="_blank"
-     class="social-btn tiktok">
+  <a href="https://tiktok.com/@cbm.fisioterapia" target="_blank" class="social-btn tiktok">
     <img src="/tiktok.svg" alt="TikTok">
   </a>
-
 </div>

@@ -1,0 +1,161 @@
+:root {
+  --scroll-progress: 0;
+}
+
+.physio-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 79, 163, 0.14), transparent 45%),
+    radial-gradient(circle at 85% 15%, rgba(123, 77, 255, 0.16), transparent 48%),
+    radial-gradient(circle at 50% 82%, rgba(70, 199, 232, 0.14), transparent 52%),
+    linear-gradient(180deg, #fffafc 0%, #ffffff 60%, #fffdf6 100%);
+}
+
+.physio-wave,
+.physio-orbit,
+.physio-dot {
+  position: absolute;
+}
+
+.physio-wave {
+  inset: -22% -18%;
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      rgba(123, 77, 255, 0.12) 0 2px,
+      rgba(123, 77, 255, 0) 2px 28px
+    );
+  opacity: 0.22;
+  transform: translateY(calc(var(--scroll-progress) * -10vh));
+  animation: breathe-wave 14s ease-in-out infinite;
+}
+
+.physio-orbit {
+  border: 2px solid rgba(255, 79, 163, 0.2);
+  border-radius: 999px;
+  transform-style: preserve-3d;
+}
+
+.physio-orbit-1 {
+  width: min(42vw, 520px);
+  height: min(42vw, 520px);
+  left: -10vw;
+  top: 26vh;
+  border-color: rgba(255, 79, 163, 0.24);
+  transform: translateY(calc(var(--scroll-progress) * -16vh)) rotate(15deg);
+  animation: rotate-orbit 25s linear infinite;
+}
+
+.physio-orbit-2 {
+  width: min(34vw, 420px);
+  height: min(34vw, 420px);
+  right: -8vw;
+  top: 60vh;
+  border-color: rgba(70, 199, 232, 0.3);
+  transform: translateY(calc(var(--scroll-progress) * -22vh)) rotate(-22deg);
+  animation: rotate-orbit-reverse 30s linear infinite;
+}
+
+.physio-dot {
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+.physio-dot-1 {
+  width: 36px;
+  height: 36px;
+  left: 22vw;
+  top: 42vh;
+  background: rgba(255, 79, 163, 0.4);
+  transform: translateY(calc(var(--scroll-progress) * -28vh));
+  animation: float-dot 8s ease-in-out infinite;
+}
+
+.physio-dot-2 {
+  width: 28px;
+  height: 28px;
+  right: 18vw;
+  top: 24vh;
+  background: rgba(123, 77, 255, 0.35);
+  transform: translateY(calc(var(--scroll-progress) * -34vh));
+  animation: float-dot 10s ease-in-out infinite reverse;
+}
+
+.app-content {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes breathe-wave {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: scale(1) translateY(calc(var(--scroll-progress) * -10vh));
+  }
+  50% {
+    opacity: 0.28;
+    transform: scale(1.07) translateY(calc(var(--scroll-progress) * -10vh));
+  }
+}
+
+@keyframes rotate-orbit {
+  from {
+    rotate: 0deg;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes rotate-orbit-reverse {
+  from {
+    rotate: 360deg;
+  }
+  to {
+    rotate: 0deg;
+  }
+}
+
+@keyframes float-dot {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .physio-wave {
+    opacity: 0.18;
+  }
+
+  .physio-orbit-1 {
+    width: 64vw;
+    height: 64vw;
+    left: -24vw;
+    top: 34vh;
+  }
+
+  .physio-orbit-2 {
+    width: 54vw;
+    height: 54vw;
+    right: -20vw;
+    top: 68vh;
+  }
+
+  .physio-dot-1 {
+    left: 16vw;
+    top: 46vh;
+  }
+
+  .physio-dot-2 {
+    right: 10vw;
+    top: 30vh;
+  }
+}
