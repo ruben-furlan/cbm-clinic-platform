@@ -1,18 +1,19 @@
 <header class="header">
   <div class="container nav">
 
-    <a class="logo" href="#">
+    <a class="logo" routerLink="/">
       <img src="/logo-header.png" alt="CBM Fisioterapia">
     </a>
 
     <nav class="nav-links">
-      <a href="#experiencia">Experiencia</a>
-      <a href="#servicios">Tratamientos</a>
-      <a href="#reserva">Pedir cita</a>
-      <a href="#contacto">Contáctanos</a>
+      <a routerLink="/" fragment="experiencia">Experiencia</a>
+      <a routerLink="/" fragment="servicios">Tratamientos</a>
+      <a routerLink="/" fragment="reserva">Pedir cita</a>
+      <a routerLink="/" fragment="contacto">Contáctanos</a>
+      <a routerLink="/blog">Blog</a>
     </nav>
 
-    <a class="btn-primary header-cta" href="#reserva">
+    <a class="btn-primary header-cta" routerLink="/" fragment="reserva">
       Pedir cita
     </a>
 

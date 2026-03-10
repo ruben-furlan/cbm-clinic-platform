@@ -17,20 +17,21 @@
 
 .physio-wave,
 .physio-orbit,
-.physio-dot {
+.physio-dot,
+.physio-ribbon {
   position: absolute;
 }
 
 .physio-wave {
-  inset: -22% -18%;
+  inset: -24% -20%;
   background:
     repeating-radial-gradient(
       circle at 50% 50%,
       rgba(123, 77, 255, 0.12) 0 2px,
       rgba(123, 77, 255, 0) 2px 28px
     );
-  opacity: 0.22;
-  transform: translateY(calc(var(--scroll-progress) * -10vh));
+  opacity: 0.28;
+  transform: translateY(calc(var(--scroll-progress) * -18vh));
   animation: breathe-wave 14s ease-in-out infinite;
 }
 
@@ -46,7 +47,7 @@
   left: -10vw;
   top: 26vh;
   border-color: rgba(255, 79, 163, 0.24);
-  transform: translateY(calc(var(--scroll-progress) * -16vh)) rotate(15deg);
+  transform: translateY(calc(var(--scroll-progress) * -24vh)) rotate(15deg);
   animation: rotate-orbit 25s linear infinite;
 }
 
@@ -56,7 +57,7 @@
   right: -8vw;
   top: 60vh;
   border-color: rgba(70, 199, 232, 0.3);
-  transform: translateY(calc(var(--scroll-progress) * -22vh)) rotate(-22deg);
+  transform: translateY(calc(var(--scroll-progress) * -30vh)) rotate(-22deg);
   animation: rotate-orbit-reverse 30s linear infinite;
 }
 
@@ -90,6 +91,21 @@
   z-index: 1;
 }
 
+.physio-ribbon {
+  position: absolute;
+  width: min(120vw, 1500px);
+  height: 220px;
+  left: -12vw;
+  top: 38vh;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 79, 163, 0.12), rgba(123, 77, 255, 0.1), rgba(70, 199, 232, 0.12));
+  filter: blur(34px);
+  opacity: 0.45;
+  transform: translateY(calc(var(--scroll-progress) * -42vh)) rotate(-8deg);
+  animation: drift-ribbon 22s ease-in-out infinite;
+}
+
+
 @keyframes breathe-wave {
   0%,
   100% {
@@ -117,6 +133,18 @@
   }
   to {
     rotate: 0deg;
+  }
+}
+
+@keyframes drift-ribbon {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: translateY(calc(var(--scroll-progress) * -42vh)) rotate(-8deg) scaleX(1);
+  }
+  50% {
+    opacity: 0.54;
+    transform: translateY(calc(var(--scroll-progress) * -42vh)) rotate(-5deg) scaleX(1.06);
   }
 }
 
@@ -157,5 +185,12 @@
   .physio-dot-2 {
     right: 10vw;
     top: 30vh;
+  }
+
+  .physio-ribbon {
+    top: 52vh;
+    left: -30vw;
+    width: 160vw;
+    opacity: 0.35;
   }
 }
