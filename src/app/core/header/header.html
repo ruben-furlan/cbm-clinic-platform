@@ -1,20 +1,39 @@
 <header class="header">
   <div class="container nav">
-
-    <a class="logo" href="#">
+    <a class="logo" routerLink="/" (click)="closeMobileMenu()">
       <img src="/logo-header.png" alt="CBM Fisioterapia">
     </a>
 
     <nav class="nav-links">
-      <a href="#experiencia">Experiencia</a>
-      <a href="#servicios">Tratamientos</a>
-      <a href="#reserva">Pedir cita</a>
-      <a href="#contacto">Contáctanos</a>
+      <a routerLink="/" fragment="experiencia">Experiencia</a>
+      <a routerLink="/" fragment="servicios">Tratamientos</a>
+      <a routerLink="/" fragment="reserva">Pedir cita</a>
+      <a routerLink="/" fragment="contacto">Contáctanos</a>
+      <a routerLink="/blog">Blog</a>
     </nav>
 
-    <a class="btn-primary header-cta" href="#reserva">
+    <a class="btn-primary header-cta" routerLink="/" fragment="reserva">
       Pedir cita
     </a>
 
+    <button
+      type="button"
+      class="mobile-menu-toggle"
+      [attr.aria-expanded]="isMobileMenuOpen"
+      aria-label="Abrir menú"
+      (click)="toggleMobileMenu()"
+    >
+      ☰
+    </button>
+  </div>
+
+  <div class="mobile-menu" [ngClass]="{ 'is-open': isMobileMenuOpen }">
+    <div class="container mobile-menu-links">
+      <a routerLink="/" fragment="experiencia" (click)="closeMobileMenu()">Experiencia</a>
+      <a routerLink="/" fragment="servicios" (click)="closeMobileMenu()">Tratamientos</a>
+      <a routerLink="/" fragment="reserva" (click)="closeMobileMenu()">Pedir cita</a>
+      <a routerLink="/" fragment="contacto" (click)="closeMobileMenu()">Contáctanos</a>
+      <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
+    </div>
   </div>
 </header>

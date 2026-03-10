@@ -29,15 +29,6 @@
   display: block;
 }
 
-/* Si ya no usas texto al lado del logo, puedes borrar esta regla */
-.logo span{
-  font-size: 22px;
-  font-weight: 700;
-  color: #ff4fa3;
-  letter-spacing: 0.2px;
-  line-height: 1;
-}
-
 .nav-links{
   display: flex;
   align-items: center;
@@ -63,6 +54,22 @@
   font-size: 14px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.mobile-menu-toggle{
+  display: none;
+  border: 1px solid #f1d8e6;
+  background: #fff;
+  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  font-size: 22px;
+  line-height: 1;
+  color: #1f1b2d;
+}
+
+.mobile-menu{
+  display: none;
 }
 
 @media (max-width: 992px){
@@ -100,13 +107,47 @@
     height: 46px;
   }
 
-  .nav-links{
+  .nav-links,
+  .header-cta{
     display: none;
   }
 
-  .header-cta{
-    padding: 9px 14px;
-    font-size: 13px;
+  .mobile-menu-toggle{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-menu{
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    border-top: 1px solid transparent;
+    transition: max-height 0.25s ease;
+    background: rgba(255, 255, 255, 0.96);
+  }
+
+  .mobile-menu.is-open{
+    max-height: 320px;
+    border-top-color: #f1d8e6;
+  }
+
+  .mobile-menu-links{
+    display: grid;
+    gap: 8px;
+    padding: 12px 20px 16px;
+  }
+
+  .mobile-menu-links a{
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #1f1b2d;
+  }
+
+  .mobile-menu-links a:hover{
+    background: #fff1f8;
+    color: #ff4fa3;
   }
 }
 
@@ -117,10 +158,5 @@
 
   .logo img{
     height: 42px;
-  }
-
-  .header-cta{
-    padding: 8px 12px;
-    font-size: 12px;
   }
 }
