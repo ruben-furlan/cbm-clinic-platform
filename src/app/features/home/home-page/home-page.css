@@ -346,6 +346,29 @@
   line-height: 1.6;
 }
 
+
+.service-details{
+  display: grid;
+  gap: 16px;
+}
+
+.service-detail-item h4{
+  margin: 0 0 8px;
+  font-size: 23px;
+  line-height: 1.25;
+  color: #5f45b6;
+}
+
+.service-detail-item p{
+  margin: 0 0 6px;
+  color: #4d4860;
+  line-height: 1.55;
+}
+
+.service-detail-item p:last-child{
+  margin-bottom: 0;
+}
+
 .service-card ul{
   padding-left: 18px;
   margin: 4px 0 0;
