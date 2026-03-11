@@ -3,11 +3,12 @@ import { RouterOutlet } from '@angular/router';
 import { Header } from './core/header/header';
 import { FooterComponent } from './core/footer/footer';
 import { FloatingWhatsappButtonComponent } from './core/floating-whatsapp-button/floating-whatsapp-button';
+import { CookieConsentComponent } from './core/cookie-consent/cookie-consent';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent],
+  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, CookieConsentComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
