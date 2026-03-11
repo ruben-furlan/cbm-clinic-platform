@@ -33,7 +33,20 @@
 
     <div class="hero-image reveal-delay-2" appRevealOnScroll>
       <div class="hero-image-card">
-        <img src="/hero-fisio.jpg" alt="CBM Fisioterapia">
+        <video
+          class="hero-media hero-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster="/hero-fisio.jpg"
+          aria-label="Video del centro CBM Fisioterapia"
+        >
+          <source src="/fondo-fisio.mp4" type="video/mp4">
+        </video>
+
+        <img class="hero-media hero-image-fallback" src="/hero-fisio.jpg" alt="CBM Fisioterapia">
       </div>
     </div>
 
