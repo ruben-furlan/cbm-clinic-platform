@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './features/home/home-page/home-page';
 import { BlogPage } from './features/blog/blog-page';
+import { CookiesPage } from './features/cookies/cookies-page';
 
 export const routes: Routes = [
   {
@@ -10,5 +11,9 @@ export const routes: Routes = [
   {
     path: 'blog',
     component: BlogPage
+  },
+  {
+    path: 'cookies',
+    component: CookiesPage
   }
 ];
