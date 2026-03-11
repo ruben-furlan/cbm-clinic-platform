@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Testimonials } from '../../testimonials/testimonials';
 import { LocationComponent } from '../../location/location';
 import { BookingFormComponent } from '../../booking-form/booking-form';
@@ -9,20 +10,8 @@ import { FaqComponent } from '../../faq/faq';
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [Testimonials, LocationComponent, BookingFormComponent, NgOptimizedImage, RevealOnScrollDirective, FaqComponent],
+  imports: [Testimonials, LocationComponent, BookingFormComponent, NgOptimizedImage, RevealOnScrollDirective, FaqComponent, RouterLink],
   templateUrl: './home-page.html',
   styleUrls: ['./home-page.css']
 })
-export class HomePage {
-  scrollToBooking(event: Event): void {
-    const bookingSection = document.getElementById('reserva');
-
-    if (!bookingSection) {
-      return;
-    }
-
-    event.preventDefault();
-    bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    window.history.replaceState(null, '', '#reserva');
-  }
-}
+export class HomePage {}

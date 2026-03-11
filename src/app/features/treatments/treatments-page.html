@@ -1,0 +1,21 @@
+<section class="treatments-page section">
+  <div class="container">
+    <div class="section-heading">
+      <p class="section-tag">Nuestros servicios</p>
+      <h1>Todos los tratamientos</h1>
+      <p class="section-description">
+        Tratamientos especializados de fisioterapia con enfoque personalizado para tu recuperación.
+      </p>
+    </div>
+
+    <div class="treatments-grid">
+      <article class="treatments-column" *ngFor="let column of columns">
+        <div class="treatment-item" *ngFor="let treatment of column">
+          <h2>{{ treatment.title }}</h2>
+          <p><strong>Descripción:</strong> {{ treatment.description }}</p>
+          <p><strong>Equipo utilizado:</strong> {{ treatment.equipment }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
