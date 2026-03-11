@@ -87,7 +87,7 @@
   top: calc(100% + 12px);
   left: 50%;
   transform: translateX(-50%);
-  min-width: 170px;
+  min-width: 220px;
   padding: 8px;
   border-radius: 14px;
   border: 1px solid rgba(241, 216, 230, 0.9);

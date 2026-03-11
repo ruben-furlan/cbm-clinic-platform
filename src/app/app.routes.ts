@@ -20,5 +20,9 @@ export const routes: Routes = [
   {
     path: 'tratamientos',
     component: TreatmentsPage
+  },
+  {
+    path: 'tratamientos/:categoria',
+    component: TreatmentsPage
   }
 ];
