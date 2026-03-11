@@ -1,5 +1,5 @@
 .cookies-page {
-  padding-top: 104px;
+  padding: 104px 0 16px;
 }
 
 .cookies-wrap {
@@ -55,5 +55,11 @@
 @media (max-width: 960px) {
   .cookies-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .cookies-page {
+    padding: 82px 0 10px;
   }
 }

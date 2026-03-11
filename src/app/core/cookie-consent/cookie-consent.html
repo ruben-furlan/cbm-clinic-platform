@@ -1,0 +1,10 @@
+<section class="cookie-consent" *ngIf="isVisible" aria-label="Aviso informativo de cookies">
+  <p>
+    Usamos cookies para mejorar la experiencia y analizar el uso de la web.
+    <a routerLink="/cookies">Ver política de cookies</a>
+  </p>
+
+  <button type="button" class="btn-primary" (click)="acceptCookies()">
+    Aceptar
+  </button>
+</section>
