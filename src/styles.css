@@ -3,12 +3,19 @@
   --color-secondary: #7b4dff;
   --color-accent: #46c7e8;
   --color-dark: #1f1b2d;
+  --color-text: #4f4a5f;
+  --color-muted: #6a6478;
   --color-soft: #fff7fb;
   --color-white: #ffffff;
   --gradient-brand: linear-gradient(135deg, #ff4fa3, #7b4dff);
+  --gradient-brand-soft: linear-gradient(145deg, rgba(255, 79, 163, 0.16), rgba(123, 77, 255, 0.14));
   --bg-main: #ffffff;
   --bg-soft: #fff7fb;
   --bg-light: #f9f9fb;
+  --radius-card: 22px;
+  --card-border: 1px solid rgba(241, 216, 230, 0.86);
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-shadow: 0 12px 28px rgba(31, 27, 45, 0.08);
 }
 
 *{
@@ -24,6 +31,7 @@ body{
   font-family:Arial, Helvetica, sans-serif;
   color:var(--color-dark);
   background:var(--color-white);
+  overflow-x: clip;
 }
 
 a{
@@ -43,20 +51,21 @@ img{
 }
 
 .section{
-  padding:70px 0;
+  padding:84px 0;
 }
 
 .section-heading h2{
-  font-size:38px;
-  margin:0 0 18px;
+  font-size:clamp(2rem, 3.4vw, 2.45rem);
+  margin:0 0 14px;
   color:#1f1b2d;
-  font-weight:700;
+  font-weight:800;
+  letter-spacing:-0.02em;
 }
 
 .section-description{
-  font-size:18px;
-  color:#666;
-  line-height:1.7;
+  font-size:17px;
+  color:var(--color-muted);
+  line-height:1.72;
 }
 
 .btn-primary{
@@ -65,18 +74,20 @@ img{
   justify-content:center;
   background:var(--gradient-brand);
   color:white;
-  padding:14px 26px;
-  border-radius:12px;
+  padding:14px 28px;
+  border-radius:13px;
   border:none;
   text-decoration:none;
   font-weight:600;
   cursor:pointer;
-  transition:transform 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 10px 22px rgba(123, 77, 255, 0.24);
+  transition:transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-primary:hover{
   transform:translateY(-2px);
   opacity:0.96;
+  box-shadow: 0 14px 28px rgba(123, 77, 255, 0.28);
 }
 
 .btn-secondary{
@@ -84,8 +95,8 @@ img{
   align-items:center;
   justify-content:center;
   padding:14px 24px;
-  border-radius:12px;
-  border:1px solid var(--color-primary);
+  border-radius:13px;
+  border:1px solid rgba(255, 79, 163, 0.5);
   color:var(--color-primary);
   background:var(--color-white);
   text-decoration:none;
@@ -94,8 +105,9 @@ img{
 }
 
 .btn-secondary:hover{
-  background:var(--color-primary);
-  color:var(--color-white);
+  background: rgba(255, 79, 163, 0.08);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
 html{
@@ -108,7 +120,7 @@ html{
   }
 
   .section{
-    padding: 60px 0;
+    padding: 64px 0;
   }
 }
 
