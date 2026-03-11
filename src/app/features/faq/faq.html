@@ -1,0 +1,25 @@
+<section id="faq" class="faq section">
+  <div class="container">
+    <div class="faq-card" appRevealOnScroll>
+      <h2>Preguntas frecuentes:</h2>
+
+      <div class="faq-grid">
+        <article class="faq-item" *ngFor="let item of faqItems; let i = index">
+          <button
+            type="button"
+            class="faq-question"
+            [attr.aria-expanded]="activeItemIndex === i"
+            (click)="toggleItem(i)"
+          >
+            {{ item.question }}
+            <span class="faq-icon">{{ activeItemIndex === i ? '−' : '+' }}</span>
+          </button>
+
+          <p class="faq-answer" *ngIf="activeItemIndex === i">
+            {{ item.answer }}
+          </p>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

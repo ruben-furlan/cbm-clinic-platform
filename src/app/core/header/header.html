@@ -6,8 +6,17 @@
 
     <nav class="nav-links">
       <a routerLink="/" fragment="experiencia">Experiencia</a>
-      <a routerLink="/" fragment="servicios">Tratamientos</a>
+
+      <div class="nav-item-with-submenu">
+        <a routerLink="/" fragment="servicios">Tratamientos</a>
+        <div class="submenu">
+          <a routerLink="/" fragment="servicios">Resumen</a>
+          <a routerLink="/tratamientos/fisioterapia">Ver todo</a>
+        </div>
+      </div>
+
       <a routerLink="/" fragment="reserva">Pedir cita</a>
+      <a routerLink="/" fragment="faq">FAQ</a>
       <a routerLink="/" fragment="contacto">Contáctanos</a>
       <a routerLink="/blog">Blog</a>
     </nav>
@@ -31,7 +40,9 @@
     <div class="container mobile-menu-links">
       <a routerLink="/" fragment="experiencia" (click)="closeMobileMenu()">Experiencia</a>
       <a routerLink="/" fragment="servicios" (click)="closeMobileMenu()">Tratamientos</a>
+      <a routerLink="/tratamientos/fisioterapia" (click)="closeMobileMenu()">Ver todo</a>
       <a routerLink="/" fragment="reserva" (click)="closeMobileMenu()">Pedir cita</a>
+      <a routerLink="/" fragment="faq" (click)="closeMobileMenu()">FAQ</a>
       <a routerLink="/" fragment="contacto" (click)="closeMobileMenu()">Contáctanos</a>
       <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
     </div>

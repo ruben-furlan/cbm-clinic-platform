@@ -1,0 +1,33 @@
+<section class="treatments-page section">
+  <div class="container">
+    <a class="treatments-back-link" routerLink="/" fragment="servicios">← Volver</a>
+    <div class="section-heading">
+      <p class="section-tag">Nuestros servicios</p>
+      <h1>{{ activeCategory.title }}</h1>
+      <p class="section-description">
+        {{ activeCategory.description }}
+      </p>
+
+      <nav class="treatment-category-nav" aria-label="Categorías de tratamientos">
+        <a
+          *ngFor="let item of menuItems"
+          class="treatment-category-link"
+          [class.is-active]="activeSlug === item.slug"
+          [routerLink]="['/tratamientos', item.slug]"
+        >
+          {{ item.label }}
+        </a>
+      </nav>
+    </div>
+
+    <div class="treatments-grid">
+      <article class="treatments-column" *ngFor="let column of activeCategory.columns">
+        <div class="treatment-item" *ngFor="let treatment of column">
+          <h2>{{ treatment.title }}</h2>
+          <p><strong>Descripción:</strong> {{ treatment.description }}</p>
+          <p><strong>Equipo utilizado:</strong> {{ treatment.equipment }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
