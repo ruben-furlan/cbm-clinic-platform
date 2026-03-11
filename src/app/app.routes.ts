@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { HomePage } from './features/home/home-page/home-page';
 import { BlogPage } from './features/blog/blog-page';
 import { CookiesPage } from './features/cookies/cookies-page';
+import { TreatmentsPage } from './features/treatments/treatments-page';
 
 export const routes: Routes = [
   {
@@ -15,5 +16,13 @@ export const routes: Routes = [
   {
     path: 'cookies',
     component: CookiesPage
+  },
+  {
+    path: 'tratamientos',
+    component: TreatmentsPage
+  },
+  {
+    path: 'tratamientos/:categoria',
+    component: TreatmentsPage
   }
 ];
