@@ -13,4 +13,16 @@ import { FaqComponent } from '../../faq/faq';
   templateUrl: './home-page.html',
   styleUrls: ['./home-page.css']
 })
-export class HomePage {}
+export class HomePage {
+  scrollToBooking(event: Event): void {
+    const bookingSection = document.getElementById('reserva');
+
+    if (!bookingSection) {
+      return;
+    }
+
+    event.preventDefault();
+    bookingSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.history.replaceState(null, '', '#reserva');
+  }
+}
