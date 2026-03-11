@@ -149,9 +149,9 @@ export class TreatmentsPage {
   };
 
   readonly menuItems = [
-    { slug: 'fisioterapia', label: 'Ver todo Fisioterapia' },
-    { slug: 'tecnicas', label: 'Ver todo Técnicas' },
-    { slug: 'pilates', label: 'Ver todo Pilates terapéutico' }
+    { slug: 'fisioterapia', label: 'Fisioterapia' },
+    { slug: 'tecnicas', label: 'Técnicas' },
+    { slug: 'pilates', label: 'Terapéutico' }
   ];
 
   activeCategory = this.categories.fisioterapia;
