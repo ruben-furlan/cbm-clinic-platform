@@ -3,6 +3,22 @@
   color: #1f1b2d;
 }
 
+
+.treatments-back-link{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: #7b4dff;
+  font-weight: 600;
+  margin-bottom: 22px;
+  transition: color 0.2s ease;
+}
+
+.treatments-back-link:hover{
+  color: #ff4fa3;
+}
+
 .section-heading{
   text-align: center;
   max-width: 760px;
