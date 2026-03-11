@@ -1,0 +1,42 @@
+<section class="cookies-page section">
+  <div class="container">
+    <div class="cookies-wrap">
+      <p class="section-tag">Política de cookies</p>
+      <h1>Información sobre cookies en CBM Fisioterapia</h1>
+      <p class="cookies-intro">
+        Esta página explica qué tipos de cookies utilizamos y para qué finalidad. El acceso se mantiene
+        desde el footer para no cargar visualmente la landing principal.
+      </p>
+
+      <div class="cookies-grid">
+        <article class="cookies-card">
+          <h2>Cookies técnicas</h2>
+          <p>
+            Necesarias para el funcionamiento básico del sitio, navegación y seguridad.
+          </p>
+        </article>
+
+        <article class="cookies-card">
+          <h2>Cookies de análisis</h2>
+          <p>
+            Nos permiten medir uso agregado de la web para mejorar contenidos y rendimiento.
+          </p>
+        </article>
+
+        <article class="cookies-card">
+          <h2>Gestión del consentimiento</h2>
+          <p>
+            Puedes aceptar el uso de cookies desde esta misma página mediante el botón de consentimiento.
+          </p>
+        </article>
+      </div>
+
+      <div class="cookies-actions">
+        <button type="button" class="btn-primary" (click)="acceptCookies()" [disabled]="accepted">
+          {{ accepted ? 'Cookies aceptadas' : 'Aceptar cookies' }}
+        </button>
+        <a class="btn-secondary" routerLink="/">Volver al inicio</a>
+      </div>
+    </div>
+  </div>
+</section>

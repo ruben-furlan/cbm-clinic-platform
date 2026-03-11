@@ -1,0 +1,59 @@
+.cookies-page {
+  padding-top: 104px;
+}
+
+.cookies-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.cookies-wrap h1 {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 4.8vw, 3rem);
+  line-height: 1.08;
+}
+
+.cookies-intro {
+  margin: 0 0 30px;
+  color: #5a5469;
+  line-height: 1.72;
+}
+
+.cookies-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.cookies-card {
+  border-radius: var(--radius-card);
+  border: var(--card-border);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  padding: 24px;
+}
+
+.cookies-card h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+  color: #2f2a3f;
+}
+
+.cookies-card p {
+  margin: 0;
+  color: #5b556a;
+  line-height: 1.68;
+}
+
+.cookies-actions {
+  margin-top: 26px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 960px) {
+  .cookies-grid {
+    grid-template-columns: 1fr;
+  }
+}
