@@ -3,6 +3,7 @@ import { HomePage } from './features/home/home-page/home-page';
 import { BlogPage } from './features/blog/blog-page';
 import { CookiesPage } from './features/cookies/cookies-page';
 import { TreatmentsPage } from './features/treatments/treatments-page';
+import { SeoPageComponent } from './features/seo-pages/seo-page.component';
 
 export const routes: Routes = [
   {
@@ -24,5 +25,22 @@ export const routes: Routes = [
   {
     path: 'tratamientos/:categoria',
     component: TreatmentsPage
-  }
+  },
+
+  {
+    path: 'fisioterapia-dolor-lumbar-terrassa',
+    component: SeoPageComponent
+  },
+  {
+    path: 'fisioterapia-cervical-terrassa',
+    component: SeoPageComponent
+  },
+  {
+    path: 'puncion-seca-terrassa',
+    component: SeoPageComponent
+  },
+  {
+    path: 'pilates-terapeutico-terrassa',
+    component: SeoPageComponent
+  },
 ];
