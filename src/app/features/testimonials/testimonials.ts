@@ -46,6 +46,7 @@ interface TestimonialItem {
 })
 export class Testimonials implements OnInit {
   private readonly http = inject(HttpClient);
+  private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
 
   readonly googleReviewsUrl = 'https://www.google.com/search?q=CBM+Fisioterapia+Terrassa';
 
@@ -78,11 +79,11 @@ export class Testimonials implements OnInit {
         this.http.get<GooglePlaceResponse>(endpoint, {
           params: {
             languageCode: 'es',
-            regionCode: 'ES',
-            fields: 'displayName,rating,userRatingCount,reviews'
+            regionCode: 'ES'
           },
           headers: {
-            'X-Goog-Api-Key': apiKey
+            'X-Goog-Api-Key': apiKey,
+            'X-Goog-FieldMask': this.googleFieldMask
           }
         })
       );
@@ -102,8 +103,8 @@ export class Testimonials implements OnInit {
       this.loading = false;
       this.loadedFromGoogle = true;
       this.errorMessage = '';
-    } catch {
-      this.useFallbackTestimonials('No fue posible cargar Google Reviews en este momento.');
+    } catch (error: unknown) {
+      this.useFallbackTestimonials(this.getGoogleErrorMessage(error));
     }
   }
 
@@ -168,5 +169,28 @@ export class Testimonials implements OnInit {
 
   private getGooglePlaceId(): string {
     return ((window as any).__cbmGooglePlaceId as string | undefined)?.trim() || '';
+  }
+
+  private getGoogleErrorMessage(error: unknown): string {
+    const status = this.getErrorStatus(error);
+
+    if (status === 401 || status === 403) {
+      return 'Google bloqueó la petición (401/403). Revisa restricciones de la API key (HTTP referrer, Places API habilitada y facturación).';
+    }
+
+    if (status === 400) {
+      return 'Google rechazó la solicitud (400). Verifica que el Place ID sea válido y que el formato sea correcto.';
+    }
+
+    return 'No fue posible cargar Google Reviews en este momento.';
+  }
+
+  private getErrorStatus(error: unknown): number | null {
+    if (!error || typeof error !== 'object') {
+      return null;
+    }
+
+    const maybeStatus = (error as { status?: unknown }).status;
+    return typeof maybeStatus === 'number' ? maybeStatus : null;
   }
 }
