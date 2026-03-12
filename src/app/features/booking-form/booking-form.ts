@@ -20,11 +20,10 @@ export class BookingFormComponent {
 
   sendWhatsApp(): void {
     const phoneNumber = '34662561672';
-    const rawMessage = `Hola, quiero reservar una cita.
-    Nombre: ${this.formData.name}
-    Apellido: ${this.formData.surname}
-    Teléfono: ${this.formData.countryCode} ${this.formData.phone}
-    Motivo: ${this.formData.message}`;
+    const surnameLine = this.formData.surname.trim()
+      ? `\n    Apellido: ${this.formData.surname}`
+      : '';
+    const rawMessage = `Hola, quiero reservar una cita.\n    Nombre: ${this.formData.name}${surnameLine}\n    Teléfono: ${this.formData.countryCode} ${this.formData.phone}\n    Motivo: ${this.formData.message}`;
     const encodedMessage = encodeURIComponent(rawMessage);
     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 

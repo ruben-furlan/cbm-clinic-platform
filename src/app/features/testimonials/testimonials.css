@@ -173,3 +173,36 @@
     justify-content: center;
   }
 }
+
+
+.reviews-highlight{
+  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(241, 216, 230, 0.9);
+  background: rgba(255, 255, 255, 0.72);
+  color: #4f4961;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.testimonial-meta strong{
+  display: block;
+  margin-bottom: 2px;
+}
+
+.testimonial-stars{
+  margin-bottom: 2px;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 768px){
+  .reviews-highlight{
+    display: inline-flex;
+    text-align: center;
+    line-height: 1.4;
+  }
+}

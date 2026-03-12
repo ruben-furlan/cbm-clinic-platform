@@ -19,16 +19,20 @@ export class FaqComponent {
 
   readonly faqItems: FaqItem[] = [
     {
-      question: '¿Aceptan seguros?',
-      answer: 'No en este momento, pero esperamos poder hacerlo en un futuro cercano.'
+      question: '¿Cuánto dura una sesión?',
+      answer: 'La mayoría de sesiones duran entre 45 y 60 minutos, según tu caso y el objetivo de tratamiento.'
     },
     {
-      question: '¿Cuál es su política de cancelación?',
-      answer: 'Por favor, avísanos con al menos 24 horas de anticipación si necesitas cancelar o reprogramar.'
+      question: '¿Necesito derivación médica?',
+      answer: 'No es necesario en la mayoría de casos. Si ya tienes pruebas o informes, tráelos para personalizar mejor tu plan.'
     },
     {
-      question: '¿Ofrecen telemedicina o visitas por llamada?',
-      answer: 'Sí, tenemos sesiones en línea seguras. Puedes enviarnos un mensaje para revisar tu caso.'
+      question: '¿Trabajáis con mutuas?',
+      answer: 'Actualmente trabajamos de forma privada para poder dedicarte una atención individual y sin prisas.'
+    },
+    {
+      question: '¿Cuánto cuesta la sesión?',
+      answer: 'El precio depende del tipo de tratamiento. Escríbenos por WhatsApp y te informamos sin compromiso.'
     }
   ];
 

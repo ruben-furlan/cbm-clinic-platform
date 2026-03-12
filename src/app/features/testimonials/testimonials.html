@@ -1,9 +1,12 @@
 <section class="testimonials section">
   <div class="container">
     <div class="section-heading">
+      <p class="reviews-highlight">
+        ★ {{ averageRating | number:'1.1-1' }} en Google · basado en {{ totalRatings }} reseñas
+      </p>
       <h2>Reseñas reales de Google</h2>
       <p class="section-description">
-        Mostramos opiniones públicas en tiempo real de nuestros pacientes.
+        Opiniones públicas de pacientes que ya han confiado en CBM Fisioterapia.
       </p>
     </div>
 
@@ -24,7 +27,7 @@
           />
           <div class="testimonial-avatar" *ngIf="!review.photoUri">{{ review.avatar }}</div>
 
-          <div>
+          <div class="testimonial-meta">
             <strong>{{ review.name }}</strong>
             <div class="testimonial-stars">{{ getStars(review.rating) }}</div>
             <small class="testimonial-time">{{ review.relativeTime }}</small>
