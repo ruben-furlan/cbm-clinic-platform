@@ -58,7 +58,7 @@ export class Testimonials implements OnInit {
   private readonly cacheKey = 'cbm_google_reviews_cache_v1';
   private readonly cacheTtlMs = 1000 * 60 * 30; // 30 min
 
-  readonly googleReviewsUrl = 'https://www.google.com/search?q=CBM+Fisioterapia+Terrassa';
+  readonly googleReviewsUrl = 'https://www.google.com/maps/place/?q=place_id:ChIJIavLaQCTpBIRJ7GEnrRTy68';
 
   loading = true;
   loadedFromGoogle = false;
