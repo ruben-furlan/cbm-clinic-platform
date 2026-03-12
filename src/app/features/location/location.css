@@ -33,6 +33,19 @@
   line-height:1.68;
 }
 
+.location-trust-list{
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.location-trust-list li{
+  color: #4f4961;
+  font-size: 14px;
+}
+
 .location-actions{
   display:flex;
   gap:14px;

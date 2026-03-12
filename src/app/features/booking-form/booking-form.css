@@ -61,6 +61,13 @@
   margin-top: 8px;
 }
 
+.form-note{
+  margin: 12px 0 0;
+  color: #6e6780;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .phone-group{
   display:grid;
   grid-template-columns:120px 1fr;
