@@ -184,12 +184,10 @@ export class Testimonials implements OnInit {
   }
 
   private getGoogleApiKey(): string {
-    // Base64 de la API key para no exponerla en texto plano directamente.
     return this.decodeBase64('QUl6YVN5QTFtQ01JT1lqbTdISmI5MUx2VE4xRFJyVXVBRzJKWGtn');
   }
 
   private getGooglePlaceId(): string {
-    // Base64 de Place ID.
     return this.decodeBase64('Q2hJSklhdkxhUUNUcEJJUko3R0VuclJUeTY4');
   }
 
