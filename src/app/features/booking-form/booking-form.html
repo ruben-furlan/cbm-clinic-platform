@@ -24,6 +24,7 @@
               name="name"
               type="text"
               [(ngModel)]="formData.name"
+              placeholder="Tu nombre"
               required
             />
           </div>
@@ -35,7 +36,7 @@
               name="surname"
               type="text"
               [(ngModel)]="formData.surname"
-              required
+              placeholder="Opcional"
             />
           </div>
         </div>
@@ -60,7 +61,7 @@
               name="phone"
               type="tel"
               [(ngModel)]="formData.phone"
-              placeholder="612 345 678"
+              placeholder="Ej. 612 345 678"
               required
               class="phone-number"
             />
@@ -74,7 +75,7 @@
             name="message"
             rows="5"
             [(ngModel)]="formData.message"
-            placeholder="Ej. dolor lumbar, contractura, rehabilitación..."
+            placeholder="Cuéntanos brevemente qué te ocurre o qué quieres mejorar"
             required
           ></textarea>
         </div>
@@ -82,6 +83,8 @@
         <button class="btn-primary" type="submit" [disabled]="!bookingForm.form.valid">
           📅 Pedir cita
         </button>
+
+        <p class="form-note">Te responderemos rápido por WhatsApp para confirmar tu cita.</p>
       </form>
 
     </div>

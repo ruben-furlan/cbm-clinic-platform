@@ -151,7 +151,7 @@ export class TreatmentsPage {
   readonly menuItems = [
     { slug: 'fisioterapia', label: 'Fisioterapia' },
     { slug: 'tecnicas', label: 'Técnicas' },
-    { slug: 'pilates', label: 'Terapéutico' }
+    { slug: 'pilates', label: 'Pilates' }
   ];
 
   activeCategory = this.categories.fisioterapia;
