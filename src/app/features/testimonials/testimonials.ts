@@ -37,6 +37,14 @@ interface TestimonialItem {
   photoUri?: string;
 }
 
+interface ReviewsCachePayload {
+  placeName: string;
+  averageRating: number;
+  totalRatings: number;
+  testimonials: TestimonialItem[];
+  cachedAt: number;
+}
+
 @Component({
   selector: 'app-testimonials',
   standalone: true,
@@ -47,6 +55,8 @@ interface TestimonialItem {
 export class Testimonials implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
+  private readonly cacheKey = 'cbm_google_reviews_cache_v1';
+  private readonly cacheTtlMs = 1000 * 60 * 30; // 30 min
 
   readonly googleReviewsUrl = 'https://www.google.com/search?q=CBM+Fisioterapia+Terrassa';
 
@@ -61,6 +71,15 @@ export class Testimonials implements OnInit {
   testimonials: TestimonialItem[] = [];
 
   async ngOnInit(): Promise<void> {
+    const usedCache = this.tryLoadFromCache();
+
+    if (usedCache) {
+      this.loading = false;
+      this.loadedFromGoogle = true;
+      this.errorMessage = '';
+      return;
+    }
+
     await this.loadGoogleReviews();
   }
 
@@ -100,6 +119,7 @@ export class Testimonials implements OnInit {
         return;
       }
 
+      this.saveCache();
       this.loading = false;
       this.loadedFromGoogle = true;
       this.errorMessage = '';
@@ -164,11 +184,70 @@ export class Testimonials implements OnInit {
   }
 
   private getGoogleApiKey(): string {
-    return ((window as any).__cbmGooglePlacesApiKey as string | undefined)?.trim() || '';
+    // Base64 de la API key para no exponerla en texto plano directamente.
+    return this.decodeBase64('QUl6YVN5QTFtQ01JT1lqbTdISmI5MUx2VE4xRFJyVXVBRzJKWGtn');
   }
 
   private getGooglePlaceId(): string {
-    return ((window as any).__cbmGooglePlaceId as string | undefined)?.trim() || '';
+    // Base64 de Place ID.
+    return this.decodeBase64('Q2hJSklhdkxhUUNUcEJJUko3R0VuclJUeTY4');
+  }
+
+  private decodeBase64(value: string): string {
+    try {
+      return atob(value);
+    } catch {
+      return '';
+    }
+  }
+
+  private tryLoadFromCache(): boolean {
+    try {
+      const rawCache = localStorage.getItem(this.cacheKey);
+      if (!rawCache) {
+        return false;
+      }
+
+      const cache = JSON.parse(rawCache) as ReviewsCachePayload;
+      if (!cache || !cache.cachedAt) {
+        return false;
+      }
+
+      const isExpired = Date.now() - cache.cachedAt > this.cacheTtlMs;
+      if (isExpired) {
+        localStorage.removeItem(this.cacheKey);
+        return false;
+      }
+
+      if (!cache.testimonials?.length) {
+        return false;
+      }
+
+      this.placeName = cache.placeName || this.placeName;
+      this.averageRating = cache.averageRating || this.averageRating;
+      this.totalRatings = cache.totalRatings || this.totalRatings;
+      this.testimonials = cache.testimonials;
+
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private saveCache(): void {
+    try {
+      const cachePayload: ReviewsCachePayload = {
+        placeName: this.placeName,
+        averageRating: this.averageRating,
+        totalRatings: this.totalRatings,
+        testimonials: this.testimonials,
+        cachedAt: Date.now()
+      };
+
+      localStorage.setItem(this.cacheKey, JSON.stringify(cachePayload));
+    } catch {
+      // Sin acción: si el almacenamiento falla, el componente sigue funcionando sin caché.
+    }
   }
 
   private getGoogleErrorMessage(error: unknown): string {
