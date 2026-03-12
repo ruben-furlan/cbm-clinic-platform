@@ -1,0 +1,94 @@
+.seo-page {
+  padding-top: 102px;
+}
+
+.seo-back-link {
+  display: inline-flex;
+  margin-bottom: 22px;
+  color: #7b4dff;
+  font-weight: 600;
+}
+
+.seo-hero {
+  margin-bottom: 34px;
+}
+
+.seo-tag {
+  margin: 0 0 12px;
+  color: #ff4fa3;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seo-hero h1 {
+  margin: 0 0 14px;
+  color: #1f1b2d;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.seo-intro {
+  margin: 0;
+  max-width: 860px;
+  color: #575161;
+  line-height: 1.75;
+}
+
+.seo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.seo-card {
+  border: var(--card-border);
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border-radius: var(--radius-card);
+  padding: 26px;
+  backdrop-filter: blur(4px);
+}
+
+.seo-card h2 {
+  margin: 0 0 12px;
+  color: #2e2940;
+  font-size: 24px;
+}
+
+.seo-card p,
+.seo-card li {
+  color: #585267;
+  line-height: 1.7;
+}
+
+.seo-card ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.seo-cta {
+  margin-top: 26px;
+  text-align: center;
+  border: var(--card-border);
+  background: rgba(255, 255, 255, 0.78);
+  border-radius: 24px;
+  padding: 34px;
+}
+
+.seo-cta h2 {
+  margin: 0 0 10px;
+}
+
+.seo-cta p {
+  margin: 0 auto 18px;
+  max-width: 680px;
+  color: #5b566a;
+  line-height: 1.7;
+}
+
+@media (max-width: 900px) {
+  .seo-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,48 @@
+<section class="seo-page section">
+  <div class="container">
+    <a class="seo-back-link" routerLink="/">← Volver al inicio</a>
+
+    <header class="seo-hero" appRevealOnScroll>
+      <p class="seo-tag">CBM Fisioterapia · Terrassa</p>
+      <h1>{{ content.title }}</h1>
+      <p class="seo-intro">{{ content.intro }}</p>
+    </header>
+
+    <div class="seo-grid">
+      <article class="seo-card reveal-delay-1" appRevealOnScroll>
+        <h2>Descripción del problema</h2>
+        <p>{{ content.problemDescription }}</p>
+      </article>
+
+      <article class="seo-card reveal-delay-2" appRevealOnScroll>
+        <h2>Síntomas comunes</h2>
+        <ul>
+          <li *ngFor="let item of content.symptoms">{{ item }}</li>
+        </ul>
+      </article>
+
+      <article class="seo-card reveal-delay-3" appRevealOnScroll>
+        <h2>Cómo lo tratamos en la clínica</h2>
+        <ul>
+          <li *ngFor="let item of content.treatment">{{ item }}</li>
+        </ul>
+      </article>
+
+      <article class="seo-card reveal-delay-4" appRevealOnScroll>
+        <h2>Cuándo acudir al fisioterapeuta</h2>
+        <ul>
+          <li *ngFor="let item of content.whenToCome">{{ item }}</li>
+        </ul>
+      </article>
+    </div>
+
+    <section class="seo-cta" appRevealOnScroll>
+      <h2>¿Necesitas ayuda con este problema?</h2>
+      <p>
+        Si buscas un centro de fisioterapia en Terrassa con atención personalizada,
+        podemos orientarte desde la primera visita.
+      </p>
+      <a class="btn-primary" routerLink="/" fragment="reserva">Pedir cita en CBM Fisioterapia</a>
+    </section>
+  </div>
+</section>
