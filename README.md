@@ -57,3 +57,20 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Google Reviews en tiempo real (Testimonials)
+
+El componente de testimonios puede consumir reseñas reales desde Google Places API v1.
+
+1. Obtén una API key con acceso a `Places API (New)`.
+2. Obtén el `placeId` del negocio en Google Maps.
+3. Antes de iniciar la app, define estas variables globales en el navegador:
+
+```html
+<script>
+  window.__cbmGooglePlacesApiKey = 'TU_API_KEY';
+  window.__cbmGooglePlaceId = 'TU_PLACE_ID';
+</script>
+```
+
+Si no están configuradas, el componente muestra un fallback con reseñas locales.

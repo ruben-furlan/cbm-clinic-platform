@@ -1,11 +1,172 @@
-import { Component } from '@angular/core';
-import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+
+interface GoogleAuthor {
+  displayName?: string;
+  photoUri?: string;
+}
+
+interface GoogleText {
+  text?: string;
+}
+
+interface GoogleReview {
+  name?: string;
+  relativePublishTimeDescription?: string;
+  rating?: number;
+  text?: GoogleText;
+  authorAttribution?: GoogleAuthor;
+}
+
+interface GooglePlaceResponse {
+  displayName?: { text?: string };
+  rating?: number;
+  userRatingCount?: number;
+  reviews?: GoogleReview[];
+}
+
+interface TestimonialItem {
+  id: string;
+  name: string;
+  avatar: string;
+  rating: number;
+  relativeTime: string;
+  content: string;
+  photoUri?: string;
+}
 
 @Component({
   selector: 'app-testimonials',
   standalone: true,
-  imports: [RevealOnScrollDirective],
+  imports: [CommonModule],
   templateUrl: './testimonials.html',
   styleUrls: ['./testimonials.css']
 })
-export class Testimonials {}
+export class Testimonials implements OnInit {
+  private readonly http = inject(HttpClient);
+
+  readonly googleReviewsUrl = 'https://www.google.com/search?q=CBM+Fisioterapia+Terrassa';
+
+  loading = true;
+  loadedFromGoogle = false;
+  errorMessage = '';
+
+  placeName = 'CBM Fisioterapia';
+  averageRating = 5;
+  totalRatings = 0;
+
+  testimonials: TestimonialItem[] = [];
+
+  async ngOnInit(): Promise<void> {
+    await this.loadGoogleReviews();
+  }
+
+  private async loadGoogleReviews(): Promise<void> {
+    const apiKey = this.getGoogleApiKey();
+    const placeId = this.getGooglePlaceId();
+
+    if (!apiKey || !placeId) {
+      this.useFallbackTestimonials('Configura la API de Google Places para mostrar reseñas en tiempo real.');
+      return;
+    }
+
+    try {
+      const endpoint = `https://places.googleapis.com/v1/places/${placeId}`;
+      const response = await firstValueFrom(
+        this.http.get<GooglePlaceResponse>(endpoint, {
+          params: {
+            languageCode: 'es',
+            regionCode: 'ES',
+            fields: 'displayName,rating,userRatingCount,reviews'
+          },
+          headers: {
+            'X-Goog-Api-Key': apiKey
+          }
+        })
+      );
+
+      this.placeName = response.displayName?.text || this.placeName;
+      this.averageRating = response.rating || this.averageRating;
+      this.totalRatings = response.userRatingCount || this.totalRatings;
+
+      this.testimonials =
+        response.reviews?.slice(0, 6).map((review, index) => this.mapReview(review, index)) || [];
+
+      if (this.testimonials.length === 0) {
+        this.useFallbackTestimonials('Google no devolvió reseñas públicas en este momento.');
+        return;
+      }
+
+      this.loading = false;
+      this.loadedFromGoogle = true;
+      this.errorMessage = '';
+    } catch {
+      this.useFallbackTestimonials('No fue posible cargar Google Reviews en este momento.');
+    }
+  }
+
+  getStars(rating: number): string {
+    const safeRating = Math.max(0, Math.min(5, Math.round(rating)));
+    return '★'.repeat(safeRating) + '☆'.repeat(5 - safeRating);
+  }
+
+  private mapReview(review: GoogleReview, index: number): TestimonialItem {
+    const authorName = review.authorAttribution?.displayName?.trim() || 'Paciente';
+
+    return {
+      id: review.name || `${authorName}-${index}`,
+      name: authorName,
+      avatar: authorName.charAt(0).toUpperCase(),
+      rating: review.rating ?? 5,
+      relativeTime: review.relativePublishTimeDescription || 'Recientemente',
+      content: review.text?.text?.trim() || 'Sin comentario disponible.',
+      photoUri: review.authorAttribution?.photoUri
+    };
+  }
+
+  private useFallbackTestimonials(message: string): void {
+    this.testimonials = [
+      {
+        id: 'fallback-1',
+        name: 'Michelle Zambrano',
+        avatar: 'M',
+        rating: 5,
+        relativeTime: 'Hace 2 años',
+        content:
+          'Carmen fue todo un descubrimiento. Me trata desde hace casi dos años y me ha acompañado en diferentes etapas en las que había mucho dolor físico. Excelente profesional y trato muy cercano.'
+      },
+      {
+        id: 'fallback-2',
+        name: 'Natalia Perrone',
+        avatar: 'N',
+        rating: 5,
+        relativeTime: 'Hace 1 año',
+        content:
+          'Excelente profesional. Carmen me ha ayudado mucho con distintas lesiones. Trato impecable y totalmente recomendable.'
+      },
+      {
+        id: 'fallback-3',
+        name: 'Mafer S',
+        avatar: 'M',
+        rating: 5,
+        relativeTime: 'Hace 1 año',
+        content:
+          'Tenía pendiente acudir desde su inauguración y me arrepiento de no haber venido antes. El trato es inigualable y me ayudó mucho con una contractura.'
+      }
+    ];
+
+    this.loading = false;
+    this.loadedFromGoogle = false;
+    this.errorMessage = message;
+  }
+
+  private getGoogleApiKey(): string {
+    return ((window as any).__cbmGooglePlacesApiKey as string | undefined)?.trim() || '';
+  }
+
+  private getGooglePlaceId(): string {
+    return ((window as any).__cbmGooglePlaceId as string | undefined)?.trim() || '';
+  }
+}
