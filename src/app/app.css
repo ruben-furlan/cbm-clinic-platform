@@ -9,56 +9,96 @@
   pointer-events: none;
   overflow: hidden;
   background:
-    radial-gradient(circle at 15% 20%, rgba(255, 79, 163, 0.14), transparent 45%),
-    radial-gradient(circle at 85% 15%, rgba(123, 77, 255, 0.16), transparent 48%),
-    radial-gradient(circle at 50% 82%, rgba(70, 199, 232, 0.14), transparent 52%),
-    linear-gradient(180deg, #fffafc 0%, #ffffff 60%, #fffdf6 100%);
+    radial-gradient(circle at 12% 18%, rgba(255, 79, 163, 0.12), transparent 48%),
+    radial-gradient(circle at 88% 12%, rgba(123, 77, 255, 0.14), transparent 52%),
+    radial-gradient(circle at 52% 86%, rgba(70, 199, 232, 0.1), transparent 54%),
+    linear-gradient(180deg, #fffafc 0%, #ffffff 62%, #fffdf6 100%);
 }
 
 .physio-wave,
 .physio-orbit,
 .physio-dot,
-.physio-ribbon {
+.physio-ribbon,
+.physio-aurora {
   position: absolute;
 }
 
+.physio-aurora {
+  border-radius: 50%;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  opacity: 0.34;
+}
+
+.physio-aurora-1 {
+  width: min(48vw, 650px);
+  height: min(48vw, 650px);
+  top: -18vh;
+  left: -12vw;
+  background: radial-gradient(circle, rgba(255, 79, 163, 0.28) 0%, rgba(255, 79, 163, 0) 72%);
+  transform: translateY(calc(var(--scroll-progress) * -14vh));
+  animation: breathe-aurora-1 26s ease-in-out infinite;
+}
+
+.physio-aurora-2 {
+  width: min(42vw, 560px);
+  height: min(42vw, 560px);
+  right: -10vw;
+  top: 40vh;
+  background: radial-gradient(circle, rgba(123, 77, 255, 0.3) 0%, rgba(123, 77, 255, 0) 74%);
+  transform: translateY(calc(var(--scroll-progress) * -22vh));
+  animation: breathe-aurora-2 32s ease-in-out infinite;
+}
+
 .physio-wave {
-  inset: -24% -20%;
+  inset: -28% -24%;
   background:
     repeating-radial-gradient(
-      circle at 50% 50%,
-      rgba(123, 77, 255, 0.12) 0 2px,
-      rgba(123, 77, 255, 0) 2px 28px
+      ellipse at 50% 50%,
+      rgba(123, 77, 255, 0.08) 0 1.5px,
+      rgba(123, 77, 255, 0) 1.5px 24px
     );
-  opacity: 0.28;
-  transform: translateY(calc(var(--scroll-progress) * -18vh));
-  animation: breathe-wave 14s ease-in-out infinite;
+  opacity: 0.24;
+  transform: translateY(calc(var(--scroll-progress) * -14vh));
+  animation: breathe-wave 22s ease-in-out infinite;
+}
+
+.physio-wave-secondary {
+  inset: -36% -26%;
+  opacity: 0.14;
+  background:
+    repeating-radial-gradient(
+      ellipse at 46% 56%,
+      rgba(255, 79, 163, 0.09) 0 1px,
+      rgba(255, 79, 163, 0) 1px 28px
+    );
+  transform: translateY(calc(var(--scroll-progress) * -10vh));
+  animation: breathe-wave-secondary 30s ease-in-out infinite;
 }
 
 .physio-orbit {
-  border: 2px solid rgba(255, 79, 163, 0.2);
+  border: 1.5px solid rgba(255, 79, 163, 0.15);
   border-radius: 999px;
-  transform-style: preserve-3d;
 }
 
 .physio-orbit-1 {
-  width: min(42vw, 520px);
-  height: min(42vw, 520px);
-  left: -10vw;
-  top: 26vh;
-  border-color: rgba(255, 79, 163, 0.24);
-  transform: translateY(calc(var(--scroll-progress) * -24vh)) rotate(15deg);
-  animation: rotate-orbit 25s linear infinite;
+  width: min(40vw, 520px);
+  height: min(40vw, 520px);
+  left: -9vw;
+  top: 28vh;
+  border-color: rgba(255, 79, 163, 0.18);
+  transform: translateY(calc(var(--scroll-progress) * -20vh)) rotate(12deg);
+  animation: rotate-orbit 70s linear infinite;
 }
 
 .physio-orbit-2 {
-  width: min(34vw, 420px);
-  height: min(34vw, 420px);
+  width: min(33vw, 420px);
+  height: min(33vw, 420px);
   right: -8vw;
-  top: 60vh;
-  border-color: rgba(70, 199, 232, 0.3);
-  transform: translateY(calc(var(--scroll-progress) * -30vh)) rotate(-22deg);
-  animation: rotate-orbit-reverse 30s linear infinite;
+  top: 62vh;
+  border-color: rgba(70, 199, 232, 0.2);
+  transform: translateY(calc(var(--scroll-progress) * -24vh)) rotate(-18deg);
+  animation: rotate-orbit-reverse 84s linear infinite;
 }
 
 .physio-dot {
@@ -67,23 +107,36 @@
 }
 
 .physio-dot-1 {
-  width: 36px;
-  height: 36px;
-  left: 22vw;
-  top: 42vh;
-  background: rgba(255, 79, 163, 0.4);
-  transform: translateY(calc(var(--scroll-progress) * -28vh));
-  animation: float-dot 8s ease-in-out infinite;
+  width: 34px;
+  height: 34px;
+  left: 20vw;
+  top: 40vh;
+  background: rgba(255, 79, 163, 0.28);
+  transform: translateY(calc(var(--scroll-progress) * -22vh));
+  animation: float-dot 14s ease-in-out infinite;
 }
 
 .physio-dot-2 {
-  width: 28px;
-  height: 28px;
-  right: 18vw;
-  top: 24vh;
-  background: rgba(123, 77, 255, 0.35);
-  transform: translateY(calc(var(--scroll-progress) * -34vh));
-  animation: float-dot 10s ease-in-out infinite reverse;
+  width: 26px;
+  height: 26px;
+  right: 16vw;
+  top: 22vh;
+  background: rgba(123, 77, 255, 0.26);
+  transform: translateY(calc(var(--scroll-progress) * -26vh));
+  animation: float-dot 16s ease-in-out infinite reverse;
+}
+
+.physio-ribbon {
+  width: min(118vw, 1450px);
+  height: 220px;
+  left: -10vw;
+  top: 36vh;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 79, 163, 0.1), rgba(123, 77, 255, 0.08), rgba(70, 199, 232, 0.09));
+  filter: blur(34px);
+  opacity: 0.38;
+  transform: translateY(calc(var(--scroll-progress) * -34vh)) rotate(-7deg);
+  animation: drift-ribbon 34s ease-in-out infinite;
 }
 
 .app-content {
@@ -98,30 +151,51 @@
   flex: 1;
 }
 
-.physio-ribbon {
-  position: absolute;
-  width: min(120vw, 1500px);
-  height: 220px;
-  left: -12vw;
-  top: 38vh;
-  border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 79, 163, 0.12), rgba(123, 77, 255, 0.1), rgba(70, 199, 232, 0.12));
-  filter: blur(34px);
-  opacity: 0.45;
-  transform: translateY(calc(var(--scroll-progress) * -42vh)) rotate(-8deg);
-  animation: drift-ribbon 22s ease-in-out infinite;
-}
-
-
 @keyframes breathe-wave {
   0%,
   100% {
-    opacity: 0.16;
-    transform: scale(1) translateY(calc(var(--scroll-progress) * -10vh));
+    opacity: 0.2;
+    transform: translateY(calc(var(--scroll-progress) * -14vh)) scale(1);
   }
   50% {
     opacity: 0.28;
-    transform: scale(1.07) translateY(calc(var(--scroll-progress) * -10vh));
+    transform: translateY(calc(var(--scroll-progress) * -14vh)) scale(1.04);
+  }
+}
+
+@keyframes breathe-wave-secondary {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: translateY(calc(var(--scroll-progress) * -10vh)) scale(1);
+  }
+  50% {
+    opacity: 0.18;
+    transform: translateY(calc(var(--scroll-progress) * -10vh)) scale(1.05);
+  }
+}
+
+@keyframes breathe-aurora-1 {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(calc(var(--scroll-progress) * -14vh)) scale(1);
+  }
+  50% {
+    opacity: 0.42;
+    transform: translateY(calc(var(--scroll-progress) * -14vh)) scale(1.07);
+  }
+}
+
+@keyframes breathe-aurora-2 {
+  0%,
+  100% {
+    opacity: 0.26;
+    transform: translateY(calc(var(--scroll-progress) * -22vh)) scale(1);
+  }
+  50% {
+    opacity: 0.38;
+    transform: translateY(calc(var(--scroll-progress) * -22vh)) scale(1.06);
   }
 }
 
@@ -146,12 +220,12 @@
 @keyframes drift-ribbon {
   0%,
   100% {
-    opacity: 0.36;
-    transform: translateY(calc(var(--scroll-progress) * -42vh)) rotate(-8deg) scaleX(1);
+    opacity: 0.32;
+    transform: translateY(calc(var(--scroll-progress) * -34vh)) rotate(-7deg) scaleX(1);
   }
   50% {
-    opacity: 0.54;
-    transform: translateY(calc(var(--scroll-progress) * -42vh)) rotate(-5deg) scaleX(1.06);
+    opacity: 0.46;
+    transform: translateY(calc(var(--scroll-progress) * -34vh)) rotate(-5deg) scaleX(1.05);
   }
 }
 
@@ -161,43 +235,59 @@
     translate: 0 0;
   }
   50% {
-    translate: 0 -18px;
+    translate: 0 -10px;
   }
 }
 
 @media (max-width: 768px) {
   .physio-wave {
-    opacity: 0.18;
+    opacity: 0.16;
+  }
+
+  .physio-wave-secondary {
+    opacity: 0.11;
   }
 
   .physio-orbit-1 {
-    width: 64vw;
-    height: 64vw;
-    left: -24vw;
+    width: 62vw;
+    height: 62vw;
+    left: -22vw;
     top: 34vh;
   }
 
   .physio-orbit-2 {
-    width: 54vw;
-    height: 54vw;
+    width: 52vw;
+    height: 52vw;
     right: -20vw;
     top: 68vh;
   }
 
   .physio-dot-1 {
-    left: 16vw;
-    top: 46vh;
+    left: 14vw;
+    top: 47vh;
   }
 
   .physio-dot-2 {
     right: 10vw;
-    top: 30vh;
+    top: 32vh;
   }
 
   .physio-ribbon {
     top: 52vh;
-    left: -30vw;
-    width: 160vw;
-    opacity: 0.35;
+    left: -28vw;
+    width: 155vw;
+    opacity: 0.32;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .physio-wave,
+  .physio-wave-secondary,
+  .physio-orbit,
+  .physio-dot,
+  .physio-ribbon,
+  .physio-aurora {
+    animation: none;
+    transform: none;
   }
 }
