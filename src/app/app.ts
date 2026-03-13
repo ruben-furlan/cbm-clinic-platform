@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './core/header/header';
 import { FooterComponent } from './core/footer/footer';
@@ -12,14 +12,32 @@ import { CookieConsentComponent } from './core/cookie-consent/cookie-consent';
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
-export class App implements OnInit {
+export class App implements OnInit, OnDestroy {
+  private rafId: number | null = null;
+  private readonly onScroll = (): void => this.scheduleScrollProgressUpdate();
+
   ngOnInit(): void {
+    window.addEventListener('scroll', this.onScroll, { passive: true });
     this.updateScrollProgress();
   }
 
-  @HostListener('window:scroll')
-  onWindowScroll(): void {
-    this.updateScrollProgress();
+  ngOnDestroy(): void {
+    window.removeEventListener('scroll', this.onScroll);
+
+    if (this.rafId !== null) {
+      window.cancelAnimationFrame(this.rafId);
+    }
+  }
+
+  private scheduleScrollProgressUpdate(): void {
+    if (this.rafId !== null) {
+      return;
+    }
+
+    this.rafId = window.requestAnimationFrame(() => {
+      this.rafId = null;
+      this.updateScrollProgress();
+    });
   }
 
   private updateScrollProgress(): void {
