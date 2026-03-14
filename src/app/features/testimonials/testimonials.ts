@@ -56,7 +56,7 @@ export class Testimonials implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
   private readonly cacheKey = 'cbm_google_reviews_cache_v1';
-  private readonly cacheTtlMs = 1000 * 60 * 30; // 30 min
+  private readonly cacheTtlMs = 1000 * 60 * 60 * 24 * 14; // 14 días
 
   readonly googleReviewsUrl = 'https://www.google.com/maps/place/?q=place_id:ChIJIavLaQCTpBIRJ7GEnrRTy68';
 

@@ -12,6 +12,7 @@ import {
 })
 export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
+  private readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   constructor(
     private el: ElementRef<HTMLElement>,
@@ -19,6 +20,11 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit(): void {
+    if (this.reducedMotion) {
+      this.renderer.addClass(this.el.nativeElement, 'is-visible');
+      return;
+    }
+
     this.renderer.addClass(this.el.nativeElement, 'reveal');
 
     this.observer = new IntersectionObserver(
@@ -31,7 +37,8 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
         });
       },
       {
-        threshold: 0.15
+        threshold: 0.2,
+        rootMargin: '0px 0px -8% 0px'
       }
     );
 

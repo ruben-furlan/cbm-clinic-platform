@@ -4,7 +4,7 @@
       <p class="reviews-highlight">
         ★ {{ averageRating | number:'1.1-1' }} en Google · basado en {{ totalRatings }} reseñas
       </p>
-      <h2>Reseñas reales de Google</h2>
+      <h2 class="heading-highlight">Reseñas reales de Google</h2>
       <p class="section-description">
         Opiniones públicas de pacientes que ya han confiado en CBM Fisioterapia.
       </p>
@@ -16,7 +16,7 @@
     </p>
 
     <div class="testimonials-grid" *ngIf="!loading">
-      <article class="testimonial-card" *ngFor="let review of testimonials">
+      <article class="testimonial-card floating-card glass-panel" *ngFor="let review of testimonials">
         <div class="testimonial-header">
           <img
             *ngIf="review.photoUri"
@@ -38,7 +38,7 @@
       </article>
     </div>
 
-    <div class="reviews-cta">
+    <div class="reviews-cta glass-panel">
       <div class="reviews-cta-info">
         <span class="reviews-stars">{{ getStars(averageRating) }}</span>
         <span class="reviews-score">
