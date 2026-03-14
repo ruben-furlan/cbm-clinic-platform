@@ -80,6 +80,32 @@
           ></textarea>
         </div>
 
+        <button
+          type="button"
+          class="promo-toggle"
+          (click)="togglePromoCode()"
+          [attr.aria-expanded]="showPromoCode"
+          aria-controls="promoCodeGroup"
+        >
+          ¿Tienes un código promocional?
+        </button>
+
+        <div class="form-group promo-group" id="promoCodeGroup" *ngIf="showPromoCode">
+          <label for="promoCode">Código promocional</label>
+          <input
+            id="promoCode"
+            name="promoCode"
+            type="text"
+            [(ngModel)]="promoCode"
+            placeholder="Ej. BIENVENIDA10"
+            autocomplete="off"
+          />
+          <p class="promo-help">
+            Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al revisar tu
+            solicitud.
+          </p>
+        </div>
+
         <button class="btn-primary" type="submit" [disabled]="!bookingForm.form.valid">
           📅 Pedir cita
         </button>
