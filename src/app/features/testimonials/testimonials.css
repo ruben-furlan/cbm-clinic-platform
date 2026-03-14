@@ -5,18 +5,25 @@
 
 .section-heading{
   text-align:center;
-  max-width:720px;
+  max-width:980px;
   margin:0 auto 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 .section-heading h2{
-  margin:0 0 18px;
+  margin:0;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 
 .section-description{
   margin:0;
   color:#666;
   line-height:1.7;
+  max-width: 780px;
 }
 
 .reviews-status{
@@ -146,6 +153,10 @@
 }
 
 @media (max-width: 900px){
+  .section-heading{
+    max-width: 760px;
+  }
+
   .testimonials-grid{
     grid-template-columns:repeat(2,1fr);
   }
@@ -158,6 +169,7 @@
 
   .section-heading{
     margin: 0 auto 36px;
+    gap: 10px;
   }
 
   .testimonials-grid{
@@ -209,7 +221,7 @@
 
 
 .reviews-highlight{
-  margin: 0 0 14px;
+  margin: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -220,6 +232,7 @@
   color: #4f4961;
   font-size: 13px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .testimonial-meta strong{
@@ -237,5 +250,6 @@
     display: inline-flex;
     text-align: center;
     line-height: 1.4;
+    white-space: normal;
   }
 }
