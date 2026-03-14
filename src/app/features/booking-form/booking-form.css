@@ -56,9 +56,14 @@
   box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.13);
 }
 
-.form-card .btn-primary{
-  min-width:220px;
+.form-actions{
   margin-top: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.form-actions .btn-primary{
+  min-width: 240px;
 }
 
 .form-note{
@@ -68,22 +73,52 @@
   font-weight: 600;
 }
 
-.phone-group{
-  display:grid;
-  grid-template-columns:120px 1fr;
-  gap:12px;
+
+.promo-toggle{
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #7d6e8e;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-.phone-code,
-.phone-number{
-  width:100%;
+.promo-toggle:hover,
+.promo-toggle:focus-visible{
+  color: #5f4f74;
+  opacity: 0.92;
 }
 
-.phone-code{
-  background:#f6eef4;
-  font-weight:700;
-  text-align:center;
-  cursor:not-allowed;
+.promo-toggle:focus-visible{
+  outline: 2px solid rgba(255, 79, 163, 0.3);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.promo-group{
+  margin-top: -2px;
+}
+
+.promo-help{
+  margin: 8px 2px 0;
+  color: #7a728a;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+
+@media (max-width: 1024px){
+  .form-actions .btn-primary{
+    min-width: 0;
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px){
@@ -106,12 +141,12 @@
     gap: 0;
   }
 
-  .phone-group{
-    grid-template-columns: 80px 1fr;
-    gap: 10px;
+
+  .promo-toggle{
+    min-height: 40px;
   }
 
-  .form-card .btn-primary{
+  .form-actions .btn-primary{
     width: 100%;
     min-width: 0;
   }

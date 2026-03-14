@@ -3,7 +3,7 @@
     <div class="booking-wrapper">
 
       <div class="section-heading" appRevealOnScroll>
-        <p class="section-tag">Reserva tu cita</p>
+        <p class="section-tag">Solicitar cita</p>
         <h2>Cuéntanos qué necesitas</h2>
         <p class="section-description">
           Déjanos tus datos y te llevamos directamente a WhatsApp con el mensaje preparado.
@@ -42,33 +42,6 @@
         </div>
 
         <div class="form-group">
-          <label for="phone">Teléfono</label>
-
-          <div class="phone-group">
-            <input
-              id="countryCode"
-              name="countryCode"
-              inputmode="numeric"
-              type="tel"
-              [(ngModel)]="formData.countryCode"
-              value="+34"
-              readonly
-              class="phone-code"
-            />
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              [(ngModel)]="formData.phone"
-              placeholder="Ej. 612 345 678"
-              required
-              class="phone-number"
-            />
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="message">Breve descripción</label>
           <textarea
             id="message"
@@ -80,11 +53,40 @@
           ></textarea>
         </div>
 
-        <button class="btn-primary" type="submit" [disabled]="!bookingForm.form.valid">
-          📅 Pedir cita
+        <button
+          type="button"
+          class="promo-toggle"
+          (click)="togglePromoCode()"
+          [attr.aria-expanded]="showPromoCode"
+          aria-controls="promoCodeGroup"
+        >
+          ¿Tienes un código promocional?
         </button>
 
-        <p class="form-note">Te responderemos rápido por WhatsApp para confirmar tu cita.</p>
+        <div class="form-group promo-group" id="promoCodeGroup" *ngIf="showPromoCode">
+          <label for="promoCode">Código promocional</label>
+          <input
+            id="promoCode"
+            name="promoCode"
+            type="text"
+            [(ngModel)]="promoCode"
+            placeholder="Ej. BIENVENIDA10"
+            autocomplete="off"
+          />
+          <p class="promo-help">
+            Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al revisar tu
+            solicitud.
+          </p>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-primary btn-booking" type="submit">
+            <span class="btn-icon" aria-hidden="true">💬</span>
+            <span>Solicitar cita</span>
+          </button>
+        </div>
+
+        <p class="form-note">Te contactaremos por WhatsApp para confirmar disponibilidad y horario.</p>
       </form>
 
     </div>
