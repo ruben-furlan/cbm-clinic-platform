@@ -58,7 +58,7 @@ export class Testimonials implements OnInit {
   private readonly cacheKey = 'cbm_google_reviews_cache_v1';
   private readonly cacheTtlMs = 1000 * 60 * 60 * 24 * 14; // 14 días
 
-  readonly googleReviewsUrl = 'https://www.google.com/maps/place/?q=place_id:ChIJIavLaQCTpBIRJ7GEnrRTy68';
+  readonly googleReviewsUrl = 'https://www.google.com/maps/search/CBM+Fisioterapia+Terrassa';
 
   loading = true;
   loadedFromGoogle = false;
@@ -184,11 +184,11 @@ export class Testimonials implements OnInit {
   }
 
   private getGoogleApiKey(): string {
-    return this.decodeBase64('QUl6YVN5QTFtQ01JT1lqbTdISmI5MUx2VE4xRFJyVXVBRzJKWGtn');
+    return this.decodeBase64('QUl6YVN5Qmt3TXFoZUp1YWxPUFI3Rkhneno2ektRbjRVak9HNEpN');
   }
 
   private getGooglePlaceId(): string {
-    return this.decodeBase64('Q2hJSklhdkxhUUNUcEJJUko3R0VuclJUeTY4');
+    return 'ChIJIavLaQCTpBIRJ7GEnrRTy68';
   }
 
   private decodeBase64(value: string): string {
