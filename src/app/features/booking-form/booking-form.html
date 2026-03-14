@@ -42,33 +42,6 @@
         </div>
 
         <div class="form-group">
-          <label for="phone">Teléfono</label>
-
-          <div class="phone-group">
-            <input
-              id="countryCode"
-              name="countryCode"
-              inputmode="numeric"
-              type="tel"
-              [(ngModel)]="formData.countryCode"
-              value="+34"
-              readonly
-              class="phone-code"
-            />
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              [(ngModel)]="formData.phone"
-              placeholder="Ej. 612 345 678"
-              required
-              class="phone-number"
-            />
-          </div>
-        </div>
-
-        <div class="form-group">
           <label for="message">Breve descripción</label>
           <textarea
             id="message"
@@ -106,9 +79,11 @@
           </p>
         </div>
 
-        <button class="btn-primary" type="submit" [disabled]="!bookingForm.form.valid">
-          📅 Pedir cita
-        </button>
+        <div class="form-actions">
+          <button class="btn-primary" type="submit" [disabled]="!bookingForm.form.valid">
+            📅 Pedir cita
+          </button>
+        </div>
 
         <p class="form-note">Te responderemos rápido por WhatsApp para confirmar tu cita.</p>
       </form>

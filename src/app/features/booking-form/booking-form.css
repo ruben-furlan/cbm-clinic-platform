@@ -56,9 +56,14 @@
   box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.13);
 }
 
-.form-card .btn-primary{
-  min-width:220px;
+.form-actions{
   margin-top: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.form-actions .btn-primary{
+  min-width: 240px;
 }
 
 .form-note{
@@ -66,24 +71,6 @@
   color: #6e6780;
   font-size: 14px;
   font-weight: 600;
-}
-
-.phone-group{
-  display:grid;
-  grid-template-columns:120px 1fr;
-  gap:12px;
-}
-
-.phone-code,
-.phone-number{
-  width:100%;
-}
-
-.phone-code{
-  background:#f6eef4;
-  font-weight:700;
-  text-align:center;
-  cursor:not-allowed;
 }
 
 
@@ -126,6 +113,14 @@
   line-height: 1.45;
 }
 
+
+@media (max-width: 1024px){
+  .form-actions .btn-primary{
+    min-width: 0;
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px){
   .booking-form{
     padding: 66px 0 76px;
@@ -146,16 +141,12 @@
     gap: 0;
   }
 
-  .phone-group{
-    grid-template-columns: 80px 1fr;
-    gap: 10px;
-  }
 
   .promo-toggle{
     min-height: 40px;
   }
 
-  .form-card .btn-primary{
+  .form-actions .btn-primary{
     width: 100%;
     min-width: 0;
   }
