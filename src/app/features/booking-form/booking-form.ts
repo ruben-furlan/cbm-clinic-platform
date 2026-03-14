@@ -28,7 +28,7 @@ export class BookingFormComponent {
     const promoCodeLine = this.promoCode.trim()
       ? `\n    Código promocional: ${this.promoCode}`
       : '';
-    const rawMessage = `Hola, quiero pedir cita.\n\n    Nombre: ${this.formData.name}${surnameLine}\n    Descripción: ${this.formData.message}${promoCodeLine}`;
+    const rawMessage = `Hola, quiero solicitar cita.\n\n    Nombre: ${this.formData.name}${surnameLine}\n    Descripción: ${this.formData.message}${promoCodeLine}`;
     const encodedMessage = encodeURIComponent(rawMessage);
     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 

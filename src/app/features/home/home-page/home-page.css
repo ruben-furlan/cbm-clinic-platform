@@ -94,22 +94,12 @@
 
 .hero-trust{
   margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.hero-trust span{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(241, 216, 230, 0.9);
-  background: rgba(255, 255, 255, 0.72);
-  color: #4f4961;
-  font-size: 13px;
+  margin-bottom: 0;
+  color: #6c6480;
+  font-size: 12px;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
 }
 
 .hero-image-card{
@@ -553,10 +543,6 @@
 
   .hero-trust{
     margin-top: 14px;
-    gap: 8px;
-  }
-
-  .hero-trust span{
     font-size: 12px;
   }
 
