@@ -34,6 +34,10 @@ export class Header implements OnInit {
 
   onLanguageChange(event: Event): void {
     const selectedLanguage = (event.target as HTMLSelectElement).value as 'es' | 'en' | 'ca';
-    this.languageService.changeLanguage(selectedLanguage);
+    this.changeLanguage(selectedLanguage);
+  }
+
+  changeLanguage(language: 'es' | 'en' | 'ca'): void {
+    this.languageService.changeLanguage(language);
   }
 }

@@ -58,13 +58,19 @@
       <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
 
       <div class="language-selector-mobile" aria-label="Selector de idioma móvil">
-        <label class="sr-only" for="language-select-mobile">Seleccionar idioma</label>
         <span class="language-icon" aria-hidden="true">🌐</span>
-        <select id="language-select-mobile" [value]="selectedLanguage" (change)="onLanguageChange($event)">
+        <div class="language-pills" role="group" aria-label="Seleccionar idioma">
           @for (language of languages; track language.code) {
-            <option [value]="language.code">{{ language.label }}</option>
+            <button
+              type="button"
+              class="language-pill"
+              [class.is-active]="selectedLanguage === language.code"
+              (click)="changeLanguage(language.code)"
+            >
+              {{ language.label }}
+            </button>
           }
-        </select>
+        </div>
       </div>
     </div>
   </div>
