@@ -21,10 +21,29 @@
       <a routerLink="/blog">Blog</a>
     </nav>
 
-    <a class="btn-primary btn-booking header-cta" routerLink="/" fragment="reserva">
-      <span class="btn-icon" aria-hidden="true">💬</span>
-      <span>Solicitar cita</span>
-    </a>
+    <div class="nav-actions">
+      <div class="language-selector-desktop">
+        <label class="sr-only" for="language-select">Language selector</label>
+        <div class="language-select-wrap">
+          <span class="language-prefix" aria-hidden="true">🌐 {{ selectedLanguageShort }}</span>
+          <select
+            id="language-select"
+            aria-label="Language selector"
+            [ngModel]="selectedLanguage"
+            (ngModelChange)="changeLanguage($event)"
+          >
+            @for (language of languages; track language.code) {
+              <option [value]="language.code">{{ language.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <a class="btn-primary btn-booking header-cta" routerLink="/" fragment="reserva">
+        <span class="btn-icon" aria-hidden="true">💬</span>
+        <span>Solicitar cita</span>
+      </a>
+    </div>
 
     <button
       type="button"
@@ -46,6 +65,22 @@
       <a routerLink="/" fragment="faq" (click)="closeMobileMenu()">FAQ</a>
       <a routerLink="/" fragment="contacto" (click)="closeMobileMenu()">Contáctanos</a>
       <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
+
+      <div class="mobile-language-group" role="group" aria-label="Language selector">
+        <p class="mobile-language-title">Language</p>
+        @for (language of languages; track language.code) {
+          <button
+            type="button"
+            class="mobile-language-option"
+            [class.is-active]="selectedLanguage === language.code"
+            (click)="changeLanguage(language.code)"
+          >
+            {{ language.label }}
+          </button>
+        }
+      </div>
     </div>
   </div>
 </header>
+
+<div id="google_translate_element" class="google-translate-container" aria-hidden="true"></div>
