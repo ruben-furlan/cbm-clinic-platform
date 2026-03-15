@@ -29,7 +29,7 @@
     <div class="language-selector" aria-label="Selector de idioma">
       <label class="sr-only" for="language-select">Seleccionar idioma</label>
       <span class="language-icon" aria-hidden="true">🌐</span>
-      <select id="language-select" [value]="selectedLanguage" (change)="onLanguageChange($event)">
+      <select id="language-select" [ngModel]="selectedLanguage" (ngModelChange)="changeLanguage($event)">
         @for (language of languages; track language.code) {
           <option [value]="language.code">{{ language.label }}</option>
         }

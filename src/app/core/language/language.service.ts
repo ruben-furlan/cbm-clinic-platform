@@ -5,6 +5,8 @@ interface LanguageOption {
   label: string;
 }
 
+type SupportedLanguage = LanguageOption['code'];
+
 declare global {
   interface Window {
     google?: {
@@ -32,15 +34,21 @@ export class LanguageService {
     { code: 'ca', label: 'Català' }
   ];
 
-  selectedLanguage: LanguageOption['code'] = 'es';
-
   constructor() {
+    this.persistAndApplyLanguage(this.selectedLanguage);
+    this.applyGoogleTranslateCookie(this.selectedLanguage);
+  }
+
+  get selectedLanguage(): SupportedLanguage {
     const persistedLanguage = localStorage.getItem('selected-language');
 
     if (persistedLanguage === 'es' || persistedLanguage === 'en' || persistedLanguage === 'ca') {
-      this.selectedLanguage = persistedLanguage;
-      document.documentElement.lang = persistedLanguage;
+      return persistedLanguage;
     }
+
+    const cookieLanguage = this.getLanguageFromGoogleCookie();
+
+    return cookieLanguage ?? 'es';
   }
 
   initGoogleTranslate(): void {
@@ -49,6 +57,8 @@ export class LanguageService {
     if (!hasContainer) {
       return;
     }
+
+    this.applyGoogleTranslateCookie(this.selectedLanguage);
 
     window.googleTranslateElementInit = () => {
       if (!window.google?.translate?.TranslateElement) {
@@ -84,15 +94,43 @@ export class LanguageService {
     document.body.appendChild(script);
   }
 
-  changeLanguage(language: LanguageOption['code']): void {
-    this.selectedLanguage = language;
+  changeLanguage(language: SupportedLanguage): void {
+    if (this.selectedLanguage === language) {
+      return;
+    }
+
+    this.persistAndApplyLanguage(language);
+    this.applyGoogleTranslateCookie(language);
+
+    window.location.reload();
+  }
+
+  private persistAndApplyLanguage(language: SupportedLanguage): void {
     localStorage.setItem('selected-language', language);
     document.documentElement.lang = language;
+  }
 
+  private getLanguageFromGoogleCookie(): SupportedLanguage | null {
+    const cookieParts = document.cookie.split(';').map((part) => part.trim());
+    const googTransCookie = cookieParts.find((part) => part.startsWith('googtrans='));
+
+    if (!googTransCookie) {
+      return null;
+    }
+
+    const cookieValue = decodeURIComponent(googTransCookie.split('=')[1] ?? '');
+    const languageCode = cookieValue.split('/').pop();
+
+    if (languageCode === 'es' || languageCode === 'en' || languageCode === 'ca') {
+      return languageCode;
+    }
+
+    return null;
+  }
+
+  private applyGoogleTranslateCookie(language: SupportedLanguage): void {
     const languageDirective = `/es/${language}`;
     document.cookie = `googtrans=${languageDirective};path=/`;
     document.cookie = `googtrans=${languageDirective};path=/;domain=${window.location.hostname}`;
-
-    window.location.reload();
   }
 }
