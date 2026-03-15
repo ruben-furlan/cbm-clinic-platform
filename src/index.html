@@ -17,8 +17,24 @@
   <meta name="robots" content="index, follow">
 
   <link rel="canonical" href="https://cbmfisioterapia.com/">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
 
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
+  <link rel="apple-touch-icon" href="/favicon-192x192.png">
+
+  <!-- PWA / mobile -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#6c4df6">
+  <meta name="application-name" content="CBM Fisioterapia">
+  <meta name="apple-mobile-web-app-title" content="CBM Fisio">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="CBM Fisioterapia en Terrassa | Recupera tu bienestar">
   <meta
@@ -29,6 +45,7 @@
   <meta property="og:image" content="https://cbmfisioterapia.com/hero-fisio.jpg">
   <meta property="og:locale" content="es_ES">
 
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="CBM Fisioterapia en Terrassa | Recupera tu bienestar">
   <meta
@@ -37,17 +54,17 @@
   >
   <meta name="twitter:image" content="https://cbmfisioterapia.com/hero-fisio.jpg">
 
+  <!-- Structured Data SEO -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@graph": [
         {
-          "@type": ["LocalBusiness", "MedicalBusiness"],
-          "additionalType": "https://schema.org/Physiotherapy",
+          "@type": ["LocalBusiness", "MedicalBusiness", "Physiotherapy"],
           "name": "CBM Fisioterapia",
           "url": "https://cbmfisioterapia.com",
           "image": "https://cbmfisioterapia.com/hero-fisio.jpg",
-          "logo": "https://cbmfisioterapia.com/logo.png",
+          "logo": "https://cbmfisioterapia.com/logo-header.png",
           "telephone": "+34 662 56 16 72",
           "address": {
             "@type": "PostalAddress",
@@ -77,6 +94,10 @@
               "opens": "09:00",
               "closes": "20:00"
             }
+          ],
+          "priceRange": "€€",
+          "sameAs": [
+            "https://www.instagram.com/cbm.fisioterapia"
           ],
           "geo": {
             "@type": "GeoCoordinates",
