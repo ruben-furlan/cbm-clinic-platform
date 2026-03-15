@@ -30,8 +30,8 @@ declare global {
 export class LanguageService {
   readonly languages: LanguageOption[] = [
     { code: 'es', label: 'Español' },
-    { code: 'en', label: 'English' },
-    { code: 'ca', label: 'Català' }
+    { code: 'ca', label: 'Català' },
+    { code: 'en', label: 'English' }
   ];
 
   constructor() {

@@ -21,6 +21,12 @@ export class Header implements OnInit {
     return this.languageService.selectedLanguage;
   }
 
+  get selectedLanguageShort(): 'ES' | 'EN' | 'CA' {
+    const shortCodeMap = { es: 'ES', en: 'EN', ca: 'CA' } as const;
+
+    return shortCodeMap[this.selectedLanguage];
+  }
+
   ngOnInit(): void {
     this.languageService.initGoogleTranslate();
   }

@@ -21,19 +21,28 @@
       <a routerLink="/blog">Blog</a>
     </nav>
 
-    <a class="btn-primary btn-booking header-cta" routerLink="/" fragment="reserva">
-      <span class="btn-icon" aria-hidden="true">💬</span>
-      <span>Solicitar cita</span>
-    </a>
+    <div class="nav-actions">
+      <div class="language-selector-desktop">
+        <label class="sr-only" for="language-select">Language selector</label>
+        <div class="language-select-wrap">
+          <span class="language-prefix" aria-hidden="true">🌐 {{ selectedLanguageShort }}</span>
+          <select
+            id="language-select"
+            aria-label="Language selector"
+            [ngModel]="selectedLanguage"
+            (ngModelChange)="changeLanguage($event)"
+          >
+            @for (language of languages; track language.code) {
+              <option [value]="language.code">{{ language.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
 
-    <div class="language-selector" aria-label="Selector de idioma">
-      <label class="sr-only" for="language-select">Seleccionar idioma</label>
-      <span class="language-icon" aria-hidden="true">🌐</span>
-      <select id="language-select" [ngModel]="selectedLanguage" (ngModelChange)="changeLanguage($event)">
-        @for (language of languages; track language.code) {
-          <option [value]="language.code">{{ language.label }}</option>
-        }
-      </select>
+      <a class="btn-primary btn-booking header-cta" routerLink="/" fragment="reserva">
+        <span class="btn-icon" aria-hidden="true">💬</span>
+        <span>Solicitar cita</span>
+      </a>
     </div>
 
     <button
@@ -57,20 +66,18 @@
       <a routerLink="/" fragment="contacto" (click)="closeMobileMenu()">Contáctanos</a>
       <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
 
-      <div class="language-selector-mobile" aria-label="Selector de idioma móvil">
-        <span class="language-icon" aria-hidden="true">🌐</span>
-        <div class="language-pills" role="group" aria-label="Seleccionar idioma">
-          @for (language of languages; track language.code) {
-            <button
-              type="button"
-              class="language-pill"
-              [class.is-active]="selectedLanguage === language.code"
-              (click)="changeLanguage(language.code)"
-            >
-              {{ language.label }}
-            </button>
-          }
-        </div>
+      <div class="mobile-language-group" role="group" aria-label="Language selector">
+        <p class="mobile-language-title">Language</p>
+        @for (language of languages; track language.code) {
+          <button
+            type="button"
+            class="mobile-language-option"
+            [class.is-active]="selectedLanguage === language.code"
+            (click)="changeLanguage(language.code)"
+          >
+            {{ language.label }}
+          </button>
+        }
       </div>
     </div>
   </div>
