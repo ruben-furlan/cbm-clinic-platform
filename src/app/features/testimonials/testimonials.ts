@@ -14,6 +14,7 @@ interface GoogleText {
 
 interface GoogleReview {
   name?: string;
+  publishTime?: string;
   relativePublishTimeDescription?: string;
   rating?: number;
   text?: GoogleText;
@@ -55,7 +56,7 @@ interface ReviewsCachePayload {
 export class Testimonials implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
-  private readonly cacheKey = 'cbm_google_reviews_cache_v1';
+  private readonly cacheKey = 'cbm_google_reviews_cache_v2';
   private readonly cacheTtlMs = 1000 * 60 * 60 * 24 * 14; // 14 días
 
   readonly googleReviewsUrl = 'https://www.google.com/maps/search/CBM+Fisioterapia+Terrassa';
@@ -111,8 +112,13 @@ export class Testimonials implements OnInit {
       this.averageRating = response.rating || this.averageRating;
       this.totalRatings = response.userRatingCount || this.totalRatings;
 
-      this.testimonials =
-        response.reviews?.slice(0, 6).map((review, index) => this.mapReview(review, index)) || [];
+      const recentReviews =
+        response.reviews
+          ?.slice()
+          .sort((a, b) => this.getReviewTimestamp(b) - this.getReviewTimestamp(a))
+          .slice(0, 5) || [];
+
+      this.testimonials = recentReviews.map((review, index) => this.mapReview(review, index));
 
       if (this.testimonials.length === 0) {
         this.useFallbackTestimonials('Google no devolvió reseñas públicas en este momento.');
@@ -145,6 +151,15 @@ export class Testimonials implements OnInit {
       content: review.text?.text?.trim() || 'Sin comentario disponible.',
       photoUri: review.authorAttribution?.photoUri
     };
+  }
+
+  private getReviewTimestamp(review: GoogleReview): number {
+    if (!review.publishTime) {
+      return 0;
+    }
+
+    const parsedTimestamp = Date.parse(review.publishTime);
+    return Number.isNaN(parsedTimestamp) ? 0 : parsedTimestamp;
   }
 
   private useFallbackTestimonials(message: string): void {
