@@ -11,9 +11,8 @@
       </p>
     </div>
 
-    <p class="reviews-status" *ngIf="loading && !requiresCookieConsent">Cargando reseñas…</p>
-    <p class="reviews-status reviews-status--info" *ngIf="requiresCookieConsent">
-      Para ver las reseñas en Google, acepta las cookies.
+    <p class="reviews-status" *ngIf="loading || requiresCookieConsent">
+      {{ requiresCookieConsent ? 'Para ver las reseñas en Google, acepta las cookies.' : 'Cargando reseñas…' }}
     </p>
     <p class="reviews-status reviews-status--warning" *ngIf="!loading && !requiresCookieConsent && !loadedFromGoogle && !testimonials.length">
       {{ errorMessage }}
