@@ -2,20 +2,24 @@
   <div class="container">
     <div class="section-heading">
       <p class="reviews-highlight">
-        ★ {{ averageRating | number:'1.1-1' }} en Google · basado en {{ totalRatings }} reseñas
+        <span aria-hidden="true">⭐</span>
+        <span>{{ averageRating | number:'1.1-1' }} en Google · basado en {{ totalRatings }} reseñas</span>
       </p>
-      <h2 class="heading-highlight">Reseñas reales de Google</h2>
+      <h2 class="heading-highlight">Opiniones de nuestros pacientes en Google</h2>
       <p class="section-description">
-        Opiniones públicas de pacientes que ya han confiado en CBM Fisioterapia.
+        Opiniones públicas de personas que ya han confiado en CBM Fisioterapia.
       </p>
     </div>
 
-    <p class="reviews-status" *ngIf="loading">Cargando reseñas…</p>
-    <p class="reviews-status reviews-status--warning" *ngIf="!loading && !loadedFromGoogle">
+    <p class="reviews-status" *ngIf="loading && !requiresCookieConsent">Cargando reseñas…</p>
+    <p class="reviews-status reviews-status--info" *ngIf="requiresCookieConsent">
+      Para ver las reseñas en Google, acepta las cookies.
+    </p>
+    <p class="reviews-status reviews-status--warning" *ngIf="!loading && !requiresCookieConsent && !loadedFromGoogle && !testimonials.length">
       {{ errorMessage }}
     </p>
 
-    <div class="testimonials-grid" *ngIf="!loading">
+    <div class="testimonials-grid" *ngIf="!loading && !requiresCookieConsent">
       <article class="testimonial-card floating-card glass-panel" *ngFor="let review of testimonials">
         <div class="testimonial-header">
           <img
@@ -29,26 +33,19 @@
 
           <div class="testimonial-meta">
             <strong>{{ review.name }}</strong>
-            <div class="testimonial-stars">{{ getStars(review.rating) }}</div>
-            <small class="testimonial-time">{{ review.relativeTime }}</small>
+            <div class="testimonial-meta-line">
+              <div class="testimonial-stars">{{ getStars(review.rating) }}</div>
+              <small class="testimonial-time">{{ review.relativeTime }}</small>
+            </div>
           </div>
         </div>
 
-        <p>{{ review.content }}</p>
+        <p class="testimonial-content">{{ review.content }}</p>
       </article>
     </div>
 
-    <div class="reviews-cta glass-panel">
-      <div class="reviews-cta-info">
-        <span class="reviews-stars">{{ getStars(averageRating) }}</span>
-        <span class="reviews-score">
-          {{ placeName }} · {{ averageRating | number:'1.1-1' }} ({{ totalRatings }} reseñas)
-        </span>
-      </div>
-
-      <a [href]="googleReviewsUrl" target="_blank" class="btn-google-reviews" rel="noopener noreferrer">
-        Ver todas las reseñas
-      </a>
-    </div>
+    <a [href]="googleReviewsUrl" target="_blank" class="btn-google-reviews" rel="noopener noreferrer" *ngIf="!requiresCookieConsent">
+      Ver todas las reseñas en Google →
+    </a>
   </div>
 </section>

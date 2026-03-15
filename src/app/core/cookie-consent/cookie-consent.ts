@@ -36,6 +36,7 @@ export class CookieConsentComponent implements OnInit, OnDestroy {
 
   acceptCookies(): void {
     localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+    window.dispatchEvent(new CustomEvent('cbm-cookies-accepted'));
     this.accepted = true;
     this.isVisible = false;
   }

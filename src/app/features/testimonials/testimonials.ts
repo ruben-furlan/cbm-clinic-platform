@@ -1,8 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
+
+const COOKIE_CONSENT_KEY = 'cbm-cookie-consent';
+const COOKIE_ACCEPTED_EVENT = 'cbm-cookies-accepted';
 interface GoogleAuthor {
   displayName?: string;
   photoUri?: string;
@@ -52,7 +55,7 @@ interface ReviewsCachePayload {
   templateUrl: './testimonials.html',
   styleUrls: ['./testimonials.css']
 })
-export class Testimonials implements OnInit {
+export class Testimonials implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
   private readonly cacheKey = 'cbm_google_reviews_cache_v1';
@@ -63,6 +66,7 @@ export class Testimonials implements OnInit {
   loading = true;
   loadedFromGoogle = false;
   errorMessage = '';
+  requiresCookieConsent = false;
 
   placeName = 'CBM Fisioterapia';
   averageRating = 5;
@@ -71,6 +75,24 @@ export class Testimonials implements OnInit {
   testimonials: TestimonialItem[] = [];
 
   async ngOnInit(): Promise<void> {
+    const hasCookieConsent = this.hasCookieConsent();
+
+    if (!hasCookieConsent) {
+      this.requiresCookieConsent = true;
+      this.loading = false;
+      this.errorMessage = 'Para ver las reseñas en Google, acepta las cookies.';
+      window.addEventListener(COOKIE_ACCEPTED_EVENT, this.handleCookiesAccepted);
+      return;
+    }
+
+    await this.loadReviewsFlow();
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener(COOKIE_ACCEPTED_EVENT, this.handleCookiesAccepted);
+  }
+
+  private async loadReviewsFlow(): Promise<void> {
     const usedCache = this.tryLoadFromCache();
 
     if (usedCache) {
@@ -80,7 +102,24 @@ export class Testimonials implements OnInit {
       return;
     }
 
+    this.loading = true;
+    this.requiresCookieConsent = false;
     await this.loadGoogleReviews();
+  }
+
+  private readonly handleCookiesAccepted = (): void => {
+    if (!this.hasCookieConsent()) {
+      return;
+    }
+
+    this.errorMessage = '';
+    this.requiresCookieConsent = false;
+    window.removeEventListener(COOKIE_ACCEPTED_EVENT, this.handleCookiesAccepted);
+    void this.loadReviewsFlow();
+  };
+
+  private hasCookieConsent(): boolean {
+    return !!localStorage.getItem(COOKIE_CONSENT_KEY);
   }
 
   private async loadGoogleReviews(): Promise<void> {
@@ -88,7 +127,7 @@ export class Testimonials implements OnInit {
     const placeId = this.getGooglePlaceId();
 
     if (!apiKey || !placeId) {
-      this.useFallbackTestimonials('Configura la API de Google Places para mostrar reseñas en tiempo real.');
+      this.useFallbackTestimonials('Mostrando una selección de opiniones verificadas de nuestros pacientes.');
       return;
     }
 
@@ -115,7 +154,7 @@ export class Testimonials implements OnInit {
         response.reviews?.slice(0, 6).map((review, index) => this.mapReview(review, index)) || [];
 
       if (this.testimonials.length === 0) {
-        this.useFallbackTestimonials('Google no devolvió reseñas públicas en este momento.');
+        this.useFallbackTestimonials('Mostrando una selección de opiniones verificadas de nuestros pacientes.');
         return;
       }
 
@@ -252,14 +291,14 @@ export class Testimonials implements OnInit {
     const status = this.getErrorStatus(error);
 
     if (status === 401 || status === 403) {
-      return 'Google bloqueó la petición (401/403). Revisa restricciones de la API key (HTTP referrer, Places API habilitada y facturación).';
+      return 'Mostrando una selección de opiniones verificadas de nuestros pacientes.';
     }
 
     if (status === 400) {
-      return 'Google rechazó la solicitud (400). Verifica que el Place ID sea válido y que el formato sea correcto.';
+      return 'Mostrando una selección de opiniones verificadas de nuestros pacientes.';
     }
 
-    return 'No fue posible cargar Google Reviews en este momento.';
+    return 'Mostrando una selección de opiniones verificadas de nuestros pacientes.';
   }
 
   private getErrorStatus(error: unknown): number | null {
