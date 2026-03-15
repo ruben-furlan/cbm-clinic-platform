@@ -33,7 +33,7 @@ export class TreatmentsPage {
           {
             title: 'Fisioterapia Traumatológica',
             description: 'Tratamiento de lesiones y dolencias relacionadas con traumatismos.',
-            equipment: 'Ultrasound, máquinas de electroterapia.'
+            equipment: 'Ultrasonido, máquinas de electroterapia.'
           },
           {
             title: 'Fisioterapia Dermatofuncional',
