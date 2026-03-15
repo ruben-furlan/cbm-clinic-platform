@@ -230,29 +230,64 @@
   }
 }
 
-.language-selector{
+.language-selector,
+.language-selector-mobile{
   display: inline-flex;
   align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 244, 250, 0.92));
+  border: 1px solid rgba(241, 216, 230, 0.95);
+  box-shadow: 0 10px 22px rgba(31, 27, 45, 0.08);
 }
 
-.language-selector select{
-  border: 1px solid #f1d8e6;
+.language-selector{
+  justify-self: end;
+}
+
+.language-icon{
+  font-size: 14px;
+  line-height: 1;
+}
+
+.language-selector select,
+.language-selector-mobile select{
+  border: 1px solid rgba(241, 216, 230, 0.95);
   border-radius: 10px;
   background: #fff;
   color: #3f3950;
-  padding: 8px 12px;
+  padding: 7px 34px 7px 10px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  min-width: 128px;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #7b4dff 50%),
+    linear-gradient(135deg, #7b4dff 50%, transparent 50%);
+  background-position:
+    calc(100% - 16px) calc(1em + 1px),
+    calc(100% - 11px) calc(1em + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.language-selector select:focus,
+.language-selector-mobile select:focus{
+  outline: none;
+  border-color: rgba(123, 77, 255, 0.65);
+  box-shadow: 0 0 0 3px rgba(123, 77, 255, 0.16);
 }
 
 .language-selector-mobile{
   width: 100%;
-  margin-top: 6px;
+  margin-top: 10px;
+  justify-content: space-between;
 }
 
 .language-selector-mobile select{
-  width: 100%;
+  width: min(100%, 220px);
 }
 
 .sr-only{
@@ -276,9 +311,27 @@
   pointer-events: none;
 }
 
+@media (max-width: 1200px){
+  .language-selector select{
+    min-width: 116px;
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 992px){
   .language-selector{
     margin-left: auto;
+  }
+
+  .language-selector,
+  .language-selector-mobile{
+    padding: 5px 8px;
+    border-radius: 12px;
+  }
+
+  .language-selector select{
+    min-width: 108px;
+    padding: 6px 30px 6px 9px;
   }
 }
 
@@ -289,5 +342,19 @@
 
   .language-selector-mobile{
     display: inline-flex;
+  }
+
+  .mobile-menu.is-open{
+    max-height: 420px;
+  }
+}
+
+@media (max-width: 480px){
+  .language-selector-mobile{
+    padding: 8px 10px;
+  }
+
+  .language-selector-mobile select{
+    width: 100%;
   }
 }
