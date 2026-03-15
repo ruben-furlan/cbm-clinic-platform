@@ -57,7 +57,7 @@ export class Testimonials implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
   private readonly cacheKey = 'cbm_google_reviews_cache_v2';
-  private readonly cacheTtlMs = 1000 * 60 * 60 * 24 * 14; // 14 días
+  private readonly cacheTtlMs = 1000 * 60 * 60 * 6; // 6 horas
 
   readonly googleReviewsUrl = 'https://www.google.com/maps/search/CBM+Fisioterapia+Terrassa';
 
@@ -78,18 +78,20 @@ export class Testimonials implements OnInit {
       this.loading = false;
       this.loadedFromGoogle = true;
       this.errorMessage = '';
-      return;
     }
 
-    await this.loadGoogleReviews();
+    await this.loadGoogleReviews(usedCache);
   }
 
-  private async loadGoogleReviews(): Promise<void> {
+  private async loadGoogleReviews(hasCachedData = false): Promise<void> {
     const apiKey = this.getGoogleApiKey();
     const placeId = this.getGooglePlaceId();
 
     if (!apiKey || !placeId) {
-      this.useFallbackTestimonials('Configura la API de Google Places para mostrar reseñas en tiempo real.');
+      this.handleGoogleLoadFailure(
+        'Configura la API de Google Places para mostrar reseñas en tiempo real.',
+        hasCachedData
+      );
       return;
     }
 
@@ -121,7 +123,7 @@ export class Testimonials implements OnInit {
       this.testimonials = recentReviews.map((review, index) => this.mapReview(review, index));
 
       if (this.testimonials.length === 0) {
-        this.useFallbackTestimonials('Google no devolvió reseñas públicas en este momento.');
+        this.handleGoogleLoadFailure('Google no devolvió reseñas públicas en este momento.', hasCachedData);
         return;
       }
 
@@ -130,7 +132,7 @@ export class Testimonials implements OnInit {
       this.loadedFromGoogle = true;
       this.errorMessage = '';
     } catch (error: unknown) {
-      this.useFallbackTestimonials(this.getGoogleErrorMessage(error));
+      this.handleGoogleLoadFailure(this.getGoogleErrorMessage(error), hasCachedData);
     }
   }
 
@@ -160,6 +162,17 @@ export class Testimonials implements OnInit {
 
     const parsedTimestamp = Date.parse(review.publishTime);
     return Number.isNaN(parsedTimestamp) ? 0 : parsedTimestamp;
+  }
+
+  private handleGoogleLoadFailure(message: string, hasCachedData: boolean): void {
+    if (hasCachedData && this.testimonials.length > 0) {
+      this.loading = false;
+      this.loadedFromGoogle = true;
+      this.errorMessage = '';
+      return;
+    }
+
+    this.useFallbackTestimonials(message);
   }
 
   private useFallbackTestimonials(message: string): void {
