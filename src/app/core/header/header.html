@@ -26,6 +26,16 @@
       <span>Solicitar cita</span>
     </a>
 
+    <div class="language-selector" aria-label="Language selector">
+      <label class="sr-only" for="language-select">Seleccionar idioma</label>
+      <select id="language-select" [value]="selectedLanguage" (change)="onLanguageChange($event)">
+        @for (language of languages; track language.code) {
+          <option [value]="language.code">{{ language.label }}</option>
+        }
+      </select>
+    </div>
+
+
     <button
       type="button"
       class="mobile-menu-toggle"
@@ -46,6 +56,18 @@
       <a routerLink="/" fragment="faq" (click)="closeMobileMenu()">FAQ</a>
       <a routerLink="/" fragment="contacto" (click)="closeMobileMenu()">Contáctanos</a>
       <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
+
+      <div class="language-selector language-selector-mobile" aria-label="Language selector móvil">
+        <label class="sr-only" for="language-select-mobile">Seleccionar idioma</label>
+        <select id="language-select-mobile" [value]="selectedLanguage" (change)="onLanguageChange($event)">
+          @for (language of languages; track language.code) {
+            <option [value]="language.code">{{ language.label }}</option>
+          }
+        </select>
+      </div>
     </div>
   </div>
 </header>
+
+
+<div id="google_translate_element" class="google-translate-container" aria-hidden="true"></div>
