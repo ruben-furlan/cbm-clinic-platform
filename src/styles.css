@@ -380,7 +380,8 @@ html{
 
   .social-floating{
     right: 14px;
-    bottom: 100px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    gap: 10px;
   }
 
   .social-btn{
