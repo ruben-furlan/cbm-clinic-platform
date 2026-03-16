@@ -46,6 +46,8 @@
 @media (max-width: 768px) {
   .floating-booking-button {
     display: inline-flex;
+    right: 16px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
   }
 }
 
