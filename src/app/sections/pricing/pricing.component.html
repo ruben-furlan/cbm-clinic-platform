@@ -1,0 +1,53 @@
+<section class="pricing section section-flow" aria-labelledby="pricing-title">
+  <div class="container">
+    <div class="section-heading" appRevealOnScroll>
+      <p class="section-tag">Tarifas CBM</p>
+      <h2 id="pricing-title" class="heading-highlight">Tarifas y bonos</h2>
+      <p class="section-description">
+        Opciones claras para fisioterapia, pilates y promociones activas.
+      </p>
+    </div>
+
+    <div class="pricing-grid">
+      <article
+        class="pricing-card glass-panel floating-card"
+        *ngFor="let card of pricingCards; let index = index"
+        [class.reveal-delay-1]="index === 0"
+        [class.reveal-delay-2]="index === 1"
+        [class.reveal-delay-3]="index === 2"
+        appRevealOnScroll
+      >
+        <h3>{{ card.title }}</h3>
+
+        <ul class="pricing-list" role="list">
+          <li *ngFor="let item of card.items">
+            <div class="pricing-row">
+              <span class="concept">{{ item.concept }}</span>
+              <strong class="price">{{ item.price }}</strong>
+            </div>
+            <small *ngIf="item.microtext" class="microtext">{{ item.microtext }}</small>
+          </li>
+        </ul>
+
+        <p *ngIf="card.note" class="card-note">{{ card.note }}</p>
+      </article>
+    </div>
+
+    <article class="coupon-card glass-panel" appRevealOnScroll aria-label="Cupón web">
+      <div class="coupon-header">
+        <p class="coupon-title">Cupón web</p>
+        <p class="coupon-code">CBM-WEB</p>
+      </div>
+
+      <p class="coupon-value">10% de descuento</p>
+      <p class="coupon-detail">No válido para masaje relajante ni bono jubilados</p>
+    </article>
+
+    <div class="pricing-cta" appRevealOnScroll>
+      <a class="btn-primary btn-booking" href="#reserva">
+        <span class="btn-icon" aria-hidden="true">💬</span>
+        <span>Solicitar cita</span>
+      </a>
+    </div>
+  </div>
+</section>

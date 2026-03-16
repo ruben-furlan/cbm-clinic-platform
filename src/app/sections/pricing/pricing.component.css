@@ -1,0 +1,211 @@
+.pricing{
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(248, 243, 255, 0.62) 100%);
+}
+
+.section-heading{
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 44px;
+}
+
+.section-tag{
+  color: #ff4fa3;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.section-description{
+  margin: 0;
+  color: #5f5a6f;
+  line-height: 1.7;
+}
+
+.pricing-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.pricing-card{
+  border-radius: var(--radius-card);
+  border: var(--card-border);
+  background: rgba(255, 255, 255, 0.78);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.pricing-card h3{
+  margin: 0;
+  color: #1f1b2d;
+  font-size: 26px;
+  line-height: 1.25;
+}
+
+.pricing-list{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 14px;
+}
+
+.pricing-list li{
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(123, 77, 255, 0.12);
+}
+
+.pricing-list li:last-child{
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.pricing-row{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.concept{
+  color: #4e485f;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.price{
+  color: #1f1b2d;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.microtext{
+  margin-top: 5px;
+  display: block;
+  color: #7a748d;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.card-note{
+  margin: auto 0 0;
+  padding-top: 10px;
+  color: #6e6780;
+  font-size: 13px;
+  border-top: 1px solid rgba(255, 79, 163, 0.14);
+}
+
+.coupon-card{
+  margin: 26px auto 0;
+  max-width: 740px;
+  border-radius: 20px;
+  border: 1px solid rgba(123, 77, 255, 0.2);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.82), rgba(250, 244, 255, 0.78));
+  padding: 22px 24px;
+  display: grid;
+  gap: 8px;
+  text-align: center;
+}
+
+.coupon-header{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.coupon-title{
+  margin: 0;
+  color: #5a546c;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.coupon-code{
+  margin: 0;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(123, 77, 255, 0.26);
+  background: rgba(255, 255, 255, 0.88);
+  color: #7b4dff;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.coupon-value{
+  margin: 0;
+  color: #1f1b2d;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.coupon-detail{
+  margin: 0;
+  color: #69637d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.pricing-cta{
+  margin-top: 28px;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1024px){
+  .pricing-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-card h3{
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 768px){
+  .pricing{
+    padding: 70px 0;
+  }
+
+  .section-heading{
+    margin: 0 auto 32px;
+  }
+
+  .pricing-card{
+    padding: 22px;
+  }
+
+  .pricing-row{
+    flex-wrap: wrap;
+    row-gap: 4px;
+  }
+
+  .price{
+    font-size: 1.45rem;
+  }
+
+  .coupon-card{
+    margin-top: 20px;
+    padding: 18px;
+    text-align: left;
+  }
+
+  .coupon-header{
+    justify-content: flex-start;
+  }
+
+  .coupon-value{
+    font-size: 24px;
+  }
+}
