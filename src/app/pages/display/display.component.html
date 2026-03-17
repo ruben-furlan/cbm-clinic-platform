@@ -79,16 +79,22 @@
         <p class="detail">No válido para masaje relajante ni bono jubilados</p>
 
         <div class="cta-wrap">
-          <p class="cta-main">Solicita tu cita por WhatsApp</p>
-          <p class="support">Consúltanos sin compromiso</p>
+          <p class="cta-main">Escanea el QR y accede a CBM Fisioterapia</p>
+          <p class="support">Descubre tarifas y servicios en nuestra web</p>
         </div>
-
-        <figure class="qr-panel" aria-label="Código QR de contacto">
-          <img src="/qr-cbm-display.svg" alt="QR para solicitar cita de CBM Fisioterapia" class="qr-image" />
-        </figure>
       </div>
     </ng-container>
   </article>
+
+  <aside class="persistent-cta" aria-label="Acceso web de CBM Fisioterapia">
+    <figure class="qr-panel">
+      <img src="/qr-cbm-display.svg" alt="QR para entrar en la web de CBM Fisioterapia" class="qr-image" />
+    </figure>
+    <div class="persistent-cta__copy">
+      <p class="persistent-cta__title">Escanea el QR e ingresa a nuestra web</p>
+      <p class="persistent-cta__subtitle">cbmfisioterapia.com</p>
+    </div>
+  </aside>
 
   <div class="progress-dots" aria-hidden="true">
     <span *ngFor="let slide of slides; let index = index" [class.active]="activeSlideIndex === index"></span>
