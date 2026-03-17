@@ -1,10 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 interface DisplaySlide {
   id: string;
   ariaLabel: string;
 }
+
+type DisplayOrientation = 'vertical' | 'horizontal';
 
 @Component({
   selector: 'app-display',
@@ -27,13 +31,34 @@ export class DisplayComponent implements OnInit, OnDestroy {
   ];
 
   activeSlideIndex = 0;
+  orientation: DisplayOrientation = 'vertical';
 
   private sliderTimer: ReturnType<typeof setInterval> | null = null;
   private refreshTimer: ReturnType<typeof setInterval> | null = null;
+  private routeSubscription: Subscription | null = null;
 
-  constructor(private readonly cdr: ChangeDetectorRef) {}
+  constructor(
+    private readonly cdr: ChangeDetectorRef,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
+    this.routeSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
+      const orientationParam = params.get('orientation');
+
+      if (!orientationParam) {
+        this.orientation = 'vertical';
+      } else if (orientationParam === 'vertical' || orientationParam === 'horizontal') {
+        this.orientation = orientationParam;
+      } else {
+        this.router.navigateByUrl('/display/vertical');
+        return;
+      }
+
+      this.cdr.markForCheck();
+    });
+
     this.sliderTimer = setInterval(() => {
       this.activeSlideIndex = (this.activeSlideIndex + 1) % this.slides.length;
       this.cdr.markForCheck();
@@ -45,6 +70,8 @@ export class DisplayComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.routeSubscription?.unsubscribe();
+
     if (this.sliderTimer) {
       clearInterval(this.sliderTimer);
     }

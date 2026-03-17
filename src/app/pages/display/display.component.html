@@ -1,8 +1,12 @@
-<section class="display-shell" aria-live="polite" aria-atomic="true">
+<section
+  class="display-shell"
+  [class.display-shell--vertical]="orientation === 'vertical'"
+  [class.display-shell--horizontal]="orientation === 'horizontal'"
+  aria-live="polite"
+  aria-atomic="true"
+>
   <div class="display-background" aria-hidden="true"></div>
   <div class="display-ambient-orb display-ambient-orb--pink" aria-hidden="true"></div>
-  <div class="display-ambient-orb display-ambient-orb--violet" aria-hidden="true"></div>
-  <div class="display-ambient-ripple" aria-hidden="true"></div>
   <div class="display-brand-ghost" aria-hidden="true">
     <span class="display-brand-ghost__aura"></span>
     <img src="/logo-header.png" alt="" class="display-brand-ghost__img" />

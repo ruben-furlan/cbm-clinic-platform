@@ -13,6 +13,11 @@ export const routes: Routes = [
   },
   {
     path: 'display',
+    pathMatch: 'full',
+    redirectTo: 'display/vertical'
+  },
+  {
+    path: 'display/:orientation',
     component: DisplayComponent
   },
   {
