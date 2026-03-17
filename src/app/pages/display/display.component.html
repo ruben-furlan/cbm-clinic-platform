@@ -1,10 +1,6 @@
 <section class="display-shell" aria-live="polite" aria-atomic="true">
   <div class="display-background" aria-hidden="true"></div>
 
-  <div class="top-favicon" *ngIf="activeSlideIndex !== 0" aria-hidden="true">
-    <img src="/favicon-192x192.png" alt="" class="top-favicon__img" />
-  </div>
-
 
   <article
     *ngFor="let slide of slides; let index = index"
@@ -25,6 +21,9 @@
       </div>
 
       <div *ngSwitchCase="'fisioterapia'" class="slide-card">
+        <div class="slide-header-logo" aria-hidden="true">
+          <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+        </div>
         <h2>Fisioterapia personalizada</h2>
         <div class="pricing-grid">
           <div class="price-block">
@@ -46,6 +45,9 @@
       </div>
 
       <div *ngSwitchCase="'pilates'" class="slide-card">
+        <div class="slide-header-logo" aria-hidden="true">
+          <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+        </div>
         <h2>Pilates terapéutico</h2>
         <div class="pricing-grid pricing-grid--two-cols">
           <div class="price-block">
@@ -61,6 +63,9 @@
       </div>
 
       <div *ngSwitchCase="'promociones'" class="slide-card">
+        <div class="slide-header-logo" aria-hidden="true">
+          <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+        </div>
         <h2>Promociones activas</h2>
         <div class="pricing-grid pricing-grid--two-cols">
           <div class="price-block">
@@ -78,6 +83,9 @@
       </div>
 
       <div *ngSwitchCase="'cupon'" class="slide-card slide-card--cta">
+        <div class="slide-header-logo" aria-hidden="true">
+          <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+        </div>
         <h2>Descuento web</h2>
         <p class="coupon">CBM-WEB</p>
         <p class="lead">10% de descuento en tu tratamiento</p>
