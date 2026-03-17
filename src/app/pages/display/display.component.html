@@ -1,6 +1,11 @@
 <section class="display-shell" aria-live="polite" aria-atomic="true">
   <div class="display-background" aria-hidden="true"></div>
 
+  <div class="top-favicon" *ngIf="activeSlideIndex !== 0" aria-hidden="true">
+    <img src="/favicon-192x192.png" alt="" class="top-favicon__img" />
+  </div>
+
+
   <article
     *ngFor="let slide of slides; let index = index"
     class="slide"
