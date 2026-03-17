@@ -1,0 +1,96 @@
+<section class="display-shell" aria-live="polite" aria-atomic="true">
+  <div class="display-background" aria-hidden="true"></div>
+
+  <article
+    *ngFor="let slide of slides; let index = index"
+    class="slide"
+    [class.slide--active]="activeSlideIndex === index"
+    [attr.aria-hidden]="activeSlideIndex === index ? 'false' : 'true'"
+    [attr.aria-label]="slide.ariaLabel"
+  >
+    <ng-container [ngSwitch]="slide.id">
+      <div *ngSwitchCase="'branding'" class="slide-card slide-card--branding">
+        <div class="logo-stage">
+          <span class="logo-aura" aria-hidden="true"></span>
+          <img src="/logo-header.png" alt="CBM Fisioterapia" class="logo-mark" />
+        </div>
+        <h1>Tu recuperación comienza aquí</h1>
+        <p class="lead">Fisioterapia, pilates y bienestar en Terrassa</p>
+        <p class="support">Atención cercana · Tratamiento personalizado · Resultados reales</p>
+      </div>
+
+      <div *ngSwitchCase="'fisioterapia'" class="slide-card">
+        <h2>Fisioterapia personalizada</h2>
+        <div class="pricing-grid">
+          <div class="price-block">
+            <h3>Sesión individual</h3>
+            <p class="price">60€</p>
+          </div>
+          <div class="price-block">
+            <h3>Bono 5 sesiones</h3>
+            <p class="price">250€</p>
+            <p class="detail">(50€ por sesión)</p>
+          </div>
+          <div class="price-block">
+            <h3>Bono 10 sesiones</h3>
+            <p class="price">450€</p>
+            <p class="detail">(45€ por sesión)</p>
+          </div>
+        </div>
+        <p class="microcopy">Tratamientos adaptados a tu dolor y evolución</p>
+      </div>
+
+      <div *ngSwitchCase="'pilates'" class="slide-card">
+        <h2>Pilates terapéutico</h2>
+        <div class="pricing-grid pricing-grid--two-cols">
+          <div class="price-block">
+            <h3>1 vez por semana</h3>
+            <p class="price">48€ <span>/ mes</span></p>
+          </div>
+          <div class="price-block">
+            <h3>2 veces por semana</h3>
+            <p class="price">65€ <span>/ mes</span></p>
+          </div>
+        </div>
+        <p class="microcopy">Mejora tu postura, movilidad y control corporal</p>
+      </div>
+
+      <div *ngSwitchCase="'promociones'" class="slide-card">
+        <h2>Promociones activas</h2>
+        <div class="pricing-grid pricing-grid--two-cols">
+          <div class="price-block">
+            <h3>Masaje relajante</h3>
+            <p class="price">45€</p>
+          </div>
+          <div class="price-block">
+            <h3>Promoción jubilados</h3>
+            <p class="detail detail--strong">Bono 10 sesiones</p>
+            <p class="price">400€</p>
+            <p class="detail">(40€ por sesión el primer año)</p>
+          </div>
+        </div>
+        <p class="microcopy">Promociones y cupones no acumulables</p>
+      </div>
+
+      <div *ngSwitchCase="'cupon'" class="slide-card slide-card--cta">
+        <h2>Descuento web</h2>
+        <p class="coupon">CBM-WEB</p>
+        <p class="lead">10% de descuento en tu tratamiento</p>
+        <p class="detail">No válido para masaje relajante ni bono jubilados</p>
+
+        <div class="cta-wrap">
+          <p class="cta-main">Solicita tu cita por WhatsApp</p>
+          <p class="support">Consúltanos sin compromiso</p>
+        </div>
+
+        <div class="qr-placeholder" aria-label="Zona reservada para QR futuro">
+          <span>Zona reservada para QR</span>
+        </div>
+      </div>
+    </ng-container>
+  </article>
+
+  <div class="progress-dots" aria-hidden="true">
+    <span *ngFor="let slide of slides; let index = index" [class.active]="activeSlideIndex === index"></span>
+  </div>
+</section>

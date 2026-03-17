@@ -291,3 +291,7 @@
     transform: none;
   }
 }
+
+.app-content--display {
+  min-height: 100vh;
+}

@@ -4,11 +4,16 @@ import { BlogPage } from './features/blog/blog-page';
 import { CookiesPage } from './features/cookies/cookies-page';
 import { TreatmentsPage } from './features/treatments/treatments-page';
 import { SeoPageComponent } from './features/seo-pages/seo-page.component';
+import { DisplayComponent } from './pages/display/display.component';
 
 export const routes: Routes = [
   {
     path: '',
     component: HomePage
+  },
+  {
+    path: 'display',
+    component: DisplayComponent
   },
   {
     path: 'blog',
