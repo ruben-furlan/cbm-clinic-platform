@@ -390,3 +390,7 @@ html{
   }
 
 }
+
+body.display-mode {
+  overflow: hidden;
+}

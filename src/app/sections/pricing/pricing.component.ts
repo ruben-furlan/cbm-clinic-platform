@@ -27,8 +27,7 @@ export class PricingComponent {
       title: 'Fisioterapia',
       items: [
         { concept: 'Sesión individual', price: '60€' },
-        { concept: 'Bono 5 sesiones', price: '250€', microtext: '50€ por sesión' },
-        { concept: 'Bono 10 sesiones', price: '450€', microtext: '45€ por sesión' }
+        { concept: 'Bono 5 sesiones', price: '250€', microtext: '50€ por sesión' }
       ]
     },
     {
