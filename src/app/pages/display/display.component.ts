@@ -25,8 +25,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
 
   readonly slides: DisplaySlide[] = [
     { id: 'branding', ariaLabel: 'Slide de presentación de marca CBM Fisioterapia' },
-    { id: 'fisioterapia', ariaLabel: 'Slide de tarifas de fisioterapia personalizada' },
-    { id: 'pilates', ariaLabel: 'Slide de tarifas de pilates terapéutico' },
+    { id: 'acompanamiento', ariaLabel: 'Slide de valor sobre el acompañamiento en la recuperación' },
     { id: 'promociones', ariaLabel: 'Slide con promociones activas' },
     { id: 'cupon', ariaLabel: 'Slide con cupón web y llamada a la acción de acceso mediante QR' }
   ];
