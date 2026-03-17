@@ -29,7 +29,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
     { id: 'movilidad', ariaLabel: 'Slide sobre movilidad y clases adaptadas' },
     { id: 'promocion', ariaLabel: 'Slide sobre promociones activas de la clínica' },
     { id: 'cercania', ariaLabel: 'Slide sobre acompañamiento cercano en cada etapa' },
-    { id: 'web', ariaLabel: 'Slide final de llamada a la acción para escanear el QR' }
+    { id: 'web', ariaLabel: 'Slide final publicitaria para escanear el QR y empezar hoy' }
   ];
 
   activeSlideIndex = 0;

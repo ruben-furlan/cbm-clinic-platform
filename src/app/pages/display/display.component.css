@@ -28,7 +28,16 @@
 .line--accent{font-size:clamp(1.08rem,2.2vh,1.72rem);font-weight:700;color:#5f2ec2;letter-spacing:.02em;padding:.25em .8em;border-radius:999px;background:linear-gradient(125deg,rgba(255,79,163,.16),rgba(123,77,255,.16))}
 .line--domain{font-size:clamp(1.28rem,2.7vh,2.05rem);font-weight:700;color:#252038;letter-spacing:.04em}
 
-.persistent-cta{position:absolute;left:50%;bottom:clamp(.9rem,1.8vh,1.35rem);transform:translateX(-50%);width:min(93vw,870px);border-radius:24px;padding:clamp(.58rem,1vh,.8rem);background:linear-gradient(125deg,rgba(255,255,255,.92),rgba(248,242,255,.9));border:1px solid rgba(123,77,255,.2);box-shadow:0 18px 38px rgba(31,27,45,.15);display:grid;grid-template-columns:auto 1fr;align-items:center;gap:clamp(.65rem,1.25vw,.95rem)}
+.line--action{font-size:clamp(1.22rem,2.55vh,2rem);font-weight:700;color:#2a2242;letter-spacing:.02em}
+
+.slide-content--web{gap:clamp(.75rem,1.45vh,1.15rem)}
+.slide-content--web .line--title{max-width:14ch}
+.web-qr-focus{margin:clamp(.2rem,.7vh,.6rem) 0;display:grid;place-items:center}
+.web-qr-focus__image{width:clamp(210px,29vh,370px);max-width:42vw;border-radius:28px;padding:clamp(.45rem,.9vh,.72rem);background:rgba(255,255,255,.94);border:1px solid rgba(123,77,255,.26);box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 22px 46px rgba(31,27,45,.18),0 0 44px rgba(123,77,255,.22);animation:qr-pulse 3.2s ease-in-out infinite}
+
+.persistent-cta--hidden{opacity:0;transform:translateX(-50%) translateY(16px);pointer-events:none}
+
+.persistent-cta{position:absolute;left:50%;bottom:clamp(.9rem,1.8vh,1.35rem);transform:translateX(-50%);width:min(93vw,870px);border-radius:24px;padding:clamp(.58rem,1vh,.8rem);background:linear-gradient(125deg,rgba(255,255,255,.92),rgba(248,242,255,.9));border:1px solid rgba(123,77,255,.2);box-shadow:0 18px 38px rgba(31,27,45,.15);display:grid;grid-template-columns:auto 1fr;align-items:center;gap:clamp(.65rem,1.25vw,.95rem);transition:opacity .6s ease,transform .6s ease}
 .qr-panel{margin:0;width:clamp(100px,11vh,150px);border-radius:16px;border:1px solid rgba(123,77,255,.2);background:#f6f6f7;padding:.28rem;box-shadow:0 10px 24px rgba(31,27,45,.12)}
 .qr-image{display:block;width:100%;height:auto;border-radius:12px;animation:qr-breathe 3.8s ease-in-out infinite}
 .persistent-cta__title{margin:0;color:#201b34;font-size:clamp(1.22rem,2.15vh,1.68rem);font-weight:800;letter-spacing:.03em}
@@ -41,10 +50,11 @@
 .display-stage.vertical-small .slide{inset:.3rem .45rem 7.5rem}
 .display-stage.vertical-small .slide-content{min-height:62vh;gap:.6rem;padding:.5rem .4rem}
 .display-stage.vertical-small .line--title{font-size:clamp(1.7rem,3.9vh,2.95rem)}
-.display-stage.vertical-small .line--main,.display-stage.vertical-small .line--sub,.display-stage.vertical-small .line--accent,.display-stage.vertical-small .line--domain{font-size:clamp(.9rem,1.45vh,1.18rem)}
+.display-stage.vertical-small .line--main,.display-stage.vertical-small .line--sub,.display-stage.vertical-small .line--accent,.display-stage.vertical-small .line--domain,.display-stage.vertical-small .line--action{font-size:clamp(.9rem,1.45vh,1.18rem)}
 .display-stage.vertical-small .persistent-cta{bottom:.38rem;padding:.42rem .46rem;border-radius:18px;gap:.45rem}
 .display-stage.vertical-small .qr-panel{width:74px;border-radius:11px;padding:.18rem}
 .display-stage.vertical-small .persistent-cta__title{font-size:clamp(.9rem,1.28vh,1.06rem)}
+.display-stage.vertical-small .web-qr-focus__image{width:clamp(150px,24vh,250px);border-radius:18px}
 
 @keyframes logo-entrance{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes item-reveal{from{opacity:0;filter:blur(6px);transform:translateY(10px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
@@ -53,5 +63,6 @@
 @keyframes ambient-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(26px,-16px,0)}}
 @keyframes ambient-drift{0%,100%{filter:saturate(1)}50%{filter:saturate(1.06)}}
 @keyframes qr-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes qr-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
 @media (max-width:900px){.display-shell--horizontal .slide{inset:.52rem .52rem 9.2rem}.slide-content,.persistent-cta{width:100%}}
