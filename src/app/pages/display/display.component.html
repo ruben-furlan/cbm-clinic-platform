@@ -15,7 +15,7 @@
   >
     <div class="display-background" aria-hidden="true"></div>
     <div class="display-ambient-orb display-ambient-orb--pink" aria-hidden="true"></div>
-    <div class="display-brand-ghost" [class.display-brand-ghost--hidden]="slides[activeSlideIndex]?.id === 'web'" aria-hidden="true">
+    <div class="display-brand-ghost" aria-hidden="true">
       <span class="display-brand-ghost__aura"></span>
       <img src="/logo-header.png" alt="" class="display-brand-ghost__img" />
     </div>
@@ -23,66 +23,49 @@
     <article
       *ngFor="let slide of slides; let index = index"
       class="slide"
-      [class.slide--web]="slide.id === 'web'"
       [class.slide--active]="activeSlideIndex === index"
       [attr.aria-hidden]="activeSlideIndex === index ? 'false' : 'true'"
       [attr.aria-label]="slide.ariaLabel"
     >
       <ng-container [ngSwitch]="slide.id">
-        <div *ngSwitchCase="'inicio'" class="slide-content slide-content--hero">
-          <img src="/logo-header.png" alt="CBM Fisioterapia" class="hero-logo" />
-          <p class="line line--main">Empieza a sentirte mejor</p>
-          <h1 class="line line--title">Tu recuperación comienza aquí</h1>
+        <div *ngSwitchCase="'inicio'" class="slide-card slide-card--hero">
+          <img src="/logo-header.png" alt="CBM Fisioterapia" class="slide-logo" />
+          <h1>Tu recuperación comienza aquí</h1>
+          <p class="slide-copy">Fisioterapia, pilates y bienestar</p>
         </div>
 
-        <div *ngSwitchCase="'bienestar'" class="slide-content">
-          <h2 class="line line--title">Recupera tu bienestar</h2>
-          <p class="line line--sub">Tratamientos adaptados a ti</p>
-          <p class="line line--sub">Atención cercana en cada sesión</p>
-        </div>
-
-        <div *ngSwitchCase="'movilidad'" class="slide-content">
-          <h2 class="line line--title">Muévete sin dolor</h2>
-          <p class="line line--sub">Mejora tu postura y movilidad</p>
-          <p class="line line--sub">Clases adaptadas a tu ritmo</p>
-        </div>
-
-        <div *ngSwitchCase="'promocion'" class="slide-content">
-          <h2 class="line line--title">Empieza hoy a cuidarte</h2>
-          <p class="line line--sub">Promociones activas disponibles</p>
-          <p class="line line--accent">Masaje relajante desde 45€</p>
-        </div>
-
-        <div *ngSwitchCase="'cercania'" class="slide-content">
-          <h2 class="line line--title">Cuidamos de ti en cada etapa</h2>
-          <p class="line line--sub">Atención cercana y personalizada</p>
-        </div>
-
-        <div *ngSwitchCase="'web'" class="slide-content slide-content--web">
-          <div class="web-block web-block--top">
-            <h2 class="line line--title">Empieza hoy a cuidarte</h2>
-            <p class="line line--sub">Promociones activas disponibles</p>
+        <div *ngSwitchCase="'valor'" class="slide-card">
+          <h2>Cerca de ti en cada paso</h2>
+          <div class="value-grid">
+            <article class="value-card">
+              <h3>Atención personalizada</h3>
+              <p>Escuchamos tu caso para ayudarte desde la primera sesión.</p>
+            </article>
+            <article class="value-card">
+              <h3>Tratamientos adaptados</h3>
+              <p>Plan ajustado a tu momento y objetivos reales.</p>
+            </article>
+            <article class="value-card">
+              <h3>Seguimiento cercano</h3>
+              <p>Te acompañamos en tu evolución para que avances con confianza.</p>
+            </article>
           </div>
-          <div class="web-block web-block--center" aria-hidden="true">
-            <img src="/qr-cbm-display.png" alt="QR para entrar en la web de CBM Fisioterapia" class="web-qr-focus__image" />
-          </div>
-          <div class="web-block web-block--bottom">
-            <p class="line line--action">Escanea y descubre más</p>
-            <p class="line line--domain">cbmfisioterapia.com</p>
-          </div>
+        </div>
+
+        <div *ngSwitchCase="'promocion'" class="slide-card slide-card--promo">
+          <h2>Promoción activa</h2>
+          <p class="promo-pill">Masaje relajante desde 45€</p>
+        </div>
+
+        <div *ngSwitchCase="'cta'" class="slide-card slide-card--cta">
+          <h2>Descubre todos los servicios</h2>
+          <figure class="cta-qr-wrap">
+            <img src="/qr-cbm-display.png" alt="QR para entrar en la web de CBM Fisioterapia" class="cta-qr" />
+          </figure>
+          <p class="slide-copy">Escanea y entra</p>
         </div>
       </ng-container>
     </article>
-
-    <aside class="persistent-cta" [class.persistent-cta--hidden]="slides[activeSlideIndex]?.id === 'web'" aria-label="Acceso web de CBM Fisioterapia">
-      <figure class="qr-panel">
-        <img src="/qr-cbm-display.png" alt="QR para entrar en la web de CBM Fisioterapia" class="qr-image" />
-      </figure>
-      <div class="persistent-cta__copy">
-        <p class="persistent-cta__title">ESCANEA Y DESCUBRE MÁS</p>
-        <p class="persistent-cta__subtitle">cbmfisioterapia.com</p>
-      </div>
-    </aside>
 
     <div class="progress-dots" aria-hidden="true">
       <span *ngFor="let slide of slides; let index = index" [class.active]="activeSlideIndex === index"></span>

@@ -24,12 +24,10 @@ export class DisplayComponent implements OnInit, OnDestroy {
   readonly autoRefreshMs = 10 * 60 * 1000;
 
   readonly slides: DisplaySlide[] = [
-    { id: 'inicio', ariaLabel: 'Slide de apertura emocional de CBM Fisioterapia' },
-    { id: 'bienestar', ariaLabel: 'Slide sobre bienestar y atención personalizada' },
-    { id: 'movilidad', ariaLabel: 'Slide sobre movilidad y clases adaptadas' },
-    { id: 'promocion', ariaLabel: 'Slide sobre promociones activas de la clínica' },
-    { id: 'cercania', ariaLabel: 'Slide sobre acompañamiento cercano en cada etapa' },
-    { id: 'web', ariaLabel: 'Slide final publicitaria para escanear el QR y empezar hoy' }
+    { id: 'inicio', ariaLabel: 'Slide inicial de presentación de CBM Fisioterapia' },
+    { id: 'valor', ariaLabel: 'Slide con valores diferenciales de atención y seguimiento' },
+    { id: 'promocion', ariaLabel: 'Slide de promoción activa destacada' },
+    { id: 'cta', ariaLabel: 'Slide final con QR y llamada a la acción' }
   ];
 
   activeSlideIndex = 0;
