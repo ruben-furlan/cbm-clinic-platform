@@ -15,7 +15,7 @@
   >
     <div class="display-background" aria-hidden="true"></div>
     <div class="display-ambient-orb display-ambient-orb--pink" aria-hidden="true"></div>
-    <div class="display-brand-ghost" aria-hidden="true">
+    <div class="display-brand-ghost" [class.display-brand-ghost--hidden]="slides[activeSlideIndex]?.id === 'web'" aria-hidden="true">
       <span class="display-brand-ghost__aura"></span>
       <img src="/logo-header.png" alt="" class="display-brand-ghost__img" />
     </div>
@@ -59,13 +59,17 @@
         </div>
 
         <div *ngSwitchCase="'web'" class="slide-content slide-content--web">
-          <h2 class="line line--title">Empieza a sentirte mejor hoy</h2>
-          <p class="line line--sub">Descubre todo en nuestra web</p>
-          <figure class="web-qr-focus">
+          <div class="web-block web-block--top">
+            <h2 class="line line--title">Empieza hoy a cuidarte</h2>
+            <p class="line line--sub">Promociones activas disponibles</p>
+          </div>
+          <div class="web-block web-block--center" aria-hidden="true">
             <img src="/qr-cbm-display.png" alt="QR para entrar en la web de CBM Fisioterapia" class="web-qr-focus__image" />
-          </figure>
-          <p class="line line--action">Escanea y empieza hoy</p>
-          <p class="line line--domain">cbmfisioterapia.com</p>
+          </div>
+          <div class="web-block web-block--bottom">
+            <p class="line line--action">Escanea y descubre más</p>
+            <p class="line line--domain">cbmfisioterapia.com</p>
+          </div>
         </div>
       </ng-container>
     </article>

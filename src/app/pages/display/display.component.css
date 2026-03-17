@@ -10,9 +10,11 @@
 .display-brand-ghost{z-index:-2;left:50%;top:45%;translate:-50% -50%;width:min(92vw,980px);opacity:.14;display:grid;place-items:center}
 .display-brand-ghost__aura{position:absolute;width:min(46vw,520px);aspect-ratio:1;border-radius:50%;filter:blur(34px);background:radial-gradient(circle,rgba(70,199,232,.21),rgba(255,79,163,.14) 38%,rgba(255,255,255,0) 76%);animation:brand-aura 10s ease-in-out infinite}
 .display-brand-ghost__img{width:100%;max-height:58vh;object-fit:contain;mix-blend-mode:multiply;animation:brand-breathing 11s ease-in-out infinite}
+.display-brand-ghost--hidden{opacity:0;transition:opacity .8s ease}
 
 .slide{position:absolute;inset:clamp(.65rem,1.4vh,1rem) clamp(.9rem,2.2vw,1.3rem) clamp(10rem,18vh,12rem);opacity:0;pointer-events:none;transition:opacity 1.2s ease;display:grid;place-items:center}
 .slide--active{opacity:1}
+.slide--web{inset:0}
 .slide-content{width:min(90vw,900px);min-height:min(64vh,1220px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:clamp(.8rem,1.6vh,1.35rem);padding:clamp(.7rem,1.4vh,1.2rem)}
 .slide-content--hero{gap:clamp(1rem,1.9vh,1.6rem)}
 .slide--active .line,.slide--active .hero-logo{animation:item-reveal .95s cubic-bezier(.22,.74,.2,1) both}
@@ -30,10 +32,15 @@
 
 .line--action{font-size:clamp(1.22rem,2.55vh,2rem);font-weight:700;color:#2a2242;letter-spacing:.02em}
 
-.slide-content--web{gap:clamp(.75rem,1.45vh,1.15rem)}
-.slide-content--web .line--title{max-width:14ch}
-.web-qr-focus{margin:clamp(.2rem,.7vh,.6rem) 0;display:grid;place-items:center}
-.web-qr-focus__image{width:clamp(210px,29vh,370px);max-width:42vw;border-radius:28px;padding:clamp(.45rem,.9vh,.72rem);background:rgba(255,255,255,.94);border:1px solid rgba(123,77,255,.26);box-shadow:0 0 0 1px rgba(255,255,255,.7) inset,0 22px 46px rgba(31,27,45,.18),0 0 44px rgba(123,77,255,.22);animation:qr-pulse 3.2s ease-in-out infinite}
+.slide-content--web{width:100%;min-height:100%;max-width:none;padding:clamp(1.2rem,2.2vh,2.2rem) clamp(1rem,2.8vw,2.8rem);display:grid;grid-template-rows:1fr auto 1fr;gap:0}
+.slide-content--web .line{animation:text-fade .9s ease both}
+.slide-content--web .line--title{max-width:12ch;font-size:clamp(2.55rem,6vh,5.2rem)}
+.slide-content--web .line--sub{max-width:22ch;font-size:clamp(1.1rem,2.2vh,1.7rem)}
+.web-block{display:flex;flex-direction:column;align-items:center;text-align:center;gap:clamp(.4rem,.9vh,.75rem)}
+.web-block--top{justify-content:flex-end;align-self:center}
+.web-block--center{align-self:center;justify-content:center}
+.web-block--bottom{justify-content:flex-start;align-self:center}
+.web-qr-focus__image{width:clamp(220px,30vh,300px);height:auto;display:block;animation:qr-pulse 4.2s ease-in-out infinite}
 
 .persistent-cta--hidden{opacity:0;transform:translateX(-50%) translateY(16px);pointer-events:none}
 
@@ -54,7 +61,7 @@
 .display-stage.vertical-small .persistent-cta{bottom:.38rem;padding:.42rem .46rem;border-radius:18px;gap:.45rem}
 .display-stage.vertical-small .qr-panel{width:74px;border-radius:11px;padding:.18rem}
 .display-stage.vertical-small .persistent-cta__title{font-size:clamp(.9rem,1.28vh,1.06rem)}
-.display-stage.vertical-small .web-qr-focus__image{width:clamp(150px,24vh,250px);border-radius:18px}
+.display-stage.vertical-small .web-qr-focus__image{width:clamp(220px,24vh,260px)}
 
 @keyframes logo-entrance{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes item-reveal{from{opacity:0;filter:blur(6px);transform:translateY(10px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
@@ -63,6 +70,7 @@
 @keyframes ambient-float{0%,100%{transform:translate3d(0,0,0)}50%{transform:translate3d(26px,-16px,0)}}
 @keyframes ambient-drift{0%,100%{filter:saturate(1)}50%{filter:saturate(1.06)}}
 @keyframes qr-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
-@keyframes qr-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes qr-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+@keyframes text-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 @media (max-width:900px){.display-shell--horizontal .slide{inset:.52rem .52rem 9.2rem}.slide-content,.persistent-cta{width:100%}}
