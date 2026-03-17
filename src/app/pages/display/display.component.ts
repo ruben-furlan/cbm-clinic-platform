@@ -15,7 +15,7 @@ interface DisplaySlide {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DisplayComponent implements OnInit, OnDestroy {
-  readonly slideDurationMs = 6500;
+  readonly slideDurationMs = 4500;
   readonly autoRefreshMs = 10 * 60 * 1000;
 
   readonly slides: DisplaySlide[] = [
