@@ -9,6 +9,7 @@ interface DisplaySlide {
 }
 
 type DisplayOrientation = 'vertical' | 'horizontal';
+type VerticalSize = 'large' | 'medium' | 'small';
 
 @Component({
   selector: 'app-display',
@@ -32,10 +33,13 @@ export class DisplayComponent implements OnInit, OnDestroy {
 
   activeSlideIndex = 0;
   orientation: DisplayOrientation = 'vertical';
+  verticalSize: VerticalSize = 'large';
+  verticalScale = 1;
 
   private sliderTimer: ReturnType<typeof setInterval> | null = null;
   private refreshTimer: ReturnType<typeof setInterval> | null = null;
   private routeSubscription: Subscription | null = null;
+  private readonly onResize = (): void => this.updateVerticalLayout();
 
   constructor(
     private readonly cdr: ChangeDetectorRef,
@@ -44,6 +48,8 @@ export class DisplayComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    window.addEventListener('resize', this.onResize, { passive: true });
+
     this.routeSubscription = this.route.paramMap.subscribe((params: ParamMap) => {
       const orientationParam = params.get('orientation');
 
@@ -56,6 +62,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
         return;
       }
 
+      this.updateVerticalLayout();
       this.cdr.markForCheck();
     });
 
@@ -70,6 +77,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    window.removeEventListener('resize', this.onResize);
     this.routeSubscription?.unsubscribe();
 
     if (this.sliderTimer) {
@@ -78,6 +86,28 @@ export class DisplayComponent implements OnInit, OnDestroy {
 
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
+    }
+  }
+
+  private updateVerticalLayout(): void {
+    if (this.orientation !== 'vertical') {
+      this.verticalScale = 1;
+      this.verticalSize = 'large';
+      return;
+    }
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const scale = Math.min(viewportWidth / 1920, viewportHeight / 1080);
+
+    this.verticalScale = Number(Math.max(scale, 0.52).toFixed(3));
+
+    if (this.verticalScale >= 0.9) {
+      this.verticalSize = 'large';
+    } else if (this.verticalScale >= 0.72) {
+      this.verticalSize = 'medium';
+    } else {
+      this.verticalSize = 'small';
     }
   }
 }
