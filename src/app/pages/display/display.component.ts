@@ -23,7 +23,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
     { id: 'fisioterapia', ariaLabel: 'Slide de tarifas de fisioterapia personalizada' },
     { id: 'pilates', ariaLabel: 'Slide de tarifas de pilates terapéutico' },
     { id: 'promociones', ariaLabel: 'Slide con promociones activas' },
-    { id: 'cupon', ariaLabel: 'Slide con cupón web y llamada a la acción por WhatsApp' }
+    { id: 'cupon', ariaLabel: 'Slide con cupón web y llamada a la acción de acceso mediante QR' }
   ];
 
   activeSlideIndex = 0;

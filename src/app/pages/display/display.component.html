@@ -1,6 +1,12 @@
 <section class="display-shell" aria-live="polite" aria-atomic="true">
   <div class="display-background" aria-hidden="true"></div>
-
+  <div class="display-ambient-orb display-ambient-orb--pink" aria-hidden="true"></div>
+  <div class="display-ambient-orb display-ambient-orb--violet" aria-hidden="true"></div>
+  <div class="display-ambient-ripple" aria-hidden="true"></div>
+  <div class="display-brand-ghost" aria-hidden="true">
+    <span class="display-brand-ghost__aura"></span>
+    <img src="/logo-header.png" alt="" class="display-brand-ghost__img" />
+  </div>
 
   <article
     *ngFor="let slide of slides; let index = index"
@@ -92,8 +98,8 @@
         <p class="detail">No válido para masaje relajante ni bono jubilados</p>
 
         <div class="cta-wrap">
-          <p class="cta-main">Escanea el QR y accede a CBM Fisioterapia</p>
-          <p class="support">Descubre tarifas y servicios en nuestra web</p>
+          <p class="cta-main">ESCANEA Y DESCÚBRELO</p>
+          <p class="support">Toda la info y servicios en nuestra web</p>
         </div>
       </div>
     </ng-container>
@@ -104,7 +110,7 @@
       <img src="/qr-cbm-display.svg" alt="QR para entrar en la web de CBM Fisioterapia" class="qr-image" />
     </figure>
     <div class="persistent-cta__copy">
-      <p class="persistent-cta__title">Escanea el QR e ingresa a nuestra web</p>
+      <p class="persistent-cta__title">ESCANEA Y ENTRA</p>
       <p class="persistent-cta__subtitle">cbmfisioterapia.com</p>
     </div>
   </aside>
