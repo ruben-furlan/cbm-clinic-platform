@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 interface DisplaySlide {
   id: string;
@@ -31,9 +31,12 @@ export class DisplayComponent implements OnInit, OnDestroy {
   private sliderTimer: ReturnType<typeof setInterval> | null = null;
   private refreshTimer: ReturnType<typeof setInterval> | null = null;
 
+  constructor(private readonly cdr: ChangeDetectorRef) {}
+
   ngOnInit(): void {
     this.sliderTimer = setInterval(() => {
       this.activeSlideIndex = (this.activeSlideIndex + 1) % this.slides.length;
+      this.cdr.markForCheck();
     }, this.slideDurationMs);
 
     this.refreshTimer = setInterval(() => {
