@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-label="QR de contacto CBM">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c664d4"/>
+      <stop offset="100%" stop-color="#2a102f"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="44" fill="#efefef"/>
+  <rect x="72" y="72" width="220" height="220" rx="28" fill="none" stroke="url(#g)" stroke-width="34"/>
+  <rect x="156" y="156" width="52" height="52" rx="12" fill="url(#g)"/>
+  <rect x="732" y="72" width="220" height="220" rx="28" fill="none" stroke="url(#g)" stroke-width="34"/>
+  <rect x="816" y="156" width="52" height="52" rx="12" fill="url(#g)"/>
+  <rect x="72" y="732" width="220" height="220" rx="28" fill="none" stroke="url(#g)" stroke-width="34"/>
+  <rect x="156" y="816" width="52" height="52" rx="12" fill="url(#g)"/>
+  <g fill="url(#g)">
+    <rect x="352" y="156" width="60" height="60" rx="16"/>
+    <rect x="434" y="156" width="60" height="60" rx="16"/>
+    <rect x="516" y="156" width="60" height="60" rx="16"/>
+    <rect x="598" y="156" width="60" height="60" rx="16"/>
+    <rect x="352" y="238" width="60" height="60" rx="16"/>
+    <rect x="516" y="238" width="60" height="60" rx="16"/>
+    <rect x="680" y="238" width="60" height="60" rx="16"/>
+    <rect x="270" y="320" width="60" height="60" rx="16"/>
+    <rect x="352" y="320" width="60" height="60" rx="16"/>
+    <rect x="434" y="320" width="60" height="60" rx="16"/>
+    <rect x="598" y="320" width="60" height="60" rx="16"/>
+    <rect x="680" y="320" width="60" height="60" rx="16"/>
+    <rect x="762" y="320" width="60" height="60" rx="16"/>
+    <rect x="270" y="402" width="60" height="60" rx="16"/>
+    <rect x="434" y="402" width="60" height="60" rx="16"/>
+    <rect x="516" y="402" width="60" height="60" rx="16"/>
+    <rect x="598" y="402" width="60" height="60" rx="16"/>
+    <rect x="762" y="402" width="60" height="60" rx="16"/>
+    <rect x="188" y="484" width="60" height="60" rx="16"/>
+    <rect x="270" y="484" width="60" height="60" rx="16"/>
+    <rect x="352" y="484" width="60" height="60" rx="16"/>
+    <rect x="434" y="484" width="60" height="60" rx="16"/>
+    <rect x="598" y="484" width="60" height="60" rx="16"/>
+    <rect x="680" y="484" width="60" height="60" rx="16"/>
+    <rect x="844" y="484" width="60" height="60" rx="16"/>
+    <rect x="270" y="566" width="60" height="60" rx="16"/>
+    <rect x="352" y="566" width="60" height="60" rx="16"/>
+    <rect x="516" y="566" width="60" height="60" rx="16"/>
+    <rect x="598" y="566" width="60" height="60" rx="16"/>
+    <rect x="762" y="566" width="60" height="60" rx="16"/>
+    <rect x="352" y="648" width="60" height="60" rx="16"/>
+    <rect x="434" y="648" width="60" height="60" rx="16"/>
+    <rect x="598" y="648" width="60" height="60" rx="16"/>
+    <rect x="680" y="648" width="60" height="60" rx="16"/>
+    <rect x="844" y="648" width="60" height="60" rx="16"/>
+    <rect x="352" y="730" width="60" height="60" rx="16"/>
+    <rect x="516" y="730" width="60" height="60" rx="16"/>
+    <rect x="598" y="730" width="60" height="60" rx="16"/>
+    <rect x="680" y="730" width="60" height="60" rx="16"/>
+    <rect x="762" y="730" width="60" height="60" rx="16"/>
+    <rect x="352" y="812" width="60" height="60" rx="16"/>
+    <rect x="434" y="812" width="60" height="60" rx="16"/>
+    <rect x="598" y="812" width="60" height="60" rx="16"/>
+    <rect x="844" y="812" width="60" height="60" rx="16"/>
+  </g>
+  <rect x="420" y="420" width="184" height="184" rx="32" fill="#efefef"/>
+  <text x="512" y="508" text-anchor="middle" dominant-baseline="middle" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#7b4dff" font-weight="700">QR</text>
+  <text x="512" y="560" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#ff4fa3">CBM</text>
+</svg>
