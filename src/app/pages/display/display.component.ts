@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -21,6 +21,10 @@ type DisplayOrientation = 'vertical' | 'horizontal';
 export class DisplayComponent implements OnInit, OnDestroy {
   readonly slideDurationMs = 10000;
   readonly autoRefreshMs = 10 * 60 * 1000;
+  readonly portraitBaseWidth = 1080;
+  readonly portraitBaseHeight = 1920;
+  readonly overscanSafeMarginPx = 32;
+  readonly fitSafetyFactor = 0.94;
 
   readonly slides: DisplaySlide[] = [
     { id: 'branding', ariaLabel: 'Slide de presentación de marca CBM Fisioterapia' },
@@ -32,6 +36,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
 
   activeSlideIndex = 0;
   orientation: DisplayOrientation = 'vertical';
+  verticalStageTransform = 'translate(-50%, -50%) rotate(90deg) scale(1)';
 
   private sliderTimer: ReturnType<typeof setInterval> | null = null;
   private refreshTimer: ReturnType<typeof setInterval> | null = null;
@@ -56,6 +61,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
         return;
       }
 
+      this.updateViewportFit();
       this.cdr.markForCheck();
     });
 
@@ -79,5 +85,30 @@ export class DisplayComponent implements OnInit, OnDestroy {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
     }
+  }
+
+  @HostListener('window:resize')
+  onViewportResize(): void {
+    this.updateViewportFit();
+    this.cdr.markForCheck();
+  }
+
+  private updateViewportFit(): void {
+    if (this.orientation !== 'vertical') {
+      this.verticalStageTransform = 'none';
+      return;
+    }
+
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const safeWidth = Math.max(1, viewportWidth - this.overscanSafeMarginPx * 2);
+    const safeHeight = Math.max(1, viewportHeight - this.overscanSafeMarginPx * 2);
+
+    const scaleX = safeWidth / this.portraitBaseHeight;
+    const scaleY = safeHeight / this.portraitBaseWidth;
+    const baseScale = Math.min(scaleX, scaleY);
+    const finalScale = Math.max(0.05, baseScale * this.fitSafetyFactor);
+
+    this.verticalStageTransform = `translate(-50%, -50%) rotate(90deg) scale(${finalScale})`;
   }
 }

@@ -5,8 +5,15 @@
   aria-live="polite"
   aria-atomic="true"
 >
-  <div class="display-viewport" [class.display-viewport--rotated]="orientation === 'vertical'">
-    <div class="display-stage">
+  <div class="display-outer-wrapper">
+    <div
+      class="display-rotated-stage"
+      [class.display-rotated-stage--vertical]="orientation === 'vertical'"
+      [style.width.px]="orientation === 'vertical' ? portraitBaseWidth : null"
+      [style.height.px]="orientation === 'vertical' ? portraitBaseHeight : null"
+      [style.transform]="orientation === 'vertical' ? verticalStageTransform : null"
+    >
+      <div class="display-stage" [class.display-stage--vertical]="orientation === 'vertical'">
       <div class="display-background" aria-hidden="true"></div>
       <div class="display-ambient-orb display-ambient-orb--pink" aria-hidden="true"></div>
       <div class="display-brand-ghost" aria-hidden="true">
@@ -118,6 +125,7 @@
 
       <div class="progress-dots" aria-hidden="true">
         <span *ngFor="let slide of slides; let index = index" [class.active]="activeSlideIndex === index"></span>
+      </div>
       </div>
     </div>
   </div>
