@@ -1,3 +1,4 @@
+
 <section
   class="display-shell"
   [class.display-shell--vertical]="orientation === 'vertical'"
@@ -17,7 +18,7 @@
     <div class="display-ambient-orb display-ambient-orb--pink" aria-hidden="true"></div>
     <div class="display-brand-ghost" aria-hidden="true">
       <span class="display-brand-ghost__aura"></span>
-      <img src="/logo-header.png" alt="" class="display-brand-ghost__img" />
+      <img src="/favicon-192x192-witout-fondo.png" alt="" class="display-brand-ghost__img" />
     </div>
 
     <article
@@ -31,34 +32,45 @@
         <div *ngSwitchCase="'branding'" class="slide-card slide-card--branding">
           <div class="logo-stage">
             <span class="logo-aura" aria-hidden="true"></span>
-            <img src="/logo-header.png" alt="CBM Fisioterapia" class="logo-mark" />
+            <img src="/favicon-192x192-witout-fondo.png" alt="CBM Fisioterapia" class="logo-mark" />
           </div>
           <h1>Tu recuperación comienza aquí</h1>
           <p class="lead">Fisioterapia, pilates y bienestar en Terrassa</p>
-          <p class="support">Atención cercana · Tratamiento personalizado · Resultados reales</p>
+          <p class="support">Atención cercana · Tratamiento personalizado · Especialistas en terapia manual</p>
         </div>
 
         <div *ngSwitchCase="'acompanamiento'" class="slide-card">
           <div class="slide-header-logo" aria-hidden="true">
-            <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+            <img src="/favicon-192x192-witout-fondo.png" alt="" class="slide-header-logo__img" />
           </div>
           <h2>Te acompañamos en tu recuperación</h2>
           <p class="lead">Atención cercana, tratamiento personalizado y seguimiento continuo</p>
           <p class="microcopy">Sin prisas · Adaptado a ti · Profesionales cercanos</p>
         </div>
 
+        <div *ngSwitchCase="'pilates'" class="slide-card">
+          <div class="slide-header-logo" aria-hidden="true">
+            <img src="/favicon-192x192-witout-fondo.png" alt="" class="slide-header-logo__img" />
+          </div>
+          <h2>Pilates terapéutico</h2>
+          <p class="lead">Clases guiadas para mejorar movilidad, postura y control corporal</p>
+          <p class="microcopy">Grupos reducidos · Muévete sin dolor · Mejora tu movilidad</p>
+        </div>
+
         <div *ngSwitchCase="'promociones'" class="slide-card">
           <div class="slide-header-logo" aria-hidden="true">
-            <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+            <img src="/favicon-192x192-witout-fondo.png" alt="" class="slide-header-logo__img" />
           </div>
           <h2>Promociones activas</h2>
           <div class="pricing-grid pricing-grid--two-cols">
             <div class="price-block">
               <h3>Masaje relajante</h3>
+              <p class="microcopy">Valido hasta el 30 de Abril 2026</p>
             </div>
             <div class="price-block">
               <h3>Promoción jubilados</h3>
               <p class="detail detail--strong">Bono 10 sesiones</p>
+              <p class="microcopy">Valido hasta el 30 de Mayo 2026</p>
             </div>
           </div>
           <p class="microcopy">Promociones y cupones no acumulables</p>
@@ -66,12 +78,13 @@
 
         <div *ngSwitchCase="'cupon'" class="slide-card slide-card--cta">
           <div class="slide-header-logo" aria-hidden="true">
-            <img src="/favicon-192x192.png" alt="" class="slide-header-logo__img" />
+            <img src="/favicon-192x192-witout-fondo.png" alt="" class="slide-header-logo__img" />
           </div>
-          <h2>Descuento web</h2>
+          <h2>Descuento especial por lanzamiento web</h2>
           <p class="coupon">CBM-WEB</p>
           <p class="lead">10% de descuento en tu tratamiento</p>
           <p class="detail">No válido para masaje relajante ni bono jubilados</p>
+          <p class="detail">Válido hasta el 30 de Abril 2026</p>
           <div class="cta-wrap">
             <p class="cta-main">ESCANEA Y DESCÚBRELO</p>
             <p class="support">Toda la info y servicios en nuestra web</p>
@@ -87,6 +100,7 @@
       <div class="persistent-cta__copy">
         <p class="persistent-cta__title">ESCANEA Y DESCUBRE MÁS</p>
         <p class="persistent-cta__subtitle">cbmfisioterapia.com</p>
+        <p class="persistent-cta__subtitle">662 56 16 72</p>
       </div>
     </aside>
 

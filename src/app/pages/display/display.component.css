@@ -18,7 +18,7 @@
 .slide--active .slide-card>*:nth-child(2){animation-delay:.08s}
 
 .slide-header-logo{align-self:center;width:clamp(52px,6.2vh,76px);height:clamp(52px,6.2vh,76px);border-radius:14px;padding:.2rem;margin:0 auto .12rem;display:grid;place-items:center;background:rgba(255,255,255,.95);border:1px solid rgba(123,77,255,.24);box-shadow:0 10px 24px rgba(31,27,45,.13)}
-.slide-header-logo__img{width:100%;height:100%;object-fit:contain;border-radius:10px}
+.slide-header-logo__img{width:100%;height:100%;border-radius:10px}
 .slide-card h1,.slide-card h2{margin:0;line-height:1.05;color:#1f1b2d;font-size:clamp(2.1rem,4.7vh,3.8rem);font-weight:800;letter-spacing:-.03em}
 .lead{margin:0;color:#3d3850;font-size:clamp(1.1rem,2vh,1.7rem)}
 .support,.microcopy,.detail{margin:0;color:#585271;font-size:clamp(.95rem,1.5vh,1.14rem)}
