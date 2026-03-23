@@ -409,6 +409,19 @@
   padding-top: 20px;
 }
 
+.local-seo-links{
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.local-seo-links .service-link{
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .issues-chips{
   display: flex;
   flex-wrap: wrap;

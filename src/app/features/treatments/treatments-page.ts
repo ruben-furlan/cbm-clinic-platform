@@ -1,6 +1,7 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Meta, Title } from '@angular/platform-browser';
 
 type TreatmentItem = {
   title: string;
@@ -13,6 +14,9 @@ type CategorySlug = 'fisioterapia' | 'tecnicas' | 'pilates';
 type TreatmentCategory = {
   title: string;
   description: string;
+  seoTitle: string;
+  seoDescription: string;
+  seoIntro: string;
   columns: TreatmentItem[][];
 };
 
@@ -26,8 +30,11 @@ type TreatmentCategory = {
 export class TreatmentsPage {
   readonly categories: Record<CategorySlug, TreatmentCategory> = {
     fisioterapia: {
-      title: 'Fisioterapia',
-      description: 'Tratamientos especializados de fisioterapia con enfoque personalizado para tu recuperación.',
+      title: 'Fisioterapia en Terrassa',
+      description: 'Tratamientos especializados de fisioterapia con enfoque personalizado para tu recuperación en Terrassa.',
+      seoTitle: 'Fisioterapia en Terrassa | CBM Fisioterapia',
+      seoDescription: 'Fisioterapia en Terrassa con tratamiento personalizado. Alivia el dolor y recupera tu movilidad con CBM Fisioterapia.',
+      seoIntro: 'En CBM Fisioterapia trabajamos la fisioterapia en Terrassa con un enfoque cercano y clínico. Tu fisioterapeuta en Terrassa diseña un tratamiento personalizado para aliviar dolor, recuperar movilidad y mejorar tu bienestar en cada fase de la recuperación.',
       columns: [
         [
           {
@@ -78,8 +85,11 @@ export class TreatmentsPage {
       ]
     },
     tecnicas: {
-      title: 'Técnicas terapéuticas',
+      title: 'Técnicas terapéuticas en Terrassa',
       description: 'Técnicas complementarias para acelerar la recuperación y potenciar resultados terapéuticos.',
+      seoTitle: 'Técnicas terapéuticas en Terrassa | CBM Fisioterapia',
+      seoDescription: 'Técnicas terapéuticas en Terrassa para acelerar la recuperación y mejorar resultados en CBM Fisioterapia.',
+      seoIntro: 'Aplicamos técnicas terapéuticas en Terrassa para mejorar resultados clínicos en menos tiempo. Combinamos punción seca, radiofrecuencia y terapia manual para reducir molestias, recuperar función y apoyar una recuperación segura y sostenible.',
       columns: [
         [
           {
@@ -115,8 +125,11 @@ export class TreatmentsPage {
       ]
     },
     pilates: {
-      title: 'Pilates terapéutico',
+      title: 'Pilates terapéutico en Terrassa',
       description: 'Sesiones guiadas para mejorar control corporal, postura y prevención de recaídas.',
+      seoTitle: 'Pilates terapéutico en Terrassa | CBM Fisioterapia',
+      seoDescription: 'Pilates terapéutico en Terrassa para mejorar postura, movilidad y fuerza con acompañamiento profesional.',
+      seoIntro: 'Nuestro pilates terapéutico en Terrassa está orientado a mejorar postura, movilidad y fortalecimiento de forma progresiva. Es una opción efectiva para personas con dolor recurrente o en procesos de recuperación que buscan moverse con más seguridad.',
       columns: [
         [
           {
@@ -157,11 +170,20 @@ export class TreatmentsPage {
   activeCategory = this.categories.fisioterapia;
   activeSlug: CategorySlug = 'fisioterapia';
 
-  constructor(private readonly route: ActivatedRoute) {
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly title: Title,
+    private readonly meta: Meta
+  ) {
     this.route.paramMap.subscribe((params) => {
       const slug = (params.get('categoria') ?? 'fisioterapia') as CategorySlug;
       this.activeSlug = slug in this.categories ? slug : 'fisioterapia';
       this.activeCategory = this.categories[this.activeSlug];
+      this.title.setTitle(this.activeCategory.seoTitle);
+      this.meta.updateTag({
+        name: 'description',
+        content: this.activeCategory.seoDescription
+      });
     });
   }
 }
