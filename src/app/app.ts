@@ -6,6 +6,7 @@ import { FooterComponent } from './core/footer/footer';
 import { FloatingWhatsappButtonComponent } from './core/floating-whatsapp-button/floating-whatsapp-button';
 import { CookieConsentComponent } from './core/cookie-consent/cookie-consent';
 import { FloatingBookingButtonComponent } from './core/floating-booking-button/floating-booking-button';
+import { CanonicalService } from './core/seo/canonical.service';
 
 @Component({
   selector: 'app-root',
@@ -21,15 +22,20 @@ export class App implements OnInit, OnDestroy {
   private routerEventsSubscription: Subscription | null = null;
   private readonly onScroll = (): void => this.scheduleScrollProgressUpdate();
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly canonicalService: CanonicalService
+  ) {}
 
   ngOnInit(): void {
     this.updateRouteState(this.router.url);
+    this.canonicalService.updateFromUrl(this.router.url);
 
     this.routerEventsSubscription = this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
         this.updateRouteState(event.urlAfterRedirects);
+        this.canonicalService.updateFromUrl(event.urlAfterRedirects);
       });
 
     if (!this.isDisplayRoute) {
