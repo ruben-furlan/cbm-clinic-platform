@@ -57,3 +57,11 @@
     transition: none;
   }
 }
+
+@media (max-width: 768px) {
+  body.booking-mobile-focus .floating-booking-button {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px) scale(0.92);
+  }
+}
