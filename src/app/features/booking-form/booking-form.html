@@ -1,94 +1,46 @@
 <section id="reserva" class="booking-form section">
   <div class="container">
     <div class="booking-wrapper">
-
-      <div class="section-heading" appRevealOnScroll>
-        <p class="section-tag">Solicitar cita</p>
-        <h2>Cuéntanos qué necesitas</h2>
-        <p class="section-description">
-          Déjanos tus datos y te llevamos directamente a WhatsApp con el mensaje preparado.
-        </p>
-      </div>
-
-      <form
-        class="form-card reveal-delay-1"
-        appRevealOnScroll
-        (ngSubmit)="sendWhatsApp()"
-        #bookingForm="ngForm"
-      >
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="name">Nombre</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              [(ngModel)]="formData.name"
-              placeholder="Tu nombre"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="surname">Apellido</label>
-            <input
-              id="surname"
-              name="surname"
-              type="text"
-              [(ngModel)]="formData.surname"
-              placeholder="Opcional"
-            />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="message">Breve descripción</label>
-          <textarea
-            id="message"
-            name="message"
-            rows="5"
-            [(ngModel)]="formData.message"
-            placeholder="Cuéntanos brevemente qué te ocurre o qué quieres mejorar"
-            required
-          ></textarea>
-        </div>
-
-        <button
-          type="button"
-          class="promo-toggle"
-          (click)="togglePromoCode()"
-          [attr.aria-expanded]="showPromoCode"
-          aria-controls="promoCodeGroup"
-        >
-          ¿Tienes un código promocional?
-        </button>
-
-        <div class="form-group promo-group" id="promoCodeGroup" *ngIf="showPromoCode">
-          <label for="promoCode">Código promocional</label>
-          <input
-            id="promoCode"
-            name="promoCode"
-            type="text"
-            [(ngModel)]="promoCode"
-            placeholder="Ej. BIENVENIDA10"
-            autocomplete="off"
-          />
-          <p class="promo-help">
-            Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al revisar tu
-            solicitud.
+      <article class="booking-card" appRevealOnScroll>
+        <div class="booking-copy">
+          <p class="section-tag">Reserva tu sesión</p>
+          <h2>Empieza tu recuperación con una cita guiada</h2>
+          <p class="section-description">
+            Elige día y hora en menos de 1 minuto. Te acompañamos desde el primer paso con un proceso claro,
+            cómodo y profesional.
           </p>
+
+          <ul class="booking-benefits" aria-label="Ventajas de reservar online">
+            <li>Confirmación inmediata con Calendly.</li>
+            <li>Horario flexible para adaptarnos a ti.</li>
+            <li>Atención por WhatsApp si prefieres ayuda directa.</li>
+          </ul>
         </div>
 
-        <div class="form-actions">
-          <button class="btn-primary btn-booking" type="submit">
-            <span class="btn-icon" aria-hidden="true">💬</span>
-            <span>Solicitar cita</span>
-          </button>
+        <div class="booking-actions" appRevealOnScroll>
+          <a
+            class="btn-primary btn-calendly"
+            [href]="calendlyUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Reservar cita en Calendly en una nueva pestaña"
+          >
+            Reservar cita ahora
+          </a>
+
+          <a
+            class="btn-secondary btn-whatsapp"
+            [href]="whatsAppUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Escribir por WhatsApp como alternativa de reserva"
+          >
+            Prefiero reservar por WhatsApp
+          </a>
+
+          <p class="booking-note">Calendly se abrirá en una nueva pestaña.</p>
         </div>
-
-        <p class="form-note">Te contactaremos por WhatsApp para confirmar disponibilidad y horario.</p>
-      </form>
-
+      </article>
     </div>
   </div>
 </section>
