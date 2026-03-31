@@ -1,45 +1,46 @@
 <section id="reserva" class="booking-form section">
   <div class="container">
     <div class="booking-wrapper">
-      <article class="booking-card" appRevealOnScroll>
-        <div class="booking-copy">
-          <p class="section-tag">Reserva tu sesión</p>
-          <h2>Empieza tu recuperación con una cita guiada</h2>
-          <p class="section-description">
-            Elige día y hora en menos de 1 minuto. Te acompañamos desde el primer paso con un proceso claro,
-            cómodo y profesional.
-          </p>
+      <header class="booking-header" appRevealOnScroll>
+        <p class="section-tag">Reserva online</p>
+        <h2>Tu sesión de fisioterapia, aquí mismo</h2>
+        <p class="section-description">
+          Elige el día y la hora que mejor te encajen en una agenda clara y sin salir de la web.
+        </p>
 
-          <ul class="booking-benefits" aria-label="Ventajas de reservar online">
-            <li>Confirmación inmediata con Calendly.</li>
-            <li>Horario flexible para adaptarnos a ti.</li>
-            <li>Atención por WhatsApp si prefieres ayuda directa.</li>
-          </ul>
+        <div class="trust-points" aria-label="Puntos de confianza de la reserva">
+          <span>Confirmación inmediata</span>
+          <span>Proceso guiado y sencillo</span>
+          <span>Soporte humano si lo necesitas</span>
+        </div>
+      </header>
+
+      <article class="booking-shell" appRevealOnScroll>
+        <div class="calendly-frame-wrap">
+          <iframe
+            class="calendly-frame"
+            [src]="calendlyEmbedUrl"
+            title="Reserva tu sesión de fisioterapia"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
 
-        <div class="booking-actions" appRevealOnScroll>
+        <aside class="booking-support" aria-label="Ayuda para la reserva">
+          <p class="support-title">¿Prefieres hablar antes de reservar?</p>
+          <p class="support-text">
+            Si tienes dudas sobre el tratamiento o el tipo de sesión, te atendemos por WhatsApp.
+          </p>
           <a
-            class="btn-primary btn-calendly"
-            [href]="calendlyUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Reservar cita en Calendly en una nueva pestaña"
-          >
-            Reservar cita ahora
-          </a>
-
-          <a
-            class="btn-secondary btn-whatsapp"
+            class="support-link"
             [href]="whatsAppUrl"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Escribir por WhatsApp como alternativa de reserva"
+            aria-label="Hablar por WhatsApp"
           >
-            Prefiero reservar por WhatsApp
+            Hablar por WhatsApp
           </a>
-
-          <p class="booking-note">Calendly se abrirá en una nueva pestaña.</p>
-        </div>
+        </aside>
       </article>
     </div>
   </div>

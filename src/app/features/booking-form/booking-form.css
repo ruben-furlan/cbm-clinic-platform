@@ -1,106 +1,135 @@
 .booking-form {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 247, 251, 0.62) 100%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 247, 251, 0.56) 100%);
   padding: 96px 0;
 }
 
 .booking-wrapper {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
 }
 
-.booking-card {
-  display: grid;
-  grid-template-columns: 1.25fr 0.9fr;
-  gap: 32px;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(241, 216, 230, 0.9);
-  border-radius: var(--radius-card);
-  padding: 36px;
-  box-shadow: 0 14px 32px rgba(31, 27, 45, 0.08);
-  backdrop-filter: blur(5px);
+.booking-header {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  text-align: center;
 }
 
-.booking-copy h2 {
+.booking-header h2 {
   margin: 10px 0 12px;
 }
 
 .section-description {
-  max-width: 62ch;
+  margin: 0 auto;
+  max-width: 60ch;
 }
 
-.booking-benefits {
-  margin: 20px 0 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 10px;
-}
-
-.booking-benefits li {
-  position: relative;
-  margin: 0;
-  padding-left: 24px;
-  color: #4a445b;
-  font-weight: 500;
-  line-height: 1.55;
-}
-
-.booking-benefits li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.5em;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ff7abf 0%, #ff4fa3 65%, #dd2a82 100%);
-  box-shadow: 0 0 0 4px rgba(255, 79, 163, 0.14);
-}
-
-.booking-actions {
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(237, 220, 232, 0.95);
-  border-radius: 18px;
-  padding: 24px;
-  box-shadow: 0 8px 24px rgba(48, 31, 60, 0.08);
+.trust-points {
+  margin: 18px auto 0;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.btn-calendly,
-.btn-whatsapp {
-  width: 100%;
+  flex-wrap: wrap;
   justify-content: center;
-  text-align: center;
+  gap: 8px;
 }
 
-.btn-calendly {
-  min-height: 52px;
-}
-
-.btn-whatsapp {
-  min-height: 50px;
-}
-
-.booking-note {
-  margin: 4px 0 0;
-  color: #746d85;
+.trust-points span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(236, 216, 229, 0.92);
+  background: rgba(255, 255, 255, 0.8);
+  color: #534c63;
   font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.trust-points span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff4fa3;
+  box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.14);
+}
+
+.booking-shell {
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(241, 216, 230, 0.95);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  box-shadow: 0 16px 34px rgba(31, 27, 45, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+.calendly-frame-wrap {
+  border: 1px solid rgba(235, 217, 229, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.calendly-frame {
+  width: 100%;
+  height: 720px;
+  border: 0;
+  display: block;
+}
+
+.booking-support {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(238, 225, 235, 0.95);
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.support-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #302b3f;
+}
+
+.support-text {
+  margin: 0;
+  color: #625a74;
+  font-size: 14px;
   line-height: 1.45;
-  text-align: center;
+  flex: 1;
+  min-width: 240px;
+}
+
+.support-link {
+  color: #5f4f74;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(95, 79, 116, 0.4);
+  padding-bottom: 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.support-link:hover,
+.support-link:focus-visible {
+  color: #3f3254;
+  border-color: rgba(63, 50, 84, 0.7);
 }
 
 @media (max-width: 1024px) {
-  .booking-card {
-    grid-template-columns: 1fr;
-    gap: 24px;
-    padding: 30px;
+  .booking-header {
+    margin-bottom: 24px;
   }
 
-  .section-description {
-    max-width: 100%;
+  .calendly-frame {
+    height: 680px;
   }
 }
 
@@ -109,23 +138,27 @@
     padding: 66px 0 76px;
   }
 
-  .booking-card {
-    padding: 22px 16px;
+  .booking-shell {
     border-radius: 18px;
-    gap: 20px;
+    padding: 12px;
   }
 
-  .booking-actions {
-    padding: 18px;
+  .calendly-frame-wrap {
     border-radius: 14px;
   }
 
-  .booking-benefits {
-    gap: 8px;
+  .calendly-frame {
+    height: 640px;
   }
 
-  .booking-benefits li {
-    font-size: 14px;
-    padding-left: 22px;
+  .booking-support {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    align-items: flex-start;
+  }
+
+  .support-text {
+    min-width: 100%;
   }
 }
