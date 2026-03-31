@@ -63,6 +63,23 @@
   backdrop-filter: blur(6px);
 }
 
+.booking-context {
+  margin: 2px 4px 8px;
+  color: #4d465d;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.calendly-heading {
+  margin: 0 4px 12px;
+  color: #302b3f;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+}
+
 .calendly-frame-wrap {
   border: 1px solid rgba(235, 217, 229, 0.95);
   border-radius: 20px;
@@ -76,6 +93,18 @@
   height: 720px;
   border: 0;
   display: block;
+}
+
+.booking-note {
+  margin: 10px 2px 0;
+  color: #746d85;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.booking-note-duration {
+  margin-top: 4px;
 }
 
 .booking-support {
@@ -141,6 +170,13 @@
   .booking-shell {
     border-radius: 18px;
     padding: 12px;
+  }
+
+  .booking-context,
+  .calendly-heading {
+    text-align: left;
+    margin-left: 2px;
+    margin-right: 2px;
   }
 
   .calendly-frame-wrap {

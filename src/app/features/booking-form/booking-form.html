@@ -3,19 +3,22 @@
     <div class="booking-wrapper">
       <header class="booking-header" appRevealOnScroll>
         <p class="section-tag">Reserva online</p>
-        <h2>Tu sesión de fisioterapia, aquí mismo</h2>
+        <h2>Reserva tu sesión en pocos segundos</h2>
         <p class="section-description">
-          Elige el día y la hora que mejor te encajen en una agenda clara y sin salir de la web.
+          Elige el día y la hora que mejor te encajen en una agenda clara y sin complicaciones
         </p>
 
         <div class="trust-points" aria-label="Puntos de confianza de la reserva">
-          <span>Confirmación inmediata</span>
-          <span>Proceso guiado y sencillo</span>
-          <span>Soporte humano si lo necesitas</span>
+          <span>Sin esperas</span>
+          <span>Horarios claros</span>
+          <span>Reserva rápida</span>
         </div>
       </header>
 
       <article class="booking-shell" appRevealOnScroll>
+        <p class="booking-context">Fisioterapia personalizada y pilates terapéutico en grupos reducidos</p>
+        <p class="calendly-heading">Elige el día y la hora que mejor te encajen</p>
+
         <div class="calendly-frame-wrap">
           <iframe
             class="calendly-frame"
@@ -26,11 +29,12 @@
           ></iframe>
         </div>
 
+        <p class="booking-note">El pago se realiza en el centro el día de la sesión</p>
+        <p class="booking-note booking-note-duration">Sesión de 60 minutos</p>
+
         <aside class="booking-support" aria-label="Ayuda para la reserva">
-          <p class="support-title">¿Prefieres hablar antes de reservar?</p>
-          <p class="support-text">
-            Si tienes dudas sobre el tratamiento o el tipo de sesión, te atendemos por WhatsApp.
-          </p>
+          <p class="support-title">¿Tienes dudas? Te ayudamos por WhatsApp</p>
+          <p class="support-text">Respuesta rápida durante horario laboral</p>
           <a
             class="support-link"
             [href]="whatsAppUrl"
