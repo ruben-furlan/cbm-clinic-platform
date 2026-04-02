@@ -4,9 +4,9 @@
 
       <div class="section-heading" appRevealOnScroll>
         <p class="section-tag">Solicitar cita</p>
-        <h2>Cuéntanos qué necesitas</h2>
+        <h2>Elige tu tratamiento y solicita tu cita</h2>
         <p class="section-description">
-          Déjanos tus datos y te llevamos directamente a WhatsApp con el mensaje preparado.
+          Selecciona tu tratamiento, déjanos tus datos y te llevamos directamente a WhatsApp con el mensaje preparado.
         </p>
       </div>
 
@@ -40,6 +40,27 @@
             />
           </div>
         </div>
+
+        <div class="form-group">
+          <label for="treatment">Tratamiento o tarifa</label>
+          <select
+            id="treatment"
+            name="treatment"
+            [(ngModel)]="formData.treatment"
+            required
+          >
+            <option value="" disabled>Selecciona una opción</option>
+            <option *ngFor="let option of treatmentOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <p class="field-help">
+            Selecciona la opción que te interesa y te contactaremos por WhatsApp para confirmar disponibilidad y
+            siguientes pasos.
+          </p>
+        </div>
+
+        <p class="dynamic-help">{{ treatmentFollowUpMessage }}</p>
 
         <div class="form-group">
           <label for="message">Breve descripción</label>
@@ -79,14 +100,19 @@
           </p>
         </div>
 
+        <p class="selection-summary" *ngIf="selectedTreatmentLabel">
+          Has seleccionado: <strong>{{ selectedTreatmentLabel }}</strong>
+        </p>
+
         <div class="form-actions">
           <button class="btn-primary btn-booking" type="submit">
             <span class="btn-icon" aria-hidden="true">💬</span>
-            <span>Solicitar cita</span>
+            <span>Continuar por WhatsApp</span>
           </button>
         </div>
 
-        <p class="form-note">Te contactaremos por WhatsApp para confirmar disponibilidad y horario.</p>
+        <p class="form-note">La confirmación final se realiza por WhatsApp.</p>
+        <p class="payment-note">El pago se realiza en el centro el día de la sesión.</p>
       </form>
 
     </div>
