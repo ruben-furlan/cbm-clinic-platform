@@ -103,7 +103,7 @@ export class BookingFormComponent {
         nameLabel: 'Nombre',
         surnameLabel: 'Apellido',
         emailLabel: 'Correo electrónico',
-        treatmentLabel: 'Tratamiento o tarifa',
+        treatmentLabel: 'Tratamiento',
         descriptionLabel: 'Descripción',
         promoLabel: 'Código promocional',
         closing: 'Quedo pendiente de confirmación.'
@@ -113,7 +113,7 @@ export class BookingFormComponent {
         nameLabel: 'Name',
         surnameLabel: 'Surname',
         emailLabel: 'Email',
-        treatmentLabel: 'Treatment or plan',
+        treatmentLabel: 'Treatment',
         descriptionLabel: 'Description',
         promoLabel: 'Promo code',
         closing: 'I remain pending confirmation.'
@@ -123,7 +123,7 @@ export class BookingFormComponent {
         nameLabel: 'Nom',
         surnameLabel: 'Cognom',
         emailLabel: 'Correu electrònic',
-        treatmentLabel: 'Tractament o tarifa',
+        treatmentLabel: 'Tractament',
         descriptionLabel: 'Descripció',
         promoLabel: 'Codi promocional',
         closing: 'Quedo pendent de confirmació.'
