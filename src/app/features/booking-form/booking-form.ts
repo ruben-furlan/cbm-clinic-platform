@@ -17,11 +17,69 @@ export class BookingFormComponent {
   showPromoCode = false;
   promoCode = '';
 
+  readonly treatmentOptions = [
+    {
+      value: 'fisioterapia-individual',
+      label: 'Fisioterapia — sesión individual (60€)',
+      type: 'session'
+    },
+    {
+      value: 'fisioterapia-bono-5',
+      label: 'Fisioterapia — bono 5 sesiones (250€)',
+      type: 'bundle'
+    },
+    {
+      value: 'pilates-1',
+      label: 'Pilates terapéutico — 1 vez por semana (48€/mes)',
+      type: 'pilates'
+    },
+    {
+      value: 'pilates-2',
+      label: 'Pilates terapéutico — 2 veces por semana (65€/mes)',
+      type: 'pilates'
+    },
+    {
+      value: 'masaje-relajante',
+      label: 'Masaje relajante — promoción (45€)',
+      type: 'session'
+    },
+    {
+      value: 'bono-jubilados-10',
+      label: 'Bono jubilados — 10 sesiones (400€)',
+      type: 'bundle'
+    }
+  ] as const;
+
   formData = {
     name: '',
     surname: '',
+    email: '',
+    treatment: '',
     message: ''
   };
+
+  get selectedTreatmentLabel(): string {
+    const selected = this.treatmentOptions.find((option) => option.value === this.formData.treatment);
+    return selected?.label ?? '';
+  }
+
+  get treatmentFollowUpMessage(): string {
+    const selected = this.treatmentOptions.find((option) => option.value === this.formData.treatment);
+
+    if (!selected) {
+      return 'Selecciona la opción que te interesa y te contactaremos por WhatsApp para confirmar disponibilidad y siguientes pasos.';
+    }
+
+    if (selected.type === 'bundle') {
+      return 'Empezaremos con tu primera sesión y organizaremos contigo las siguientes.';
+    }
+
+    if (selected.type === 'pilates') {
+      return 'Te ayudaremos a encajar tu grupo y frecuencia según disponibilidad.';
+    }
+
+    return 'Te contactaremos para confirmar disponibilidad y horario.';
+  }
 
   sendWhatsApp(): void {
     const phoneNumber = '34662561672';
@@ -33,30 +91,42 @@ export class BookingFormComponent {
         greeting: string;
         nameLabel: string;
         surnameLabel: string;
+        emailLabel: string;
+        treatmentLabel: string;
         descriptionLabel: string;
         promoLabel: string;
+        closing: string;
       }
     > = {
       es: {
-        greeting: 'Hola, quiero solicitar cita.',
+        greeting: 'Hola, quiero solicitar información o reservar esta opción:',
         nameLabel: 'Nombre',
         surnameLabel: 'Apellido',
+        emailLabel: 'Correo electrónico',
+        treatmentLabel: 'Tratamiento o tarifa',
         descriptionLabel: 'Descripción',
-        promoLabel: 'Código promocional'
+        promoLabel: 'Código promocional',
+        closing: 'Quedo pendiente de confirmación.'
       },
       en: {
-        greeting: 'Hi, I would like to book an appointment.',
+        greeting: 'Hi, I would like to request information or reserve this option:',
         nameLabel: 'Name',
         surnameLabel: 'Surname',
+        emailLabel: 'Email',
+        treatmentLabel: 'Treatment or plan',
         descriptionLabel: 'Description',
-        promoLabel: 'Promo code'
+        promoLabel: 'Promo code',
+        closing: 'I remain pending confirmation.'
       },
       ca: {
-        greeting: 'Hola, vull sol·licitar cita.',
+        greeting: 'Hola, vull sol·licitar informació o reservar aquesta opció:',
         nameLabel: 'Nom',
         surnameLabel: 'Cognom',
+        emailLabel: 'Correu electrònic',
+        treatmentLabel: 'Tractament o tarifa',
         descriptionLabel: 'Descripció',
-        promoLabel: 'Codi promocional'
+        promoLabel: 'Codi promocional',
+        closing: 'Quedo pendent de confirmació.'
       }
     };
 
@@ -70,7 +140,7 @@ export class BookingFormComponent {
       ? `\n    ${t.promoLabel}: ${this.promoCode}`
       : '';
 
-    const rawMessage = `${t.greeting}\n\n    ${t.nameLabel}: ${this.formData.name}${surnameLine}\n    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}`;
+    const rawMessage = `${t.greeting}\n\n    ${t.nameLabel}: ${this.formData.name}${surnameLine}\n    ${t.emailLabel}: ${this.formData.email}\n    ${t.treatmentLabel}: ${this.selectedTreatmentLabel}\n    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}\n\n    ${t.closing}`;
     const encodedMessage = encodeURIComponent(rawMessage);
     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
