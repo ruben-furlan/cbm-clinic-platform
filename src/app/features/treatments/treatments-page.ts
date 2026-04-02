@@ -147,7 +147,7 @@ export class TreatmentsPage {
             description: 'Mejora la concentración y la respiración, actuando como una forma de meditación activa que disminuye el estrés.'
           },
           {
-            title: 'Bienestar Integra',
+            title: 'Bienestar Integral',
             description: 'Mejora el equilibrio, la coordinación y ayuda a combatir la ansiedad.'
           }
         ]
