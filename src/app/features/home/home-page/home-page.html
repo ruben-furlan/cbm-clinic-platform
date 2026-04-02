@@ -37,8 +37,22 @@
     </div>
 
     <div class="hero-image reveal-delay-2" appRevealOnScroll>
-      <div class="hero-image-card">
-        <img src="/hero-fisio.jpg" alt="CBM Fisioterapia">
+      <div
+        class="hero-image-card"
+        (mouseenter)="pauseHeroAutoplay()"
+        (mouseleave)="resumeHeroAutoplay()"
+        (touchstart)="onHeroTouchStart($event)"
+        (touchend)="onHeroTouchEnd($event)"
+      >
+        <img
+          *ngFor="let image of heroSlides; let i = index; trackBy: trackByIndex"
+          [src]="image"
+          alt="CBM Fisioterapia"
+          [class.is-active]="currentHeroSlide === i"
+          [attr.fetchpriority]="i === 0 ? 'high' : null"
+          loading="lazy"
+          decoding="async"
+        >
       </div>
     </div>
 
@@ -229,13 +243,13 @@
 <section class="common-issues section section-flow">
   <div class="container">
     <div class="section-heading" appRevealOnScroll>
-      <p class="section-tag">Problemas frecuentes</p>
-      <h2>Tratamos problemas como</h2>
+      <p class="section-tag">Casos frecuentes</p>
+      <h2>Te ayudamos con molestias como</h2>
       <p class="section-description">
-        Explora problemas reales que vemos en consulta y accede a contenido específico sobre cómo lo tratamos en nuestra clínica de fisioterapia en Terrassa.
+        Explora casos reales que vemos en consulta y descubre cómo los tratamos en nuestra clínica de fisioterapia en Terrassa.
       </p>
       <p class="section-microcopy">
-        <strong>Selecciona un problema para ver cómo lo tratamos.</strong>
+        <strong>Selecciona una opción para ver cómo podemos ayudarte.</strong>
       </p>
     </div>
 
