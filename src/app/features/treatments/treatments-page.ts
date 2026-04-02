@@ -141,6 +141,14 @@ export class TreatmentsPage {
           {
             title: 'Flexibilidad y Agilidadl',
             description: 'Aumenta la amplitud de movimiento, lo que permite un cuerpo más flexible y ágil.'
+          },
+          {
+            title: 'Conexión Mente-Cuerpo',
+            description: 'Mejora la concentración y la respiración, actuando como una forma de meditación activa que disminuye el estrés.'
+          },
+          {
+            title: 'Bienestar Integra',
+            description: 'Mejora el equilibrio, la coordinación y ayuda a combatir la ansiedad.'
           }
         ]
       ]
