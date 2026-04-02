@@ -42,6 +42,18 @@
         </div>
 
         <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="formData.email"
+            placeholder="tuemail@ejemplo.com"
+            required
+          />
+        </div>
+
+        <div class="form-group">
           <label for="treatment">Tratamiento o tarifa</label>
           <select
             id="treatment"
@@ -111,7 +123,15 @@
           </button>
         </div>
 
-        <p class="form-note">La confirmación final se realiza por WhatsApp.</p>
+        <div class="contact-alternative">
+          <p class="contact-alternative-title">¿Prefieres que te contactemos nosotros?</p>
+          <p class="contact-alternative-text">
+            Déjanos tus datos y te escribimos por WhatsApp o email lo antes posible.
+          </p>
+          <a href="#reserva" class="contact-alternative-link">Prefiero que me contacten</a>
+        </div>
+
+        <p class="form-note">La confirmación final se realiza por WhatsApp o email.</p>
         <p class="payment-note">El pago se realiza en el centro el día de la sesión.</p>
       </form>
 

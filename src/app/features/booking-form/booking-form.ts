@@ -53,6 +53,7 @@ export class BookingFormComponent {
   formData = {
     name: '',
     surname: '',
+    email: '',
     treatment: '',
     message: ''
   };
@@ -90,6 +91,7 @@ export class BookingFormComponent {
         greeting: string;
         nameLabel: string;
         surnameLabel: string;
+        emailLabel: string;
         treatmentLabel: string;
         descriptionLabel: string;
         promoLabel: string;
@@ -100,6 +102,7 @@ export class BookingFormComponent {
         greeting: 'Hola, quiero solicitar información o reservar esta opción:',
         nameLabel: 'Nombre',
         surnameLabel: 'Apellido',
+        emailLabel: 'Correo electrónico',
         treatmentLabel: 'Tratamiento o tarifa',
         descriptionLabel: 'Descripción',
         promoLabel: 'Código promocional',
@@ -109,6 +112,7 @@ export class BookingFormComponent {
         greeting: 'Hi, I would like to request information or reserve this option:',
         nameLabel: 'Name',
         surnameLabel: 'Surname',
+        emailLabel: 'Email',
         treatmentLabel: 'Treatment or plan',
         descriptionLabel: 'Description',
         promoLabel: 'Promo code',
@@ -118,6 +122,7 @@ export class BookingFormComponent {
         greeting: 'Hola, vull sol·licitar informació o reservar aquesta opció:',
         nameLabel: 'Nom',
         surnameLabel: 'Cognom',
+        emailLabel: 'Correu electrònic',
         treatmentLabel: 'Tractament o tarifa',
         descriptionLabel: 'Descripció',
         promoLabel: 'Codi promocional',
@@ -135,7 +140,7 @@ export class BookingFormComponent {
       ? `\n    ${t.promoLabel}: ${this.promoCode}`
       : '';
 
-    const rawMessage = `${t.greeting}\n\n    ${t.nameLabel}: ${this.formData.name}${surnameLine}\n    ${t.treatmentLabel}: ${this.selectedTreatmentLabel}\n    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}\n\n    ${t.closing}`;
+    const rawMessage = `${t.greeting}\n\n    ${t.nameLabel}: ${this.formData.name}${surnameLine}\n    ${t.emailLabel}: ${this.formData.email}\n    ${t.treatmentLabel}: ${this.selectedTreatmentLabel}\n    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}\n\n    ${t.closing}`;
     const encodedMessage = encodeURIComponent(rawMessage);
     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
