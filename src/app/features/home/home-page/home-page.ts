@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Testimonials } from '../../testimonials/testimonials';
 import { LocationComponent } from '../../location/location';
@@ -16,6 +16,8 @@ import { PricingComponent } from '../../../sections/pricing/pricing.component';
   styleUrls: ['./home-page.css']
 })
 export class HomePage implements OnInit, OnDestroy {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   readonly heroSlides = ['/cbm-1.jpeg', '/cbm-2.jpeg', '/cbm-3.jpeg', '/cbm-4.jpeg', '/cbm-5.jpeg'];
   currentHeroSlide = 0;
   private autoplayId?: ReturnType<typeof setInterval>;
@@ -71,6 +73,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     this.autoplayId = setInterval(() => {
       this.currentHeroSlide = (this.currentHeroSlide + 1) % this.heroSlides.length;
+      this.cdr.detectChanges();
     }, 5000);
   }
 
