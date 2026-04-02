@@ -1,94 +1,51 @@
 <section id="reserva" class="booking-form section">
   <div class="container">
     <div class="booking-wrapper">
-
-      <div class="section-heading" appRevealOnScroll>
-        <p class="section-tag">Solicitar cita</p>
-        <h2>Cuéntanos qué necesitas</h2>
+      <header class="booking-header" appRevealOnScroll>
+        <p class="section-tag">Reserva online</p>
+        <h2>Reserva tu sesión en pocos segundos</h2>
         <p class="section-description">
-          Déjanos tus datos y te llevamos directamente a WhatsApp con el mensaje preparado.
+          Elige el día y la hora que mejor te encajen en una agenda clara y sin complicaciones
         </p>
-      </div>
 
-      <form
-        class="form-card reveal-delay-1"
-        appRevealOnScroll
-        (ngSubmit)="sendWhatsApp()"
-        #bookingForm="ngForm"
-      >
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="name">Nombre</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              [(ngModel)]="formData.name"
-              placeholder="Tu nombre"
-              required
-            />
-          </div>
+        <div class="trust-points" aria-label="Puntos de confianza de la reserva">
+          <span>Sin esperas</span>
+          <span>Horarios claros</span>
+          <span>Reserva rápida</span>
+        </div>
+      </header>
 
-          <div class="form-group">
-            <label for="surname">Apellido</label>
-            <input
-              id="surname"
-              name="surname"
-              type="text"
-              [(ngModel)]="formData.surname"
-              placeholder="Opcional"
-            />
-          </div>
+      <article class="booking-shell" appRevealOnScroll>
+        <p class="booking-context">Fisioterapia personalizada y pilates terapéutico en grupos reducidos</p>
+        <p class="calendly-heading">Elige el día y la hora que mejor te encajen</p>
+
+        <div class="calendly-frame-wrap">
+          <iframe
+            class="calendly-frame"
+            [src]="calendlyEmbedUrl"
+            title="Reserva tu sesión de fisioterapia"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
 
-        <div class="form-group">
-          <label for="message">Breve descripción</label>
-          <textarea
-            id="message"
-            name="message"
-            rows="5"
-            [(ngModel)]="formData.message"
-            placeholder="Cuéntanos brevemente qué te ocurre o qué quieres mejorar"
-            required
-          ></textarea>
-        </div>
+        <p class="booking-note">El pago se realiza en el centro el día de la sesión</p>
+        <p class="booking-note booking-note-duration">Sesión de 60 minutos</p>
 
-        <button
-          type="button"
-          class="promo-toggle"
-          (click)="togglePromoCode()"
-          [attr.aria-expanded]="showPromoCode"
-          aria-controls="promoCodeGroup"
-        >
-          ¿Tienes un código promocional?
-        </button>
-
-        <div class="form-group promo-group" id="promoCodeGroup" *ngIf="showPromoCode">
-          <label for="promoCode">Código promocional</label>
-          <input
-            id="promoCode"
-            name="promoCode"
-            type="text"
-            [(ngModel)]="promoCode"
-            placeholder="Ej. BIENVENIDA10"
-            autocomplete="off"
-          />
-          <p class="promo-help">
-            Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al revisar tu
-            solicitud.
-          </p>
-        </div>
-
-        <div class="form-actions">
-          <button class="btn-primary btn-booking" type="submit">
-            <span class="btn-icon" aria-hidden="true">💬</span>
-            <span>Solicitar cita</span>
-          </button>
-        </div>
-
-        <p class="form-note">Te contactaremos por WhatsApp para confirmar disponibilidad y horario.</p>
-      </form>
-
+        <aside class="booking-support" aria-label="Ayuda para la reserva">
+          <p class="support-title">¿Tienes dudas? Te ayudamos por WhatsApp</p>
+          <p class="support-text">Respuesta rápida durante horario laboral</p>
+          <a
+            class="support-link"
+            [href]="whatsAppUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Hablar por WhatsApp"
+          >
+            Hablar por WhatsApp
+          </a>
+        </aside>
+      </article>
     </div>
   </div>
 </section>

@@ -1,153 +1,232 @@
-.booking-form{
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 247, 251, 0.62) 100%);
+.booking-form {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.26) 0%, rgba(255, 247, 251, 0.56) 100%);
   padding: 96px 0;
 }
 
-.booking-wrapper{
-  max-width:1100px;
-  margin:0 auto;
+.booking-wrapper {
+  max-width: 1120px;
+  margin: 0 auto;
 }
 
-.form-card{
-  max-width:860px;
-  margin:30px auto 0;
-  background: rgba(255, 255, 255, 0.78);
-  border:1px solid rgba(241, 216, 230, 0.9);
-  border-radius:var(--radius-card);
-  padding:34px;
-  box-shadow:0 12px 28px rgba(31, 27, 45, 0.08);
-  backdrop-filter: blur(5px);
+.booking-header {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  text-align: center;
 }
 
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
+.booking-header h2 {
+  margin: 10px 0 12px;
 }
 
-.form-group{
-  display:flex;
-  flex-direction:column;
-  margin-bottom:16px;
+.section-description {
+  margin: 0 auto;
+  max-width: 60ch;
 }
 
-.form-group label{
-  margin-bottom:7px;
-  font-weight:600;
-  color:#332d43;
-  font-size: 14px;
-}
-
-.form-group input,
-.form-group textarea{
-  border:1px solid rgba(231, 205, 221, 0.9);
-  border-radius:12px;
-  padding:14px 16px;
-  font-size:16px;
-  font-family:inherit;
-  outline:none;
-  background: rgba(255, 255, 255, 0.95);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form-group input:focus,
-.form-group textarea:focus{
-  border-color:#ff4fa3;
-  box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.13);
-}
-
-.form-actions{
-  margin-top: 8px;
+.trust-points {
+  margin: 18px auto 0;
   display: flex;
-  justify-content: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
-.form-actions .btn-primary{
+.trust-points span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(236, 216, 229, 0.92);
+  background: rgba(255, 255, 255, 0.8);
+  color: #534c63;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.trust-points span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff4fa3;
+  box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.14);
+}
+
+.booking-shell {
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(241, 216, 230, 0.95);
+  border-radius: var(--radius-card);
+  padding: 18px;
+  box-shadow: 0 16px 34px rgba(31, 27, 45, 0.08);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+.booking-context {
+  margin: 2px 4px 8px;
+  color: #4d465d;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.calendly-heading {
+  margin: 0 4px 12px;
+  color: #302b3f;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.calendly-frame-wrap {
+  border: 1px solid rgba(235, 217, 229, 0.95);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+.calendly-frame {
+  width: 100%;
+  height: 720px;
+  border: 0;
+  display: block;
+}
+
+.booking-note {
+  margin: 10px 2px 0;
+  color: #746d85;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.booking-note-duration {
+  margin-top: 4px;
+}
+
+.booking-support {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(238, 225, 235, 0.95);
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.support-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #302b3f;
+}
+
+.support-text {
+  margin: 0;
+  color: #625a74;
+  font-size: 14px;
+  line-height: 1.45;
+  flex: 1;
   min-width: 240px;
 }
 
-.form-note{
-  margin: 12px 0 0;
-  color: #6e6780;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-
-.promo-toggle{
-  margin: 0 0 12px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #7d6e8e;
-  font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.4;
-  text-align: left;
-  cursor: pointer;
-  align-self: flex-start;
-  transition: color 0.2s ease, opacity 0.2s ease;
-}
-
-.promo-toggle:hover,
-.promo-toggle:focus-visible{
+.support-link {
   color: #5f4f74;
-  opacity: 0.92;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(95, 79, 116, 0.4);
+  padding-bottom: 2px;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.promo-toggle:focus-visible{
-  outline: 2px solid rgba(255, 79, 163, 0.3);
-  outline-offset: 4px;
-  border-radius: 8px;
+.support-link:hover,
+.support-link:focus-visible {
+  color: #3f3254;
+  border-color: rgba(63, 50, 84, 0.7);
 }
 
-.promo-group{
-  margin-top: -2px;
-}
+@media (max-width: 1024px) {
+  .booking-header {
+    margin-bottom: 24px;
+  }
 
-.promo-help{
-  margin: 8px 2px 0;
-  color: #7a728a;
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-
-@media (max-width: 1024px){
-  .form-actions .btn-primary{
-    min-width: 0;
-    width: 100%;
+  .calendly-frame {
+    height: 680px;
   }
 }
 
-@media (max-width: 768px){
-  .booking-form{
+@media (max-width: 768px) {
+  .booking-form {
     padding: 66px 0 76px;
   }
 
-  .booking-wrapper{
-    max-width: 100%;
+  .booking-shell {
+    border-radius: 16px;
+    padding: 10px;
   }
 
-  .form-card{
-    max-width: 100%;
-    margin: 24px auto 0;
-    padding: 22px 16px;
+  .booking-context,
+  .calendly-heading {
+    text-align: left;
+    margin-left: 2px;
+    margin-right: 2px;
   }
 
-  .form-grid{
-    grid-template-columns: 1fr;
-    gap: 0;
+  .calendly-frame-wrap {
+    border-radius: 14px;
   }
 
-
-  .promo-toggle{
-    min-height: 40px;
+  .calendly-frame {
+    height: 700px;
+    min-height: 700px;
   }
 
-  .form-actions .btn-primary{
-    width: 100%;
-    min-width: 0;
+  .booking-support {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    align-items: flex-start;
+  }
+
+  .support-text {
+    min-width: 100%;
+  }
+}
+
+
+@media (max-width: 560px) {
+  .booking-form .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .booking-shell {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .calendly-frame-wrap {
+    border-radius: 12px;
+  }
+
+  .calendly-frame {
+    height: 710px;
+    min-height: 710px;
+  }
+
+  .booking-note {
+    margin-top: 12px;
+  }
+
+  .booking-note-duration {
+    margin-top: 6px;
   }
 }
