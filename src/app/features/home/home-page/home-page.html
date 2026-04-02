@@ -37,15 +37,27 @@
     </div>
 
     <div class="hero-image reveal-delay-2" appRevealOnScroll>
-      <div class="hero-image-card">
-        <img src="/hero-fisio.jpg" alt="CBM Fisioterapia">
+      <div
+        class="hero-image-card"
+        (mouseenter)="pauseHeroAutoplay()"
+        (mouseleave)="resumeHeroAutoplay()"
+        (touchstart)="onHeroTouchStart($event)"
+        (touchend)="onHeroTouchEnd($event)"
+      >
+        <img
+          *ngFor="let image of heroSlides; let i = index; trackBy: trackByIndex"
+          [src]="image"
+          alt="CBM Fisioterapia"
+          [class.is-active]="currentHeroSlide === i"
+          [attr.fetchpriority]="i === 0 ? 'high' : null"
+          loading="lazy"
+          decoding="async"
+        >
       </div>
     </div>
 
   </div>
 </section>
-
-<app-home-carousel></app-home-carousel>
 
 <section class="quick-benefits section section-flow">
   <div class="container">
