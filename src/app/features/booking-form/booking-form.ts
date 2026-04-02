@@ -45,7 +45,7 @@ export class BookingFormComponent {
     },
     {
       value: 'bono-jubilados-10',
-      label: 'Bono jubilados — 10 sesiones (400€)',
+      label: 'Bono jubilados — 10 sesiones  promoción (400€)',
       type: 'bundle'
     }
   ] as const;
