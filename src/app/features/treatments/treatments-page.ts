@@ -6,7 +6,6 @@ import { Meta, Title } from '@angular/platform-browser';
 type TreatmentItem = {
   title: string;
   description: string;
-  equipment: string;
 };
 
 type CategorySlug = 'fisioterapia' | 'tecnicas' | 'pilates';
@@ -39,122 +38,109 @@ export class TreatmentsPage {
         [
           {
             title: 'Fisioterapia Traumatológica',
-            description: 'Tratamiento de lesiones y dolencias relacionadas con traumatismos.',
-            equipment: 'Ultrasonido, máquinas de electroterapia.'
+            description: 'La fisioterapia traumatológica es una especialidad que trata lesiones del sistema musculoesquelético (huesos, músculos, ligamentos, tendones) causadas por accidentes, caídas o cirugías. Su objetivo es aliviar el dolor, reducir la inflamación, restaurar la movilidad, fortalecer la zona afectada y acelerar la reincorporación a la vida diaria o deportiva'
           },
           {
             title: 'Fisioterapia Dermatofuncional',
-            description: 'Enfoque en la rehabilitación de la piel y tejidos.',
-            equipment: 'Equipos de radiofrecuencia.'
-          }
-        ],
-        [
+            description: 'La fisioterapia dermatofuncional es una especialidad clínica que evalúa y trata alteraciones del sistema tegumentario (piel y tejido subcutáneo), combinando salud funcional y estética. Utiliza técnicas manuales y aparatología no invasiva para tratar cicatrices, fibrosis, edemas, celulitis, flacidez y mejorar la recuperación postquirúrgica, optimizando la funcionalidad de los tejidos'
+          },
           {
             title: 'Fisioterapia Deportiva',
-            description: 'Tratamiento y prevención de lesiones en deportistas.',
-            equipment: 'Equipos de punción seca, kinesiotape.'
+            description: 'La fisioterapia deportiva es una especialidad enfocada en prevenir, evaluar y tratar lesiones en deportistas de todos los niveles, utilizando técnicas manuales, ejercicio terapéutico y tecnología avanzada. Su objetivo principal es acelerar la recuperación funcional, aliviar el dolor y readaptar al atleta al gesto deportivo específico de su disciplina para mejorar su rendimiento y evitar futuras recaídas'
           },
-          {
-            title: 'Drenaje Linfático',
-            description: 'Técnica para mejorar la circulación y reducir edemas.',
-            equipment: 'Ventosas, masajes manuales.'
-          },
-          {
-            title: 'Fisioterapia Post-Quirúrgica',
-            description: 'Rehabilitación tras procedimientos quirúrgicos.',
-            equipment: 'Dispositivos de electroestimulación.'
-          }
         ],
         [
           {
-            title: 'Fisioterapia Geriátrica',
-            description: 'Atención especializada para personas mayores.',
-            equipment: 'Auxiliares de movilidad, kinesiotape.'
+            title: 'Drenaje Linfático',
+            description: 'El drenaje linfático es una técnica de masaje terapéutico suave y rítmico que estimula el sistema linfático para reducir la retención de líquidos, edemas y mejorar la circulación. Utiliza movimientos lentos y superficiales para eliminar toxinas, mejorar el sistema inmunológico y aliviar la pesadez, los dreanajes linfaticos tambien ayudan a la mujer durante el emabarazo'
           },
           {
+            title: 'Fisioterapia Pre/Post Quirúrgica',
+            description: 'Diseñado para optimizar el estado físico del paciente antes de una cirugía (preREhabilitación) y acelerar su recuperación después de la misma (postoperatoria). El objetivo principal es minimizar complicaciones, reducir el dolor, mejorar la funcionalidad'
+          },
+          {
+            title: 'Fisioterapia para el adulto mayor',
+            description: 'La fisioterapia en el adulto mayor es una especialidad enfocada en prevenir, diagnosticar y tratar patologías y el deterioro funcional en personas mayores de 65 años. Su objetivo principal es mantener la autonomía, aliviar el dolor, mejorar la movilidad y reeducar la marcha, adaptando los ejercicios a las capacidades individuales para mejorar su calidad de vida'
+          },
+        ],
+        [
+          {
             title: 'Tratamientos en Espalda y Cervicales',
-            description: 'Terapias específicas para problemas de espalda y cuello.',
-            equipment: 'Equipos de terapia manual.'
+            description: 'La fisioterapia cervical y lumbar es una especialidad enfocada en evaluar, tratar y prevenir dolores y disfunciones de la columna, utilizando técnicas manuales, ejercicio terapéutico y agentes físicos. Sus objetivos son aliviar el dolor, restaurar la movilidad, corregir la postura, fortalecer la musculatura estabilizadora y prevenir recaídas crónicas en cuello y espalda baja'
           },
           {
             title: 'Fisioterapia Neurológica',
-            description: 'Tratamiento de condiciones neurológicas como parálisis facial.',
-            equipment: 'Equipos de estimulación neuromuscular.'
+            description: 'La fisioterapia neurológica es una especialidad dedicada a evaluar y tratar trastornos del sistema nervioso central y periférico, buscando restaurar funciones motoras y sensoriales. Su objetivo es maximizar la independencia funcional, reducir la espasticidad, mejorar el equilibrio y mejorar la calidad de vida del paciente.'
+          },
+          {
+            title: 'Articulación temporomandibular (ATM) ',
+            description: 'La fisioterapia en la Articulación Temporomandibular (ATM) es una especialidad enfocada en tratar el dolor, la disfunción y la limitación de movimiento en la mandíbula. Combina terapia manual, ejercicio terapéutico y reeducación postural para aliviar la tensión en los músculos masticatorios, mejorar la apertura bucal y reducir dolores de cabeza, cuello u oídos relacionado.'
+          },
+          {
+            title: 'Fisioterapia Infantil ',
+            description: 'La fisioterapia infantil (o pediátrica) es la especialidad que evalúa, trata y cuida a bebés, niños y adolescentes (0-18 años) con retrasos en el desarrollo, desórdenes de movimiento o riesgo de padecerlos. Busca mejorar la funcionalidad, fuerza y autonomía mediante terapia manual, ejercicio y juego, abarcando áreas neurológicas, respiratorias y ortopédicas'
           }
         ]
       ]
     },
     tecnicas: {
-      title: 'Técnicas terapéuticas en Terrassa',
+      title: 'Técnicas utilizadas en Terrassa',
       description: 'Técnicas complementarias para acelerar la recuperación y potenciar resultados terapéuticos.',
-      seoTitle: 'Técnicas terapéuticas en Terrassa | CBM Fisioterapia',
-      seoDescription: 'Técnicas terapéuticas en Terrassa para acelerar la recuperación y mejorar resultados en CBM Fisioterapia.',
-      seoIntro: 'Aplicamos técnicas terapéuticas en Terrassa para mejorar resultados clínicos en menos tiempo. Combinamos punción seca, radiofrecuencia y terapia manual para reducir molestias, recuperar función y apoyar una recuperación segura y sostenible.',
+      seoTitle: 'Técnicas utilizadas en Terrassa | CBM Fisioterapia',
+      seoDescription: 'Técnicas utilizadas en Terrassa para acelerar la recuperación y mejorar resultados en CBM Fisioterapia.',
+      seoIntro: 'Aplicamos Técnicas utilizadas en Terrassa para mejorar resultados clínicos en menos tiempo. Combinamos punción seca, radiofrecuencia y terapia manual para reducir molestias, recuperar función y apoyar una recuperación segura y sostenible.',
       columns: [
         [
           {
             title: 'Radiofrecuencia',
-            description: 'Estimulación de tejidos para mejorar dolor, elasticidad y recuperación funcional.',
-            equipment: 'Equipo de radiofrecuencia terapéutica.'
+            description: 'La radiofrecuencia en fisioterapia (diatermia o tecarterapia) es una técnica no invasiva que utiliza ondas electromagnéticas para generar calor profundo en los tejidos. Acelera la recuperación, reduce el dolor y la inflamación (efecto antiedematoso) y favorece la regeneración celular, siendo ideal para lesiones agudas, crónicas y rehabilitación postquirúrgica'
           },
           {
             title: 'Punción seca',
-            description: 'Abordaje de puntos gatillo miofasciales para reducir dolor y mejorar movilidad.',
-            equipment: 'Agujas estériles de punción seca.'
+            description: 'La punción seca es una técnica de fisioterapia invasiva y segura (con evidencia grado A) que utiliza agujas finas para tratar el dolor muscular, especialmente los puntos gatillo miofasciales (contracturas), sin inyectar sustancias. Al insertarse, busca relajar la musculatura, aliviar la rigidez, mejorar la movilidad y reducir el dolor crónico o agudo'
           }
         ],
         [
           {
             title: 'Ventosas',
-            description: 'Técnica de descompresión tisular para aliviar tensión muscular y mejorar circulación.',
-            equipment: 'Set de ventosas terapéuticas.'
+            description: 'Las ventosas (o cupping) son una técnica terapéutica que utiliza la succión sobre la piel para estimular la circulación sanguínea, liberar la fascia y aliviar la tensión muscular. Sirven principalmente para reducir dolores crónicos, contracturas, mejorar la recuperación muscular, eliminar toxinas y aumentar el aporte de nutrientes y oxígeno a los tejidos'
           },
           {
             title: 'Kinesiotape',
-            description: 'Vendaje neuromuscular para soporte funcional sin limitar el movimiento.',
-            equipment: 'Cintas de kinesiotape de uso clínico.'
-          }
-        ],
-        [
-          {
-            title: 'Electroterapia',
-            description: 'Aplicación de corrientes terapéuticas para analgesia y reeducación muscular.',
-            equipment: 'Dispositivos de electroestimulación.'
+            description: 'El kinesiotape o vendaje neuromuscular es una cinta elástica de algodón que sirve para aliviar el dolor muscular y articular, reducir la inflamación, mejorar la circulación y estabilizar articulaciones sin limitar el movimiento. Es muy utilizado en fisioterapia y deporte para recuperar lesiones, relajar contracturas y mejorar la propiocepción'
           }
         ]
       ]
     },
     pilates: {
-      title: 'Pilates terapéutico en Terrassa',
-      description: 'Sesiones guiadas para mejorar control corporal, postura y prevención de recaídas.',
-      seoTitle: 'Pilates terapéutico en Terrassa | CBM Fisioterapia',
-      seoDescription: 'Pilates terapéutico en Terrassa para mejorar postura, movilidad y fuerza con acompañamiento profesional.',
-      seoIntro: 'Nuestro pilates terapéutico en Terrassa está orientado a mejorar postura, movilidad y fortalecimiento de forma progresiva. Es una opción efectiva para personas con dolor recurrente o en procesos de recuperación que buscan moverse con más seguridad.',
+      title: 'Pilates en Terrassa',
+      description: 'El Pilates sirve principalmente para fortalecer el "centro" o core (abdominales, lumbares, glúteos), mejorar la postura corporal, aumentar la flexibilidad y prevenir lesiones mediante ejercicios conscientes. Combina fuerza y control respiratorio para tonificar los músculos sin hipertrofiarlos, aliviando dolores de espalda y reduciendo el estrés',
+      seoTitle: 'Pilates en Terrassa | CBM Fisioterapia',
+      seoDescription: 'Pilates en Terrassa para mejorar postura, movilidad y fuerza con acompañamiento profesional.',
+      seoIntro: 'Nuestro Pilates en Terrassa está orientado a mejorar postura, movilidad y fortalecimiento de forma progresiva. Es una opción efectiva para personas con dolor recurrente o en procesos de recuperación que buscan moverse con más seguridad.',
       columns: [
         [
           {
-            title: 'Control motor',
-            description: 'Trabajo de estabilidad y coordinación para movimientos más eficientes.',
-            equipment: 'Material de pilates y ejercicios de control guiado.'
+            title: 'Fortalecimiento del Core',
+            description: 'Se enfoca en la "faja abdominal" natural, lo que estabiliza la columna y mejora la fuerza de todo el cuerpo.'
           },
           {
-            title: 'Dolor lumbar',
-            description: 'Programa específico para reducir molestias lumbares y recuperar funcionalidad.',
-            equipment: 'Ejercicios terapéuticos progresivos y soporte postural.'
+            title: 'Corrección Postural',
+            description: 'Estira los músculos cortos y fortalece los débiles, mejorando la alineación de la espalda, hombros y cuello.'
           }
         ],
         [
           {
-            title: 'Rehabilitación',
-            description: 'Progresión adaptada para volver a la actividad de forma segura.',
-            equipment: 'Rutinas terapéuticas adaptadas al estado funcional.'
+            title: 'Rehabilitación y Prevención',
+            description: 'es muy utilizado para tratar dolores lumbares, dolores de espalda, y rehabilitar lesiones musculares.\n' +
+              'Conexión Mente-Cuerpo: Mejora la concentración y la respiración, actuando como una forma de meditación activa que disminuye el estrés.\n' +
+              'Bienestar Integral: Mejora el equilibrio, la coordinación y ayuda a combatir la ansiedad'
           }
         ],
         [
           {
-            title: 'Prevención de recaídas',
-            description: 'Plan de mantenimiento para sostener resultados y evitar nuevas lesiones.',
-            equipment: 'Educación postural y ejercicios de continuidad.'
+            title: 'Flexibilidad y Agilidadl',
+            description: 'Aumenta la amplitud de movimiento, lo que permite un cuerpo más flexible y ágil.'
           }
         ]
       ]

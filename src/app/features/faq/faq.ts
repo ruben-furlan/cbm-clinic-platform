@@ -32,7 +32,7 @@ export class FaqComponent {
     },
     {
       question: '¿Cuánto cuesta la sesión?',
-      answer: 'El precio depende del tipo de tratamiento. Escríbenos por WhatsApp y te informamos sin compromiso.'
+      answer: 'Los precios varian segun el tipo de tratamiento, Pero contamos con accesibilidad de pagos. Escribenos por whatsApp y te informamos sin compromiso'
     }
   ];
 

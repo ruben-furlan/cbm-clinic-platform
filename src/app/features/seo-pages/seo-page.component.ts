@@ -102,11 +102,11 @@ export class SeoPageComponent {
       ]
     },
     'pilates-terapeutico-terrassa': {
-      title: 'Pilates terapéutico en Terrassa',
+      title: 'Pilates en Terrassa',
       intro:
-        'Nuestro Pilates terapéutico está orientado a mejorar postura, fuerza profunda y control corporal para pacientes de Terrassa, Viladecavalls y Sabadell con dolor recurrente o necesidad de prevención.',
+        'Nuestro Pilates está orientado a mejorar postura, fuerza profunda y control corporal para pacientes de Terrassa, Viladecavalls y Sabadell con dolor recurrente o necesidad de prevención.',
       problemDescription:
-        'El Pilates terapéutico permite trabajar de forma guiada y adaptada a cada persona. Es útil en dolor lumbar o cervical recurrente, recuperación funcional y mejora del control motor.',
+        'El Pilates permite trabajar de forma guiada y adaptada a cada persona. Es útil en dolor lumbar o cervical recurrente, recuperación funcional y mejora del control motor.',
       symptoms: [
         'Dolor lumbar o cervical que reaparece con frecuencia.',
         'Debilidad de la musculatura estabilizadora.',

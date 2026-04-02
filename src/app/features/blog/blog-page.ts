@@ -18,7 +18,7 @@ interface BlogArticle {
   styleUrl: './blog-page.css'
 })
 export class BlogPage {
-  readonly categories = ['Dolor lumbar', 'Dolor cervical', 'Lesiones deportivas', 'Pilates terapéutico'];
+  readonly categories = ['Dolor lumbar', 'Dolor cervical', 'Lesiones deportivas', 'Pilates'];
 
   readonly featuredArticle: BlogArticle = {
     category: 'Artículo destacado',
@@ -71,7 +71,7 @@ export class BlogPage {
       ]
     },
     {
-      category: 'Técnicas terapéuticas',
+      category: 'Técnicas Utilizadas',
       title: 'Punción seca: qué es y cuándo puede ayudarte',
       intro:
         'La punción seca es una técnica útil en puntos gatillo y dolor miofascial. Siempre la integramos dentro de un plan personalizado para mejorar función y prevenir recaídas.',
@@ -95,10 +95,10 @@ export class BlogPage {
       ]
     },
     {
-      category: 'Pilates terapéutico',
+      category: 'Pilates',
       title: 'Pilates clínico para prevenir recaídas en espalda y cuello',
       intro:
-        'El Pilates terapéutico mejora control motor, estabilidad y confianza al moverte. Es un recurso clave para pacientes de Terrassa, Rubí y Sabadell que buscan continuidad tras la fase de dolor.',
+        'El Pilates mejora control motor, estabilidad y confianza al moverte. Es un recurso clave para pacientes de Terrassa, Rubí y Sabadell que buscan continuidad tras la fase de dolor.',
       sections: [
         {
           title: 'Consejos prácticos',
