@@ -1,0 +1,87 @@
+<section class="espacio-hero section">
+  <div class="container espacio-hero__grid">
+    <div class="espacio-hero__content" appRevealOnScroll>
+      <p class="espacio-tag">Espacio CBM</p>
+      <h1>Descubre nuestro centro en Terrassa</h1>
+      <p class="section-description">
+        Un espacio pensado para tu recuperación, bienestar y movimiento. Conoce el entorno donde trabajamos
+        cada tratamiento de forma cercana y personalizada.
+      </p>
+    </div>
+
+    <div
+      class="espacio-hero__media reveal-delay-2"
+      appRevealOnScroll
+      [style.transform]="'translate3d(0, ' + scrollOffset + 'px, 0)'"
+      aria-hidden="true"
+    >
+      <img src="/cbm-4.jpeg" alt="" loading="eager">
+    </div>
+  </div>
+</section>
+
+<section class="espacio-gallery section section-flow">
+  <div class="container">
+    <div class="espacio-filters" appRevealOnScroll>
+      @for (category of categories; track category.id) {
+        <button
+          type="button"
+          class="espacio-filter"
+          [class.is-active]="selectedCategory === category.id"
+          (click)="selectCategory(category.id)"
+        >
+          {{ category.label }}
+        </button>
+      }
+    </div>
+
+    <div class="espacio-mosaic" appRevealOnScroll>
+      @for (image of filteredImages; track trackBySrc($index, image)) {
+        <article
+          class="mosaic-card floating-card"
+          [ngClass]="'is-' + image.size"
+        >
+          <button
+            type="button"
+            class="mosaic-card__button"
+            (click)="openLightbox(image)"
+            [attr.aria-label]="'Abrir imagen: ' + image.alt"
+          >
+            <img [src]="image.src" [alt]="image.alt" loading="lazy">
+            <div class="mosaic-card__overlay">
+              <p>{{ image.mood }}</p>
+            </div>
+          </button>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<section class="espacio-cta section">
+  <div class="container">
+    <div class="espacio-cta__card glass-panel" appRevealOnScroll>
+      <h2>¿Te gustaría empezar tu tratamiento en CBM?</h2>
+      <p>Te acompañamos con una atención profesional, cercana y totalmente personalizada.</p>
+      <a class="btn-primary btn-booking" routerLink="/" fragment="reserva">Solicitar cita</a>
+    </div>
+  </div>
+</section>
+
+@if (isLightboxOpen) {
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Galería del centro">
+    <button type="button" class="lightbox__backdrop" (click)="closeLightbox()" aria-label="Cerrar galería"></button>
+
+    <div class="lightbox__content">
+      <button type="button" class="lightbox__close" (click)="closeLightbox()" aria-label="Cerrar">✕</button>
+      <button type="button" class="lightbox__nav" (click)="previousImage()" aria-label="Imagen anterior">‹</button>
+
+      <figure>
+        <img [src]="filteredImages[activeImageIndex].src" [alt]="filteredImages[activeImageIndex].alt">
+        <figcaption>{{ filteredImages[activeImageIndex].mood }}</figcaption>
+      </figure>
+
+      <button type="button" class="lightbox__nav" (click)="nextImage()" aria-label="Imagen siguiente">›</button>
+    </div>
+  </div>
+}

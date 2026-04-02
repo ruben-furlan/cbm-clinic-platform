@@ -5,6 +5,7 @@ import { CookiesPage } from './features/cookies/cookies-page';
 import { TreatmentsPage } from './features/treatments/treatments-page';
 import { SeoPageComponent } from './features/seo-pages/seo-page.component';
 import { DisplayComponent } from './pages/display/display.component';
+import { EspacioCbmPage } from './features/espacio-cbm/espacio-cbm-page';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,10 @@ export const routes: Routes = [
   {
     path: 'display/:orientation',
     component: DisplayComponent
+  },
+  {
+    path: 'espacio-cbm',
+    component: EspacioCbmPage
   },
   {
     path: 'blog',
