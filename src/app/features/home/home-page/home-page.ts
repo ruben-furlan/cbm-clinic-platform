@@ -18,7 +18,7 @@ import { PricingComponent } from '../../../sections/pricing/pricing.component';
 export class HomePage implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly heroSlides = ['/cbm-1.jpeg', '/cbm-2.jpeg', '/cbm-3.jpeg', '/cbm-4.jpeg', '/cbm-5.jpeg'];
+  readonly heroSlides = ['/cbm-1.jpeg', '/cbm-2.jpeg', '/cbm-3.jpeg', '/cbm-4.jpeg', '/cbm-5.jpeg'].reverse();
   currentHeroSlide = 0;
   private autoplayId?: ReturnType<typeof setInterval>;
   private touchStartX = 0;
