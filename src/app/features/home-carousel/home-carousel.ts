@@ -43,6 +43,22 @@ export class HomeCarouselComponent implements OnInit, OnDestroy {
       description: 'Ambiente profesional, cercano y equipado',
       ctaLabel: 'Conócenos',
       ctaHref: '#experiencia'
+    },
+    {
+      image: '/cbm-4.jpeg',
+      imageAlt: 'Sala de pilates terapéutico en CBM',
+      title: 'Pilates terapéutico adaptado a ti',
+      description: 'Mejora tu postura, fuerza y bienestar',
+      ctaLabel: 'Ver tratamientos',
+      ctaHref: '#servicios'
+    },
+    {
+      image: '/cbm-5.jpeg',
+      imageAlt: 'Zona de recuperación y ejercicio funcional en clínica',
+      title: 'Un espacio pensado para tu recuperación',
+      description: 'Ambiente profesional, cercano y equipado',
+      ctaLabel: 'Conócenos',
+      ctaHref: '#experiencia'
     }
   ];
 
