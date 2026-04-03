@@ -54,20 +54,50 @@
         </div>
 
         <div class="form-group">
-          <label for="treatment">Tratamiento</label>
-          <select
-            id="treatment"
-            name="treatment"
-            [(ngModel)]="formData.treatment"
-            required
+          <label>Tratamiento</label>
+          <div
+            class="custom-select"
+            [class.custom-select--open]="selectOpen"
+            [class.custom-select--error]="selectTouched && !formData.treatment"
           >
-            <option value="" disabled>Selecciona una opción</option>
-            <optgroup *ngFor="let group of treatmentOptionsByCategory" [label]="group.label">
-              <option *ngFor="let option of group.options" [value]="option.value">
-                {{ option.label }}
-              </option>
-            </optgroup>
-          </select>
+            <button
+              type="button"
+              class="custom-select__trigger"
+              [class.custom-select__trigger--placeholder]="!formData.treatment"
+              (click)="toggleSelect()"
+              [attr.aria-expanded]="selectOpen"
+              aria-haspopup="listbox"
+            >
+              <span>{{ selectedTreatmentLabel || 'Selecciona una opción' }}</span>
+              <svg class="custom-select__chevron" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path fill="currentColor" d="M7 10l5 5 5-5z"/>
+              </svg>
+            </button>
+
+            <div class="custom-select__panel" *ngIf="selectOpen" role="listbox">
+              <div *ngFor="let group of treatmentOptionsByCategory" class="custom-select__group">
+                <p class="custom-select__group-label">{{ group.label }}</p>
+                <button
+                  *ngFor="let option of group.options"
+                  type="button"
+                  class="custom-select__option"
+                  [class.custom-select__option--selected]="formData.treatment === option.value"
+                  (click)="selectOption(option.value)"
+                  role="option"
+                  [attr.aria-selected]="formData.treatment === option.value"
+                >
+                  <span>{{ option.label }}</span>
+                  <svg *ngIf="formData.treatment === option.value" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                    <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="custom-select__error-msg" *ngIf="selectTouched && !formData.treatment">
+            Por favor, selecciona un tratamiento.
+          </p>
           <p class="field-help">
             Selecciona la opción que te interesa y te contactaremos por WhatsApp para confirmar disponibilidad y
             siguientes pasos.

@@ -300,7 +300,7 @@
 .back-to-top {
   position: fixed;
   right: 24px;
-  bottom: 100px;
+  bottom: 244px;
   z-index: 1300;
 
   display: flex;
@@ -338,7 +338,7 @@
 @media (max-width: 768px) {
   .back-to-top {
     right: 16px;
-    bottom: calc(148px + env(safe-area-inset-bottom));
+    bottom: calc(262px + env(safe-area-inset-bottom));
     width: 40px;
     height: 40px;
   }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
@@ -22,9 +22,12 @@ interface TreatmentOption {
 export class BookingFormComponent implements OnInit {
   private readonly languageService = inject(LanguageService);
   private readonly tarifasService = inject(TarifasService);
+  private readonly elementRef = inject(ElementRef);
 
   showPromoCode = false;
   promoCode = '';
+  selectOpen = false;
+  selectTouched = false;
 
   treatmentOptions: TreatmentOption[] = [];
 
@@ -35,6 +38,13 @@ export class BookingFormComponent implements OnInit {
     treatment: '',
     message: ''
   };
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.selectOpen = false;
+    }
+  }
 
   async ngOnInit(): Promise<void> {
     try {
@@ -84,7 +94,22 @@ export class BookingFormComponent implements OnInit {
     return 'Te contactaremos para confirmar disponibilidad y horario.';
   }
 
+  toggleSelect(): void {
+    this.selectOpen = !this.selectOpen;
+  }
+
+  selectOption(value: string): void {
+    this.formData.treatment = value;
+    this.selectOpen = false;
+    this.selectTouched = true;
+  }
+
   sendWhatsApp(): void {
+    if (!this.formData.treatment) {
+      this.selectTouched = true;
+      return;
+    }
+
     const phoneNumber = '34662561672';
     const selectedLanguage = this.languageService.selectedLanguage;
 
