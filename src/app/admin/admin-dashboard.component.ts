@@ -208,6 +208,8 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       target.checked = tarifa.activo;
       this.message = 'Error al actualizar el estado.';
+    } finally {
+      this.flushUiState();
     }
   }
 
@@ -359,6 +361,8 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       target.checked = faq.activo;
       this.faqMessage = 'Error al actualizar el estado.';
+    } finally {
+      this.flushUiState();
     }
   }
 
@@ -486,6 +490,8 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       target.checked = post.activo;
       this.blogMessage = 'Error al actualizar el estado.';
+    } finally {
+      this.flushUiState();
     }
   }
 
@@ -513,6 +519,8 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       target.checked = post.destacado;
       this.blogMessage = 'Error al actualizar el destacado.';
+    } finally {
+      this.flushUiState();
     }
   }
 
