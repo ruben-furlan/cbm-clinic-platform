@@ -4,10 +4,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
 import { FaqsService, Faq } from '../core/services/faqs.service';
+import { BlogService, BlogPost, BlogContentBlock, BlogContentBlockType } from '../core/services/blog.service';
 import { supabase } from '../core/supabase.client';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs';
+type Seccion = 'tarifas' | 'faqs' | 'blog';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -55,12 +56,36 @@ export class AdminDashboardComponent implements OnInit {
 
   readonly faqForm;
 
+  // ── Blog ──────────────────────────────────────────────────────────────────
+  blogPosts: BlogPost[] = [];
+  blogLoading = false;
+  blogSaving = false;
+  blogDeletingId: string | null = null;
+  blogError = '';
+  blogMessage = '';
+
+  isBlogModalOpen = false;
+  editingPost: BlogPost | null = null;
+  blogBlocks: BlogContentBlock[] = [];
+
+  readonly blogForm;
+
+  readonly blockTypeLabels: Record<BlogContentBlockType, string> = {
+    subtitulo: 'Subtítulo',
+    parrafo: 'Párrafo',
+    lista: 'Lista',
+    cta: 'CTA'
+  };
+
+  readonly categoriasSugeridas = ['Dolor lumbar', 'Dolor cervical', 'Técnicas utilizadas', 'Pilates', 'Lesiones deportivas'];
+
   private readonly requestTimeoutMs = 12000;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly tarifasService: TarifasService,
     private readonly faqsService: FaqsService,
+    private readonly blogService: BlogService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -82,7 +107,19 @@ export class AdminDashboardComponent implements OnInit {
       orden: [0, Validators.required],
       activo: [true]
     });
+
+    this.blogForm = this.fb.nonNullable.group({
+      titulo: ['', Validators.required],
+      categoria: ['', Validators.required],
+      resumen: ['', Validators.required],
+      destacado: [false],
+      activo: [true],
+      orden: [0, Validators.required],
+      slug: ['']
+    });
   }
+
+  // ── Getters ───────────────────────────────────────────────────────────────
 
   get tarifasFiltradas(): Tarifa[] {
     if (this.filtro === 'todas') {
@@ -100,16 +137,19 @@ export class AdminDashboardComponent implements OnInit {
     return this.loading && !this.tarifas.length;
   }
 
+  // ── Lifecycle ─────────────────────────────────────────────────────────────
+
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await this.loadTarifas();
-    await this.loadFaqs();
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts()]);
   }
 
   setSeccion(seccion: Seccion): void {
     this.seccion = seccion;
   }
+
+  // ── Utilities ─────────────────────────────────────────────────────────────
 
   private withTimeout<T>(promise: Promise<T>): Promise<T> {
     return Promise.race([
@@ -118,20 +158,27 @@ export class AdminDashboardComponent implements OnInit {
     ]);
   }
 
+  private flushUiState(): void {
+    this.zone.run(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  // ── Tarifas ───────────────────────────────────────────────────────────────
+
   private sortTarifas(tarifas: Tarifa[]): Tarifa[] {
     return [...tarifas].sort((a, b) => {
       if (a.categoria !== b.categoria) {
         return a.categoria.localeCompare(b.categoria);
       }
+
       return a.orden - b.orden;
     });
   }
-
-  private sortFaqs(faqs: Faq[]): Faq[] {
-    return [...faqs].sort((a, b) => a.orden - b.orden);
-  }
-
-  // ── Tarifas ───────────────────────────────────────────────────────────────
 
   async loadTarifas(): Promise<void> {
     this.loading = true;
@@ -203,12 +250,6 @@ export class AdminDashboardComponent implements OnInit {
 
     this.isModalOpen = false;
     this.editingTarifa = null;
-  }
-
-  private flushUiState(): void {
-    this.zone.run(() => {
-      this.cdr.detectChanges();
-    });
   }
 
   async saveTarifa(): Promise<void> {
@@ -300,7 +341,7 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       const data = await this.withTimeout(this.faqsService.getAllFaqs());
-      this.faqs = this.sortFaqs(data);
+      this.faqs = [...data].sort((a, b) => a.orden - b.orden);
     } catch {
       this.faqError = 'No se pudieron cargar las preguntas frecuentes. Recarga la página e inténtalo de nuevo.';
     } finally {
@@ -367,11 +408,11 @@ export class AdminDashboardComponent implements OnInit {
     try {
       if (this.editingFaq) {
         const updated = await this.withTimeout(this.faqsService.updateFaq(this.editingFaq.id, payload));
-        this.faqs = this.sortFaqs(this.faqs.map((item) => (item.id === updated.id ? updated : item)));
+        this.faqs = [...this.faqs.map((item) => (item.id === updated.id ? updated : item))].sort((a, b) => a.orden - b.orden);
         this.faqMessage = 'Pregunta actualizada correctamente.';
       } else {
         const created = await this.withTimeout(this.faqsService.createFaq(payload));
-        this.faqs = this.sortFaqs([created, ...this.faqs]);
+        this.faqs = [...[created, ...this.faqs]].sort((a, b) => a.orden - b.orden);
         this.faqMessage = 'Pregunta creada correctamente.';
       }
 
@@ -412,6 +453,259 @@ export class AdminDashboardComponent implements OnInit {
       this.faqMessage = 'No se pudo eliminar la pregunta.';
     } finally {
       this.faqDeletingId = null;
+    }
+  }
+
+  // ── Blog ──────────────────────────────────────────────────────────────────
+
+  private sortBlogPosts(posts: BlogPost[]): BlogPost[] {
+    return [...posts].sort((a, b) => a.orden - b.orden);
+  }
+
+  async loadBlogPosts(): Promise<void> {
+    this.blogLoading = true;
+    this.blogError = '';
+
+    try {
+      const data = await this.withTimeout(this.blogService.getAllPosts());
+      this.blogPosts = this.sortBlogPosts(data);
+    } catch {
+      this.blogError = 'No se pudieron cargar los posts. Recarga la página e inténtalo de nuevo.';
+    } finally {
+      this.blogLoading = false;
+    }
+  }
+
+  async toggleBlogActivo(post: BlogPost, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+
+    try {
+      const updated = await this.withTimeout(this.blogService.toggleActivo(post.id, target.checked));
+      this.blogPosts = this.blogPosts.map((p) => (p.id === updated.id ? updated : p));
+      this.blogMessage = 'Estado actualizado correctamente.';
+    } catch {
+      target.checked = post.activo;
+      this.blogMessage = 'Error al actualizar el estado.';
+    }
+  }
+
+  async toggleBlogDestacado(post: BlogPost, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+
+    if (target.checked) {
+      const current = this.blogPosts.find((p) => p.destacado && p.id !== post.id);
+      if (current) {
+        try {
+          await this.withTimeout(this.blogService.toggleDestacado(current.id, false));
+          this.blogPosts = this.blogPosts.map((p) => (p.id === current.id ? { ...p, destacado: false } : p));
+        } catch {
+          target.checked = false;
+          this.blogMessage = 'Error al actualizar el destacado.';
+          return;
+        }
+      }
+    }
+
+    try {
+      const updated = await this.withTimeout(this.blogService.toggleDestacado(post.id, target.checked));
+      this.blogPosts = this.blogPosts.map((p) => (p.id === updated.id ? updated : p));
+      this.blogMessage = 'Destacado actualizado.';
+    } catch {
+      target.checked = post.destacado;
+      this.blogMessage = 'Error al actualizar el destacado.';
+    }
+  }
+
+  openBlogCreateModal(): void {
+    this.editingPost = null;
+    this.blogBlocks = [];
+    this.blogForm.reset({ titulo: '', categoria: '', resumen: '', destacado: false, activo: true, orden: 0, slug: '' });
+    this.blogMessage = '';
+    this.isBlogModalOpen = true;
+  }
+
+  openBlogEditModal(post: BlogPost): void {
+    this.editingPost = post;
+    this.blogBlocks = JSON.parse(JSON.stringify(post.contenido)) as BlogContentBlock[];
+    this.blogForm.reset({
+      titulo: post.titulo,
+      categoria: post.categoria,
+      resumen: post.resumen,
+      destacado: post.destacado,
+      activo: post.activo,
+      orden: post.orden,
+      slug: post.slug ?? ''
+    });
+    this.blogMessage = '';
+    this.isBlogModalOpen = true;
+  }
+
+  closeBlogModal(): void {
+    if (this.blogSaving) {
+      return;
+    }
+
+    this.isBlogModalOpen = false;
+    this.editingPost = null;
+    this.blogBlocks = [];
+  }
+
+  // ── Block editor ──────────────────────────────────────────────────────────
+
+  addBlogBlock(tipo: BlogContentBlockType): void {
+    const block: BlogContentBlock = tipo === 'lista' ? { tipo, items: [''] } : { tipo, texto: '' };
+    this.blogBlocks = [...this.blogBlocks, block];
+  }
+
+  removeBlogBlock(index: number): void {
+    this.blogBlocks = this.blogBlocks.filter((_, i) => i !== index);
+  }
+
+  moveBlogBlockUp(index: number): void {
+    if (index === 0) {
+      return;
+    }
+
+    const blocks = [...this.blogBlocks];
+    [blocks[index - 1], blocks[index]] = [blocks[index], blocks[index - 1]];
+    this.blogBlocks = blocks;
+  }
+
+  moveBlogBlockDown(index: number): void {
+    if (index === this.blogBlocks.length - 1) {
+      return;
+    }
+
+    const blocks = [...this.blogBlocks];
+    [blocks[index], blocks[index + 1]] = [blocks[index + 1], blocks[index]];
+    this.blogBlocks = blocks;
+  }
+
+  updateBlogBlockText(index: number, value: string): void {
+    // Mutación en sitio para no resetear el cursor del textarea
+    this.blogBlocks[index].texto = value;
+  }
+
+  addListItem(blockIndex: number): void {
+    const block = this.blogBlocks[blockIndex];
+    if (!block.items) {
+      block.items = [];
+    }
+
+    block.items = [...block.items, ''];
+    // Forzar detección de cambio en la referencia del bloque
+    this.blogBlocks = [...this.blogBlocks];
+  }
+
+  updateListItem(blockIndex: number, itemIndex: number, value: string): void {
+    const block = this.blogBlocks[blockIndex];
+    if (block.items) {
+      block.items[itemIndex] = value;
+    }
+  }
+
+  removeListItem(blockIndex: number, itemIndex: number): void {
+    const block = this.blogBlocks[blockIndex];
+    if (block.items && block.items.length > 1) {
+      block.items = block.items.filter((_, j) => j !== itemIndex);
+      this.blogBlocks = [...this.blogBlocks];
+    }
+  }
+
+  private generateSlug(titulo: string): string {
+    return titulo
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-');
+  }
+
+  autoFillSlug(): void {
+    const titulo = this.blogForm.controls.titulo.value;
+    if (titulo) {
+      this.blogForm.controls.slug.setValue(this.generateSlug(titulo));
+    }
+  }
+
+  async saveBlogPost(): Promise<void> {
+    if (this.blogSaving) {
+      return;
+    }
+
+    this.blogMessage = '';
+
+    if (this.blogForm.invalid) {
+      this.blogForm.markAllAsTouched();
+      return;
+    }
+
+    this.blogSaving = true;
+    const formValue = this.blogForm.getRawValue();
+    const payload = {
+      ...formValue,
+      slug: formValue.slug.trim() || null,
+      contenido: this.blogBlocks
+    };
+
+    try {
+      if (payload.destacado) {
+        const current = this.blogPosts.find((p) => p.destacado && p.id !== this.editingPost?.id);
+        if (current) {
+          await this.withTimeout(this.blogService.toggleDestacado(current.id, false));
+          this.blogPosts = this.blogPosts.map((p) => (p.id === current.id ? { ...p, destacado: false } : p));
+        }
+      }
+
+      if (this.editingPost) {
+        const updated = await this.withTimeout(this.blogService.updatePost(this.editingPost.id, payload));
+        this.blogPosts = this.sortBlogPosts(this.blogPosts.map((p) => (p.id === updated.id ? updated : p)));
+        this.blogMessage = 'Post actualizado correctamente.';
+      } else {
+        const created = await this.withTimeout(this.blogService.createPost(payload));
+        this.blogPosts = this.sortBlogPosts([created, ...this.blogPosts]);
+        this.blogMessage = 'Post creado correctamente.';
+      }
+
+      this.isBlogModalOpen = false;
+      this.editingPost = null;
+      this.blogBlocks = [];
+      this.blogForm.reset({ titulo: '', categoria: '', resumen: '', destacado: false, activo: true, orden: 0, slug: '' });
+      this.flushUiState();
+    } catch {
+      this.blogMessage = 'No se pudo guardar el post.';
+      this.flushUiState();
+    } finally {
+      this.zone.run(() => {
+        this.blogSaving = false;
+        this.flushUiState();
+      });
+    }
+  }
+
+  async deleteBlogPost(post: BlogPost): Promise<void> {
+    if (this.blogDeletingId) {
+      return;
+    }
+
+    const confirmed = window.confirm(`¿Seguro que quieres eliminar "${post.titulo}"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    this.blogDeletingId = post.id;
+    const previous = [...this.blogPosts];
+    this.blogPosts = this.blogPosts.filter((p) => p.id !== post.id);
+
+    try {
+      await this.withTimeout(this.blogService.deletePost(post.id));
+      this.blogMessage = 'Post eliminado.';
+    } catch {
+      this.blogPosts = previous;
+      this.blogMessage = 'No se pudo eliminar el post.';
+    } finally {
+      this.blogDeletingId = null;
     }
   }
 

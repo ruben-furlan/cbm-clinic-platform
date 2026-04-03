@@ -11,6 +11,7 @@
   <div class="section-tabs">
     <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">Tarifas</button>
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
+    <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -114,9 +115,62 @@
 
     <p class="status" *ngIf="!faqLoading && !faqs.length && !faqError">No hay preguntas frecuentes todavía.</p>
   </ng-container>
+
+  <!-- ═══════════════════════════════ BLOG ══════════════════════════════════ -->
+  <ng-container *ngIf="seccion === 'blog'">
+    <div class="toolbar">
+      <span></span>
+      <button type="button" class="btn-primary" (click)="openBlogCreateModal()" [disabled]="blogSaving || !!blogDeletingId">Nuevo post</button>
+    </div>
+
+    <p class="status error" *ngIf="blogError">{{ blogError }}</p>
+    <p class="status message" *ngIf="blogMessage">{{ blogMessage }}</p>
+
+    <p class="status" *ngIf="blogLoading && !blogPosts.length">Cargando posts...</p>
+
+    <div class="table-wrap" *ngIf="blogPosts.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Destacado</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let post of blogPosts">
+            <td>{{ post.orden }}</td>
+            <td>{{ post.titulo }}</td>
+            <td>{{ post.categoria }}</td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="post.destacado" (change)="toggleBlogDestacado(post, $event)" [disabled]="blogSaving || !!blogDeletingId" />
+                <span></span>
+              </label>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="post.activo" (change)="toggleBlogActivo(post, $event)" [disabled]="blogSaving || !!blogDeletingId" />
+                <span></span>
+              </label>
+            </td>
+            <td class="actions">
+              <button type="button" class="btn-ghost" (click)="openBlogEditModal(post)" [disabled]="blogSaving || !!blogDeletingId">Editar</button>
+              <button type="button" class="btn-danger" (click)="deleteBlogPost(post)" [disabled]="blogSaving || !!blogDeletingId">{{ blogDeletingId === post.id ? 'Eliminando...' : 'Eliminar' }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="status" *ngIf="!blogLoading && !blogPosts.length && !blogError">No hay posts todavía.</p>
+  </ng-container>
 </section>
 
-<!-- Modal tarifas -->
+<!-- ═══════════════ Modal tarifas ════════════════ -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
   <section class="modal-card" (click)="$event.stopPropagation()">
     <h2>{{ editingTarifa ? 'Editar tarifa' : 'Nueva tarifa' }}</h2>
@@ -181,7 +235,7 @@
   </section>
 </div>
 
-<!-- Modal FAQs -->
+<!-- ═══════════════ Modal FAQs ════════════════ -->
 <div class="modal-overlay" *ngIf="isFaqModalOpen" (click)="closeFaqModal()">
   <section class="modal-card" (click)="$event.stopPropagation()">
     <h2>{{ editingFaq ? 'Editar pregunta' : 'Nueva pregunta' }}</h2>
@@ -210,6 +264,121 @@
       <div class="modal-actions">
         <button type="button" class="btn-ghost" (click)="closeFaqModal()" [disabled]="faqSaving">Cancelar</button>
         <button type="submit" class="btn-primary" [disabled]="faqSaving">{{ faqSaving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!-- ═══════════════ Modal Blog ════════════════ -->
+<div class="modal-overlay" *ngIf="isBlogModalOpen" (click)="closeBlogModal()">
+  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
+    <h2>{{ editingPost ? 'Editar post' : 'Nuevo post' }}</h2>
+
+    <form [formGroup]="blogForm" (ngSubmit)="saveBlogPost()" class="modal-form">
+
+      <!-- Metadatos -->
+      <label>
+        Título
+        <input type="text" formControlName="titulo" />
+      </label>
+
+      <label>
+        Categoría
+        <input type="text" formControlName="categoria" list="categorias-sugeridas" />
+        <datalist id="categorias-sugeridas">
+          <option *ngFor="let cat of categoriasSugeridas" [value]="cat"></option>
+        </datalist>
+      </label>
+
+      <label>
+        Resumen
+        <textarea rows="3" formControlName="resumen"></textarea>
+      </label>
+
+      <div class="grid-two">
+        <label>
+          Orden
+          <input type="number" formControlName="orden" />
+        </label>
+
+        <label>
+          Slug (URL)
+          <div class="slug-row">
+            <input type="text" formControlName="slug" placeholder="auto" />
+            <button type="button" class="btn-ghost btn-sm" (click)="autoFillSlug()">← Del título</button>
+          </div>
+        </label>
+      </div>
+
+      <div class="inline-checks">
+        <label class="inline-check">
+          <input type="checkbox" formControlName="destacado" />
+          Destacado
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="activo" />
+          Activo
+        </label>
+      </div>
+
+      <!-- Editor de bloques -->
+      <div class="block-section">
+        <p class="block-section-title">Contenido</p>
+
+        <div class="block-toolbar">
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('subtitulo')">+ Subtítulo</button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('parrafo')">+ Párrafo</button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('lista')">+ Lista</button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('cta')">+ CTA</button>
+        </div>
+
+        <p class="block-empty" *ngIf="!blogBlocks.length">Sin bloques. Añade contenido con los botones de arriba.</p>
+
+        <div class="block-editor">
+          <div class="block-row" *ngFor="let block of blogBlocks; let i = index; trackBy: trackByIndex">
+            <div class="block-header">
+              <span class="block-type-label">{{ blockTypeLabels[block.tipo] }}</span>
+              <div class="block-controls">
+                <button type="button" class="btn-ghost btn-xs" (click)="moveBlogBlockUp(i)" [disabled]="i === 0" title="Subir">↑</button>
+                <button type="button" class="btn-ghost btn-xs" (click)="moveBlogBlockDown(i)" [disabled]="i === blogBlocks.length - 1" title="Bajar">↓</button>
+                <button type="button" class="btn-danger btn-xs" (click)="removeBlogBlock(i)" title="Eliminar bloque">×</button>
+              </div>
+            </div>
+
+            <!-- Bloques de texto -->
+            <textarea
+              *ngIf="block.tipo !== 'lista'"
+              [rows]="block.tipo === 'parrafo' ? 4 : 2"
+              [value]="block.texto ?? ''"
+              (input)="updateBlogBlockText(i, $any($event.target).value)"
+            ></textarea>
+
+            <!-- Bloque lista -->
+            <div *ngIf="block.tipo === 'lista'" class="list-items">
+              <div class="list-item-row" *ngFor="let item of block.items; let j = index; trackBy: trackByIndex">
+                <input
+                  type="text"
+                  [value]="item"
+                  (input)="updateListItem(i, j, $any($event.target).value)"
+                  placeholder="Ítem de lista..."
+                />
+                <button
+                  type="button"
+                  class="btn-danger btn-xs"
+                  (click)="removeListItem(i, j)"
+                  [disabled]="(block.items?.length ?? 0) <= 1"
+                  title="Eliminar ítem"
+                >×</button>
+              </div>
+              <button type="button" class="btn-ghost btn-sm" (click)="addListItem(i)">+ Añadir ítem</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="closeBlogModal()" [disabled]="blogSaving">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="blogSaving">{{ blogSaving ? 'Guardando...' : 'Guardar' }}</button>
       </div>
     </form>
   </section>

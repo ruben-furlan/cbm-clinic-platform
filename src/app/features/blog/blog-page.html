@@ -9,7 +9,7 @@
   </div>
 </section>
 
-<section class="section blog-categories">
+<section class="section blog-categories" *ngIf="categories.length">
   <div class="container" appRevealOnScroll>
     <h2>Categorías</h2>
     <div class="category-chips">
@@ -18,24 +18,24 @@
   </div>
 </section>
 
-<section class="section featured-article">
+<section class="section featured-article" *ngIf="featuredPost">
   <div class="container" appRevealOnScroll>
     <article class="blog-card featured-card">
-      <p class="blog-tag">{{ featuredArticle.category }}</p>
-      <h2>{{ featuredArticle.title }}</h2>
-      <p class="article-intro">{{ featuredArticle.intro }}</p>
+      <p class="blog-tag">Artículo destacado</p>
+      <h2>{{ featuredPost.titulo }}</h2>
+      <p class="article-intro">{{ featuredPost.resumen }}</p>
 
-      <section *ngFor="let section of featuredArticle.sections" class="article-section">
-        <h3>{{ section.title }}</h3>
-        <ul>
-          <li *ngFor="let point of section.points">{{ point }}</li>
-        </ul>
-      </section>
+      <ng-container *ngFor="let bloque of featuredPost.contenido" [ngSwitch]="bloque.tipo">
+        <div *ngSwitchCase="'subtitulo'" class="article-section"><h3>{{ bloque.texto }}</h3></div>
+        <div *ngSwitchCase="'lista'" class="article-section">
+          <ul>
+            <li *ngFor="let item of bloque.items">{{ item }}</li>
+          </ul>
+        </div>
+        <p *ngSwitchCase="'parrafo'" class="article-intro">{{ bloque.texto }}</p>
+        <p *ngSwitchCase="'cta'" class="article-cta">{{ bloque.texto }}</p>
+      </ng-container>
 
-      <p class="article-cta">
-        ¿Te ocurre algo parecido?
-        En CBM Fisioterapia podemos ayudarte a evaluarlo en consulta.
-      </p>
       <a class="btn-primary btn-booking" routerLink="/" fragment="reserva">
         <span class="btn-icon" aria-hidden="true">💬</span>
         <span>Solicitar cita</span>
@@ -44,24 +44,24 @@
   </div>
 </section>
 
-<section class="section">
+<section class="section" *ngIf="posts.length">
   <div class="container articles-grid">
-    <article class="blog-card" *ngFor="let article of articles" appRevealOnScroll>
-      <p class="blog-tag">{{ article.category }}</p>
-      <h2>{{ article.title }}</h2>
-      <p class="article-intro">{{ article.intro }}</p>
+    <article class="blog-card" *ngFor="let post of posts" appRevealOnScroll>
+      <p class="blog-tag">{{ post.categoria }}</p>
+      <h2>{{ post.titulo }}</h2>
+      <p class="article-intro">{{ post.resumen }}</p>
 
-      <section *ngFor="let section of article.sections" class="article-section">
-        <h3>{{ section.title }}</h3>
-        <ul>
-          <li *ngFor="let point of section.points">{{ point }}</li>
-        </ul>
-      </section>
+      <ng-container *ngFor="let bloque of post.contenido" [ngSwitch]="bloque.tipo">
+        <div *ngSwitchCase="'subtitulo'" class="article-section"><h3>{{ bloque.texto }}</h3></div>
+        <div *ngSwitchCase="'lista'" class="article-section">
+          <ul>
+            <li *ngFor="let item of bloque.items">{{ item }}</li>
+          </ul>
+        </div>
+        <p *ngSwitchCase="'parrafo'" class="article-intro">{{ bloque.texto }}</p>
+        <p *ngSwitchCase="'cta'" class="article-cta">{{ bloque.texto }}</p>
+      </ng-container>
 
-      <p class="article-cta">
-        ¿Te ocurre algo parecido?
-        En CBM Fisioterapia podemos ayudarte a evaluarlo en consulta.
-      </p>
       <a class="btn-secondary" routerLink="/" fragment="reserva">Solicitar cita</a>
     </article>
   </div>

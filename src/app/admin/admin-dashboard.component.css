@@ -312,3 +312,128 @@ textarea:disabled {
     transform: rotate(360deg);
   }
 }
+
+/* ── Modal ancho (blog) ──────────────────────────────────────────────────── */
+
+.modal-card--wide {
+  width: min(720px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+/* ── Slug row ────────────────────────────────────────────────────────────── */
+
+.slug-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.slug-row input {
+  flex: 1;
+}
+
+/* ── Inline checks ───────────────────────────────────────────────────────── */
+
+.inline-checks {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* ── Block editor ────────────────────────────────────────────────────────── */
+
+.block-section {
+  border: 1px solid rgba(123, 77, 255, 0.15);
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.block-section-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 13px;
+  color: #574f6b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.block-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.block-editor {
+  display: grid;
+  gap: 8px;
+}
+
+.block-row {
+  border: 1px solid rgba(123, 77, 255, 0.18);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #faf9fd;
+  display: grid;
+  gap: 8px;
+}
+
+.block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.block-type-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7b4dff;
+  background: rgba(123, 77, 255, 0.1);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.block-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.block-empty {
+  margin: 0;
+  color: #9b94ab;
+  font-size: 13px;
+}
+
+/* ── List items ──────────────────────────────────────────────────────────── */
+
+.list-items {
+  display: grid;
+  gap: 6px;
+}
+
+.list-item-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.list-item-row input {
+  flex: 1;
+}
+
+/* ── Button size variants ────────────────────────────────────────────────── */
+
+.btn-sm {
+  padding: 6px 10px !important;
+  font-size: 13px !important;
+}
+
+.btn-xs {
+  padding: 3px 8px !important;
+  font-size: 13px !important;
+  line-height: 1.4;
+}
