@@ -75,6 +75,7 @@ export class Testimonials implements OnInit, OnDestroy {
   currentIndex = 0;
   nudgeActive = false;
   trackHeight = 0;
+  isMobile = window.innerWidth <= 768;
   expandedReviews = new Set<string>();
 
   private readonly GAP = 16;
@@ -92,7 +93,10 @@ export class Testimonials implements OnInit, OnDestroy {
   private readonly boundTouchMove = (e: TouchEvent): void => this.onTouchMove(e);
 
   private readonly boundResize = (): void => {
-    this.ngZone.run(() => this.updateSlideWidth());
+    this.ngZone.run(() => {
+      this.updateSlideWidth();
+      this.isMobile = window.innerWidth <= 768;
+    });
   };
 
   @ViewChild('carouselViewport', { static: false })

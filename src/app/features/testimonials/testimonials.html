@@ -54,11 +54,11 @@
                   </div>
                 </div>
 
-                <p [class.text-clamped]="!isExpanded(review.id) && review.content.length > 220">
+                <p [class.text-clamped]="isMobile && !isExpanded(review.id) && review.content.length > 220">
                   {{ review.content }}
                 </p>
                 <button
-                  *ngIf="review.content.length > 220"
+                  *ngIf="isMobile && review.content.length > 220"
                   class="read-more-btn"
                   type="button"
                   (click)="toggleExpanded(review.id); $event.stopPropagation()"
