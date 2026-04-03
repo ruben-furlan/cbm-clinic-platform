@@ -51,6 +51,8 @@
 /* Viewport: clips overflowing slides, showing the peek */
 .carousel__viewport{
   overflow: hidden;
+  touch-action: pan-y;
+  transition: height 300ms ease;
 }
 
 /* Nudge shell: receives the entry-hint animation without conflicting with
@@ -86,7 +88,7 @@
 /* ── Card ─────────────────────────────────────────────────────────────────── */
 
 .testimonial-card{
-  height: 100%;
+  height: auto;
   display: flex;
   flex-direction: column;
   background: rgba(255, 255, 255, 0.88);
@@ -147,6 +149,32 @@
   margin: 0;
   color: #585267;
   line-height: 1.72;
+}
+
+.text-clamped{
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.read-more-btn{
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #ff4fa3;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  align-self: flex-start;
+  transition: color 0.18s ease;
+}
+
+.read-more-btn:hover{
+  color: #7b4dff;
 }
 
 /* ── Arrows ───────────────────────────────────────────────────────────────── */
@@ -336,6 +364,10 @@
 }
 
 @media (prefers-reduced-motion: reduce){
+  .carousel__viewport{
+    transition: none;
+  }
+
   .carousel__track{
     transition: none;
   }
@@ -344,11 +376,9 @@
     animation: none;
   }
 
-  .carousel__dot{
-    transition: none;
-  }
-
+  .carousel__dot,
   .carousel__arrow,
+  .read-more-btn,
   .btn-google-reviews{
     transition: none;
   }

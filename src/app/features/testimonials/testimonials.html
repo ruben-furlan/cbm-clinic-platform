@@ -23,7 +23,13 @@
     >
       <!-- Stage: viewport + arrows share the same positioning context -->
       <div class="carousel__stage">
-        <div class="carousel__viewport" #carouselViewport>
+        <div
+          class="carousel__viewport"
+          #carouselViewport
+          [style.height]="trackHeight ? trackHeight + 'px' : null"
+          (touchstart)="onTouchStart($event)"
+          (touchend)="onTouchEnd($event)"
+        >
           <!-- Nudge shell: receives the entry-hint CSS animation -->
           <div class="carousel__nudge-shell" [class.is-nudging]="nudgeActive">
             <div class="carousel__track" [style.transform]="trackTransform">
@@ -48,7 +54,15 @@
                   </div>
                 </div>
 
-                <p>{{ review.content }}</p>
+                <p [class.text-clamped]="!isExpanded(review.id) && review.content.length > 220">
+                  {{ review.content }}
+                </p>
+                <button
+                  *ngIf="review.content.length > 220"
+                  class="read-more-btn"
+                  type="button"
+                  (click)="toggleExpanded(review.id); $event.stopPropagation()"
+                >{{ isExpanded(review.id) ? 'Ver menos' : 'Leer más' }}</button>
               </article>
             </div>
           </div>

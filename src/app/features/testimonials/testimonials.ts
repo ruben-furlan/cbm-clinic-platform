@@ -74,6 +74,8 @@ export class Testimonials implements OnInit, OnDestroy {
   // ── Carousel state ──────────────────────────────────────────────────────────
   currentIndex = 0;
   nudgeActive = false;
+  trackHeight = 0;
+  expandedReviews = new Set<string>();
 
   private readonly GAP = 16;
   private slideWidth = 0;
@@ -85,22 +87,9 @@ export class Testimonials implements OnInit, OnDestroy {
   private viewportEl: HTMLElement | null = null;
   private touchStartX = 0;
   private touchStartY = 0;
+  private isDragging = false;
 
-  private readonly boundTouchStart = (e: TouchEvent): void => {
-    this.touchStartX = e.touches[0].clientX;
-    this.touchStartY = e.touches[0].clientY;
-  };
-
-  private readonly boundTouchEnd = (e: TouchEvent): void => {
-    const dx = e.changedTouches[0].clientX - this.touchStartX;
-    const dy = e.changedTouches[0].clientY - this.touchStartY;
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
-      this.ngZone.run(() => {
-        dx < 0 ? this.next() : this.prev();
-        this.autoplayPaused = true;
-      });
-    }
-  };
+  private readonly boundTouchMove = (e: TouchEvent): void => this.onTouchMove(e);
 
   private readonly boundResize = (): void => {
     this.ngZone.run(() => this.updateSlideWidth());
@@ -190,14 +179,30 @@ export class Testimonials implements OnInit, OnDestroy {
 
   goTo(index: number): void {
     this.currentIndex = Math.max(0, Math.min(index, this.testimonials.length - 1));
+    this.updateTrackHeight();
   }
 
   next(): void {
     this.currentIndex = (this.currentIndex + 1) % this.testimonials.length;
+    this.updateTrackHeight();
   }
 
   prev(): void {
     this.currentIndex = (this.currentIndex - 1 + this.testimonials.length) % this.testimonials.length;
+    this.updateTrackHeight();
+  }
+
+  isExpanded(id: string): boolean {
+    return this.expandedReviews.has(id);
+  }
+
+  toggleExpanded(id: string): void {
+    if (this.expandedReviews.has(id)) {
+      this.expandedReviews.delete(id);
+    } else {
+      this.expandedReviews.add(id);
+    }
+    setTimeout(() => this.updateTrackHeight(), 0);
   }
 
   pauseAutoplay(): void {
@@ -216,15 +221,41 @@ export class Testimonials implements OnInit, OnDestroy {
     this.goTo(index);
     this.autoplayPaused = true;
   }
+
+  onTouchStart(e: TouchEvent): void {
+    this.touchStartX = e.touches[0].clientX;
+    this.touchStartY = e.touches[0].clientY;
+    this.isDragging = true;
+    this.pauseAutoplay();
+  }
+
+  onTouchMove(e: TouchEvent): void {
+    if (!this.isDragging) return;
+    const diffX = Math.abs(e.touches[0].clientX - this.touchStartX);
+    const diffY = Math.abs(e.touches[0].clientY - this.touchStartY);
+    if (diffX > diffY) {
+      e.preventDefault();
+    }
+  }
+
+  onTouchEnd(e: TouchEvent): void {
+    if (!this.isDragging) return;
+    this.isDragging = false;
+    const diffX = e.changedTouches[0].clientX - this.touchStartX;
+    const diffY = Math.abs(e.changedTouches[0].clientY - this.touchStartY);
+    if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+      diffX < 0 ? this.next() : this.prev();
+    }
+  }
   // ────────────────────────────────────────────────────────────────────────────
 
   private initCarousel(): void {
     if (!this.viewportEl) return;
 
     this.updateSlideWidth();
+    this.updateTrackHeight();
 
-    this.viewportEl.addEventListener('touchstart', this.boundTouchStart, { passive: true });
-    this.viewportEl.addEventListener('touchend', this.boundTouchEnd, { passive: true });
+    this.viewportEl.addEventListener('touchmove', this.boundTouchMove, { passive: false });
     window.addEventListener('resize', this.boundResize, { passive: true });
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -271,9 +302,18 @@ export class Testimonials implements OnInit, OnDestroy {
 
   private updateSlideWidth(): void {
     if (!this.viewportEl) return;
-    const firstSlide = this.viewportEl.querySelector('.carousel__slide') as HTMLElement | null;
+    const firstSlide = this.viewportEl.querySelector<HTMLElement>('.carousel__slide');
     if (firstSlide) {
       this.slideWidth = firstSlide.offsetWidth;
+    }
+  }
+
+  private updateTrackHeight(): void {
+    if (!this.viewportEl) return;
+    const slides = this.viewportEl.querySelectorAll<HTMLElement>('.carousel__slide');
+    const active = slides[this.currentIndex];
+    if (active) {
+      this.trackHeight = active.offsetHeight;
     }
   }
 
@@ -281,8 +321,7 @@ export class Testimonials implements OnInit, OnDestroy {
     this.stopAutoplay();
     this.observer?.disconnect();
     if (this.viewportEl) {
-      this.viewportEl.removeEventListener('touchstart', this.boundTouchStart);
-      this.viewportEl.removeEventListener('touchend', this.boundTouchEnd);
+      this.viewportEl.removeEventListener('touchmove', this.boundTouchMove);
     }
     window.removeEventListener('resize', this.boundResize);
   }
