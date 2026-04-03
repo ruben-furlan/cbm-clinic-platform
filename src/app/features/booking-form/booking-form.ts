@@ -3,12 +3,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
-import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
+import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
 
 interface TreatmentOption {
   value: string;
   label: string;
   type: 'session' | 'bundle' | 'pilates';
+  categoria: TarifaCategoria;
 }
 
 @Component({
@@ -42,6 +43,22 @@ export class BookingFormComponent implements OnInit {
     } catch {
       this.treatmentOptions = [];
     }
+  }
+
+  private readonly categoryLabels: Record<TarifaCategoria, string> = {
+    fisioterapia: 'Fisioterapia',
+    pilates: 'Clases de pilates',
+    promocion: 'Promociones activas'
+  };
+
+  get treatmentOptionsByCategory(): { label: string; options: TreatmentOption[] }[] {
+    const order: TarifaCategoria[] = ['fisioterapia', 'pilates', 'promocion'];
+    return order
+      .map((cat) => ({
+        label: this.categoryLabels[cat],
+        options: this.treatmentOptions.filter((o) => o.categoria === cat)
+      }))
+      .filter((group) => group.options.length > 0);
   }
 
   get selectedTreatmentLabel(): string {
@@ -154,7 +171,8 @@ export class BookingFormComponent implements OnInit {
     return {
       value: tarifa.id,
       label: `${tarifa.nombre} — ${tarifa.precio}${tarifa.unidad}${suffix}`,
-      type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session'
+      type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session',
+      categoria: tarifa.categoria
     };
   }
 }

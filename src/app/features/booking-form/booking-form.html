@@ -62,9 +62,11 @@
             required
           >
             <option value="" disabled>Selecciona una opción</option>
-            <option *ngFor="let option of treatmentOptions" [value]="option.value">
-              {{ option.label }}
-            </option>
+            <optgroup *ngFor="let group of treatmentOptionsByCategory" [label]="group.label">
+              <option *ngFor="let option of group.options" [value]="option.value">
+                {{ option.label }}
+              </option>
+            </optgroup>
           </select>
           <p class="field-help">
             Selecciona la opción que te interesa y te contactaremos por WhatsApp para confirmar disponibilidad y
