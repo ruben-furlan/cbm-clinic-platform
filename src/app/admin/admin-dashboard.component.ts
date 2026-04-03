@@ -34,8 +34,6 @@ export class AdminDashboardComponent implements OnInit {
   ];
 
   readonly tarifaForm;
-  private readonly loadTimeoutMs = 12000;
-  private latestLoadRequestId = 0;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -66,10 +64,9 @@ export class AdminDashboardComponent implements OnInit {
     return this.tarifaForm.controls.categoria.value === 'promocion';
   }
 
-  get shouldBlockUi(): boolean {
-    return this.loading && !this.tarifasFiltradas.length;
+  get showInitialLoader(): boolean {
+    return this.loading && !this.tarifas.length;
   }
-
 
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
@@ -77,45 +74,21 @@ export class AdminDashboardComponent implements OnInit {
     await this.loadTarifas();
   }
 
-  private withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
-    return Promise.race([
-      promise,
-      new Promise<T>((_, reject) => {
-        setTimeout(() => reject(new Error('timeout')), timeoutMs);
-      })
-    ]);
-  }
-
   async loadTarifas(): Promise<void> {
-    const requestId = ++this.latestLoadRequestId;
     this.loading = true;
     this.error = '';
 
     try {
-      const categoria = this.filtro === 'todas' ? undefined : this.filtro;
-      const data = await this.withTimeout(this.tarifasService.getTarifasAdmin(categoria), this.loadTimeoutMs);
-
-      if (requestId !== this.latestLoadRequestId) {
-        return;
-      }
-
-      this.tarifas = data;
+      this.tarifas = await this.tarifasService.getTarifasAdmin();
     } catch {
-      if (requestId !== this.latestLoadRequestId) {
-        return;
-      }
-
       this.error = 'No se pudieron cargar las tarifas. Recarga la página e inténtalo de nuevo.';
     } finally {
-      if (requestId === this.latestLoadRequestId) {
-        this.loading = false;
-      }
+      this.loading = false;
     }
   }
 
-  async setFiltro(filtro: FiltroCategoria): Promise<void> {
+  setFiltro(filtro: FiltroCategoria): void {
     this.filtro = filtro;
-    await this.loadTarifas();
   }
 
   async toggleActivo(tarifa: Tarifa, event: Event): Promise<void> {
