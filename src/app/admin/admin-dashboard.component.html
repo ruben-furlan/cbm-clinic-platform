@@ -1,0 +1,128 @@
+<section class="admin-dashboard">
+  <header class="admin-header">
+    <h1>Panel CBM · Tarifas</h1>
+    <div class="admin-user">
+      <span>{{ userEmail }}</span>
+      <button type="button" class="btn-ghost" (click)="signOut()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="tabs" role="tablist" aria-label="Filtro de categorías">
+      <button
+        type="button"
+        *ngFor="let tab of categoriaTabs"
+        [class.active]="filtro === tab.value"
+        (click)="setFiltro(tab.value)"
+      >
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <button type="button" class="btn-primary" (click)="openCreateModal()">Nueva tarifa</button>
+  </div>
+
+  <p class="status error" *ngIf="error">{{ error }}</p>
+  <p class="status message" *ngIf="message">{{ message }}</p>
+
+  <div class="table-wrap" *ngIf="!loading; else loadingTpl">
+    <table>
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let tarifa of tarifasFiltradas">
+          <td>{{ tarifa.categoria }}</td>
+          <td>{{ tarifa.nombre }}</td>
+          <td>{{ tarifa.descripcion || '—' }}</td>
+          <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
+          <td>
+            <label class="switch">
+              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" />
+              <span></span>
+            </label>
+          </td>
+          <td class="actions">
+            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)">Editar</button>
+            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #loadingTpl>
+    <p class="status">Cargando tarifas...</p>
+  </ng-template>
+</section>
+
+<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+  <section class="modal-card" (click)="$event.stopPropagation()">
+    <h2>{{ editingTarifa ? 'Editar tarifa' : 'Nueva tarifa' }}</h2>
+
+    <form [formGroup]="tarifaForm" (ngSubmit)="saveTarifa()" class="modal-form">
+      <label>
+        Categoría
+        <select formControlName="categoria">
+          <option value="fisioterapia">Fisioterapia</option>
+          <option value="pilates">Pilates</option>
+          <option value="promocion">Promoción</option>
+        </select>
+      </label>
+
+      <label>
+        Nombre
+        <input type="text" formControlName="nombre" />
+      </label>
+
+      <label>
+        Descripción
+        <textarea rows="3" formControlName="descripcion"></textarea>
+      </label>
+
+      <div class="grid-two">
+        <label>
+          Precio
+          <input type="number" formControlName="precio" min="0" step="0.01" />
+        </label>
+
+        <label>
+          Unidad
+          <select formControlName="unidad">
+            <option value="€">€</option>
+            <option value="€/mes">€/mes</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid-two">
+        <label>
+          Orden
+          <input type="number" formControlName="orden" />
+        </label>
+
+        <label *ngIf="isPromoSelected">
+          Fecha fin promo
+          <input type="date" formControlName="fecha_fin_promo" />
+        </label>
+      </div>
+
+      <label class="inline-check">
+        <input type="checkbox" formControlName="activo" />
+        Activo
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </form>
+  </section>
+</div>
