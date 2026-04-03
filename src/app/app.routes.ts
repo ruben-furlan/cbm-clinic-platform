@@ -6,6 +6,9 @@ import { TreatmentsPage } from './features/treatments/treatments-page';
 import { SeoPageComponent } from './features/seo-pages/seo-page.component';
 import { DisplayComponent } from './pages/display/display.component';
 import { EspacioCbmPage } from './features/espacio-cbm/espacio-cbm-page';
+import { adminAuthGuard } from './admin/admin-auth.guard';
+import { AdminLoginComponent } from './admin/admin-login.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard.component';
 
 export const routes: Routes = [
   {
@@ -41,7 +44,20 @@ export const routes: Routes = [
     path: 'tratamientos/:categoria',
     component: TreatmentsPage
   },
-
+  {
+    path: 'admin',
+    pathMatch: 'full',
+    redirectTo: 'admin/login'
+  },
+  {
+    path: 'admin/login',
+    component: AdminLoginComponent
+  },
+  {
+    path: 'admin/dashboard',
+    component: AdminDashboardComponent,
+    canActivate: [adminAuthGuard]
+  },
   {
     path: 'fisioterapia-dolor-lumbar-terrassa',
     component: SeoPageComponent
@@ -57,5 +73,5 @@ export const routes: Routes = [
   {
     path: 'pilates-terapeutico-terrassa',
     component: SeoPageComponent
-  },
+  }
 ];

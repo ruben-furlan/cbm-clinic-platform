@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
-import {NgFor, NgIf} from '@angular/common';
-import {RevealOnScrollDirective} from '../../shared/directives/reveal-on-scroll.directive';
+import { Component, OnInit } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
+import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
 
 interface PricingItem {
   concept: string;
@@ -21,50 +22,49 @@ interface PricingCard {
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
-export class PricingComponent {
-  readonly pricingCards: PricingCard[] = [
-    {
-      title: 'Fisioterapia',
-      items: [
-        {
-          concept: 'Sesión individual',
-          price: '60€'
-        },
-        {
-          concept: 'Bono 5 sesiones',
-          price: '250€',
-          microtext: '50€ por sesión'
-        }
-      ]
-    },
-    {
-      title: 'Clases de pilates',
-      items: [
-        {
-          concept: '1 vez por semana',
-          price: '48€/mes'
-        },
-        {
-          concept: '2 veces por semana',
-          price: '65€/mes'
-        }
-      ]
-    },
-    {
-      title: 'Promociones activas',
-      items: [
-        {
-          concept: 'Masaje relajante',
-          price: '45€',
-          microtext: 'Válido hasta el 30 de Abril 2026'
-        },
-        {
-          concept: 'Jubilados bono 10 sesiones',
-          price: '400€',
-          microtext: '40€ por sesión · Válido hasta el 30 de Mayo 2026'
-        }
-      ],
-      note: 'Promociones y cupones no acumulables'
+export class PricingComponent implements OnInit {
+  pricingCards: PricingCard[] = [];
+
+  constructor(private readonly tarifasService: TarifasService) {}
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const tarifas = await this.tarifasService.getTarifas();
+      this.pricingCards = this.mapTarifasToCards(tarifas);
+    } catch {
+      this.pricingCards = this.mapTarifasToCards([]);
     }
-  ];
+  }
+
+  private mapTarifasToCards(tarifas: Tarifa[]): PricingCard[] {
+    const groups: Record<'fisioterapia' | 'pilates' | 'promocion', Tarifa[]> = {
+      fisioterapia: tarifas.filter((tarifa) => tarifa.categoria === 'fisioterapia'),
+      pilates: tarifas.filter((tarifa) => tarifa.categoria === 'pilates'),
+      promocion: tarifas.filter((tarifa) => tarifa.categoria === 'promocion')
+    };
+
+    return [
+      {
+        title: 'Fisioterapia',
+        items: groups.fisioterapia.map((tarifa) => this.toPricingItem(tarifa))
+      },
+      {
+        title: 'Clases de pilates',
+        items: groups.pilates.map((tarifa) => this.toPricingItem(tarifa))
+      },
+      {
+        title: 'Promociones activas',
+        items: groups.promocion.map((tarifa) => this.toPricingItem(tarifa)),
+        note: 'Promociones y cupones no acumulables'
+      }
+    ];
+  }
+
+  private toPricingItem(tarifa: Tarifa): PricingItem {
+    return {
+      concept: tarifa.nombre,
+      price: `${tarifa.precio}${tarifa.unidad}`,
+      microtext: tarifa.descripcion ?? undefined
+    };
+  }
 }

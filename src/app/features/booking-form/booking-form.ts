@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
+import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
+
+interface TreatmentOption {
+  value: string;
+  label: string;
+  type: 'session' | 'bundle' | 'pilates';
+}
 
 @Component({
   selector: 'app-booking-form',
@@ -11,44 +18,14 @@ import { LanguageService } from '../../core/language/language.service';
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css']
 })
-export class BookingFormComponent {
+export class BookingFormComponent implements OnInit {
   private readonly languageService = inject(LanguageService);
+  private readonly tarifasService = inject(TarifasService);
 
   showPromoCode = false;
   promoCode = '';
 
-  readonly treatmentOptions = [
-    {
-      value: 'fisioterapia-individual',
-      label: 'Fisioterapia — sesión individual (60€)',
-      type: 'session'
-    },
-    {
-      value: 'fisioterapia-bono-5',
-      label: 'Fisioterapia — bono 5 sesiones (250€)',
-      type: 'bundle'
-    },
-    {
-      value: 'pilates-1',
-      label: 'Pilates terapéutico — 1 vez por semana (48€/mes)',
-      type: 'pilates'
-    },
-    {
-      value: 'pilates-2',
-      label: 'Pilates terapéutico — 2 veces por semana (65€/mes)',
-      type: 'pilates'
-    },
-    {
-      value: 'masaje-relajante',
-      label: 'Masaje relajante — promoción (45€)',
-      type: 'session'
-    },
-    {
-      value: 'bono-jubilados-10',
-      label: 'Bono jubilados — 10 sesiones (400€)',
-      type: 'bundle'
-    }
-  ] as const;
+  treatmentOptions: TreatmentOption[] = [];
 
   formData = {
     name: '',
@@ -57,6 +34,15 @@ export class BookingFormComponent {
     treatment: '',
     message: ''
   };
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const tarifas = await this.tarifasService.getTarifas();
+      this.treatmentOptions = tarifas.map((tarifa) => this.toTreatmentOption(tarifa));
+    } catch {
+      this.treatmentOptions = [];
+    }
+  }
 
   get selectedTreatmentLabel(): string {
     const selected = this.treatmentOptions.find((option) => option.value === this.formData.treatment);
@@ -133,14 +119,23 @@ export class BookingFormComponent {
     const t = textByLanguage[selectedLanguage];
 
     const surnameLine = this.formData.surname.trim()
-      ? `\n    ${t.surnameLabel}: ${this.formData.surname}`
+      ? `
+    ${t.surnameLabel}: ${this.formData.surname}`
       : '';
 
     const promoCodeLine = this.promoCode.trim()
-      ? `\n    ${t.promoLabel}: ${this.promoCode}`
+      ? `
+    ${t.promoLabel}: ${this.promoCode}`
       : '';
 
-    const rawMessage = `${t.greeting}\n\n    ${t.nameLabel}: ${this.formData.name}${surnameLine}\n    ${t.emailLabel}: ${this.formData.email}\n    ${t.treatmentLabel}: ${this.selectedTreatmentLabel}\n    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}\n\n    ${t.closing}`;
+    const rawMessage = `${t.greeting}
+
+    ${t.nameLabel}: ${this.formData.name}${surnameLine}
+    ${t.emailLabel}: ${this.formData.email}
+    ${t.treatmentLabel}: ${this.selectedTreatmentLabel}
+    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}
+
+    ${t.closing}`;
     const encodedMessage = encodeURIComponent(rawMessage);
     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
@@ -149,5 +144,17 @@ export class BookingFormComponent {
 
   togglePromoCode(): void {
     this.showPromoCode = !this.showPromoCode;
+  }
+
+  private toTreatmentOption(tarifa: Tarifa): TreatmentOption {
+    const isBundle = tarifa.nombre.toLowerCase().includes('bono');
+    const isPilates = tarifa.categoria === 'pilates';
+    const suffix = isPilates || isBundle ? ' (inicio de plan / primera sesión)' : '';
+
+    return {
+      value: tarifa.id,
+      label: `${tarifa.nombre} — ${tarifa.precio}${tarifa.unidad}${suffix}`,
+      type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session'
+    };
   }
 }
