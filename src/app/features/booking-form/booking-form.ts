@@ -191,7 +191,7 @@ export class BookingFormComponent implements OnInit {
   private toTreatmentOption(tarifa: Tarifa): TreatmentOption {
     const isBundle = tarifa.nombre.toLowerCase().includes('bono');
     const isPilates = tarifa.categoria === 'pilates';
-    const suffix = isPilates || isBundle ? ' (inicio de plan / primera sesión)' : '';
+    const suffix = isPilates || isBundle ? '' : '';
 
     return {
       value: tarifa.id,
