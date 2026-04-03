@@ -15,27 +15,81 @@
       {{ errorMessage }}
     </p>
 
-    <div class="testimonials-grid" *ngIf="!loading">
-      <article class="testimonial-card floating-card glass-panel" *ngFor="let review of testimonials">
-        <div class="testimonial-header">
-          <img
-            *ngIf="review.photoUri"
-            [src]="review.photoUri"
-            [alt]="'Avatar de ' + review.name"
-            class="testimonial-avatar testimonial-avatar-image"
-            loading="lazy"
-          />
-          <div class="testimonial-avatar" *ngIf="!review.photoUri">{{ review.avatar }}</div>
+    <div
+      class="testimonials-carousel"
+      *ngIf="!loading"
+      (mouseenter)="onMouseEnter()"
+      (mouseleave)="onMouseLeave()"
+    >
+      <!-- Stage: viewport + arrows share the same positioning context -->
+      <div class="carousel__stage">
+        <div class="carousel__viewport" #carouselViewport>
+          <!-- Nudge shell: receives the entry-hint CSS animation -->
+          <div class="carousel__nudge-shell" [class.is-nudging]="nudgeActive">
+            <div class="carousel__track" [style.transform]="trackTransform">
+              <article
+                class="carousel__slide testimonial-card floating-card glass-panel"
+                *ngFor="let review of testimonials"
+              >
+                <div class="testimonial-header">
+                  <img
+                    *ngIf="review.photoUri"
+                    [src]="review.photoUri"
+                    [alt]="'Avatar de ' + review.name"
+                    class="testimonial-avatar testimonial-avatar-image"
+                    loading="lazy"
+                  />
+                  <div class="testimonial-avatar" *ngIf="!review.photoUri">{{ review.avatar }}</div>
 
-          <div class="testimonial-meta">
-            <strong>{{ review.name }}</strong>
-            <div class="testimonial-stars">{{ getStars(review.rating) }}</div>
-            <small class="testimonial-time">{{ review.relativeTime }}</small>
+                  <div class="testimonial-meta">
+                    <strong>{{ review.name }}</strong>
+                    <div class="testimonial-stars">{{ getStars(review.rating) }}</div>
+                    <small class="testimonial-time">{{ review.relativeTime }}</small>
+                  </div>
+                </div>
+
+                <p>{{ review.content }}</p>
+              </article>
+            </div>
           </div>
         </div>
 
-        <p>{{ review.content }}</p>
-      </article>
+        <!-- Desktop arrows (hidden on mobile via CSS) -->
+        <button
+          class="carousel__arrow carousel__arrow--prev"
+          type="button"
+          (click)="prev(); pauseAutoplay()"
+          aria-label="Reseña anterior"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+        <button
+          class="carousel__arrow carousel__arrow--next"
+          type="button"
+          (click)="next(); pauseAutoplay()"
+          aria-label="Reseña siguiente"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Dots -->
+      <div class="carousel__dots" role="tablist" aria-label="Navegación de reseñas">
+        <button
+          *ngFor="let review of testimonials; let i = index"
+          class="carousel__dot"
+          [class.carousel__dot--active]="i === currentIndex"
+          type="button"
+          role="tab"
+          [attr.aria-label]="'Ir a reseña ' + (i + 1)"
+          [attr.aria-selected]="i === currentIndex"
+          (click)="selectDot(i)"
+        ></button>
+      </div>
     </div>
 
     <div class="reviews-cta glass-panel">

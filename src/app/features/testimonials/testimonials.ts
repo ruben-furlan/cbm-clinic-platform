@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 interface GoogleAuthor {
@@ -52,8 +52,9 @@ interface ReviewsCachePayload {
   templateUrl: './testimonials.html',
   styleUrls: ['./testimonials.css']
 })
-export class Testimonials implements OnInit {
+export class Testimonials implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
+  private readonly ngZone = inject(NgZone);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
   private readonly cacheKey = 'cbm_google_reviews_cache_v1';
   private readonly cacheTtlMs = 1000 * 60 * 60 * 24 * 14; // 14 días
@@ -70,6 +71,51 @@ export class Testimonials implements OnInit {
 
   testimonials: TestimonialItem[] = [];
 
+  // ── Carousel state ──────────────────────────────────────────────────────────
+  currentIndex = 0;
+  nudgeActive = false;
+
+  private readonly GAP = 16;
+  private slideWidth = 0;
+  private autoplayTimer: ReturnType<typeof setInterval> | null = null;
+  private autoplayPaused = false;
+  private nudgeDone = false;
+  private observer: IntersectionObserver | null = null;
+  private carouselInitialized = false;
+  private viewportEl: HTMLElement | null = null;
+  private touchStartX = 0;
+  private touchStartY = 0;
+
+  private readonly boundTouchStart = (e: TouchEvent): void => {
+    this.touchStartX = e.touches[0].clientX;
+    this.touchStartY = e.touches[0].clientY;
+  };
+
+  private readonly boundTouchEnd = (e: TouchEvent): void => {
+    const dx = e.changedTouches[0].clientX - this.touchStartX;
+    const dy = e.changedTouches[0].clientY - this.touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      this.ngZone.run(() => {
+        dx < 0 ? this.next() : this.prev();
+        this.autoplayPaused = true;
+      });
+    }
+  };
+
+  private readonly boundResize = (): void => {
+    this.ngZone.run(() => this.updateSlideWidth());
+  };
+
+  @ViewChild('carouselViewport', { static: false })
+  set carouselViewport(el: ElementRef<HTMLElement> | undefined) {
+    if (el && !this.carouselInitialized) {
+      this.carouselInitialized = true;
+      this.viewportEl = el.nativeElement;
+      setTimeout(() => this.initCarousel(), 0);
+    }
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   async ngOnInit(): Promise<void> {
     const usedCache = this.tryLoadFromCache();
 
@@ -81,6 +127,10 @@ export class Testimonials implements OnInit {
     }
 
     await this.loadGoogleReviews();
+  }
+
+  ngOnDestroy(): void {
+    this.cleanupCarousel();
   }
 
   private async loadGoogleReviews(): Promise<void> {
@@ -131,6 +181,110 @@ export class Testimonials implements OnInit {
   getStars(rating: number): string {
     const safeRating = Math.max(0, Math.min(5, Math.round(rating)));
     return '★'.repeat(safeRating) + '☆'.repeat(5 - safeRating);
+  }
+
+  // ── Carousel public API ─────────────────────────────────────────────────────
+  get trackTransform(): string {
+    return `translateX(${-this.currentIndex * (this.slideWidth + this.GAP)}px)`;
+  }
+
+  goTo(index: number): void {
+    this.currentIndex = Math.max(0, Math.min(index, this.testimonials.length - 1));
+  }
+
+  next(): void {
+    this.currentIndex = (this.currentIndex + 1) % this.testimonials.length;
+  }
+
+  prev(): void {
+    this.currentIndex = (this.currentIndex - 1 + this.testimonials.length) % this.testimonials.length;
+  }
+
+  pauseAutoplay(): void {
+    this.autoplayPaused = true;
+  }
+
+  onMouseEnter(): void {
+    this.autoplayPaused = true;
+  }
+
+  onMouseLeave(): void {
+    this.autoplayPaused = false;
+  }
+
+  selectDot(index: number): void {
+    this.goTo(index);
+    this.autoplayPaused = true;
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
+  private initCarousel(): void {
+    if (!this.viewportEl) return;
+
+    this.updateSlideWidth();
+
+    this.viewportEl.addEventListener('touchstart', this.boundTouchStart, { passive: true });
+    this.viewportEl.addEventListener('touchend', this.boundTouchEnd, { passive: true });
+    window.addEventListener('resize', this.boundResize, { passive: true });
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReducedMotion) {
+      this.startAutoplay();
+      this.setupNudgeObserver();
+    }
+  }
+
+  private startAutoplay(): void {
+    this.stopAutoplay();
+    this.autoplayTimer = setInterval(() => {
+      if (!this.autoplayPaused) {
+        this.next();
+      }
+    }, 4000);
+  }
+
+  private stopAutoplay(): void {
+    if (this.autoplayTimer !== null) {
+      clearInterval(this.autoplayTimer);
+      this.autoplayTimer = null;
+    }
+  }
+
+  private setupNudgeObserver(): void {
+    if (!this.viewportEl) return;
+
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !this.nudgeDone) {
+          this.nudgeDone = true;
+          this.ngZone.run(() => {
+            this.nudgeActive = true;
+            setTimeout(() => { this.nudgeActive = false; }, 700);
+          });
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    this.observer.observe(this.viewportEl);
+  }
+
+  private updateSlideWidth(): void {
+    if (!this.viewportEl) return;
+    const firstSlide = this.viewportEl.querySelector('.carousel__slide') as HTMLElement | null;
+    if (firstSlide) {
+      this.slideWidth = firstSlide.offsetWidth;
+    }
+  }
+
+  private cleanupCarousel(): void {
+    this.stopAutoplay();
+    this.observer?.disconnect();
+    if (this.viewportEl) {
+      this.viewportEl.removeEventListener('touchstart', this.boundTouchStart);
+      this.viewportEl.removeEventListener('touchend', this.boundTouchEnd);
+    }
+    window.removeEventListener('resize', this.boundResize);
   }
 
   private mapReview(review: GoogleReview, index: number): TestimonialItem {

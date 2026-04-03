@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { filter, fromEvent, Subscription, throttleTime } from 'rxjs';
 import { Header } from './core/header/header';
 import { FooterComponent } from './core/footer/footer';
 import { FloatingWhatsappButtonComponent } from './core/floating-whatsapp-button/floating-whatsapp-button';
@@ -21,6 +21,7 @@ export class App implements OnInit, OnDestroy {
 
   private rafId: number | null = null;
   private routerEventsSubscription: Subscription | null = null;
+  private scrollTopSubscription: Subscription | null = null;
   private readonly onScroll = (): void => this.scheduleScrollProgressUpdate();
 
   constructor(
@@ -41,6 +42,7 @@ export class App implements OnInit, OnDestroy {
 
     if (!this.isDisplayRoute) {
       window.addEventListener('scroll', this.onScroll, { passive: true });
+      this.startScrollTopTracking();
       this.updateScrollProgress();
     }
   }
@@ -48,6 +50,7 @@ export class App implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     window.removeEventListener('scroll', this.onScroll);
     this.routerEventsSubscription?.unsubscribe();
+    this.scrollTopSubscription?.unsubscribe();
 
     if (this.rafId !== null) {
       window.cancelAnimationFrame(this.rafId);
@@ -65,6 +68,14 @@ export class App implements OnInit, OnDestroy {
     });
   }
 
+  private startScrollTopTracking(): void {
+    this.scrollTopSubscription = fromEvent(window, 'scroll', { passive: true } as AddEventListenerOptions)
+      .pipe(throttleTime(100, undefined, { leading: true, trailing: true }))
+      .subscribe(() => {
+        this.showScrollTop = window.scrollY > 400;
+      });
+  }
+
   private updateScrollProgress(): void {
     const doc = document.documentElement;
     const scrollTop = window.scrollY || doc.scrollTop;
@@ -72,7 +83,6 @@ export class App implements OnInit, OnDestroy {
     const progress = Math.min(scrollTop / maxScroll, 1);
 
     doc.style.setProperty('--scroll-progress', progress.toFixed(4));
-    this.showScrollTop = scrollTop > 400;
   }
 
   scrollToTop(): void {
@@ -90,6 +100,8 @@ export class App implements OnInit, OnDestroy {
 
     if (isDisplay) {
       window.removeEventListener('scroll', this.onScroll);
+      this.scrollTopSubscription?.unsubscribe();
+      this.scrollTopSubscription = null;
       document.body.classList.add('display-mode');
       document.documentElement.style.setProperty('--scroll-progress', '0');
       return;
@@ -97,6 +109,7 @@ export class App implements OnInit, OnDestroy {
 
     document.body.classList.remove('display-mode');
     window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.startScrollTopTracking();
     this.updateScrollProgress();
   }
 }
