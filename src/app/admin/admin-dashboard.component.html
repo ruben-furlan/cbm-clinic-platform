@@ -19,7 +19,7 @@
       </button>
     </div>
 
-    <button type="button" class="btn-primary" (click)="openCreateModal()">Nueva tarifa</button>
+    <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="saving || !!deletingId">Nueva tarifa</button>
   </div>
 
   <p class="status error" *ngIf="error">{{ error }}</p>
@@ -47,13 +47,13 @@
           <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
           <td>
             <label class="switch">
-              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" />
+              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="saving || !!deletingId" />
               <span></span>
             </label>
           </td>
           <td class="actions">
-            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)">Editar</button>
-            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)">Eliminar</button>
+            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="saving || !!deletingId">Editar</button>
+            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="saving || !!deletingId">{{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}</button>
           </td>
         </tr>
       </tbody>
@@ -120,7 +120,7 @@
       </label>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="saving">Cancelar</button>
         <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
       </div>
     </form>
