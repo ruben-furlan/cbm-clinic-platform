@@ -11,12 +11,12 @@
             [attr.aria-expanded]="activeItemIndex === i"
             (click)="toggleItem(i)"
           >
-            {{ item.question }}
+            {{ item.pregunta }}
             <span class="faq-icon">{{ activeItemIndex === i ? '−' : '+' }}</span>
           </button>
 
           <p class="faq-answer" *ngIf="activeItemIndex === i">
-            {{ item.answer }}
+            {{ item.respuesta }}
           </p>
         </article>
       </div>

@@ -1,11 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
-
-interface FaqItem {
-  question: string;
-  answer: string;
-}
+import { FaqsService, Faq } from '../../core/services/faqs.service';
 
 @Component({
   selector: 'app-faq',
@@ -14,27 +10,19 @@ interface FaqItem {
   templateUrl: './faq.html',
   styleUrl: './faq.css'
 })
-export class FaqComponent {
+export class FaqComponent implements OnInit {
   activeItemIndex: number | null = 0;
+  faqItems: Faq[] = [];
 
-  readonly faqItems: FaqItem[] = [
-    {
-      question: '¿Cuánto dura una sesión?',
-      answer: 'La mayoría de sesiones duran entre 45 y 60 minutos, según tu caso y el objetivo de tratamiento.'
-    },
-    {
-      question: '¿Necesito derivación médica?',
-      answer: 'No es necesario en la mayoría de casos. Si ya tienes pruebas o informes, tráelos para personalizar mejor tu plan.'
-    },
-    {
-      question: '¿Trabajáis con mutuas?',
-      answer: 'Actualmente trabajamos de forma privada para poder dedicarte una atención individual y sin prisas.'
-    },
-    {
-      question: '¿Cuánto cuesta la sesión?',
-      answer: 'Los precios varian segun el tipo de tratamiento, Pero contamos con accesibilidad de pagos. Escribenos por whatsApp y te informamos sin compromiso'
+  constructor(private readonly faqsService: FaqsService) {}
+
+  async ngOnInit(): Promise<void> {
+    try {
+      this.faqItems = await this.faqsService.getFaqs();
+    } catch {
+      // Si falla la carga, el acordeón queda vacío sin romper la página
     }
-  ];
+  }
 
   toggleItem(index: number): void {
     this.activeItemIndex = this.activeItemIndex === index ? null : index;

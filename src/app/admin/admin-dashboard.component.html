@@ -1,68 +1,122 @@
 <section class="admin-dashboard">
   <header class="admin-header">
-    <h1>Panel CBM · Tarifas</h1>
+    <h1>Panel CBM</h1>
     <div class="admin-user">
       <span>{{ userEmail }}</span>
       <button type="button" class="btn-ghost" (click)="signOut()">Cerrar sesión</button>
     </div>
   </header>
 
-  <div class="toolbar">
-    <div class="tabs" role="tablist" aria-label="Filtro de categorías">
-      <button
-        type="button"
-        *ngFor="let tab of categoriaTabs"
-        [class.active]="filtro === tab.value"
-        (click)="setFiltro(tab.value)"
-      >
-        {{ tab.label }}
-      </button>
+  <!-- Tabs de sección principal -->
+  <div class="section-tabs">
+    <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">Tarifas</button>
+    <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
+  </div>
+
+  <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
+  <ng-container *ngIf="seccion === 'tarifas'">
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filtro de categorías">
+        <button
+          type="button"
+          *ngFor="let tab of categoriaTabs"
+          [class.active]="filtro === tab.value"
+          (click)="setFiltro(tab.value)"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
+
+      <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="saving || !!deletingId">Nueva tarifa</button>
     </div>
 
-    <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="saving || !!deletingId">Nueva tarifa</button>
-  </div>
+    <p class="status error" *ngIf="error">{{ error }}</p>
+    <p class="status message" *ngIf="message">{{ message }}</p>
 
-  <p class="status error" *ngIf="error">{{ error }}</p>
-  <p class="status message" *ngIf="message">{{ message }}</p>
+    <p class="status" *ngIf="loading && !tarifas.length">Cargando tarifas...</p>
 
-  <p class="status" *ngIf="loading && !tarifas.length">Cargando tarifas...</p>
+    <div class="table-wrap" *ngIf="tarifasFiltradas.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Categoría</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let tarifa of tarifasFiltradas">
+            <td>{{ tarifa.categoria }}</td>
+            <td>{{ tarifa.nombre }}</td>
+            <td>{{ tarifa.descripcion || '—' }}</td>
+            <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="saving || !!deletingId" />
+                <span></span>
+              </label>
+            </td>
+            <td class="actions">
+              <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="saving || !!deletingId">Editar</button>
+              <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="saving || !!deletingId">{{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="table-wrap" *ngIf="tarifasFiltradas.length">
-    <table>
-      <thead>
-        <tr>
-          <th>Categoría</th>
-          <th>Nombre</th>
-          <th>Descripción</th>
-          <th>Precio</th>
-          <th>Activo</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let tarifa of tarifasFiltradas">
-          <td>{{ tarifa.categoria }}</td>
-          <td>{{ tarifa.nombre }}</td>
-          <td>{{ tarifa.descripcion || '—' }}</td>
-          <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
-          <td>
-            <label class="switch">
-              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="saving || !!deletingId" />
-              <span></span>
-            </label>
-          </td>
-          <td class="actions">
-            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="saving || !!deletingId">Editar</button>
-            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="saving || !!deletingId">{{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <p class="status" *ngIf="!loading && !tarifasFiltradas.length && !error">No hay tarifas para esta categoría.</p>
+  </ng-container>
 
-  <p class="status" *ngIf="!loading && !tarifasFiltradas.length && !error">No hay tarifas para esta categoría.</p>
+  <!-- ═══════════════════════════════ FAQs ══════════════════════════════════ -->
+  <ng-container *ngIf="seccion === 'faqs'">
+    <div class="toolbar">
+      <span></span>
+      <button type="button" class="btn-primary" (click)="openFaqCreateModal()" [disabled]="faqSaving || !!faqDeletingId">Nueva pregunta</button>
+    </div>
+
+    <p class="status error" *ngIf="faqError">{{ faqError }}</p>
+    <p class="status message" *ngIf="faqMessage">{{ faqMessage }}</p>
+
+    <p class="status" *ngIf="faqLoading && !faqs.length">Cargando preguntas frecuentes...</p>
+
+    <div class="table-wrap" *ngIf="faqs.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Pregunta</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let faq of faqs">
+            <td>{{ faq.orden }}</td>
+            <td>{{ faq.pregunta }}</td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="faq.activo" (change)="toggleFaqActivo(faq, $event)" [disabled]="faqSaving || !!faqDeletingId" />
+                <span></span>
+              </label>
+            </td>
+            <td class="actions">
+              <button type="button" class="btn-ghost" (click)="openFaqEditModal(faq)" [disabled]="faqSaving || !!faqDeletingId">Editar</button>
+              <button type="button" class="btn-danger" (click)="deleteFaq(faq)" [disabled]="faqSaving || !!faqDeletingId">{{ faqDeletingId === faq.id ? 'Eliminando...' : 'Eliminar' }}</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="status" *ngIf="!faqLoading && !faqs.length && !faqError">No hay preguntas frecuentes todavía.</p>
+  </ng-container>
 </section>
 
+<!-- Modal tarifas -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
   <section class="modal-card" (click)="$event.stopPropagation()">
     <h2>{{ editingTarifa ? 'Editar tarifa' : 'Nueva tarifa' }}</h2>
@@ -122,6 +176,40 @@
       <div class="modal-actions">
         <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="saving">Cancelar</button>
         <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!-- Modal FAQs -->
+<div class="modal-overlay" *ngIf="isFaqModalOpen" (click)="closeFaqModal()">
+  <section class="modal-card" (click)="$event.stopPropagation()">
+    <h2>{{ editingFaq ? 'Editar pregunta' : 'Nueva pregunta' }}</h2>
+
+    <form [formGroup]="faqForm" (ngSubmit)="saveFaq()" class="modal-form">
+      <label>
+        Pregunta
+        <input type="text" formControlName="pregunta" />
+      </label>
+
+      <label>
+        Respuesta
+        <textarea rows="5" formControlName="respuesta"></textarea>
+      </label>
+
+      <label>
+        Orden
+        <input type="number" formControlName="orden" />
+      </label>
+
+      <label class="inline-check">
+        <input type="checkbox" formControlName="activo" />
+        Activo
+      </label>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="closeFaqModal()" [disabled]="faqSaving">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="faqSaving">{{ faqSaving ? 'Guardando...' : 'Guardar' }}</button>
       </div>
     </form>
   </section>
