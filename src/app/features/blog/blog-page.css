@@ -26,6 +26,14 @@
   font-size: 18px;
 }
 
+.blog-loading {
+  max-width: var(--container-width, 1200px);
+  margin: 0 auto;
+  padding: 24px 18px;
+  color: #9b94ab;
+  font-weight: 600;
+}
+
 .blog-categories {
   padding-top: 0;
 }

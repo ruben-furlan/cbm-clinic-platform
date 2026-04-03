@@ -9,6 +9,8 @@
   </div>
 </section>
 
+<div class="blog-loading" *ngIf="loading" aria-live="polite">Cargando artículos...</div>
+
 <section class="section blog-categories" *ngIf="categories.length">
   <div class="container" appRevealOnScroll>
     <h2>Categorías</h2>

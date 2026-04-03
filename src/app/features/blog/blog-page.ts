@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { BlogService, BlogPost } from '../../core/services/blog.service';
@@ -15,17 +15,29 @@ export class BlogPage implements OnInit {
   featuredPost: BlogPost | null = null;
   posts: BlogPost[] = [];
   categories: string[] = [];
+  loading = true;
 
-  constructor(private readonly blogService: BlogService) {}
+  constructor(
+    private readonly blogService: BlogService,
+    private readonly zone: NgZone,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   async ngOnInit(): Promise<void> {
     try {
       const all = await this.blogService.getPosts();
-      this.featuredPost = all.find((p) => p.destacado) ?? null;
-      this.posts = all.filter((p) => !p.destacado);
-      this.categories = [...new Set(all.map((p) => p.categoria))];
+      this.zone.run(() => {
+        this.featuredPost = all.find((p) => p.destacado) ?? null;
+        this.posts = all.filter((p) => !p.destacado);
+        this.categories = [...new Set(all.map((p) => p.categoria))];
+        this.loading = false;
+        this.cdr.detectChanges();
+      });
     } catch {
-      // Si falla la carga la página queda vacía sin romper nada
+      this.zone.run(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
+      });
     }
   }
 }
