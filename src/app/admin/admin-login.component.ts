@@ -1,51 +1,69 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { supabase } from '../core/supabase.client';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-admin-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.css'
 })
 export class AdminLoginComponent {
-  readonly loginForm;
+  email = '';
+  password = '';
 
   isLoading = false;
   errorMessage = '';
 
-  constructor(
-    private readonly fb: FormBuilder,
-    private readonly router: Router
-  ) {
-    this.loginForm = this.fb.nonNullable.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
+  constructor(private readonly router: Router) {}
 
-  async submit(): Promise<void> {
+  async login(): Promise<void> {
+    if (this.isLoading) {
+      return;
+    }
+
     this.errorMessage = '';
 
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
+    if (!environment.supabaseUrl || !environment.supabaseKey || environment.supabaseUrl === 'PLACEHOLDER' || environment.supabaseKey === 'PLACEHOLDER') {
+      this.errorMessage = 'Configuración de Supabase incompleta. Revisa environment.ts.';
+      return;
+    }
+
+    const email = this.email.trim();
+    const password = this.password;
+
+    if (!email || !password) {
+      this.errorMessage = 'Introduce email y contraseña.';
       return;
     }
 
     this.isLoading = true;
 
-    const { error } = await supabase.auth.signInWithPassword(this.loginForm.getRawValue());
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-    this.isLoading = false;
+      if (error) {
+        this.errorMessage = error.message || 'No se pudo iniciar sesión.';
+        return;
+      }
 
-    if (error) {
-      this.errorMessage = 'Email o contraseña incorrectos';
-      return;
+      if (!data.session) {
+        this.errorMessage = 'No se pudo crear la sesión. Inténtalo de nuevo.';
+        return;
+      }
+
+      await this.router.navigate(['/admin']);
+    } catch {
+      this.errorMessage = 'Error inesperado al iniciar sesión. Inténtalo de nuevo.';
+    } finally {
+      this.isLoading = false;
     }
-
-    await this.router.navigate(['/admin/dashboard']);
   }
 }
