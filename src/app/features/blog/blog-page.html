@@ -9,7 +9,18 @@
   </div>
 </section>
 
-<div class="blog-loading" *ngIf="loading" aria-live="polite">Cargando artículos...</div>
+<section class="section blog-skeleton" *ngIf="loading" aria-busy="true" aria-label="Cargando artículos">
+  <div class="container articles-grid">
+    <div class="blog-card skeleton-card" *ngFor="let i of skeletonItems" aria-hidden="true">
+      <div class="sk sk-tag"></div>
+      <div class="sk sk-title"></div>
+      <div class="sk sk-title sk-title--short"></div>
+      <div class="sk sk-line"></div>
+      <div class="sk sk-line"></div>
+      <div class="sk sk-line sk-line--short"></div>
+    </div>
+  </div>
+</section>
 
 <section class="section blog-categories" *ngIf="categories.length">
   <div class="container" appRevealOnScroll>
@@ -23,7 +34,10 @@
 <section class="section featured-article" *ngIf="featuredPost">
   <div class="container" appRevealOnScroll>
     <article class="blog-card featured-card">
-      <p class="blog-tag">Artículo destacado</p>
+      <div class="blog-card-meta">
+        <p class="blog-tag">Artículo destacado</p>
+        <span class="reading-time">{{ readingTime(featuredPost) }} min de lectura</span>
+      </div>
       <h2>{{ featuredPost.titulo }}</h2>
       <p class="article-intro">{{ featuredPost.resumen }}</p>
 
@@ -49,7 +63,10 @@
 <section class="section" *ngIf="posts.length">
   <div class="container articles-grid">
     <article class="blog-card" *ngFor="let post of posts" appRevealOnScroll>
-      <p class="blog-tag">{{ post.categoria }}</p>
+      <div class="blog-card-meta">
+        <p class="blog-tag">{{ post.categoria }}</p>
+        <span class="reading-time">{{ readingTime(post) }} min de lectura</span>
+      </div>
       <h2>{{ post.titulo }}</h2>
       <p class="article-intro">{{ post.resumen }}</p>
 

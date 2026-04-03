@@ -17,6 +17,7 @@ import { CanonicalService } from './core/seo/canonical.service';
 })
 export class App implements OnInit, OnDestroy {
   isDisplayRoute = false;
+  showScrollTop = false;
 
   private rafId: number | null = null;
   private routerEventsSubscription: Subscription | null = null;
@@ -71,6 +72,11 @@ export class App implements OnInit, OnDestroy {
     const progress = Math.min(scrollTop / maxScroll, 1);
 
     doc.style.setProperty('--scroll-progress', progress.toFixed(4));
+    this.showScrollTop = scrollTop > 400;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   private updateRouteState(url: string): void {

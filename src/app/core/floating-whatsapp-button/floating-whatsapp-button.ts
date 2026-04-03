@@ -1,15 +1,29 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { LanguageService } from '../language/language.service';
 
 @Component({
   selector: 'app-floating-whatsapp-button',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './floating-whatsapp-button.html',
   styleUrls: ['./floating-whatsapp-button.css']
 })
 export class FloatingWhatsappButtonComponent {
   private readonly languageService = inject(LanguageService);
+  showConfirmation = false;
+  private confirmationTimer: ReturnType<typeof setTimeout> | null = null;
+
+  onWhatsappClick(): void {
+    this.showConfirmation = true;
+    if (this.confirmationTimer !== null) {
+      clearTimeout(this.confirmationTimer);
+    }
+    this.confirmationTimer = setTimeout(() => {
+      this.showConfirmation = false;
+      this.confirmationTimer = null;
+    }, 2500);
+  }
 
   get whatsappHref(): string {
     const phoneNumber = '34662561672';

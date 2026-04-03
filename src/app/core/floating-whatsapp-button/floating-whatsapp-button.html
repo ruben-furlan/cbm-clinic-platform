@@ -1,8 +1,13 @@
+<div class="whatsapp-confirmation" [class.whatsapp-confirmation--visible]="showConfirmation" aria-live="polite" aria-atomic="true">
+  ✓ Abriendo WhatsApp...
+</div>
+
 <a
   class="floating-whatsapp-button"
   [href]="whatsappHref"
   target="_blank"
   rel="noopener"
+  (click)="onWhatsappClick()"
 >
   <svg viewBox="0 0 32 32" width="20" height="20">
     <path fill="currentColor"

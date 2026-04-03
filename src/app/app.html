@@ -21,6 +21,18 @@
   <app-footer [style.display]="isDisplayRoute ? 'none' : null"></app-footer>
 </div>
 
+<button
+  class="back-to-top"
+  [class.back-to-top--visible]="showScrollTop"
+  [style.display]="isDisplayRoute ? 'none' : null"
+  (click)="scrollToTop()"
+  aria-label="Volver al inicio"
+>
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <path fill="currentColor" d="M12 4l-8 8h5v8h6v-8h5z"/>
+  </svg>
+</button>
+
 <div class="social-floating" [style.display]="isDisplayRoute ? 'none' : null">
   <a href="https://instagram.com/cbm.fisioterapia" target="_blank" class="social-btn instagram">
     <img src="/instagram.svg" alt="Instagram">

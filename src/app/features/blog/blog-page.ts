@@ -16,6 +16,16 @@ export class BlogPage implements OnInit {
   posts: BlogPost[] = [];
   categories: string[] = [];
   loading = true;
+  readonly skeletonItems = [1, 2, 3];
+
+  readingTime(post: BlogPost): number {
+    const words = post.contenido.reduce((acc, block) => {
+      if (block.texto) return acc + block.texto.split(/\s+/).length;
+      if (block.items) return acc + block.items.join(' ').split(/\s+/).length;
+      return acc;
+    }, post.resumen.split(/\s+/).length);
+    return Math.max(1, Math.ceil(words / 200));
+  }
 
   constructor(
     private readonly blogService: BlogService,
