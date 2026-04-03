@@ -3,7 +3,7 @@
     <h1>Panel CBM · Tarifas</h1>
     <div class="admin-user">
       <span>{{ userEmail }}</span>
-      <button type="button" class="btn-ghost" (click)="signOut()" [disabled]="isDbBusy">Cerrar sesión</button>
+      <button type="button" class="btn-ghost" (click)="signOut()" [disabled]="loading">Cerrar sesión</button>
     </div>
   </header>
 
@@ -13,13 +13,13 @@
         type="button"
         *ngFor="let tab of categoriaTabs"
         [class.active]="filtro === tab.value"
-        (click)="setFiltro(tab.value)" [disabled]="isDbBusy"
+        (click)="setFiltro(tab.value)" [disabled]="loading"
       >
         {{ tab.label }}
       </button>
     </div>
 
-    <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="isDbBusy">Nueva tarifa</button>
+    <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="loading">Nueva tarifa</button>
   </div>
 
   <p class="status error" *ngIf="error">{{ error }}</p>
@@ -47,13 +47,13 @@
           <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
           <td>
             <label class="switch">
-              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="isDbBusy" />
+              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="loading" />
               <span></span>
             </label>
           </td>
           <td class="actions">
-            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="isDbBusy">Editar</button>
-            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="isDbBusy">Eliminar</button>
+            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="loading">Editar</button>
+            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="loading">Eliminar</button>
           </td>
         </tr>
       </tbody>
@@ -120,15 +120,15 @@
       </label>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="isDbBusy">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="saving || isDbBusy">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+        <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="loading">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
       </div>
     </form>
   </section>
 </div>
 
 
-<div class="busy-overlay" *ngIf="isDbBusy" aria-live="polite" aria-busy="true">
+<div class="busy-overlay" *ngIf="shouldBlockUi" aria-live="polite" aria-busy="true">
   <div class="busy-content">
     <img src="/favicon-192x192.png" alt="Cargando" />
     <p>Cargando datos...</p>

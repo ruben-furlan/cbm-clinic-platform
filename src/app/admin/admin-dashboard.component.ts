@@ -36,7 +36,6 @@ export class AdminDashboardComponent implements OnInit {
   readonly tarifaForm;
   private readonly loadTimeoutMs = 12000;
   private latestLoadRequestId = 0;
-  private pendingDbOps = 0;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -67,18 +66,10 @@ export class AdminDashboardComponent implements OnInit {
     return this.tarifaForm.controls.categoria.value === 'promocion';
   }
 
-
-  get isDbBusy(): boolean {
-    return this.pendingDbOps > 0;
+  get shouldBlockUi(): boolean {
+    return this.loading && !this.tarifasFiltradas.length;
   }
 
-  private beginDbOp(): void {
-    this.pendingDbOps += 1;
-  }
-
-  private endDbOp(): void {
-    this.pendingDbOps = Math.max(0, this.pendingDbOps - 1);
-  }
 
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
@@ -99,7 +90,6 @@ export class AdminDashboardComponent implements OnInit {
     const requestId = ++this.latestLoadRequestId;
     this.loading = true;
     this.error = '';
-    this.beginDbOp();
 
     try {
       const categoria = this.filtro === 'todas' ? undefined : this.filtro;
@@ -120,7 +110,6 @@ export class AdminDashboardComponent implements OnInit {
       if (requestId === this.latestLoadRequestId) {
         this.loading = false;
       }
-      this.endDbOp();
     }
   }
 
@@ -132,8 +121,6 @@ export class AdminDashboardComponent implements OnInit {
   async toggleActivo(tarifa: Tarifa, event: Event): Promise<void> {
     const target = event.target as HTMLInputElement;
 
-    this.beginDbOp();
-
     try {
       const updated = await this.tarifasService.toggleActivo(tarifa.id, target.checked);
       this.tarifas = this.tarifas.map((item) => (item.id === updated.id ? updated : item));
@@ -141,8 +128,6 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       target.checked = tarifa.activo;
       this.message = 'Error al actualizar el estado.';
-    } finally {
-      this.endDbOp();
     }
   }
 
@@ -192,7 +177,6 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     this.saving = true;
-    this.beginDbOp();
 
     const formValue = this.tarifaForm.getRawValue();
     const payload = {
@@ -216,7 +200,6 @@ export class AdminDashboardComponent implements OnInit {
       this.message = 'No se pudo guardar la tarifa.';
     } finally {
       this.saving = false;
-      this.endDbOp();
     }
   }
 
@@ -226,16 +209,12 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
 
-    this.beginDbOp();
-
     try {
       await this.tarifasService.deleteTarifa(tarifa.id);
       this.message = 'Tarifa eliminada.';
       await this.loadTarifas();
     } catch {
       this.message = 'No se pudo eliminar la tarifa.';
-    } finally {
-      this.endDbOp();
     }
   }
 
