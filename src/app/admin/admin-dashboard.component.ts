@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
@@ -40,7 +40,9 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly tarifasService: TarifasService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly zone: NgZone,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.tarifaForm = this.fb.nonNullable.group({
       categoria: ['fisioterapia' as TarifaCategoria, Validators.required],
@@ -164,6 +166,13 @@ export class AdminDashboardComponent implements OnInit {
     this.editingTarifa = null;
   }
 
+
+  private flushUiState(): void {
+    this.zone.run(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
   async saveTarifa(): Promise<void> {
     if (this.saving) {
       return;
@@ -198,10 +207,25 @@ export class AdminDashboardComponent implements OnInit {
 
       this.isModalOpen = false;
       this.editingTarifa = null;
+      this.tarifaForm.reset({
+        categoria: 'fisioterapia',
+        nombre: '',
+        descripcion: '',
+        precio: 0,
+        unidad: '€',
+        orden: 0,
+        fecha_fin_promo: '',
+        activo: true
+      });
+      this.flushUiState();
     } catch {
       this.message = 'No se pudo guardar la tarifa.';
+      this.flushUiState();
     } finally {
-      this.saving = false;
+      this.zone.run(() => {
+        this.saving = false;
+        this.flushUiState();
+      });
     }
   }
 
