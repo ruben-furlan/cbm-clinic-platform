@@ -4,4 +4,4 @@ command = """
   sed -i "s|__SUPABASE_ANON_KEY__|$SUPABASE_ANON_KEY|g" src/environments/environment.prod.ts &&
   npm run build
   """
-publish = "dist/cbm-clinic-platform"
+publish = "dist/cbm-clinic-platform/browser"
