@@ -34,6 +34,8 @@ export class AdminDashboardComponent implements OnInit {
   ];
 
   readonly tarifaForm;
+  private readonly loadTimeoutMs = 12000;
+  private latestLoadRequestId = 0;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -70,16 +72,39 @@ export class AdminDashboardComponent implements OnInit {
     await this.loadTarifas();
   }
 
+  private withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+    return Promise.race([
+      promise,
+      new Promise<T>((_, reject) => {
+        setTimeout(() => reject(new Error('timeout')), timeoutMs);
+      })
+    ]);
+  }
+
   async loadTarifas(): Promise<void> {
+    const requestId = ++this.latestLoadRequestId;
     this.loading = true;
     this.error = '';
 
     try {
-      this.tarifas = await this.tarifasService.getTarifasAdmin(this.filtro === 'todas' ? undefined : this.filtro);
+      const categoria = this.filtro === 'todas' ? undefined : this.filtro;
+      const data = await this.withTimeout(this.tarifasService.getTarifasAdmin(categoria), this.loadTimeoutMs);
+
+      if (requestId !== this.latestLoadRequestId) {
+        return;
+      }
+
+      this.tarifas = data;
     } catch {
-      this.error = 'No se pudieron cargar las tarifas. Inténtalo de nuevo.';
+      if (requestId !== this.latestLoadRequestId) {
+        return;
+      }
+
+      this.error = 'No se pudieron cargar las tarifas. Recarga la página e inténtalo de nuevo.';
     } finally {
-      this.loading = false;
+      if (requestId === this.latestLoadRequestId) {
+        this.loading = false;
+      }
     }
   }
 

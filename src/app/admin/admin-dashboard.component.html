@@ -25,7 +25,9 @@
   <p class="status error" *ngIf="error">{{ error }}</p>
   <p class="status message" *ngIf="message">{{ message }}</p>
 
-  <div class="table-wrap" *ngIf="!loading; else loadingTpl">
+  <p class="status" *ngIf="loading && !tarifasFiltradas.length">Cargando tarifas...</p>
+
+  <div class="table-wrap" *ngIf="tarifasFiltradas.length">
     <table>
       <thead>
         <tr>
@@ -58,9 +60,7 @@
     </table>
   </div>
 
-  <ng-template #loadingTpl>
-    <p class="status">Cargando tarifas...</p>
-  </ng-template>
+  <p class="status" *ngIf="!loading && !tarifasFiltradas.length && !error">No hay tarifas para esta categoría.</p>
 </section>
 
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
