@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
@@ -19,6 +19,7 @@ export class AdminDashboardComponent implements OnInit {
   filtro: FiltroCategoria = 'todas';
   loading = false;
   saving = false;
+  deletingId: string | null = null;
   error = '';
   message = '';
   userEmail = '';
@@ -34,11 +35,14 @@ export class AdminDashboardComponent implements OnInit {
   ];
 
   readonly tarifaForm;
+  private readonly requestTimeoutMs = 12000;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly tarifasService: TarifasService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly zone: NgZone,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.tarifaForm = this.fb.nonNullable.group({
       categoria: ['fisioterapia' as TarifaCategoria, Validators.required],
@@ -64,10 +68,30 @@ export class AdminDashboardComponent implements OnInit {
     return this.tarifaForm.controls.categoria.value === 'promocion';
   }
 
+  get showInitialLoader(): boolean {
+    return this.loading && !this.tarifas.length;
+  }
+
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
     await this.loadTarifas();
+  }
+
+  private withTimeout<T>(promise: Promise<T>): Promise<T> {
+    return Promise.race([
+      promise,
+      new Promise<T>((_, reject) => setTimeout(() => reject(new Error('timeout')), this.requestTimeoutMs))
+    ]);
+  }
+
+  private sortTarifas(tarifas: Tarifa[]): Tarifa[] {
+    return [...tarifas].sort((a, b) => {
+      if (a.categoria !== b.categoria) {
+        return a.categoria.localeCompare(b.categoria);
+      }
+      return a.orden - b.orden;
+    });
   }
 
   async loadTarifas(): Promise<void> {
@@ -75,24 +99,24 @@ export class AdminDashboardComponent implements OnInit {
     this.error = '';
 
     try {
-      this.tarifas = await this.tarifasService.getTarifasAdmin(this.filtro === 'todas' ? undefined : this.filtro);
+      const data = await this.withTimeout(this.tarifasService.getTarifasAdmin());
+      this.tarifas = this.sortTarifas(data);
     } catch {
-      this.error = 'No se pudieron cargar las tarifas. Inténtalo de nuevo.';
+      this.error = 'No se pudieron cargar las tarifas. Recarga la página e inténtalo de nuevo.';
     } finally {
       this.loading = false;
     }
   }
 
-  async setFiltro(filtro: FiltroCategoria): Promise<void> {
+  setFiltro(filtro: FiltroCategoria): void {
     this.filtro = filtro;
-    await this.loadTarifas();
   }
 
   async toggleActivo(tarifa: Tarifa, event: Event): Promise<void> {
     const target = event.target as HTMLInputElement;
 
     try {
-      const updated = await this.tarifasService.toggleActivo(tarifa.id, target.checked);
+      const updated = await this.withTimeout(this.tarifasService.toggleActivo(tarifa.id, target.checked));
       this.tarifas = this.tarifas.map((item) => (item.id === updated.id ? updated : item));
       this.message = 'Estado actualizado correctamente.';
     } catch {
@@ -134,11 +158,26 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   closeModal(): void {
+    if (this.saving) {
+      return;
+    }
+
     this.isModalOpen = false;
     this.editingTarifa = null;
   }
 
+
+  private flushUiState(): void {
+    this.zone.run(() => {
+      this.cdr.detectChanges();
+    });
+  }
+
   async saveTarifa(): Promise<void> {
+    if (this.saving) {
+      return;
+    }
+
     this.message = '';
 
     if (this.tarifaForm.invalid) {
@@ -157,34 +196,61 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       if (this.editingTarifa) {
-        await this.tarifasService.updateTarifa(this.editingTarifa.id, payload);
+        const updated = await this.withTimeout(this.tarifasService.updateTarifa(this.editingTarifa.id, payload));
+        this.tarifas = this.sortTarifas(this.tarifas.map((item) => (item.id === updated.id ? updated : item)));
         this.message = 'Tarifa actualizada correctamente.';
       } else {
-        await this.tarifasService.createTarifa(payload);
+        const created = await this.withTimeout(this.tarifasService.createTarifa(payload));
+        this.tarifas = this.sortTarifas([created, ...this.tarifas]);
         this.message = 'Tarifa creada correctamente.';
       }
 
-      this.closeModal();
-      await this.loadTarifas();
+      this.isModalOpen = false;
+      this.editingTarifa = null;
+      this.tarifaForm.reset({
+        categoria: 'fisioterapia',
+        nombre: '',
+        descripcion: '',
+        precio: 0,
+        unidad: '€',
+        orden: 0,
+        fecha_fin_promo: '',
+        activo: true
+      });
+      this.flushUiState();
     } catch {
       this.message = 'No se pudo guardar la tarifa.';
+      this.flushUiState();
     } finally {
-      this.saving = false;
+      this.zone.run(() => {
+        this.saving = false;
+        this.flushUiState();
+      });
     }
   }
 
   async deleteTarifa(tarifa: Tarifa): Promise<void> {
+    if (this.deletingId) {
+      return;
+    }
+
     const confirmed = window.confirm(`¿Seguro que quieres eliminar "${tarifa.nombre}"?`);
     if (!confirmed) {
       return;
     }
 
+    this.deletingId = tarifa.id;
+    const previous = [...this.tarifas];
+    this.tarifas = this.tarifas.filter((item) => item.id !== tarifa.id);
+
     try {
-      await this.tarifasService.deleteTarifa(tarifa.id);
+      await this.withTimeout(this.tarifasService.deleteTarifa(tarifa.id));
       this.message = 'Tarifa eliminada.';
-      await this.loadTarifas();
     } catch {
+      this.tarifas = previous;
       this.message = 'No se pudo eliminar la tarifa.';
+    } finally {
+      this.deletingId = null;
     }
   }
 

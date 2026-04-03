@@ -19,13 +19,15 @@
       </button>
     </div>
 
-    <button type="button" class="btn-primary" (click)="openCreateModal()">Nueva tarifa</button>
+    <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="saving || !!deletingId">Nueva tarifa</button>
   </div>
 
   <p class="status error" *ngIf="error">{{ error }}</p>
   <p class="status message" *ngIf="message">{{ message }}</p>
 
-  <div class="table-wrap" *ngIf="!loading; else loadingTpl">
+  <p class="status" *ngIf="loading && !tarifas.length">Cargando tarifas...</p>
+
+  <div class="table-wrap" *ngIf="tarifasFiltradas.length">
     <table>
       <thead>
         <tr>
@@ -45,22 +47,20 @@
           <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
           <td>
             <label class="switch">
-              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" />
+              <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="saving || !!deletingId" />
               <span></span>
             </label>
           </td>
           <td class="actions">
-            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)">Editar</button>
-            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)">Eliminar</button>
+            <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="saving || !!deletingId">Editar</button>
+            <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="saving || !!deletingId">{{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}</button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <ng-template #loadingTpl>
-    <p class="status">Cargando tarifas...</p>
-  </ng-template>
+  <p class="status" *ngIf="!loading && !tarifasFiltradas.length && !error">No hay tarifas para esta categoría.</p>
 </section>
 
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
@@ -120,9 +120,16 @@
       </label>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeModal()">Cancelar</button>
+        <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="saving">Cancelar</button>
         <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
       </div>
     </form>
   </section>
+</div>
+
+<div class="busy-overlay" *ngIf="showInitialLoader" aria-live="polite" aria-busy="true">
+  <div class="busy-content">
+    <img src="/favicon-192x192.png" alt="Cargando" />
+    <p>Cargando datos...</p>
+  </div>
 </div>

@@ -46,8 +46,8 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    pathMatch: 'full',
-    redirectTo: 'admin/login'
+    component: AdminDashboardComponent,
+    canActivate: [adminAuthGuard]
   },
   {
     path: 'admin/login',
@@ -55,8 +55,8 @@ export const routes: Routes = [
   },
   {
     path: 'admin/dashboard',
-    component: AdminDashboardComponent,
-    canActivate: [adminAuthGuard]
+    pathMatch: 'full',
+    redirectTo: 'admin'
   },
   {
     path: 'fisioterapia-dolor-lumbar-terrassa',
