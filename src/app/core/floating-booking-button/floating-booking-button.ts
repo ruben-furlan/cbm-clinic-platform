@@ -13,14 +13,6 @@ export class FloatingBookingButtonComponent {
 
   onRequestBooking(event: Event): void {
     event.preventDefault();
-
-    const bookingForm = document.getElementById('reserva');
-
-    if (bookingForm) {
-      bookingForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-
-    this.router.navigate(['/'], { fragment: 'reserva' });
+    this.router.navigate(['/solicitar-cita']);
   }
 }

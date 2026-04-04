@@ -83,7 +83,21 @@
 
             <cbm-loader *ngIf="loadingTarifas"></cbm-loader>
 
-            <ng-container *ngIf="!loadingTarifas">
+            <div *ngIf="!loadingTarifas && errorTarifas" class="tarifas-error">
+              <p>No se pudieron cargar los tratamientos.</p>
+              <p>Puedes contactarnos directamente por WhatsApp.</p>
+              <a
+                href="https://wa.me/34662561672"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-primary btn-booking"
+              >
+                <span class="btn-icon" aria-hidden="true">💬</span>
+                <span>Contactar por WhatsApp</span>
+              </a>
+            </div>
+
+            <ng-container *ngIf="!loadingTarifas && !errorTarifas">
               <div class="treatment-groups cbm-content-loaded">
                 <div *ngFor="let group of treatmentOptionsByCategory" class="treatment-group">
                   <p class="treatment-group-label">{{ group.label }}</p>
