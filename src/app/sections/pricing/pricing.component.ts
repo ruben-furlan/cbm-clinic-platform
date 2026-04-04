@@ -3,6 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
+import {RouterLink} from '@angular/router';
 
 interface PricingItem {
   concept: string;
@@ -21,7 +22,7 @@ interface PricingCard {
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, RouterLink],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
