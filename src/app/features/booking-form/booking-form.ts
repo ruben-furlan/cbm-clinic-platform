@@ -59,19 +59,8 @@ export class BookingFormComponent implements OnInit {
   }
 
   private initAvailability(): void {
-    const now = new Date();
-    const day = now.getDay();
-    const hour = now.getHours();
-    const isWeekday = day >= 1 && day <= 5;
-    const isBusinessHours = hour >= 9 && hour < 19;
-
-    if (isWeekday && isBusinessHours) {
-      this.availabilityType = 'green';
-      this.availabilityText = 'Respondemos en menos de 2h';
-    } else {
-      this.availabilityType = 'amber';
-      this.availabilityText = 'Te respondemos el siguiente día hábil';
-    }
+    this.availabilityType = 'green';
+    this.availabilityText = 'Solo falta un paso para confirmar tu cita';
   }
 
   private readonly categoryLabels: Record<TarifaCategoria, string> = {
