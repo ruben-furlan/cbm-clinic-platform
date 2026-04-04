@@ -301,10 +301,11 @@
   color: #1f1b2d;
 }
 
-.mid-cta p{
+.mid-cta-description{
   margin: 0 auto 24px;
-  max-width: 580px;
+  max-width: 560px;
   color: #5d576d;
+  font-size: 17px;
   line-height: 1.72;
 }
 
@@ -735,12 +736,43 @@
     font-size: 18px;
   }
 
-  .mid-cta h2{
-    font-size: 28px;
+  .mid-cta-content{
+    padding: 22px 18px 18px;
+    border-radius: 22px;
   }
 
-  .mid-cta-content{
-    padding: 24px 18px;
+  .mid-cta h2{
+    margin-bottom: 10px;
+    font-size: 26px;
+    line-height: 1.2;
+    max-width: 12ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mid-cta-description{
+    margin: 0 auto 16px;
+    max-width: 34ch;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .mid-cta .btn-booking{
+    width: 100%;
+    min-height: 54px;
+    padding: 15px 20px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    box-shadow: 0 16px 30px rgba(123, 77, 255, 0.28);
+  }
+
+  .mid-cta-note{
+    margin-top: 12px;
+    max-width: 34ch;
+    font-size: 13px;
+    line-height: 1.45;
+    text-align: center;
   }
 
   .experience-step-number{
