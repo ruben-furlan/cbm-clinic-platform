@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
@@ -27,7 +27,8 @@ interface TreatmentOption {
 export class BookingFormComponent implements OnInit {
   constructor(
     private readonly tarifasService: TarifasService,
-    private readonly languageService: LanguageService
+    private readonly languageService: LanguageService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   currentStep = 1;
@@ -64,6 +65,7 @@ export class BookingFormComponent implements OnInit {
       this.errorTarifas = true;
     } finally {
       this.loadingTarifas = false;
+      this.cdr.detectChanges();
     }
   }
 
