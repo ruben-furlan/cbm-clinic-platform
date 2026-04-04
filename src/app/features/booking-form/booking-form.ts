@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
@@ -24,9 +24,12 @@ interface TreatmentOption {
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css']
 })
-export class BookingFormComponent implements OnInit, OnDestroy {
-  private readonly languageService = inject(LanguageService);
-  private readonly tarifasService = inject(TarifasService);
+export class BookingFormComponent implements OnInit {
+  constructor(
+    private readonly tarifasService: TarifasService,
+    private readonly languageService: LanguageService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   currentStep = 1;
   stepAnimClass = '';
@@ -37,7 +40,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   whatsAppFeedback = false;
   loadingTarifas = true;
   errorTarifas = false;
-  private safetyTimeoutId?: ReturnType<typeof setTimeout>;
 
   treatmentOptions: TreatmentOption[] = [];
 
@@ -55,13 +57,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.initAvailability();
 
-    this.safetyTimeoutId = setTimeout(() => {
-      if (this.loadingTarifas) {
-        this.loadingTarifas = false;
-        this.errorTarifas = true;
-      }
-    }, 8000);
-
     try {
       const tarifas = await this.tarifasService.getTarifas();
       this.treatmentOptions = tarifas.map((tarifa) => this.toTreatmentOption(tarifa));
@@ -70,12 +65,8 @@ export class BookingFormComponent implements OnInit, OnDestroy {
       this.errorTarifas = true;
     } finally {
       this.loadingTarifas = false;
-      clearTimeout(this.safetyTimeoutId);
+      this.cdr.detectChanges();
     }
-  }
-
-  ngOnDestroy(): void {
-    clearTimeout(this.safetyTimeoutId);
   }
 
   private initAvailability(): void {
