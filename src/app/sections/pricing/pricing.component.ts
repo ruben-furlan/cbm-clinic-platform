@@ -59,7 +59,7 @@ export class PricingComponent implements OnInit {
         items: groups.promocion.map((tarifa) => this.toPricingItem(tarifa)),
         note: 'Promociones y cupones no acumulables'
       }
-    ];
+    ].filter((card) => card.items.length > 0);
   }
 
   private toPricingItem(tarifa: Tarifa): PricingItem {
