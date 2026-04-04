@@ -1,3 +1,4 @@
+<!-- ① Hero ──────────────────────────────────────────────── -->
 <section class="hero">
   <div class="hero-decoration hero-decoration-left"></div>
   <div class="hero-decoration hero-decoration-right"></div>
@@ -26,7 +27,7 @@
       </div>
 
       <div class="hero-buttons">
-        <a class="btn-primary btn-booking" href="#reserva">
+        <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
           <span class="btn-icon" aria-hidden="true">💬</span>
           <span>Solicitar cita</span>
         </a>
@@ -38,7 +39,7 @@
           <svg class="google-badge__logo" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           <span class="google-badge__sep" aria-hidden="true"></span>
@@ -72,6 +73,7 @@
   </div>
 </section>
 
+<!-- ② Beneficios ────────────────────────────────────────── -->
 <section class="quick-benefits section section-flow">
   <div class="container">
     <div class="quick-benefits-grid">
@@ -102,123 +104,32 @@
   </div>
 </section>
 
-<section class="how-it-works section section-flow">
+<!-- ③ Patologías frecuentes ─────────────────────────────── -->
+<section class="common-issues section section-flow">
   <div class="container">
     <div class="section-heading" appRevealOnScroll>
-      <p class="section-tag">Así de fácil</p>
-      <h2>Pedir cita es muy sencillo</h2>
+      <p class="section-tag">Casos frecuentes</p>
+      <h2>Te ayudamos con molestias como</h2>
       <p class="section-description">
-        Sin esperas, sin complicaciones. En menos de 2 minutos tienes tu cita en marcha.
+        Explora casos reales que vemos en consulta y descubre cómo los tratamos en nuestra clínica de fisioterapia en Terrassa.
+      </p>
+      <p class="section-microcopy">
+        <strong>Selecciona una opción para ver cómo podemos ayudarte.</strong>
       </p>
     </div>
 
-    <div class="how-steps-grid">
-
-      <article class="how-step reveal-delay-1" appRevealOnScroll>
-        <span class="how-step-number" aria-hidden="true">01</span>
-        <div class="how-step-content">
-          <span class="how-step-icon" aria-hidden="true">📋</span>
-          <h3>Elige tu tratamiento</h3>
-          <p>Selecciona lo que necesitas y déjanos tus datos. Solo te llevará un momento.</p>
-        </div>
-      </article>
-
-      <div class="how-step-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 12h14M13 6l6 6-6 6" stroke="url(#arrow-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <defs>
-            <linearGradient id="arrow-grad" x1="5" y1="12" x2="19" y2="12" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ff4fa3"/>
-              <stop offset="100%" stop-color="#7b4dff"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-
-      <article class="how-step reveal-delay-2" appRevealOnScroll>
-        <span class="how-step-number" aria-hidden="true">02</span>
-        <div class="how-step-content">
-          <span class="how-step-icon" aria-hidden="true">💬</span>
-          <h3>Te confirmamos por WhatsApp</h3>
-          <p>Te respondemos en menos de 2 horas para confirmar tu cita y resolver cualquier duda.</p>
-        </div>
-      </article>
-
-      <div class="how-step-arrow" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 12h14M13 6l6 6-6 6" stroke="url(#arrow-grad2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <defs>
-            <linearGradient id="arrow-grad2" x1="5" y1="12" x2="19" y2="12" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#ff4fa3"/>
-              <stop offset="100%" stop-color="#7b4dff"/>
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-
-      <article class="how-step reveal-delay-3" appRevealOnScroll>
-        <span class="how-step-number" aria-hidden="true">03</span>
-        <div class="how-step-content">
-          <span class="how-step-icon" aria-hidden="true">💆</span>
-          <h3>Vienes y empezamos</h3>
-          <p>Llega al centro, te evaluamos y comenzamos tu plan de recuperación personalizado.</p>
-        </div>
-      </article>
-
-    </div>
-
-    <div class="how-cta" appRevealOnScroll>
-      <a class="btn-primary btn-booking" href="#reserva">
-        <span class="btn-icon" aria-hidden="true">💬</span>
-        <span>Solicitar cita ahora</span>
-      </a>
+    <div class="issues-chips" appRevealOnScroll>
+      <a class="issue-chip" routerLink="/fisioterapia-dolor-lumbar-terrassa">Dolor lumbar</a>
+      <a class="issue-chip" routerLink="/fisioterapia-cervical-terrassa">Dolor cervical</a>
+      <a class="issue-chip" routerLink="/tratamientos/fisioterapia">Lesiones deportivas</a>
+      <a class="issue-chip" routerLink="/puncion-seca-terrassa">Tendinitis</a>
+      <a class="issue-chip" routerLink="/tratamientos/fisioterapia">Recuperación postquirúrgica</a>
+      <a class="issue-chip" routerLink="/pilates-terapeutico-terrassa">Dolor de hombro</a>
     </div>
   </div>
 </section>
 
-<section id="experiencia" class="experience section section-flow">
-  <div class="container">
-    <div class="section-heading" appRevealOnScroll>
-      <p class="section-tag">Experiencia CBM</p>
-      <h2 class="heading-highlight">Un camino de recuperación que también se siente</h2>
-      <p class="section-description">
-        No solo tratamos el dolor: te guiamos paso a paso para que recuperes confianza,
-        seguridad y ganas de volver a moverte.
-      </p>
-    </div>
-
-    <div class="experience-track">
-      <article class="experience-step reveal-delay-1 glass-panel floating-card" appRevealOnScroll>
-        <span class="experience-step-number">01</span>
-        <h3>Te escuchamos de verdad</h3>
-        <p>
-          Empezamos con tu historia y tus objetivos. Queremos entender qué te preocupa y qué
-          necesitas para volver a sentirte bien.
-        </p>
-      </article>
-
-      <article class="experience-step reveal-delay-2 glass-panel floating-card" appRevealOnScroll>
-        <span class="experience-step-number">02</span>
-        <h3>Diseñamos tu plan personal</h3>
-        <p>
-          Creamos una estrategia clara y realista para tu caso, con sesiones y ejercicios adaptados
-          a tu ritmo.
-        </p>
-      </article>
-
-      <article class="experience-step reveal-delay-3 glass-panel floating-card" appRevealOnScroll>
-        <span class="experience-step-number">03</span>
-        <h3>Acompañamiento cercano</h3>
-        <p>
-          Te acompañamos en cada avance para que recuperes movilidad con tranquilidad y confianza en
-          tu cuerpo.
-        </p>
-      </article>
-    </div>
-  </div>
-</section>
-
-
+<!-- ④ Tratamientos ──────────────────────────────────────── -->
 <section id="servicios" class="services section section-flow">
   <div class="container">
 
@@ -310,6 +221,50 @@
   </div>
 </section>
 
+<!-- ⑤ Filosofía / experiencia ───────────────────────────── -->
+<section id="experiencia" class="experience section section-flow">
+  <div class="container">
+    <div class="section-heading" appRevealOnScroll>
+      <p class="section-tag">Experiencia CBM</p>
+      <h2 class="heading-highlight">Un camino de recuperación que también se siente</h2>
+      <p class="section-description">
+        No solo tratamos el dolor: te guiamos paso a paso para que recuperes confianza,
+        seguridad y ganas de volver a moverte.
+      </p>
+    </div>
+
+    <div class="experience-track">
+      <article class="experience-step reveal-delay-1 glass-panel floating-card" appRevealOnScroll>
+        <span class="experience-step-number">01</span>
+        <h3>Te escuchamos de verdad</h3>
+        <p>
+          Empezamos con tu historia y tus objetivos. Queremos entender qué te preocupa y qué
+          necesitas para volver a sentirte bien.
+        </p>
+      </article>
+
+      <article class="experience-step reveal-delay-2 glass-panel floating-card" appRevealOnScroll>
+        <span class="experience-step-number">02</span>
+        <h3>Diseñamos tu plan personal</h3>
+        <p>
+          Creamos una estrategia clara y realista para tu caso, con sesiones y ejercicios adaptados
+          a tu ritmo.
+        </p>
+      </article>
+
+      <article class="experience-step reveal-delay-3 glass-panel floating-card" appRevealOnScroll>
+        <span class="experience-step-number">03</span>
+        <h3>Acompañamiento cercano</h3>
+        <p>
+          Te acompañamos en cada avance para que recuperes movilidad con tranquilidad y confianza en
+          tu cuerpo.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ⑥ SEO local ──────────────────────────────────────────── -->
 <section class="local-seo section section-flow">
   <div class="container">
     <div class="section-heading" appRevealOnScroll>
@@ -327,34 +282,13 @@
   </div>
 </section>
 
-<section class="common-issues section section-flow">
-  <div class="container">
-    <div class="section-heading" appRevealOnScroll>
-      <p class="section-tag">Casos frecuentes</p>
-      <h2>Te ayudamos con molestias como</h2>
-      <p class="section-description">
-        Explora casos reales que vemos en consulta y descubre cómo los tratamos en nuestra clínica de fisioterapia en Terrassa.
-      </p>
-      <p class="section-microcopy">
-        <strong>Selecciona una opción para ver cómo podemos ayudarte.</strong>
-      </p>
-    </div>
-
-    <div class="issues-chips" appRevealOnScroll>
-      <a class="issue-chip" routerLink="/fisioterapia-dolor-lumbar-terrassa">Dolor lumbar</a>
-      <a class="issue-chip" routerLink="/fisioterapia-cervical-terrassa">Dolor cervical</a>
-      <a class="issue-chip" routerLink="/tratamientos/fisioterapia">Lesiones deportivas</a>
-      <a class="issue-chip" routerLink="/puncion-seca-terrassa">Tendinitis</a>
-      <a class="issue-chip" routerLink="/tratamientos/fisioterapia">Recuperación postquirúrgica</a>
-      <a class="issue-chip" routerLink="/pilates-terapeutico-terrassa">Dolor de hombro</a>
-    </div>
-  </div>
-</section>
-
+<!-- ⑦ Tarifas ───────────────────────────────────────────── -->
 <app-pricing></app-pricing>
 
+<!-- ⑧ Reseñas ───────────────────────────────────────────── -->
 <app-testimonials appRevealOnScroll></app-testimonials>
 
+<!-- ⑨ CTA final ─────────────────────────────────────────── -->
 <section class="mid-cta section section-flow" appRevealOnScroll>
   <div class="container mid-cta-content">
     <p class="section-tag">Da el primer paso</p>
@@ -362,7 +296,7 @@
     <p>
       Cuéntanos tu caso y te orientaremos sobre el tratamiento más adecuado para empezar cuanto antes.
     </p>
-    <a class="btn-primary btn-booking" href="#reserva">
+    <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
       <span class="btn-icon" aria-hidden="true">💬</span>
       <span>Solicitar cita</span>
     </a>
@@ -370,10 +304,8 @@
   </div>
 </section>
 
-<section id="reserva" class="booking-anchor">
-  <app-booking-form appRevealOnScroll></app-booking-form>
-</section>
-
+<!-- ⑩ Mapa ──────────────────────────────────────────────── -->
 <app-location appRevealOnScroll></app-location>
 
+<!-- ⑪ FAQ ───────────────────────────────────────────────── -->
 <app-faq appRevealOnScroll></app-faq>

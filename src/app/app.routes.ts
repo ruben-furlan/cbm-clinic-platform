@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './features/home/home-page/home-page';
+import { SolicitarCitaPage } from './features/booking-form/solicitar-cita-page';
 import { BlogPage } from './features/blog/blog-page';
 import { CookiesPage } from './features/cookies/cookies-page';
 import { TreatmentsPage } from './features/treatments/treatments-page';
@@ -14,6 +15,10 @@ export const routes: Routes = [
   {
     path: '',
     component: HomePage
+  },
+  {
+    path: 'solicitar-cita',
+    component: SolicitarCitaPage
   },
   {
     path: 'display',
