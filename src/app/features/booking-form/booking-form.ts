@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
 import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
+import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 
 interface TreatmentOption {
   value: string;
@@ -19,7 +20,7 @@ interface TreatmentOption {
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RevealOnScrollDirective],
+  imports: [CommonModule, FormsModule, RevealOnScrollDirective, CbmLoaderComponent],
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css']
 })
@@ -34,6 +35,7 @@ export class BookingFormComponent implements OnInit {
   promoCode = '';
   step2Touched = false;
   whatsAppFeedback = false;
+  loadingTarifas = true;
 
   treatmentOptions: TreatmentOption[] = [];
 
@@ -55,6 +57,8 @@ export class BookingFormComponent implements OnInit {
       this.treatmentOptions = tarifas.map((tarifa) => this.toTreatmentOption(tarifa));
     } catch {
       this.treatmentOptions = [];
+    } finally {
+      this.loadingTarifas = false;
     }
   }
 

@@ -81,47 +81,51 @@
             <h3 class="step-title">¿Qué tratamiento buscas?</h3>
             <p class="step-subtitle">Selecciona una opción para continuar</p>
 
-            <div class="treatment-groups">
-              <div *ngFor="let group of treatmentOptionsByCategory" class="treatment-group">
-                <p class="treatment-group-label">{{ group.label }}</p>
-                <div class="treatment-cards">
-                  <button
-                    *ngFor="let option of group.options"
-                    type="button"
-                    class="treatment-card"
-                    [class.treatment-card--selected]="formData.treatment === option.value"
-                    (click)="selectCard(option.value)"
-                    [attr.aria-pressed]="formData.treatment === option.value"
-                  >
-                    <div class="treatment-card-header">
-                      <span class="treatment-card-name">{{ option.nombre }}</span>
-                      <strong class="treatment-card-price">{{ option.precio }}</strong>
-                    </div>
-                    <p *ngIf="option.descripcion" class="treatment-card-desc">{{ option.descripcion }}</p>
-                    <span *ngIf="option.showBadge" class="treatment-card-badge">
-                      Inicio de plan · Primera sesión
-                    </span>
-                    <span *ngIf="formData.treatment === option.value" class="treatment-card-check" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                      </svg>
-                    </span>
-                  </button>
+            <cbm-loader *ngIf="loadingTarifas"></cbm-loader>
+
+            <ng-container *ngIf="!loadingTarifas">
+              <div class="treatment-groups cbm-content-loaded">
+                <div *ngFor="let group of treatmentOptionsByCategory" class="treatment-group">
+                  <p class="treatment-group-label">{{ group.label }}</p>
+                  <div class="treatment-cards">
+                    <button
+                      *ngFor="let option of group.options"
+                      type="button"
+                      class="treatment-card"
+                      [class.treatment-card--selected]="formData.treatment === option.value"
+                      (click)="selectCard(option.value)"
+                      [attr.aria-pressed]="formData.treatment === option.value"
+                    >
+                      <div class="treatment-card-header">
+                        <span class="treatment-card-name">{{ option.nombre }}</span>
+                        <strong class="treatment-card-price">{{ option.precio }}</strong>
+                      </div>
+                      <p *ngIf="option.descripcion" class="treatment-card-desc">{{ option.descripcion }}</p>
+                      <span *ngIf="option.showBadge" class="treatment-card-badge">
+                        Inicio de plan · Primera sesión
+                      </span>
+                      <span *ngIf="formData.treatment === option.value" class="treatment-card-check" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="16" height="16">
+                          <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div class="step-actions">
-              <button
-                type="button"
-                class="btn-primary step-btn-continue"
-                [class.step-btn-continue--disabled]="!canAdvanceStep1"
-                [disabled]="!canAdvanceStep1"
-                (click)="nextStep()"
-              >
-                Continuar →
-              </button>
-            </div>
+              <div class="step-actions">
+                <button
+                  type="button"
+                  class="btn-primary step-btn-continue"
+                  [class.step-btn-continue--disabled]="!canAdvanceStep1"
+                  [disabled]="!canAdvanceStep1"
+                  (click)="nextStep()"
+                >
+                  Continuar →
+                </button>
+              </div>
+            </ng-container>
           </div>
 
           <!-- Paso 2: Tus datos -->

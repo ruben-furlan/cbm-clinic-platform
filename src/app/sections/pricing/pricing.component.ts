@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
+import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 
 interface PricingItem {
   concept: string;
@@ -20,12 +21,13 @@ interface PricingCard {
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RevealOnScrollDirective],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
 export class PricingComponent implements OnInit {
   pricingCards: PricingCard[] = [];
+  loading = true;
 
   constructor(private readonly tarifasService: TarifasService) {}
 
@@ -35,6 +37,8 @@ export class PricingComponent implements OnInit {
       this.pricingCards = this.mapTarifasToCards(tarifas);
     } catch {
       this.pricingCards = this.mapTarifasToCards([]);
+    } finally {
+      this.loading = false;
     }
   }
 

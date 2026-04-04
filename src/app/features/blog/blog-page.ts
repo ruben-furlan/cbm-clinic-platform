@@ -3,11 +3,12 @@ import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { BlogService, BlogPost } from '../../core/services/blog.service';
+import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 
 @Component({
   selector: 'app-blog-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, RevealOnScrollDirective],
+  imports: [CommonModule, RouterLink, RevealOnScrollDirective, CbmLoaderComponent],
   templateUrl: './blog-page.html',
   styleUrl: './blog-page.css'
 })

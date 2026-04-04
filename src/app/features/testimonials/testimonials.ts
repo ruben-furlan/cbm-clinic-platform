@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 
 interface GoogleAuthor {
   displayName?: string;
@@ -48,7 +49,7 @@ interface ReviewsCachePayload {
 @Component({
   selector: 'app-testimonials',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CbmLoaderComponent],
   templateUrl: './testimonials.html',
   styleUrls: ['./testimonials.css']
 })

@@ -9,16 +9,9 @@
   </div>
 </section>
 
-<section class="section blog-skeleton" *ngIf="loading" aria-busy="true" aria-label="Cargando artículos">
-  <div class="container articles-grid">
-    <div class="blog-card skeleton-card" *ngFor="let i of skeletonItems" aria-hidden="true">
-      <div class="sk sk-tag"></div>
-      <div class="sk sk-title"></div>
-      <div class="sk sk-title sk-title--short"></div>
-      <div class="sk sk-line"></div>
-      <div class="sk sk-line"></div>
-      <div class="sk sk-line sk-line--short"></div>
-    </div>
+<section class="section" *ngIf="loading" aria-busy="true" aria-label="Cargando artículos">
+  <div class="container">
+    <cbm-loader></cbm-loader>
   </div>
 </section>
 

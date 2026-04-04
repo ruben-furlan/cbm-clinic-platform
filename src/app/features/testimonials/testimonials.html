@@ -10,7 +10,7 @@
       </p>
     </div>
 
-    <p class="reviews-status" *ngIf="loading">Para ver las reseñas en Google, acepta las cookies…</p>
+    <cbm-loader *ngIf="loading"></cbm-loader>
     <p class="reviews-status reviews-status--warning" *ngIf="!loading && !loadedFromGoogle">
       {{ errorMessage }}
     </p>
