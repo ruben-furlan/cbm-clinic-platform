@@ -26,6 +26,12 @@
               <strong class="price">{{ item.price }}</strong>
             </div>
             <small *ngIf="item.microtext" class="microtext">{{ item.microtext }}</small>
+            <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
+              ⏰ Quedan {{ item.urgencyDays }} días
+            </span>
+            <span *ngIf="item.urgencyType === 'urgent'" class="urgency-badge urgency-badge--urgent">
+              🔥 Últimos {{ item.urgencyDays }} días
+            </span>
           </li>
         </ul>
 

@@ -7,6 +7,8 @@ interface PricingItem {
   concept: string;
   price: string;
   microtext?: string;
+  urgencyDays?: number;
+  urgencyType?: 'warning' | 'urgent';
 }
 
 interface PricingCard {
@@ -61,10 +63,28 @@ export class PricingComponent implements OnInit {
   }
 
   private toPricingItem(tarifa: Tarifa): PricingItem {
-    return {
+    const item: PricingItem = {
       concept: tarifa.nombre,
       price: `${tarifa.precio}${tarifa.unidad}`,
       microtext: tarifa.descripcion ?? undefined
     };
+
+    if (tarifa.categoria === 'promocion' && tarifa.fecha_fin_promo) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const endDate = new Date(tarifa.fecha_fin_promo);
+      endDate.setHours(0, 0, 0, 0);
+      const diffDays = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+      if (diffDays >= 1 && diffDays <= 7) {
+        item.urgencyDays = diffDays;
+        item.urgencyType = 'urgent';
+      } else if (diffDays >= 8 && diffDays <= 14) {
+        item.urgencyDays = diffDays;
+        item.urgencyType = 'warning';
+      }
+    }
+
+    return item;
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
@@ -10,6 +10,10 @@ interface TreatmentOption {
   label: string;
   type: 'session' | 'bundle' | 'pilates';
   categoria: TarifaCategoria;
+  nombre: string;
+  precio: string;
+  descripcion?: string | null;
+  showBadge: boolean;
 }
 
 @Component({
@@ -22,12 +26,14 @@ interface TreatmentOption {
 export class BookingFormComponent implements OnInit {
   private readonly languageService = inject(LanguageService);
   private readonly tarifasService = inject(TarifasService);
-  private readonly elementRef = inject(ElementRef);
+
+  currentStep = 1;
+  stepAnimClass = '';
 
   showPromoCode = false;
   promoCode = '';
-  selectOpen = false;
-  selectTouched = false;
+  step2Touched = false;
+  whatsAppFeedback = false;
 
   treatmentOptions: TreatmentOption[] = [];
 
@@ -39,19 +45,32 @@ export class BookingFormComponent implements OnInit {
     message: ''
   };
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.selectOpen = false;
-    }
-  }
+  availabilityType: 'green' | 'amber' = 'green';
+  availabilityText = '';
 
   async ngOnInit(): Promise<void> {
+    this.initAvailability();
     try {
       const tarifas = await this.tarifasService.getTarifas();
       this.treatmentOptions = tarifas.map((tarifa) => this.toTreatmentOption(tarifa));
     } catch {
       this.treatmentOptions = [];
+    }
+  }
+
+  private initAvailability(): void {
+    const now = new Date();
+    const day = now.getDay();
+    const hour = now.getHours();
+    const isWeekday = day >= 1 && day <= 5;
+    const isBusinessHours = hour >= 9 && hour < 19;
+
+    if (isWeekday && isBusinessHours) {
+      this.availabilityType = 'green';
+      this.availabilityText = 'Respondemos en menos de 2h';
+    } else {
+      this.availabilityType = 'amber';
+      this.availabilityText = 'Te respondemos el siguiente día hábil';
     }
   }
 
@@ -76,40 +95,42 @@ export class BookingFormComponent implements OnInit {
     return selected?.label ?? '';
   }
 
-  get treatmentFollowUpMessage(): string {
-    const selected = this.treatmentOptions.find((option) => option.value === this.formData.treatment);
-
-    if (!selected) {
-      return 'Selecciona la opción que te interesa y te contactaremos por WhatsApp para confirmar disponibilidad y siguientes pasos.';
-    }
-
-    if (selected.type === 'bundle') {
-      return 'Empezaremos con tu primera sesión y organizaremos contigo las siguientes.';
-    }
-
-    if (selected.type === 'pilates') {
-      return 'Te ayudaremos a encajar tu grupo y frecuencia según disponibilidad.';
-    }
-
-    return 'Te contactaremos para confirmar disponibilidad y horario.';
+  get selectedTreatmentOption(): TreatmentOption | undefined {
+    return this.treatmentOptions.find((option) => option.value === this.formData.treatment);
   }
 
-  toggleSelect(): void {
-    this.selectOpen = !this.selectOpen;
+  get isEmailValid(): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(this.formData.email);
   }
 
-  selectOption(value: string): void {
+  get canAdvanceStep1(): boolean {
+    return !!this.formData.treatment;
+  }
+
+  get canAdvanceStep2(): boolean {
+    return !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid;
+  }
+
+  selectCard(value: string): void {
     this.formData.treatment = value;
-    this.selectOpen = false;
-    this.selectTouched = true;
+  }
+
+  nextStep(): void {
+    if (this.currentStep === 2) {
+      this.step2Touched = true;
+      if (!this.canAdvanceStep2) return;
+    }
+    this.stepAnimClass = 'step-enter-forward';
+    this.currentStep++;
+  }
+
+  prevStep(): void {
+    this.stepAnimClass = 'step-enter-back';
+    this.currentStep--;
   }
 
   sendWhatsApp(): void {
-    if (!this.formData.treatment) {
-      this.selectTouched = true;
-      return;
-    }
-
     const phoneNumber = '34662561672';
     const selectedLanguage = this.languageService.selectedLanguage;
 
@@ -181,7 +202,11 @@ export class BookingFormComponent implements OnInit {
     const encodedMessage = encodeURIComponent(rawMessage);
     const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
 
-    window.open(url, '_blank');
+    this.whatsAppFeedback = true;
+    setTimeout(() => {
+      window.open(url, '_blank');
+      this.whatsAppFeedback = false;
+    }, 1500);
   }
 
   togglePromoCode(): void {
@@ -191,13 +216,16 @@ export class BookingFormComponent implements OnInit {
   private toTreatmentOption(tarifa: Tarifa): TreatmentOption {
     const isBundle = tarifa.nombre.toLowerCase().includes('bono');
     const isPilates = tarifa.categoria === 'pilates';
-    const suffix = isPilates || isBundle ? '' : '';
 
     return {
       value: tarifa.id,
-      label: `${tarifa.nombre} — ${tarifa.precio}${tarifa.unidad}${suffix}`,
+      label: `${tarifa.nombre} — ${tarifa.precio}${tarifa.unidad}`,
+      nombre: tarifa.nombre,
+      precio: `${tarifa.precio}${tarifa.unidad}`,
+      descripcion: tarifa.descripcion,
       type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session',
-      categoria: tarifa.categoria
+      categoria: tarifa.categoria,
+      showBadge: isPilates || isBundle
     };
   }
 }
