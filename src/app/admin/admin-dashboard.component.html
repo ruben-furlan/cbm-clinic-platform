@@ -472,19 +472,19 @@
 
 <!-- ══════════════ Modal evento ════════════════ -->
 <div class="modal-overlay" *ngIf="isEventoModalOpen" (click)="closeEventoModal()">
-  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
-    <h2>{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
+  <section class="modal-card modal-card--wide modal-card--evento" (click)="$event.stopPropagation()">
+    <h2 class="modal-title">{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
 
-    <form [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form">
+    <form [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form modal-form--evento">
 
       <!-- Título + slug -->
-      <div class="slug-row">
+      <div class="slug-row full-width">
         <label style="flex:1">
           Título *
           <input type="text" formControlName="title" placeholder="Pilates terapéutico" />
         </label>
       </div>
-      <div class="slug-row">
+      <div class="slug-row full-width">
         <label style="flex:1">
           Slug (URL)
           <input type="text" formControlName="slug" placeholder="pilates-terapeutico" />
@@ -493,7 +493,7 @@
       </div>
 
       <!-- Descripción corta -->
-      <label>
+      <label class="full-width">
         Descripción corta *
         <input
           type="text"
@@ -504,7 +504,7 @@
       </label>
 
       <!-- Descripción larga -->
-      <label>
+      <label class="full-width">
         Descripción completa
         <textarea
           rows="3"
@@ -588,7 +588,7 @@
       </div>
 
       <!-- Imagen -->
-      <label>
+      <label class="full-width">
         URL de imagen
         <input type="url" formControlName="image_url" placeholder="https://..." />
         <small class="field-helper">Usa una imagen real del centro o sesión para aumentar confianza.</small>
@@ -596,12 +596,12 @@
 
       <!-- Reglas para gratuitos -->
       <ng-container *ngIf="isEventoFreeSelected">
-        <div class="block-section">
+        <div class="block-section full-width">
           <p class="block-section-title">Restricciones para eventos gratuitos</p>
           <p class="field-helper" style="margin:0">
             Estas restricciones evitan que una misma persona reserve múltiples clases gratuitas. Recomendado para mantener la calidad del servicio.
           </p>
-          <div class="grid-two">
+          <div class="grid-two free-rules-grid">
             <label>
               Máx. eventos gratis por persona
               <input type="number" formControlName="free_limit_per_person" min="1" />
@@ -615,7 +615,7 @@
       </ng-container>
 
       <!-- Estado + opciones -->
-      <label>
+      <label class="full-width">
         Estado
         <select formControlName="status">
           <option value="active">Activo</option>
@@ -625,7 +625,7 @@
         </select>
       </label>
 
-      <div class="inline-checks">
+      <div class="inline-checks full-width">
         <label class="inline-check">
           <input type="checkbox" formControlName="is_active" />
           <span>Activo</span>
@@ -644,11 +644,11 @@
         </label>
       </div>
 
-      <p class="field-helper" style="margin:0">Este evento será visible en la web para nuevos pacientes.</p>
+      <p class="field-helper full-width" style="margin:0">Este evento será visible en la web para nuevos pacientes.</p>
 
-      <p class="status error" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
+      <p class="status error full-width" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
 
-      <div class="modal-actions">
+      <div class="modal-actions modal-footer full-width">
         <button type="button" class="btn-ghost" (click)="closeEventoModal()" [disabled]="eventosSaving">Cancelar</button>
         <button type="submit" class="btn-primary" [disabled]="eventosSaving">
           {{ eventosSaving ? 'Guardando...' : 'Guardar' }}
