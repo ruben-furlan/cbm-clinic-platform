@@ -127,7 +127,7 @@ export class EventRegistrationModalComponent implements OnInit {
         phone:     this.formData.phone,
         notes:     this.formData.notes,
         source:    'home'
-      });
+      }, this.event);
 
       this.registration = registration;
 

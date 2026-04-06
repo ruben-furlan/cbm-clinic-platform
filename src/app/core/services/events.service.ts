@@ -162,50 +162,45 @@ export class EventsService {
     return (data ?? []) as EventRegistration[];
   }
 
-  /**
-   * Registra al usuario en el evento de forma atómica.
-   * El RPC valida, bloquea la fila del evento (evita oversell), inserta
-   * y genera el código de acceso en una sola transacción SQL.
-   *
-   * Devuelve { registration, rejected }:
-   *   - rejected = false → inscripción confirmed, access_code disponible
-   *   - rejected = true  → reglas de evento gratuito no cumplidas
-   *
-   * Lanza Error con código en .message para:
-   *   - 'no_slots'            → evento completo
-   *   - 'event_not_found'     → evento no existe
-   *   - 'event_inactive'      → evento inactivo
-   *   - 'event_not_available' → estado no válido
-   */
   async registerForEvent(
-    payload: CreateRegistrationPayload
+    payload: CreateRegistrationPayload,
+    event: CbmEvent
   ): Promise<{ registration: EventRegistration; rejected: boolean }> {
-    const { data, error } = await supabase.rpc('register_for_event', {
-      p_event_id:   payload.event_id,
-      p_full_name:  payload.full_name,
-      p_email:      payload.email,
-      p_phone:      payload.phone,
-      p_notes:      payload.notes ?? null,
-      p_source:     payload.source ?? 'home'
-    });
+    if (this.isFull(event)) throw new Error('no_slots');
 
-    if (error) throw error;
+    let status: RegistrationStatus = 'confirmed';
+    let rejectionReason: string | null = null;
 
-    const result = data as {
-      ok: boolean;
-      error?: string;
-      registration?: EventRegistration;
-      rejected?: boolean;
-    };
-
-    if (!result.ok) {
-      throw new Error(result.error ?? 'registration_failed');
+    if (event.pricing_type === 'free') {
+      const { data: vData } = await supabase.rpc('validate_free_event_registration', {
+        p_email:    payload.email.toLowerCase().trim(),
+        p_phone:    payload.phone.trim(),
+        p_event_id: payload.event_id
+      });
+      const v = vData as { valid: boolean; reason: string | null } | null;
+      if (v && !v.valid) {
+        status = 'rejected';
+        rejectionReason = v.reason;
+      }
     }
 
-    return {
-      registration: result.registration!,
-      rejected:     result.rejected ?? false
-    };
+    const { data, error } = await supabase
+      .from('event_registrations')
+      .insert({
+        event_id:     payload.event_id,
+        full_name:    payload.full_name.trim(),
+        email:        payload.email.toLowerCase().trim(),
+        phone:        payload.phone.trim(),
+        notes:        payload.notes?.trim() || null,
+        source:       payload.source ?? 'home',
+        is_free_event: event.pricing_type === 'free',
+        status
+      })
+      .select('*')
+      .single();
+
+    if (error) throw error;
+    return { registration: data as EventRegistration, rejected: status === 'rejected' };
   }
 
   async updateRegistrationStatus(id: string, status: RegistrationStatus): Promise<void> {
