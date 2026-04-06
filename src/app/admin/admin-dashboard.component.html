@@ -636,37 +636,131 @@
 <!-- ══════════════ Modal registros ════════════════ -->
 <div class="modal-overlay" *ngIf="isRegistrosModalOpen" (click)="closeRegistrosModal()">
   <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
-    <h2>Inscritos — {{ eventoRegistrosTitle }}</h2>
+
+    <div class="reg-modal-header">
+      <div>
+        <h2 class="reg-modal-title">Inscritos</h2>
+        <p class="reg-modal-subtitle">{{ eventoRegistrosTitle }}</p>
+      </div>
+      <div class="reg-modal-counter" *ngIf="eventoRegistros.length">
+        {{ eventoRegistros.length }} {{ eventoRegistros.length === 1 ? 'inscripción' : 'inscripciones' }}
+      </div>
+    </div>
+
+    <p class="status message reg-inline-msg" *ngIf="registrosMessage">{{ registrosMessage }}</p>
 
     <p class="status" *ngIf="registrosLoading">Cargando inscripciones...</p>
 
-    <div class="table-wrap" *ngIf="!registrosLoading && eventoRegistros.length" style="max-height:400px;overflow-y:auto">
-      <table>
+    <div class="table-wrap" *ngIf="!registrosLoading && eventoRegistros.length" style="max-height:440px;overflow-y:auto">
+      <table class="reg-table">
         <thead>
           <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Teléfono</th>
+            <th>Persona</th>
+            <th>Contacto</th>
             <th>Estado</th>
             <th>Fecha</th>
-            <th>Notas</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let reg of eventoRegistros">
-            <td>{{ reg.full_name }}</td>
-            <td>{{ reg.email }}</td>
-            <td>{{ reg.phone }}</td>
+          <tr
+            *ngFor="let reg of eventoRegistros"
+            [class.reg-row--updating]="updatingRegistrationId === reg.id"
+          >
+            <!-- Nombre + nota -->
             <td>
-              <span class="ev-status"
-                [class.ev-status--active]="reg.status === 'confirmed' || reg.status === 'pending'"
-                [class.ev-status--blocked]="reg.status === 'blocked'">
-                {{ reg.status }}
-                <span *ngIf="reg.blocked_reason" style="font-size:11px;color:#999"> ({{ reg.blocked_reason }})</span>
+              <span class="reg-name">{{ reg.full_name }}</span>
+              <span class="reg-note" *ngIf="reg.notes">{{ reg.notes }}</span>
+            </td>
+
+            <!-- Email + teléfono -->
+            <td>
+              <span class="reg-contact">{{ reg.email }}</span>
+              <span class="reg-contact reg-contact--muted">{{ reg.phone }}</span>
+            </td>
+
+            <!-- Badge de estado -->
+            <td>
+              <span
+                class="reg-badge"
+                [class.reg-badge--pending]="reg.status === 'pending'"
+                [class.reg-badge--confirmed]="reg.status === 'confirmed'"
+                [class.reg-badge--rejected]="reg.status === 'rejected'"
+                [class.reg-badge--cancelled]="reg.status === 'cancelled'"
+                [class.reg-badge--blocked]="reg.status === 'blocked'"
+              >
+                {{ registroStatusLabels[reg.status] }}
+              </span>
+              <span class="reg-blocked-reason" *ngIf="reg.blocked_reason">
+                {{ reg.blocked_reason }}
               </span>
             </td>
-            <td style="white-space:nowrap;font-size:12px">{{ reg.created_at | date:'dd/MM/yy HH:mm' }}</td>
-            <td style="font-size:13px;color:#777">{{ reg.notes || '—' }}</td>
+
+            <!-- Fecha -->
+            <td class="reg-date">{{ reg.created_at | date:'dd/MM/yy · HH:mm' }}</td>
+
+            <!-- Acciones de transición -->
+            <td>
+              <div class="reg-actions" [class.reg-actions--busy]="updatingRegistrationId === reg.id">
+
+                <!-- Desde pending: confirmar, rechazar, cancelar -->
+                <ng-container *ngIf="reg.status === 'pending'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--confirm"
+                    (click)="updateRegistroStatus(reg, 'confirmed')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Confirmar plaza"
+                  >Confirmar</button>
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--reject"
+                    (click)="updateRegistroStatus(reg, 'rejected')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Rechazar inscripción"
+                  >Rechazar</button>
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--cancel"
+                    (click)="updateRegistroStatus(reg, 'cancelled')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Cancelar inscripción"
+                  >Cancelar</button>
+                </ng-container>
+
+                <!-- Desde confirmed: solo cancelar -->
+                <ng-container *ngIf="reg.status === 'confirmed'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--cancel"
+                    (click)="updateRegistroStatus(reg, 'cancelled')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Cancelar inscripción confirmada"
+                  >Cancelar</button>
+                </ng-container>
+
+                <!-- Desde rejected o cancelled: volver a pendiente -->
+                <ng-container *ngIf="reg.status === 'rejected' || reg.status === 'cancelled'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--pending"
+                    (click)="updateRegistroStatus(reg, 'pending')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Pasar a pendiente"
+                  >Pendiente</button>
+                </ng-container>
+
+                <!-- Bloqueado: solo lectura -->
+                <span class="reg-readonly" *ngIf="reg.status === 'blocked'">Sin acciones</span>
+
+                <!-- Spinner por fila -->
+                <span class="reg-spinner" *ngIf="updatingRegistrationId === reg.id" aria-label="Actualizando...">
+                  <span class="reg-spinner-dot"></span>
+                  <span class="reg-spinner-dot"></span>
+                  <span class="reg-spinner-dot"></span>
+                </span>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>

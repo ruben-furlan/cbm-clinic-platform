@@ -104,6 +104,16 @@ export class AdminDashboardComponent implements OnInit {
   eventoRegistros: EventRegistration[] = [];
   registrosLoading = false;
   eventoRegistrosTitle = '';
+  updatingRegistrationId: string | null = null;
+  registrosMessage = '';
+
+  readonly registroStatusLabels: Record<string, string> = {
+    pending: 'Pendiente',
+    confirmed: 'Confirmado',
+    rejected: 'Rechazado',
+    cancelled: 'Cancelado',
+    blocked: 'Bloqueado'
+  };
 
   readonly eventosFiltroTabs: { value: FiltroEventos; label: string }[] = [
     { value: 'todos', label: 'Todos' },
@@ -1042,6 +1052,37 @@ export class AdminDashboardComponent implements OnInit {
   closeRegistrosModal(): void {
     this.isRegistrosModalOpen = false;
     this.eventoRegistros = [];
+    this.registrosMessage = '';
+    this.updatingRegistrationId = null;
+  }
+
+  async updateRegistroStatus(reg: EventRegistration, newStatus: string): Promise<void> {
+    if (this.updatingRegistrationId) return;
+
+    this.updatingRegistrationId = reg.id;
+    this.registrosMessage = '';
+    const previousStatus = reg.status;
+
+    // Actualización optimista
+    this.eventoRegistros = this.eventoRegistros.map((r) =>
+      r.id === reg.id ? { ...r, status: newStatus as EventRegistration['status'] } : r
+    );
+
+    try {
+      await this.withTimeout(
+        this.eventsService.updateRegistrationStatus(reg.id, newStatus as EventRegistration['status'])
+      );
+      this.registrosMessage = `Estado actualizado a "${this.registroStatusLabels[newStatus]}".`;
+    } catch {
+      // Rollback
+      this.eventoRegistros = this.eventoRegistros.map((r) =>
+        r.id === reg.id ? { ...r, status: previousStatus } : r
+      );
+      this.registrosMessage = 'No se pudo actualizar el estado. Inténtalo de nuevo.';
+    } finally {
+      this.updatingRegistrationId = null;
+      this.flushUiState();
+    }
   }
 
   getEventoAvailableSlots(evento: CbmEvent): number {
