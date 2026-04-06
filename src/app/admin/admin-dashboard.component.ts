@@ -146,6 +146,8 @@ export class AdminDashboardComponent implements OnInit {
     cancelled: 'Cancelado',
     inactive: 'Inactivo'
   };
+  readonly ctaSuggestionsFree = ['Quiero probar', 'Reservar mi plaza', 'Quiero empezar'];
+  readonly ctaSuggestionsPaid = ['Reservar sesión', 'Agendar cita'];
 
   readonly eventoForm;
 
@@ -878,6 +880,10 @@ export class AdminDashboardComponent implements OnInit {
 
   get isEventoFreeSelected(): boolean {
     return this.eventoForm.controls.pricing_type.value === 'free';
+  }
+
+  get eventoCtaSuggestions(): string[] {
+    return this.isEventoFreeSelected ? this.ctaSuggestionsFree : this.ctaSuggestionsPaid;
   }
 
   setFiltroEventos(filtro: FiltroEventos): void {
