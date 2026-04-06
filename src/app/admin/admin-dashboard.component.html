@@ -495,13 +495,22 @@
       <!-- Descripción corta -->
       <label>
         Descripción corta *
-        <input type="text" formControlName="short_description" placeholder="Descripción visible en la card de la home" />
+        <input
+          type="text"
+          formControlName="short_description"
+          placeholder="Mejora tu movilidad y reduce molestias desde la primera sesión."
+        />
+        <small class="field-helper">Este texto se muestra en la home. Enfócalo en el beneficio para el paciente.</small>
       </label>
 
       <!-- Descripción larga -->
       <label>
         Descripción completa
-        <textarea rows="3" formControlName="long_description" placeholder="Descripción detallada del evento (opcional)"></textarea>
+        <textarea
+          rows="3"
+          formControlName="long_description"
+          placeholder="Explica qué va a sentir la persona después de la sesión, no solo qué se hará.&#10;Ejemplo: Sesión enfocada en aliviar tensiones, mejorar movilidad y ayudarte a sentirte mejor desde el primer día."
+        ></textarea>
       </label>
 
       <!-- Categoría + modalidad -->
@@ -520,11 +529,15 @@
         <label>
           Modalidad *
           <select formControlName="pricing_type">
-            <option value="free">Gratis</option>
+            <option value="free">Primera experiencia</option>
             <option value="paid">De pago</option>
           </select>
         </label>
       </div>
+
+      <p class="field-notice" *ngIf="isEventoFreeSelected">
+        Este tipo de evento está pensado para primeras visitas. Evita crear demasiados seguidos para mantener exclusividad.
+      </p>
 
       <!-- Precio (solo pago) -->
       <label *ngIf="isEventoPaidSelected">
@@ -565,6 +578,12 @@
         <label>
           Texto del botón CTA
           <input type="text" formControlName="cta_label" placeholder="Reservar plaza" />
+          <small class="field-helper">
+            Sugerencias:
+            <strong *ngFor="let suggestion of eventoCtaSuggestions; let last = last">
+              {{ suggestion }}<span *ngIf="!last"> · </span>
+            </strong>
+          </small>
         </label>
       </div>
 
@@ -572,12 +591,16 @@
       <label>
         URL de imagen
         <input type="url" formControlName="image_url" placeholder="https://..." />
+        <small class="field-helper">Usa una imagen real del centro o sesión para aumentar confianza.</small>
       </label>
 
       <!-- Reglas para gratuitos -->
       <ng-container *ngIf="isEventoFreeSelected">
         <div class="block-section">
           <p class="block-section-title">Restricciones para eventos gratuitos</p>
+          <p class="field-helper" style="margin:0">
+            Estas restricciones evitan que una misma persona reserve múltiples clases gratuitas. Recomendado para mantener la calidad del servicio.
+          </p>
           <div class="grid-two">
             <label>
               Máx. eventos gratis por persona
@@ -613,13 +636,15 @@
         </label>
         <label class="inline-check">
           <input type="checkbox" formControlName="highlight_on_home" />
-          <span>Destacar en home</span>
+          <span>Mostrar como destacado (recomendado para eventos de captación)</span>
         </label>
         <label class="inline-check">
           <input type="checkbox" formControlName="is_new_clients_only" />
-          <span>Solo nuevos clientes</span>
+          <span>Solo para nuevos pacientes (recomendado para eventos de primera experiencia)</span>
         </label>
       </div>
+
+      <p class="field-helper" style="margin:0">Este evento será visible en la web para nuevos pacientes.</p>
 
       <p class="status error" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
 

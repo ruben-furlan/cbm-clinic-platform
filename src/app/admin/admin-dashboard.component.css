@@ -240,6 +240,35 @@ textarea {
   font: inherit;
 }
 
+textarea {
+  resize: vertical;
+}
+
+.field-helper {
+  margin: 0;
+  color: #6c6580;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.field-notice {
+  margin: -2px 0 2px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(123, 77, 255, 0.18);
+  background: #f7f4ff;
+  color: #4e4466;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.field-helper strong {
+  color: #4a425f;
+  font-weight: 700;
+}
+
 .grid-two {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
