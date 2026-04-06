@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CbmEvent, EventRegistration, EventsService } from '../../../core/services/events.service';
 import { EventPassComponent } from '../event-pass/event-pass.component';
 
@@ -30,7 +31,10 @@ export class EventRegistrationModalComponent implements OnInit {
   formData = { fullName: '', email: '', phone: '', notes: '' };
   touched = { fullName: false, email: false, phone: false };
 
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
     if (this.eventsService.isFull(this.event)) {
@@ -164,5 +168,10 @@ export class EventRegistrationModalComponent implements OnInit {
   openWhatsAppAlternative(): void {
     const text = 'Hola, me interesa información sobre vuestras clases y tarifas.';
     window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
+  }
+
+  goToBookingRequest(): void {
+    this.close();
+    void this.router.navigate(['/solicitar-cita']);
   }
 }

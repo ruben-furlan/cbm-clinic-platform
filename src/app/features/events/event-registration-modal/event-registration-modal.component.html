@@ -11,7 +11,7 @@
           {{ event.pricing_type === 'free' ? 'Gratis' : displayPrice }}
         </span>
         <span class="badge badge--urgent" *ngIf="isAlmostFull && step !== 'full'">Últimas plazas</span>
-        <span class="badge badge--full" *ngIf="step === 'full'">Completo</span>
+        <span class="badge badge--full" *ngIf="step === 'full'">Completo — plazas agotadas</span>
       </div>
 
       <h2 class="modal-title">{{ event.title }}</h2>
@@ -159,17 +159,14 @@
       <div class="feedback-block feedback-block--info">
         <div class="feedback-icon feedback-icon--info">👥</div>
         <h3 class="feedback-title">Esta sesión está completa</h3>
-        <p class="feedback-text">
-          Las plazas se han cubierto. Puedes escribirnos y te avisamos si hay cancelaciones
-          o si programamos una nueva sesión.
-        </p>
+        <p class="feedback-text feedback-text--lead">Esta sesión se llenó rápidamente.</p>
+        <p class="feedback-text">Reserva tu plaza antes de que ocurra lo mismo.</p>
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="btn-primary btn-full" (click)="openWhatsApp()">
-          Avisadme de la próxima
+        <button type="button" class="btn-primary btn-full" (click)="goToBookingRequest()">
+          No quiero quedarme fuera
         </button>
-        <button type="button" class="btn-ghost btn-full" (click)="close()">Cerrar</button>
       </div>
     </ng-container>
 

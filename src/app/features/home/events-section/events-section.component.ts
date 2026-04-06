@@ -72,7 +72,7 @@ export class EventsSectionComponent implements OnInit {
   }
 
   getCtaLabel(event: CbmEvent): string {
-    if (this.isFull(event)) return 'Avisadme de la próxima';
+    if (this.isFull(event)) return 'No quiero quedarme fuera';
     return event.cta_label ?? (event.pricing_type === 'free' ? 'Apuntarme gratis' : 'Reservar plaza');
   }
 
