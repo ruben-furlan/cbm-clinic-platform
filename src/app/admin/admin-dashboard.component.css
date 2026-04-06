@@ -604,11 +604,6 @@ textarea:disabled {
   color: #555;
 }
 
-.reg-badge--pending {
-  background: rgba(251, 188, 5, 0.14);
-  color: #8a6000;
-}
-
 .reg-badge--confirmed {
   background: rgba(72, 199, 116, 0.14);
   color: #1a7a47;
@@ -624,12 +619,7 @@ textarea:disabled {
   color: #666;
 }
 
-.reg-badge--blocked {
-  background: rgba(197, 47, 100, 0.1);
-  color: #a32050;
-}
-
-.reg-blocked-reason {
+.reg-rejection-reason {
   display: block;
   font-size: 11px;
   color: #aaa;
@@ -689,12 +679,6 @@ textarea:disabled {
   background: rgba(100, 100, 120, 0.08);
   color: #555;
   border: 1px solid rgba(100, 100, 120, 0.2);
-}
-
-.reg-btn--pending {
-  background: rgba(251, 188, 5, 0.12);
-  color: #8a6000;
-  border: 1px solid rgba(251, 188, 5, 0.35);
 }
 
 .reg-readonly {

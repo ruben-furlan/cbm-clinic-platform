@@ -33,19 +33,6 @@
     0 0 0 1px rgba(255, 255, 255, 0.6) inset;
 }
 
-.pass-card--pending {
-  background: linear-gradient(
-    148deg,
-    rgba(255, 253, 248, 1) 0%,
-    rgba(255, 249, 238, 1) 100%
-  );
-  border-color: rgba(251, 188, 5, 0.25);
-  box-shadow:
-    0 2px 0 rgba(251, 188, 5, 0.1),
-    0 12px 32px rgba(31, 27, 45, 0.09),
-    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
-}
-
 /* ── Orbs decorativos de fondo ───────────────────────────────────────────── */
 
 .pass-bg-orb {
@@ -128,13 +115,6 @@
 @keyframes iconPop {
   from { transform: scale(0.6); opacity: 0; }
   to   { transform: scale(1);   opacity: 1; }
-}
-
-.pass-status-icon--pending {
-  background: linear-gradient(135deg, rgba(251, 188, 5, 0.14), rgba(251, 188, 5, 0.07));
-  border-color: rgba(251, 188, 5, 0.45);
-  color: #8a6000;
-  font-size: 20px;
 }
 
 .pass-status-title {
@@ -222,7 +202,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--modal-bg, #fff); /* hereda del fondo del modal */
+  background: var(--modal-bg, #fff);
   border: 1px solid rgba(241, 216, 230, 0.86);
   flex-shrink: 0;
   position: relative;

@@ -20,10 +20,6 @@ export class EventPassComponent {
 
   constructor(private readonly eventsService: EventsService) {}
 
-  get isPending(): boolean {
-    return this.registration.status === 'pending';
-  }
-
   get formattedDate(): string {
     return this.eventsService.formatEventDate(this.event.start_at);
   }
@@ -32,20 +28,8 @@ export class EventPassComponent {
     return this.eventsService.formatEventTime(this.event.start_at);
   }
 
-  get passTitle(): string {
-    return this.isPending ? 'Solicitud recibida' : 'Plaza confirmada';
-  }
-
-  get passSubtitle(): string {
-    return this.isPending
-      ? 'Te confirmaremos la plaza en breve'
-      : 'Muestra este código al llegar al centro';
-  }
-
-  get codeHint(): string {
-    return this.isPending
-      ? 'Guárdalo como referencia de tu solicitud'
-      : 'Preséntalo en recepción el día de tu sesión';
+  get isCheckedIn(): boolean {
+    return !!this.registration.checked_in_at;
   }
 
   async copyCode(): Promise<void> {
@@ -62,20 +46,20 @@ export class EventPassComponent {
   }
 
   shareWhatsApp(): void {
-    const code = this.registration.access_code ?? '';
-    const name = this.registration.full_name;
+    const code  = this.registration.access_code ?? '';
+    const name  = this.registration.full_name;
     const title = this.event.title;
-    const date = `${this.formattedDate} · ${this.formattedTime}`;
+    const date  = `${this.formattedDate} · ${this.formattedTime}`;
 
     const lines = [
-      `Hola, acabo de registrarme en:`,
+      `Hola, acabo de apuntarme a:`,
       `*${title}*`,
       date,
       ``,
-      `Mi código: *${code}*`,
+      `Mi código de acceso: *${code}*`,
       `Nombre: ${name}`,
       ``,
-      `¿Podéis confirmar mi plaza?`
+      `¡Nos vemos allí! 👋`
     ];
 
     const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join('\n'))}`;
@@ -83,7 +67,6 @@ export class EventPassComponent {
     this.whatsappClicked.emit();
   }
 
-  // Hook preparado para QR (integrar librería qrcode en paso posterior)
   get qrValue(): string {
     return this.registration.access_code ?? this.registration.id;
   }

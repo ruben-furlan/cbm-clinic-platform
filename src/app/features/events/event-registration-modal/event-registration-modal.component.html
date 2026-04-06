@@ -4,7 +4,7 @@
     <!-- Close -->
     <button type="button" class="modal-close" (click)="close()" aria-label="Cerrar">✕</button>
 
-    <!-- ── Cabecera del evento ──────────────────────────────────────────── -->
+    <!-- ── Cabecera del evento (oculta en success) ─────────────────────────── -->
     <div class="modal-header" *ngIf="step !== 'success'">
       <div class="modal-badges">
         <span class="badge" [class.badge--free]="event.pricing_type === 'free'" [class.badge--paid]="event.pricing_type === 'paid'">
@@ -56,7 +56,7 @@
 
     <!-- ── Step: form ─────────────────────────────────────────────────────── -->
     <ng-container *ngIf="step === 'form'">
-      <p class="form-intro">Déjanos tus datos y nos ponemos en contacto contigo para confirmar la plaza.</p>
+      <p class="form-intro">Rellena tus datos y te confirmamos la plaza al instante.</p>
 
       <form class="reg-form" (ngSubmit)="submit()" novalidate>
         <label class="reg-label">
@@ -119,14 +119,14 @@
 
         <div class="modal-actions">
           <button type="submit" class="btn-primary btn-full" [disabled]="saving">
-            {{ saving ? 'Enviando...' : 'Confirmar solicitud' }}
+            {{ saving ? 'Confirmando...' : 'Confirmar plaza' }}
           </button>
           <button type="button" class="btn-secondary btn-full" (click)="step = 'details'" [disabled]="saving">Volver</button>
         </div>
       </form>
     </ng-container>
 
-    <!-- ── Step: success ──────────────────────────────────────────────────── -->
+    <!-- ── Step: success — pase digital ──────────────────────────────────── -->
     <ng-container *ngIf="step === 'success' && registration">
       <app-event-pass
         [registration]="registration"
@@ -138,21 +138,17 @@
       </div>
     </ng-container>
 
-    <!-- ── Step: blocked ─────────────────────────────────────────────────── -->
-    <ng-container *ngIf="step === 'blocked'">
+    <!-- ── Step: rejected ─────────────────────────────────────────────────── -->
+    <ng-container *ngIf="step === 'rejected'">
       <div class="feedback-block feedback-block--info">
         <div class="feedback-icon feedback-icon--info">ℹ</div>
-        <h3 class="feedback-title">Esta sesión es para nuevos participantes</h3>
-        <p class="feedback-text">
-          Esta clase gratuita está pensada como primera toma de contacto.
-          Parece que ya has participado anteriormente — ¡genial! Te invitamos a explorar
-          nuestras clases regulares y tarifas.
-        </p>
+        <h3 class="feedback-title">{{ rejectionTitle }}</h3>
+        <p class="feedback-text">{{ rejectionBody }}</p>
       </div>
 
       <div class="modal-actions">
         <button type="button" class="btn-primary btn-full" (click)="openWhatsAppAlternative()">
-          Ver clases regulares por WhatsApp
+          Ver opciones por WhatsApp
         </button>
         <button type="button" class="btn-ghost btn-full" (click)="close()">Cerrar</button>
       </div>

@@ -11,7 +11,8 @@ import {
   EventCategory,
   EventPricingType,
   EventStatus,
-  EventRegistration
+  EventRegistration,
+  RegistrationStatus
 } from '../core/services/events.service';
 import { supabase } from '../core/supabase.client';
 
@@ -108,11 +109,9 @@ export class AdminDashboardComponent implements OnInit {
   registrosMessage = '';
 
   readonly registroStatusLabels: Record<string, string> = {
-    pending: 'Pendiente',
     confirmed: 'Confirmado',
-    rejected: 'Rechazado',
-    cancelled: 'Cancelado',
-    blocked: 'Bloqueado'
+    rejected:  'Rechazado',
+    cancelled: 'Cancelado'
   };
 
   readonly eventosFiltroTabs: { value: FiltroEventos; label: string }[] = [
@@ -1105,7 +1104,7 @@ export class AdminDashboardComponent implements OnInit {
     this.updatingRegistrationId = null;
   }
 
-  async updateRegistroStatus(reg: EventRegistration, newStatus: string): Promise<void> {
+  async updateRegistroStatus(reg: EventRegistration, newStatus: RegistrationStatus): Promise<void> {
     if (this.updatingRegistrationId) return;
 
     this.updatingRegistrationId = reg.id;
@@ -1142,7 +1141,7 @@ export class AdminDashboardComponent implements OnInit {
 
     // Optimistic update
     this.eventoRegistros = this.eventoRegistros.map((r) =>
-      r.id === reg.id ? { ...r, checkin_status: 'checked_in' as const, checked_in_at: new Date().toISOString() } : r
+      r.id === reg.id ? { ...r, checked_in_at: new Date().toISOString() } : r
     );
 
     try {
@@ -1151,7 +1150,7 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       // Rollback
       this.eventoRegistros = this.eventoRegistros.map((r) =>
-        r.id === reg.id ? { ...r, checkin_status: 'pending' as const, checked_in_at: null } : r
+        r.id === reg.id ? { ...r, checked_in_at: null } : r
       );
       this.registrosMessage = 'No se pudo registrar el check-in. Inténtalo de nuevo.';
     } finally {

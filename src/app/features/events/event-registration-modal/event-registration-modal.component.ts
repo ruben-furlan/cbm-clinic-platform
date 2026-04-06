@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CbmEvent, EventRegistration, EventsService } from '../../../core/services/events.service';
 import { EventPassComponent } from '../event-pass/event-pass.component';
 
-type ModalStep = 'details' | 'form' | 'success' | 'blocked' | 'full';
+type ModalStep = 'details' | 'form' | 'success' | 'rejected' | 'full';
 
 const WHATSAPP_PHONE = '34662561672';
 
@@ -24,6 +24,7 @@ export class EventRegistrationModalComponent implements OnInit {
   error = '';
 
   registration: EventRegistration | null = null;
+  rejectionReason: 'blocked_new_clients' | 'blocked_cooldown' | 'limit_exceeded' | null = null;
 
   formData = { fullName: '', email: '', phone: '', notes: '' };
   touched = { fullName: false, email: false, phone: false };
@@ -84,6 +85,24 @@ export class EventRegistrationModalComponent implements OnInit {
     );
   }
 
+  /** Mensaje contextual para el paso rejected según la razón */
+  get rejectionTitle(): string {
+    if (this.rejectionReason === 'blocked_new_clients') {
+      return 'Esta sesión es para nuevos participantes';
+    }
+    return 'Ya tienes una clase reciente';
+  }
+
+  get rejectionBody(): string {
+    if (this.rejectionReason === 'blocked_new_clients') {
+      return 'Esta clase gratuita está pensada como primera toma de contacto. Parece que ya has participado antes — ¡genial! Te invitamos a explorar nuestras clases regulares y tarifas.';
+    }
+    if (this.rejectionReason === 'blocked_cooldown') {
+      return 'Has asistido recientemente a una de nuestras sesiones gratuitas. Para que más personas puedan disfrutarlas, hay un período de espera entre clases. Escríbenos y te ayudamos a encontrar la opción que mejor te encaje.';
+    }
+    return 'No ha sido posible completar la inscripción. Escríbenos y te ayudamos directamente.';
+  }
+
   goToForm(): void {
     this.step = 'form';
   }
@@ -101,24 +120,29 @@ export class EventRegistrationModalComponent implements OnInit {
     this.error = '';
 
     try {
-      const { registration, blocked } = await this.eventsService.registerForEvent(
-        {
-          event_id: this.event.id,
-          full_name: this.formData.fullName,
-          email: this.formData.email,
-          phone: this.formData.phone,
-          notes: this.formData.notes,
-          source: 'home'
-        },
-        this.event
-      );
+      const { registration, rejected } = await this.eventsService.registerForEvent({
+        event_id:  this.event.id,
+        full_name: this.formData.fullName,
+        email:     this.formData.email,
+        phone:     this.formData.phone,
+        notes:     this.formData.notes,
+        source:    'home'
+      });
 
       this.registration = registration;
-      this.step = blocked ? 'blocked' : 'success';
+
+      if (rejected) {
+        this.rejectionReason = (registration.rejection_reason as typeof this.rejectionReason) ?? null;
+        this.step = 'rejected';
+      } else {
+        this.step = 'success';
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : '';
       if (msg === 'no_slots') {
         this.step = 'full';
+      } else if (msg === 'event_inactive' || msg === 'event_not_available') {
+        this.error = 'Este evento ya no está disponible. Por favor, recarga la página.';
       } else {
         this.error = 'No se pudo procesar tu solicitud. Inténtalo de nuevo o contáctanos por WhatsApp.';
       }

@@ -684,16 +684,14 @@
             <td>
               <span
                 class="reg-badge"
-                [class.reg-badge--pending]="reg.status === 'pending'"
                 [class.reg-badge--confirmed]="reg.status === 'confirmed'"
                 [class.reg-badge--rejected]="reg.status === 'rejected'"
                 [class.reg-badge--cancelled]="reg.status === 'cancelled'"
-                [class.reg-badge--blocked]="reg.status === 'blocked'"
               >
                 {{ registroStatusLabels[reg.status] }}
               </span>
-              <span class="reg-blocked-reason" *ngIf="reg.blocked_reason">
-                {{ reg.blocked_reason }}
+              <span class="reg-rejection-reason" *ngIf="reg.rejection_reason">
+                {{ reg.rejection_reason }}
               </span>
             </td>
 
@@ -702,13 +700,13 @@
               <span class="reg-code" *ngIf="reg.access_code">{{ reg.access_code }}</span>
               <span class="reg-code reg-code--empty" *ngIf="!reg.access_code">—</span>
               <button
-                *ngIf="reg.status === 'confirmed' && reg.checkin_status === 'pending'"
+                *ngIf="reg.status === 'confirmed' && !reg.checked_in_at"
                 type="button"
                 class="reg-btn reg-btn--checkin"
                 (click)="checkInRegistro(reg)"
                 [disabled]="!!updatingRegistrationId"
               >Check-in</button>
-              <span class="reg-checkedin" *ngIf="reg.checkin_status === 'checked_in'">✓ Entró</span>
+              <span class="reg-checkedin" *ngIf="reg.checked_in_at">✓ Entró</span>
             </td>
 
             <!-- Fecha -->
@@ -718,32 +716,7 @@
             <td>
               <div class="reg-actions" [class.reg-actions--busy]="updatingRegistrationId === reg.id">
 
-                <!-- Desde pending: confirmar, rechazar, cancelar -->
-                <ng-container *ngIf="reg.status === 'pending'">
-                  <button
-                    type="button"
-                    class="reg-btn reg-btn--confirm"
-                    (click)="updateRegistroStatus(reg, 'confirmed')"
-                    [disabled]="!!updatingRegistrationId"
-                    title="Confirmar plaza"
-                  >Confirmar</button>
-                  <button
-                    type="button"
-                    class="reg-btn reg-btn--reject"
-                    (click)="updateRegistroStatus(reg, 'rejected')"
-                    [disabled]="!!updatingRegistrationId"
-                    title="Rechazar inscripción"
-                  >Rechazar</button>
-                  <button
-                    type="button"
-                    class="reg-btn reg-btn--cancel"
-                    (click)="updateRegistroStatus(reg, 'cancelled')"
-                    [disabled]="!!updatingRegistrationId"
-                    title="Cancelar inscripción"
-                  >Cancelar</button>
-                </ng-container>
-
-                <!-- Desde confirmed: solo cancelar -->
+                <!-- confirmed: cancelar -->
                 <ng-container *ngIf="reg.status === 'confirmed'">
                   <button
                     type="button"
@@ -754,19 +727,27 @@
                   >Cancelar</button>
                 </ng-container>
 
-                <!-- Desde rejected o cancelled: volver a pendiente -->
-                <ng-container *ngIf="reg.status === 'rejected' || reg.status === 'cancelled'">
+                <!-- rejected: confirmar (override admin) o cancelar -->
+                <ng-container *ngIf="reg.status === 'rejected'">
                   <button
                     type="button"
-                    class="reg-btn reg-btn--pending"
-                    (click)="updateRegistroStatus(reg, 'pending')"
+                    class="reg-btn reg-btn--confirm"
+                    (click)="updateRegistroStatus(reg, 'confirmed')"
                     [disabled]="!!updatingRegistrationId"
-                    title="Pasar a pendiente"
-                  >Pendiente</button>
+                    title="Confirmar manualmente"
+                  >Confirmar</button>
                 </ng-container>
 
-                <!-- Bloqueado: solo lectura -->
-                <span class="reg-readonly" *ngIf="reg.status === 'blocked'">Sin acciones</span>
+                <!-- cancelled: restaurar -->
+                <ng-container *ngIf="reg.status === 'cancelled'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--confirm"
+                    (click)="updateRegistroStatus(reg, 'confirmed')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Restaurar inscripción"
+                  >Restaurar</button>
+                </ng-container>
 
                 <!-- Spinner por fila -->
                 <span class="reg-spinner" *ngIf="updatingRegistrationId === reg.id" aria-label="Actualizando...">

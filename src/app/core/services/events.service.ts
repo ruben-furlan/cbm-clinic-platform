@@ -6,8 +6,7 @@ import { supabase } from '../supabase.client';
 export type EventCategory = 'pilates' | 'fisioterapia' | 'taller' | 'evento_especial' | 'otro';
 export type EventPricingType = 'free' | 'paid';
 export type EventStatus = 'active' | 'completed' | 'cancelled' | 'inactive';
-export type RegistrationStatus = 'pending' | 'confirmed' | 'cancelled' | 'rejected' | 'blocked';
-export type ValidationStatus = 'ok' | 'blocked_cooldown' | 'blocked_new_clients';
+export type RegistrationStatus = 'confirmed' | 'rejected' | 'cancelled';
 
 export interface CbmEvent {
   id: string;
@@ -38,8 +37,6 @@ export interface CbmEvent {
   updated_at: string;
 }
 
-export type CheckinStatus = 'pending' | 'checked_in';
-
 export interface EventRegistration {
   id: string;
   event_id: string;
@@ -49,12 +46,11 @@ export interface EventRegistration {
   notes: string | null;
   source: string;
   is_free_event: boolean;
-  validation_status: ValidationStatus;
+  validation_status: string;
   status: RegistrationStatus;
-  blocked_reason: string | null;
+  rejection_reason: string | null;
   // Digital pass
   access_code: string | null;
-  checkin_status: CheckinStatus;
   checked_in_at: string | null;
   created_at: string;
   updated_at: string;
@@ -67,11 +63,6 @@ export interface CreateRegistrationPayload {
   phone: string;
   notes?: string;
   source?: string;
-}
-
-export interface FreeValidationResult {
-  valid: boolean;
-  reason: ValidationStatus | null;
 }
 
 // ── Service ───────────────────────────────────────────────────────────────────
@@ -89,7 +80,7 @@ export class EventsService {
       .eq('is_visible', true)
       .in('status', ['active', 'completed'])
       .gte('start_at', now)
-      .order('highlight_on_home', { ascending: false }) // destacados primero
+      .order('highlight_on_home', { ascending: false })
       .order('start_at', { ascending: true })
       .limit(limit);
 
@@ -171,59 +162,50 @@ export class EventsService {
     return (data ?? []) as EventRegistration[];
   }
 
-  async validateFreeEvent(
-    email: string,
-    phone: string,
-    eventId: string
-  ): Promise<FreeValidationResult> {
-    const { data, error } = await supabase.rpc('validate_free_event_registration', {
-      p_email: email.toLowerCase().trim(),
-      p_phone: phone.trim(),
-      p_event_id: eventId
+  /**
+   * Registra al usuario en el evento de forma atómica.
+   * El RPC valida, bloquea la fila del evento (evita oversell), inserta
+   * y genera el código de acceso en una sola transacción SQL.
+   *
+   * Devuelve { registration, rejected }:
+   *   - rejected = false → inscripción confirmed, access_code disponible
+   *   - rejected = true  → reglas de evento gratuito no cumplidas
+   *
+   * Lanza Error con código en .message para:
+   *   - 'no_slots'            → evento completo
+   *   - 'event_not_found'     → evento no existe
+   *   - 'event_inactive'      → evento inactivo
+   *   - 'event_not_available' → estado no válido
+   */
+  async registerForEvent(
+    payload: CreateRegistrationPayload
+  ): Promise<{ registration: EventRegistration; rejected: boolean }> {
+    const { data, error } = await supabase.rpc('register_for_event', {
+      p_event_id:   payload.event_id,
+      p_full_name:  payload.full_name,
+      p_email:      payload.email,
+      p_phone:      payload.phone,
+      p_notes:      payload.notes ?? null,
+      p_source:     payload.source ?? 'home'
     });
 
     if (error) throw error;
-    return data as FreeValidationResult;
-  }
 
-  async registerForEvent(
-    payload: CreateRegistrationPayload,
-    event: CbmEvent
-  ): Promise<{ registration: EventRegistration; blocked: boolean }> {
-    if (this.isFull(event)) throw new Error('no_slots');
+    const result = data as {
+      ok: boolean;
+      error?: string;
+      registration?: EventRegistration;
+      rejected?: boolean;
+    };
 
-    let validationStatus: ValidationStatus = 'ok';
-    let status: RegistrationStatus = 'pending';
-    let blockedReason: string | null = null;
-
-    if (event.pricing_type === 'free') {
-      const result = await this.validateFreeEvent(payload.email, payload.phone, event.id);
-      if (!result.valid) {
-        validationStatus = result.reason ?? 'blocked_cooldown';
-        status = 'blocked';
-        blockedReason = result.reason;
-      }
+    if (!result.ok) {
+      throw new Error(result.error ?? 'registration_failed');
     }
 
-    const { data, error } = await supabase
-      .from('event_registrations')
-      .insert({
-        event_id: payload.event_id,
-        full_name: payload.full_name.trim(),
-        email: payload.email.toLowerCase().trim(),
-        phone: payload.phone.trim(),
-        notes: payload.notes?.trim() ?? null,
-        source: payload.source ?? 'home',
-        is_free_event: event.pricing_type === 'free',
-        validation_status: validationStatus,
-        status,
-        blocked_reason: blockedReason
-      })
-      .select('*')
-      .single();
-
-    if (error) throw error;
-    return { registration: data as EventRegistration, blocked: status === 'blocked' };
+    return {
+      registration: result.registration!,
+      rejected:     result.rejected ?? false
+    };
   }
 
   async updateRegistrationStatus(id: string, status: RegistrationStatus): Promise<void> {
