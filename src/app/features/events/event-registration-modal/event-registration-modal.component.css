@@ -278,6 +278,15 @@
   line-height: 1.6;
 }
 
+.feedback-text + .feedback-text {
+  margin-top: 6px;
+}
+
+.feedback-text--lead {
+  font-weight: 600;
+  color: #332d43;
+}
+
 /* ── Actions ──────────────────────────────────────────────────────────────── */
 
 .modal-actions {
