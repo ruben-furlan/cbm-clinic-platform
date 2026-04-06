@@ -437,3 +437,50 @@ textarea:disabled {
   font-size: 13px !important;
   line-height: 1.4;
 }
+
+/* ── Evento badges & status ─────────────────────────────────────────────── */
+
+.ev-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.ev-badge--free {
+  background: rgba(72, 199, 116, 0.13);
+  color: #1a7a47;
+}
+
+.ev-badge--paid {
+  background: rgba(123, 77, 255, 0.1);
+  color: #5a2dcc;
+}
+
+.ev-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  background: rgba(100, 100, 120, 0.1);
+  color: #555;
+}
+
+.ev-status--active {
+  background: rgba(72, 199, 116, 0.13);
+  color: #1a7a47;
+}
+
+.ev-status--full {
+  background: rgba(255, 79, 163, 0.1);
+  color: #b82d5e;
+}
+
+.ev-status--blocked {
+  background: rgba(255, 79, 163, 0.1);
+  color: #b82d5e;
+}

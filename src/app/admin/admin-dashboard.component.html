@@ -12,6 +12,7 @@
     <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">Tarifas</button>
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
+    <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -167,6 +168,91 @@
     </div>
 
     <p class="status" *ngIf="!blogLoading && !blogPosts.length && !blogError">No hay posts todavía.</p>
+  </ng-container>
+
+  <!-- ══════════════════════════════ CLASES ════════════════════════════════ -->
+  <ng-container *ngIf="seccion === 'clases'">
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filtro de eventos">
+        <button
+          type="button"
+          *ngFor="let tab of eventosFiltroTabs"
+          [class.active]="filtroEventos === tab.value"
+          (click)="setFiltroEventos(tab.value)"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
+      <button type="button" class="btn-primary" (click)="openEventoCreateModal()" [disabled]="eventosSaving || !!eventosDeletingId">
+        Nuevo evento
+      </button>
+    </div>
+
+    <p class="status error" *ngIf="eventosError">{{ eventosError }}</p>
+    <p class="status message" *ngIf="eventosMessage">{{ eventosMessage }}</p>
+    <p class="status" *ngIf="eventosLoading && !eventos.length">Cargando eventos...</p>
+
+    <div class="table-wrap" *ngIf="eventosFiltrados.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Precio</th>
+            <th>Plazas</th>
+            <th>Estado</th>
+            <th>Home</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let evento of eventosFiltrados">
+            <td><strong>{{ evento.title }}</strong><br><span style="font-size:12px;color:#7a7090">{{ eventoCategoryLabels[evento.category] }}</span></td>
+            <td style="white-space:nowrap;font-size:13px">{{ evento.start_at | date:'dd/MM/yy HH:mm' }}</td>
+            <td>
+              <span class="ev-badge" [class.ev-badge--free]="evento.pricing_type === 'free'" [class.ev-badge--paid]="evento.pricing_type === 'paid'">
+                {{ evento.pricing_type === 'free' ? 'Gratis' : 'Pago' }}
+              </span>
+            </td>
+            <td>{{ evento.pricing_type === 'paid' ? (evento.price + '€') : '—' }}</td>
+            <td style="white-space:nowrap;font-size:13px">
+              {{ evento.reserved_slots }}/{{ evento.total_slots }}
+              <span style="color:#9090a0"> ({{ getEventoAvailableSlots(evento) }} libre{{ getEventoAvailableSlots(evento) !== 1 ? 's' : '' }})</span>
+            </td>
+            <td>
+              <span class="ev-status" [class.ev-status--active]="evento.status === 'active'" [class.ev-status--full]="evento.status === 'completed'">
+                {{ eventoStatusLabels[evento.status] }}
+              </span>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="evento.highlight_on_home" [disabled]="eventosSaving || !!eventosDeletingId"
+                  (change)="saveEvento_toggleHome(evento, $event)" />
+                <span></span>
+              </label>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="evento.is_active" (change)="toggleEventoActivo(evento, $event)" [disabled]="eventosSaving || !!eventosDeletingId" />
+                <span></span>
+              </label>
+            </td>
+            <td class="actions">
+              <button type="button" class="btn-ghost btn-sm" (click)="openRegistrosModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Inscritos</button>
+              <button type="button" class="btn-ghost btn-sm" (click)="openEventoEditModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Editar</button>
+              <button type="button" class="btn-ghost btn-sm" (click)="duplicateEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Duplicar</button>
+              <button type="button" class="btn-danger btn-sm" (click)="deleteEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">
+                {{ eventosDeletingId === evento.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="status" *ngIf="!eventosLoading && !eventosFiltrados.length && !eventosError">No hay eventos para este filtro.</p>
   </ng-container>
 </section>
 
@@ -381,6 +467,216 @@
         <button type="submit" class="btn-primary" [disabled]="blogSaving">{{ blogSaving ? 'Guardando...' : 'Guardar' }}</button>
       </div>
     </form>
+  </section>
+</div>
+
+<!-- ══════════════ Modal evento ════════════════ -->
+<div class="modal-overlay" *ngIf="isEventoModalOpen" (click)="closeEventoModal()">
+  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
+    <h2>{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
+
+    <form [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form">
+
+      <!-- Título + slug -->
+      <div class="slug-row">
+        <label style="flex:1">
+          Título *
+          <input type="text" formControlName="title" placeholder="Pilates terapéutico" />
+        </label>
+      </div>
+      <div class="slug-row">
+        <label style="flex:1">
+          Slug (URL)
+          <input type="text" formControlName="slug" placeholder="pilates-terapeutico" />
+        </label>
+        <button type="button" class="btn-ghost btn-sm" (click)="generateEventoSlug()" style="margin-top:22px">Auto</button>
+      </div>
+
+      <!-- Descripción corta -->
+      <label>
+        Descripción corta *
+        <input type="text" formControlName="short_description" placeholder="Descripción visible en la card de la home" />
+      </label>
+
+      <!-- Descripción larga -->
+      <label>
+        Descripción completa
+        <textarea rows="3" formControlName="long_description" placeholder="Descripción detallada del evento (opcional)"></textarea>
+      </label>
+
+      <!-- Categoría + modalidad -->
+      <div class="grid-two">
+        <label>
+          Categoría *
+          <select formControlName="category">
+            <option value="pilates">Pilates</option>
+            <option value="fisioterapia">Fisioterapia</option>
+            <option value="taller">Taller</option>
+            <option value="evento_especial">Evento especial</option>
+            <option value="otro">Otro</option>
+          </select>
+        </label>
+
+        <label>
+          Modalidad *
+          <select formControlName="pricing_type">
+            <option value="free">Gratis</option>
+            <option value="paid">De pago</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Precio (solo pago) -->
+      <label *ngIf="isEventoPaidSelected">
+        Precio (€) *
+        <input type="number" formControlName="price" min="0" step="0.5" placeholder="12.00" />
+      </label>
+
+      <!-- Fecha inicio + fin -->
+      <div class="grid-two">
+        <label>
+          Fecha y hora de inicio *
+          <input type="datetime-local" formControlName="start_at" />
+        </label>
+        <label>
+          Fecha y hora de fin
+          <input type="datetime-local" formControlName="end_at" />
+        </label>
+      </div>
+
+      <!-- Plazas + duración -->
+      <div class="grid-two">
+        <label>
+          Plazas totales *
+          <input type="number" formControlName="total_slots" min="1" />
+        </label>
+        <label>
+          Duración (minutos)
+          <input type="number" formControlName="duration_minutes" min="1" placeholder="60" />
+        </label>
+      </div>
+
+      <!-- Ubicación + CTA -->
+      <div class="grid-two">
+        <label>
+          Ubicación
+          <input type="text" formControlName="location" placeholder="CBM Fisioterapia — Terrassa" />
+        </label>
+        <label>
+          Texto del botón CTA
+          <input type="text" formControlName="cta_label" placeholder="Reservar plaza" />
+        </label>
+      </div>
+
+      <!-- Imagen -->
+      <label>
+        URL de imagen
+        <input type="url" formControlName="image_url" placeholder="https://..." />
+      </label>
+
+      <!-- Reglas para gratuitos -->
+      <ng-container *ngIf="isEventoFreeSelected">
+        <div class="block-section">
+          <p class="block-section-title">Restricciones para eventos gratuitos</p>
+          <div class="grid-two">
+            <label>
+              Máx. eventos gratis por persona
+              <input type="number" formControlName="free_limit_per_person" min="1" />
+            </label>
+            <label>
+              Días de cooldown entre gratuitos
+              <input type="number" formControlName="free_cooldown_days" min="0" />
+            </label>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Estado + opciones -->
+      <label>
+        Estado
+        <select formControlName="status">
+          <option value="active">Activo</option>
+          <option value="inactive">Inactivo</option>
+          <option value="completed">Completo</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+      </label>
+
+      <div class="inline-checks">
+        <label class="inline-check">
+          <input type="checkbox" formControlName="is_active" />
+          <span>Activo</span>
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="is_visible" />
+          <span>Visible en web</span>
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="highlight_on_home" />
+          <span>Destacar en home</span>
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="is_new_clients_only" />
+          <span>Solo nuevos clientes</span>
+        </label>
+      </div>
+
+      <p class="status error" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="closeEventoModal()" [disabled]="eventosSaving">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="eventosSaving">
+          {{ eventosSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!-- ══════════════ Modal registros ════════════════ -->
+<div class="modal-overlay" *ngIf="isRegistrosModalOpen" (click)="closeRegistrosModal()">
+  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
+    <h2>Inscritos — {{ eventoRegistrosTitle }}</h2>
+
+    <p class="status" *ngIf="registrosLoading">Cargando inscripciones...</p>
+
+    <div class="table-wrap" *ngIf="!registrosLoading && eventoRegistros.length" style="max-height:400px;overflow-y:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reg of eventoRegistros">
+            <td>{{ reg.full_name }}</td>
+            <td>{{ reg.email }}</td>
+            <td>{{ reg.phone }}</td>
+            <td>
+              <span class="ev-status"
+                [class.ev-status--active]="reg.status === 'confirmed' || reg.status === 'pending'"
+                [class.ev-status--blocked]="reg.status === 'blocked'">
+                {{ reg.status }}
+                <span *ngIf="reg.blocked_reason" style="font-size:11px;color:#999"> ({{ reg.blocked_reason }})</span>
+              </span>
+            </td>
+            <td style="white-space:nowrap;font-size:12px">{{ reg.created_at | date:'dd/MM/yy HH:mm' }}</td>
+            <td style="font-size:13px;color:#777">{{ reg.notes || '—' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="status" *ngIf="!registrosLoading && !eventoRegistros.length">No hay inscripciones todavía.</p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeRegistrosModal()">Cerrar</button>
+    </div>
   </section>
 </div>
 

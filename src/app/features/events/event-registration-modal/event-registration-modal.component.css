@@ -1,0 +1,350 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 19, 35, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.modal-card {
+  position: relative;
+  width: min(540px, 100%);
+  background: #fff;
+  border-radius: 22px;
+  padding: 28px 28px 24px;
+  border: 1px solid rgba(241, 216, 230, 0.86);
+  box-shadow: 0 24px 56px rgba(31, 27, 45, 0.14);
+  animation: modalIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(123, 77, 255, 0.2);
+  border-radius: 50%;
+  background: #fff;
+  color: #6a6478;
+  font-size: 13px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s;
+}
+
+.modal-close:hover {
+  background: rgba(123, 77, 255, 0.07);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
+.modal-header {
+  margin-bottom: 20px;
+}
+
+.modal-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge--free {
+  background: rgba(72, 199, 116, 0.14);
+  color: #1a7a47;
+}
+
+.badge--paid {
+  background: rgba(123, 77, 255, 0.1);
+  color: #5a2dcc;
+}
+
+.badge--urgent {
+  background: rgba(255, 79, 163, 0.12);
+  color: #c52f64;
+  animation: badgePulse 2s infinite;
+}
+
+.badge--full {
+  background: rgba(100, 100, 120, 0.1);
+  color: #555;
+}
+
+@keyframes badgePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+.modal-title {
+  margin: 0 0 14px;
+  font-size: clamp(1.15rem, 3vw, 1.45rem);
+  color: #1f1b2d;
+  font-weight: 800;
+  line-height: 1.25;
+  padding-right: 28px;
+}
+
+.modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #574f6b;
+}
+
+.meta-icon {
+  font-size: 15px;
+}
+
+.meta-cap {
+  text-transform: capitalize;
+}
+
+/* ── Details step ─────────────────────────────────────────────────────────── */
+
+.modal-description {
+  margin: 0 0 12px;
+  color: #574f6b;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.modal-description--long {
+  color: #6a6478;
+  font-size: 14px;
+}
+
+.modal-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: rgba(123, 77, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(123, 77, 255, 0.14);
+  margin-bottom: 20px;
+}
+
+.price-label {
+  font-size: 14px;
+  color: #574f6b;
+  font-weight: 600;
+}
+
+.price-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #7b4dff;
+}
+
+/* ── Form step ──────────────────────────────────────────────────────────────── */
+
+.form-intro {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: #6a6478;
+  line-height: 1.55;
+}
+
+.reg-form {
+  display: grid;
+  gap: 14px;
+}
+
+.reg-label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #332d43;
+}
+
+.reg-label--optional {
+  font-weight: 500;
+  color: #574f6b;
+}
+
+.reg-input {
+  border: 1px solid rgba(123, 77, 255, 0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font: inherit;
+  font-size: 15px;
+  color: #1f1b2d;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.reg-input:focus {
+  outline: none;
+  border-color: rgba(123, 77, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(123, 77, 255, 0.08);
+}
+
+.reg-input--error {
+  border-color: rgba(197, 47, 100, 0.5);
+}
+
+.field-error {
+  font-size: 12px;
+  font-weight: 500;
+  color: #c52f64;
+  margin-top: -2px;
+}
+
+.form-error {
+  font-size: 13px;
+  color: #c52f64;
+  background: rgba(197, 47, 100, 0.07);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 0;
+}
+
+/* ── Feedback steps ──────────────────────────────────────────────────────── */
+
+.feedback-block {
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.feedback-block--success {
+  background: rgba(72, 199, 116, 0.09);
+  border: 1px solid rgba(72, 199, 116, 0.25);
+}
+
+.feedback-block--info {
+  background: rgba(123, 77, 255, 0.06);
+  border: 1px solid rgba(123, 77, 255, 0.15);
+}
+
+.feedback-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(72, 199, 116, 0.15);
+  color: #1a7a47;
+  font-size: 22px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 14px;
+}
+
+.feedback-icon--info {
+  background: rgba(123, 77, 255, 0.12);
+  color: #7b4dff;
+}
+
+.feedback-title {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #1f1b2d;
+}
+
+.feedback-text {
+  margin: 0;
+  font-size: 14px;
+  color: #574f6b;
+  line-height: 1.6;
+}
+
+/* ── Actions ──────────────────────────────────────────────────────────────── */
+
+.modal-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn-full {
+  width: 100%;
+  justify-content: center;
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 22px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #ff4fa3, #7b4dff);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(123, 77, 255, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: #7b4dff;
+  border: 1.5px solid rgba(123, 77, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  background: rgba(123, 77, 255, 0.05);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #6a6478;
+  border: 1px solid rgba(123, 77, 255, 0.15);
+}
+
+.btn-ghost:hover {
+  background: rgba(123, 77, 255, 0.04);
+}
+
+@media (max-width: 480px) {
+  .modal-card {
+    padding: 22px 18px 20px;
+  }
+}

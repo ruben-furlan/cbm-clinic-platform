@@ -1,0 +1,188 @@
+<div class="modal-backdrop" (click)="close()" role="dialog" aria-modal="true" aria-label="Detalle del evento">
+  <article class="modal-card" (click)="$event.stopPropagation()">
+
+    <!-- Close -->
+    <button type="button" class="modal-close" (click)="close()" aria-label="Cerrar">✕</button>
+
+    <!-- ── Cabecera del evento ──────────────────────────────────────────── -->
+    <div class="modal-header">
+      <div class="modal-badges">
+        <span class="badge" [class.badge--free]="event.pricing_type === 'free'" [class.badge--paid]="event.pricing_type === 'paid'">
+          {{ event.pricing_type === 'free' ? 'Gratis' : displayPrice }}
+        </span>
+        <span class="badge badge--urgent" *ngIf="isAlmostFull && step !== 'full'">Últimas plazas</span>
+        <span class="badge badge--full" *ngIf="step === 'full'">Completo</span>
+      </div>
+
+      <h2 class="modal-title">{{ event.title }}</h2>
+
+      <div class="modal-meta">
+        <span class="meta-item">
+          <span class="meta-icon" aria-hidden="true">📅</span>
+          <span class="meta-cap">{{ formattedDate }}</span>
+        </span>
+        <span class="meta-item">
+          <span class="meta-icon" aria-hidden="true">🕙</span>
+          <span class="meta-cap">{{ formattedTime }}</span>
+        </span>
+        <span class="meta-item" *ngIf="event.location">
+          <span class="meta-icon" aria-hidden="true">📍</span>
+          <span class="meta-cap">{{ event.location }}</span>
+        </span>
+        <span class="meta-item" *ngIf="step !== 'full'">
+          <span class="meta-icon" aria-hidden="true">👥</span>
+          <span class="meta-cap">{{ availableSlots }} {{ availableSlots === 1 ? 'plaza disponible' : 'plazas disponibles' }}</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- ── Step: details ──────────────────────────────────────────────────── -->
+    <ng-container *ngIf="step === 'details'">
+      <p class="modal-description" *ngIf="event.short_description">{{ event.short_description }}</p>
+      <p class="modal-description modal-description--long" *ngIf="event.long_description">{{ event.long_description }}</p>
+
+      <div class="modal-price-row" *ngIf="event.pricing_type === 'paid' && event.price">
+        <span class="price-label">Precio</span>
+        <span class="price-value">{{ event.price }}€</span>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-primary btn-full" (click)="goToForm()">
+          {{ ctaLabel }}
+        </button>
+        <button type="button" class="btn-secondary btn-full" (click)="close()">Cerrar</button>
+      </div>
+    </ng-container>
+
+    <!-- ── Step: form ─────────────────────────────────────────────────────── -->
+    <ng-container *ngIf="step === 'form'">
+      <p class="form-intro">Déjanos tus datos y nos ponemos en contacto contigo para confirmar la plaza.</p>
+
+      <form class="reg-form" (ngSubmit)="submit()" novalidate>
+        <label class="reg-label">
+          Nombre completo
+          <input
+            type="text"
+            class="reg-input"
+            [class.reg-input--error]="nameInvalid"
+            [(ngModel)]="formData.fullName"
+            name="fullName"
+            placeholder="Tu nombre y apellidos"
+            (blur)="touched.fullName = true"
+            autocomplete="name"
+          />
+          <span class="field-error" *ngIf="nameInvalid">Por favor, introduce tu nombre.</span>
+        </label>
+
+        <label class="reg-label">
+          Email
+          <input
+            type="email"
+            class="reg-input"
+            [class.reg-input--error]="emailInvalid"
+            [(ngModel)]="formData.email"
+            name="email"
+            placeholder="tu@email.com"
+            (blur)="touched.email = true"
+            autocomplete="email"
+          />
+          <span class="field-error" *ngIf="emailInvalid">Introduce un email válido.</span>
+        </label>
+
+        <label class="reg-label">
+          Teléfono
+          <input
+            type="tel"
+            class="reg-input"
+            [class.reg-input--error]="phoneInvalid"
+            [(ngModel)]="formData.phone"
+            name="phone"
+            placeholder="600 000 000"
+            (blur)="touched.phone = true"
+            autocomplete="tel"
+          />
+          <span class="field-error" *ngIf="phoneInvalid">Introduce un teléfono válido.</span>
+        </label>
+
+        <label class="reg-label reg-label--optional">
+          Comentario (opcional)
+          <textarea
+            class="reg-input"
+            rows="2"
+            [(ngModel)]="formData.notes"
+            name="notes"
+            placeholder="¿Tienes alguna pregunta o comentario?"
+          ></textarea>
+        </label>
+
+        <p class="form-error" *ngIf="error">{{ error }}</p>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary btn-full" [disabled]="saving">
+            {{ saving ? 'Enviando...' : 'Confirmar solicitud' }}
+          </button>
+          <button type="button" class="btn-secondary btn-full" (click)="step = 'details'" [disabled]="saving">Volver</button>
+        </div>
+      </form>
+    </ng-container>
+
+    <!-- ── Step: success ──────────────────────────────────────────────────── -->
+    <ng-container *ngIf="step === 'success'">
+      <div class="feedback-block feedback-block--success">
+        <div class="feedback-icon">✓</div>
+        <h3 class="feedback-title">¡Solicitud recibida!</h3>
+        <p class="feedback-text">
+          Hemos registrado tu solicitud para <strong>{{ event.title }}</strong>.
+          Nos pondremos en contacto contigo en las próximas horas para confirmar tu plaza.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary btn-full" (click)="openWhatsApp()">
+          Confirmar también por WhatsApp
+        </button>
+        <button type="button" class="btn-ghost btn-full" (click)="close()">Cerrar</button>
+      </div>
+    </ng-container>
+
+    <!-- ── Step: blocked ─────────────────────────────────────────────────── -->
+    <ng-container *ngIf="step === 'blocked'">
+      <div class="feedback-block feedback-block--info">
+        <div class="feedback-icon feedback-icon--info">ℹ</div>
+        <h3 class="feedback-title">Esta sesión es para nuevos participantes</h3>
+        <p class="feedback-text">
+          Esta clase gratuita está pensada como primera toma de contacto.
+          Parece que ya has participado anteriormente — ¡genial! Te invitamos a explorar
+          nuestras clases regulares y tarifas.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-primary btn-full" (click)="openWhatsAppAlternative()">
+          Ver clases regulares por WhatsApp
+        </button>
+        <button type="button" class="btn-ghost btn-full" (click)="close()">Cerrar</button>
+      </div>
+    </ng-container>
+
+    <!-- ── Step: full ─────────────────────────────────────────────────────── -->
+    <ng-container *ngIf="step === 'full'">
+      <div class="feedback-block feedback-block--info">
+        <div class="feedback-icon feedback-icon--info">👥</div>
+        <h3 class="feedback-title">Esta sesión está completa</h3>
+        <p class="feedback-text">
+          Las plazas se han cubierto. Puedes escribirnos y te avisamos si hay cancelaciones
+          o si programamos una nueva sesión.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-primary btn-full" (click)="openWhatsApp()">
+          Avisadme de la próxima
+        </button>
+        <button type="button" class="btn-ghost btn-full" (click)="close()">Cerrar</button>
+      </div>
+    </ng-container>
+
+  </article>
+</div>

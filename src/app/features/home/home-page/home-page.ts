@@ -6,11 +6,12 @@ import { LocationComponent } from '../../location/location';
 import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-scroll.directive';
 import { FaqComponent } from '../../faq/faq';
 import { PricingComponent } from '../../../sections/pricing/pricing.component';
+import { EventsSectionComponent } from '../events-section/events-section.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, Testimonials, LocationComponent, RevealOnScrollDirective, FaqComponent, PricingComponent, RouterLink],
+  imports: [CommonModule, Testimonials, LocationComponent, RevealOnScrollDirective, FaqComponent, PricingComponent, RouterLink, EventsSectionComponent],
   templateUrl: './home-page.html',
   styleUrls: ['./home-page.css']
 })

@@ -5,10 +5,19 @@ import { Router } from '@angular/router';
 import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
 import { FaqsService, Faq } from '../core/services/faqs.service';
 import { BlogService, BlogPost, BlogContentBlock, BlogContentBlockType } from '../core/services/blog.service';
+import {
+  EventsService,
+  CbmEvent,
+  EventCategory,
+  EventPricingType,
+  EventStatus,
+  EventRegistration
+} from '../core/services/events.service';
 import { supabase } from '../core/supabase.client';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases';
+type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -79,6 +88,49 @@ export class AdminDashboardComponent implements OnInit {
 
   readonly categoriasSugeridas = ['Dolor lumbar', 'Dolor cervical', 'Técnicas utilizadas', 'Pilates', 'Lesiones deportivas'];
 
+  // ── Clases / Eventos ──────────────────────────────────────────────────────
+  eventos: CbmEvent[] = [];
+  eventosLoading = false;
+  eventosSaving = false;
+  eventosDeletingId: string | null = null;
+  eventosError = '';
+  eventosMessage = '';
+  filtroEventos: FiltroEventos = 'todos';
+
+  isEventoModalOpen = false;
+  editingEvento: CbmEvent | null = null;
+
+  isRegistrosModalOpen = false;
+  eventoRegistros: EventRegistration[] = [];
+  registrosLoading = false;
+  eventoRegistrosTitle = '';
+
+  readonly eventosFiltroTabs: { value: FiltroEventos; label: string }[] = [
+    { value: 'todos', label: 'Todos' },
+    { value: 'proximos', label: 'Próximos' },
+    { value: 'gratis', label: 'Gratis' },
+    { value: 'pago', label: 'De pago' },
+    { value: 'destacados', label: 'Destacados' },
+    { value: 'completados', label: 'Completados' }
+  ];
+
+  readonly eventoCategoryLabels: Record<EventCategory, string> = {
+    pilates: 'Pilates',
+    fisioterapia: 'Fisioterapia',
+    taller: 'Taller',
+    evento_especial: 'Evento especial',
+    otro: 'Otro'
+  };
+
+  readonly eventoStatusLabels: Record<EventStatus, string> = {
+    active: 'Activo',
+    completed: 'Completo',
+    cancelled: 'Cancelado',
+    inactive: 'Inactivo'
+  };
+
+  readonly eventoForm;
+
   private readonly requestTimeoutMs = 12000;
 
   constructor(
@@ -86,6 +138,7 @@ export class AdminDashboardComponent implements OnInit {
     private readonly tarifasService: TarifasService,
     private readonly faqsService: FaqsService,
     private readonly blogService: BlogService,
+    private readonly eventsService: EventsService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -117,6 +170,31 @@ export class AdminDashboardComponent implements OnInit {
       orden: [0, Validators.required],
       slug: ['']
     });
+
+    this.eventoForm = this.fb.nonNullable.group({
+      title: ['', Validators.required],
+      slug: [''],
+      short_description: ['', Validators.required],
+      long_description: [''],
+      category: ['pilates' as EventCategory, Validators.required],
+      pricing_type: ['free' as EventPricingType, Validators.required],
+      price: [null as number | null],
+      currency: ['EUR'],
+      start_at: ['', Validators.required],
+      end_at: [''],
+      duration_minutes: [null as number | null],
+      total_slots: [10, [Validators.required, Validators.min(1)]],
+      image_url: [''],
+      location: [''],
+      cta_label: [''],
+      highlight_on_home: [false],
+      is_active: [true],
+      is_visible: [true],
+      is_new_clients_only: [false],
+      free_limit_per_person: [1, Validators.min(1)],
+      free_cooldown_days: [30, Validators.min(0)],
+      status: ['active' as EventStatus]
+    });
   }
 
   // ── Getters ───────────────────────────────────────────────────────────────
@@ -142,7 +220,7 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts()]);
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos()]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -720,5 +798,267 @@ export class AdminDashboardComponent implements OnInit {
   async signOut(): Promise<void> {
     await supabase.auth.signOut();
     await this.router.navigate(['/admin/login']);
+  }
+
+  // ── Clases / Eventos ──────────────────────────────────────────────────────
+
+  get eventosFiltrados(): CbmEvent[] {
+    const now = new Date().toISOString();
+    switch (this.filtroEventos) {
+      case 'proximos': return this.eventos.filter((e) => e.start_at >= now);
+      case 'gratis': return this.eventos.filter((e) => e.pricing_type === 'free');
+      case 'pago': return this.eventos.filter((e) => e.pricing_type === 'paid');
+      case 'destacados': return this.eventos.filter((e) => e.highlight_on_home);
+      case 'completados': return this.eventos.filter((e) => e.status === 'completed');
+      default: return this.eventos;
+    }
+  }
+
+  get isEventoPaidSelected(): boolean {
+    return this.eventoForm.controls.pricing_type.value === 'paid';
+  }
+
+  get isEventoFreeSelected(): boolean {
+    return this.eventoForm.controls.pricing_type.value === 'free';
+  }
+
+  setFiltroEventos(filtro: FiltroEventos): void {
+    this.filtroEventos = filtro;
+  }
+
+  async loadEventos(): Promise<void> {
+    this.eventosLoading = true;
+    this.eventosError = '';
+
+    try {
+      this.eventos = await this.withTimeout(this.eventsService.getEventsAdmin());
+    } catch {
+      this.eventosError = 'No se pudieron cargar los eventos. Recarga la página e inténtalo de nuevo.';
+    } finally {
+      this.eventosLoading = false;
+    }
+  }
+
+  async toggleEventoActivo(evento: CbmEvent, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+
+    try {
+      const updated = await this.withTimeout(this.eventsService.toggleActive(evento.id, target.checked));
+      this.eventos = this.eventos.map((e) => (e.id === updated.id ? updated : e));
+      this.eventosMessage = 'Estado actualizado correctamente.';
+    } catch {
+      target.checked = evento.is_active;
+      this.eventosMessage = 'Error al actualizar el estado.';
+    } finally {
+      this.flushUiState();
+    }
+  }
+
+  async saveEvento_toggleHome(evento: CbmEvent, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+
+    try {
+      const updated = await this.withTimeout(
+        this.eventsService.updateEvent(evento.id, { highlight_on_home: target.checked })
+      );
+      this.eventos = this.eventos.map((e) => (e.id === updated.id ? updated : e));
+      this.eventosMessage = 'Destacado en home actualizado.';
+    } catch {
+      target.checked = evento.highlight_on_home;
+      this.eventosMessage = 'Error al actualizar el destacado.';
+    } finally {
+      this.flushUiState();
+    }
+  }
+
+  openEventoCreateModal(): void {
+    this.editingEvento = null;
+    this.eventoForm.reset({
+      title: '', slug: '', short_description: '', long_description: '',
+      category: 'pilates', pricing_type: 'free', price: null, currency: 'EUR',
+      start_at: '', end_at: '', duration_minutes: null, total_slots: 10,
+      image_url: '', location: '', cta_label: '', highlight_on_home: false,
+      is_active: true, is_visible: true, is_new_clients_only: false,
+      free_limit_per_person: 1, free_cooldown_days: 30, status: 'active'
+    });
+    this.eventosMessage = '';
+    this.isEventoModalOpen = true;
+  }
+
+  openEventoEditModal(evento: CbmEvent): void {
+    this.editingEvento = evento;
+    this.eventoForm.reset({
+      title: evento.title,
+      slug: evento.slug ?? '',
+      short_description: evento.short_description,
+      long_description: evento.long_description ?? '',
+      category: evento.category,
+      pricing_type: evento.pricing_type,
+      price: evento.price,
+      currency: evento.currency,
+      start_at: evento.start_at ? evento.start_at.substring(0, 16) : '',
+      end_at: evento.end_at ? evento.end_at.substring(0, 16) : '',
+      duration_minutes: evento.duration_minutes,
+      total_slots: evento.total_slots,
+      image_url: evento.image_url ?? '',
+      location: evento.location ?? '',
+      cta_label: evento.cta_label ?? '',
+      highlight_on_home: evento.highlight_on_home,
+      is_active: evento.is_active,
+      is_visible: evento.is_visible,
+      is_new_clients_only: evento.is_new_clients_only,
+      free_limit_per_person: evento.free_limit_per_person,
+      free_cooldown_days: evento.free_cooldown_days,
+      status: evento.status
+    });
+    this.eventosMessage = '';
+    this.isEventoModalOpen = true;
+  }
+
+  closeEventoModal(): void {
+    if (this.eventosSaving) return;
+    this.isEventoModalOpen = false;
+    this.editingEvento = null;
+  }
+
+  async saveEvento(): Promise<void> {
+    if (this.eventosSaving) return;
+
+    this.eventosMessage = '';
+
+    if (this.eventoForm.invalid) {
+      this.eventoForm.markAllAsTouched();
+      return;
+    }
+
+    this.eventosSaving = true;
+    const v = this.eventoForm.getRawValue();
+
+    const payload = {
+      title: v.title.trim(),
+      slug: v.slug.trim() || null,
+      short_description: v.short_description.trim(),
+      long_description: v.long_description.trim() || null,
+      category: v.category,
+      pricing_type: v.pricing_type,
+      price: v.pricing_type === 'paid' ? (v.price ?? null) : null,
+      currency: v.currency || 'EUR',
+      start_at: v.start_at ? new Date(v.start_at).toISOString() : '',
+      end_at: v.end_at ? new Date(v.end_at).toISOString() : null,
+      duration_minutes: v.duration_minutes ?? null,
+      total_slots: v.total_slots,
+      image_url: v.image_url.trim() || null,
+      location: v.location.trim() || null,
+      cta_label: v.cta_label.trim() || null,
+      highlight_on_home: v.highlight_on_home,
+      is_active: v.is_active,
+      is_visible: v.is_visible,
+      is_new_clients_only: v.is_new_clients_only,
+      free_limit_per_person: v.pricing_type === 'free' ? v.free_limit_per_person : 1,
+      free_cooldown_days: v.pricing_type === 'free' ? v.free_cooldown_days : 30,
+      status: v.status
+    };
+
+    try {
+      if (this.editingEvento) {
+        const updated = await this.withTimeout(this.eventsService.updateEvent(this.editingEvento.id, payload));
+        this.eventos = this.eventos.map((e) => (e.id === updated.id ? updated : e));
+        this.eventosMessage = 'Evento actualizado correctamente.';
+      } else {
+        const created = await this.withTimeout(
+          this.eventsService.createEvent(payload as Parameters<typeof this.eventsService.createEvent>[0])
+        );
+        this.eventos = [created, ...this.eventos];
+        this.eventosMessage = 'Evento creado correctamente.';
+      }
+
+      this.isEventoModalOpen = false;
+      this.editingEvento = null;
+      this.flushUiState();
+    } catch {
+      this.eventosMessage = 'No se pudo guardar el evento.';
+      this.flushUiState();
+    } finally {
+      this.zone.run(() => {
+        this.eventosSaving = false;
+        this.flushUiState();
+      });
+    }
+  }
+
+  async duplicateEvento(evento: CbmEvent): Promise<void> {
+    if (this.eventosDeletingId) return;
+
+    try {
+      const copy = await this.withTimeout(this.eventsService.duplicateEvent(evento));
+      this.eventos = [copy, ...this.eventos];
+      this.eventosMessage = 'Evento duplicado. Ahora puedes editarlo.';
+      this.flushUiState();
+    } catch {
+      this.eventosMessage = 'No se pudo duplicar el evento.';
+      this.flushUiState();
+    }
+  }
+
+  async deleteEvento(evento: CbmEvent): Promise<void> {
+    if (this.eventosDeletingId) return;
+
+    const confirmed = window.confirm(`¿Seguro que quieres eliminar "${evento.title}"?\nEsta acción también eliminará todas las inscripciones asociadas.`);
+    if (!confirmed) return;
+
+    this.eventosDeletingId = evento.id;
+    const previous = [...this.eventos];
+    this.eventos = this.eventos.filter((e) => e.id !== evento.id);
+
+    try {
+      await this.withTimeout(this.eventsService.deleteEvent(evento.id));
+      this.eventosMessage = 'Evento eliminado.';
+    } catch {
+      this.eventos = previous;
+      this.eventosMessage = 'No se pudo eliminar el evento.';
+    } finally {
+      this.eventosDeletingId = null;
+    }
+  }
+
+  async openRegistrosModal(evento: CbmEvent): Promise<void> {
+    this.eventoRegistrosTitle = evento.title;
+    this.isRegistrosModalOpen = true;
+    this.registrosLoading = true;
+    this.eventoRegistros = [];
+
+    try {
+      this.eventoRegistros = await this.withTimeout(
+        this.eventsService.getRegistrationsByEvent(evento.id)
+      );
+    } catch {
+      this.eventosMessage = 'No se pudieron cargar las inscripciones.';
+    } finally {
+      this.registrosLoading = false;
+      this.flushUiState();
+    }
+  }
+
+  closeRegistrosModal(): void {
+    this.isRegistrosModalOpen = false;
+    this.eventoRegistros = [];
+  }
+
+  getEventoAvailableSlots(evento: CbmEvent): number {
+    return this.eventsService.getAvailableSlots(evento);
+  }
+
+  generateEventoSlug(): void {
+    const title = this.eventoForm.controls.title.value;
+    if (title) {
+      const slug = title
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-');
+      this.eventoForm.controls.slug.setValue(slug);
+    }
   }
 }
