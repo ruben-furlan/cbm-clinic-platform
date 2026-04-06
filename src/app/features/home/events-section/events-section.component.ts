@@ -20,14 +20,11 @@ export class EventsSectionComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     try {
-      // Prefer highlighted events; fall back to upcoming if none highlighted
-      let data = await this.eventsService.getHighlightedEvents();
-      if (!data.length) {
-        data = await this.eventsService.getUpcomingEvents(6);
-      }
-      this.events = data;
+      // Carga todos los próximos eventos visibles.
+      // Los destacados (highlight_on_home=true) se ordenan primero en la query.
+      this.events = await this.eventsService.getUpcomingEvents(6);
     } catch {
-      // Silent fail — section is optional
+      // Silent fail — sección opcional, no bloquear la home
     } finally {
       this.loading = false;
     }

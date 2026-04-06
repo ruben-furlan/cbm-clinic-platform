@@ -81,24 +81,11 @@ export class EventsService {
       .select('*')
       .eq('is_active', true)
       .eq('is_visible', true)
+      .in('status', ['active', 'completed'])
       .gte('start_at', now)
+      .order('highlight_on_home', { ascending: false }) // destacados primero
       .order('start_at', { ascending: true })
       .limit(limit);
-
-    if (error) throw error;
-    return (data ?? []) as CbmEvent[];
-  }
-
-  async getHighlightedEvents(): Promise<CbmEvent[]> {
-    const now = new Date().toISOString();
-    const { data, error } = await supabase
-      .from('events')
-      .select('*')
-      .eq('is_active', true)
-      .eq('is_visible', true)
-      .eq('highlight_on_home', true)
-      .gte('start_at', now)
-      .order('start_at', { ascending: true });
 
     if (error) throw error;
     return (data ?? []) as CbmEvent[];

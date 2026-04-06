@@ -906,8 +906,8 @@ export class AdminDashboardComponent implements OnInit {
       pricing_type: evento.pricing_type,
       price: evento.price,
       currency: evento.currency,
-      start_at: evento.start_at ? evento.start_at.substring(0, 16) : '',
-      end_at: evento.end_at ? evento.end_at.substring(0, 16) : '',
+      start_at: evento.start_at ? this.toLocalDatetimeInput(evento.start_at) : '',
+      end_at: evento.end_at ? this.toLocalDatetimeInput(evento.end_at) : '',
       duration_minutes: evento.duration_minutes,
       total_slots: evento.total_slots,
       image_url: evento.image_url ?? '',
@@ -1087,6 +1087,19 @@ export class AdminDashboardComponent implements OnInit {
 
   getEventoAvailableSlots(evento: CbmEvent): number {
     return this.eventsService.getAvailableSlots(evento);
+  }
+
+  /**
+   * Convierte un ISO UTC string al formato requerido por <input type="datetime-local">
+   * (hora local del navegador, sin offset). Sin esto, editar un evento desplaza
+   * la hora ±N horas por cada edición según el timezone del admin.
+   */
+  private toLocalDatetimeInput(isoUtc: string): string {
+    const d = new Date(isoUtc);
+    if (isNaN(d.getTime())) return '';
+    // Restar el offset del timezone local para obtener la hora local como si fuera UTC
+    const offsetMs = d.getTimezoneOffset() * 60_000;
+    return new Date(d.getTime() - offsetMs).toISOString().substring(0, 16);
   }
 
   generateEventoSlug(): void {
