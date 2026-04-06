@@ -471,184 +471,188 @@
 </div>
 
 <!-- ══════════════ Modal evento ════════════════ -->
-<div class="modal-overlay" *ngIf="isEventoModalOpen" (click)="closeEventoModal()">
-  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
-    <h2>{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
+<div class="modal-overlay modal-overlay--evento" *ngIf="isEventoModalOpen" (click)="closeEventoModal()">
+  <section class="modal-card modal-card--wide modal-card--evento event-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+    <div class="event-modal__header">
+      <h2 id="event-modal-title" class="modal-title">{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
+      <button type="button" class="btn-ghost btn-sm event-modal__close" (click)="closeEventoModal()" aria-label="Cerrar modal">Cerrar</button>
+    </div>
 
-    <form [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form">
-
-      <!-- Título + slug -->
-      <div class="slug-row">
-        <label style="flex:1">
-          Título *
-          <input type="text" formControlName="title" placeholder="Pilates terapéutico" />
-        </label>
-      </div>
-      <div class="slug-row">
-        <label style="flex:1">
-          Slug (URL)
-          <input type="text" formControlName="slug" placeholder="pilates-terapeutico" />
-        </label>
-        <button type="button" class="btn-ghost btn-sm" (click)="generateEventoSlug()" style="margin-top:22px">Auto</button>
-      </div>
-
-      <!-- Descripción corta -->
-      <label>
-        Descripción corta *
-        <input
-          type="text"
-          formControlName="short_description"
-          placeholder="Mejora tu movilidad y reduce molestias desde la primera sesión."
-        />
-        <small class="field-helper">Este texto se muestra en la home. Enfócalo en el beneficio para el paciente.</small>
-      </label>
-
-      <!-- Descripción larga -->
-      <label>
-        Descripción completa
-        <textarea
-          rows="3"
-          formControlName="long_description"
-          placeholder="Explica qué va a sentir la persona después de la sesión, no solo qué se hará.&#10;Ejemplo: Sesión enfocada en aliviar tensiones, mejorar movilidad y ayudarte a sentirte mejor desde el primer día."
-        ></textarea>
-      </label>
-
-      <!-- Categoría + modalidad -->
-      <div class="grid-two">
-        <label>
-          Categoría *
-          <select formControlName="category">
-            <option value="pilates">Pilates</option>
-            <option value="fisioterapia">Fisioterapia</option>
-            <option value="taller">Taller</option>
-            <option value="evento_especial">Evento especial</option>
-            <option value="otro">Otro</option>
-          </select>
-        </label>
-
-        <label>
-          Modalidad *
-          <select formControlName="pricing_type">
-            <option value="free">Primera experiencia</option>
-            <option value="paid">De pago</option>
-          </select>
-        </label>
-      </div>
-
-      <p class="field-notice" *ngIf="isEventoFreeSelected">
-        Este tipo de evento está pensado para primeras visitas. Evita crear demasiados seguidos para mantener exclusividad.
-      </p>
-
-      <!-- Precio (solo pago) -->
-      <label *ngIf="isEventoPaidSelected">
-        Precio (€) *
-        <input type="number" formControlName="price" min="0" step="0.5" placeholder="12.00" />
-      </label>
-
-      <!-- Fecha inicio + fin -->
-      <div class="grid-two">
-        <label>
-          Fecha y hora de inicio *
-          <input type="datetime-local" formControlName="start_at" />
-        </label>
-        <label>
-          Fecha y hora de fin
-          <input type="datetime-local" formControlName="end_at" />
-        </label>
-      </div>
-
-      <!-- Plazas + duración -->
-      <div class="grid-two">
-        <label>
-          Plazas totales *
-          <input type="number" formControlName="total_slots" min="1" />
-        </label>
-        <label>
-          Duración (minutos)
-          <input type="number" formControlName="duration_minutes" min="1" placeholder="60" />
-        </label>
-      </div>
-
-      <!-- Ubicación + CTA -->
-      <div class="grid-two">
-        <label>
-          Ubicación
-          <input type="text" formControlName="location" placeholder="CBM Fisioterapia — Terrassa" />
-        </label>
-        <label>
-          Texto del botón CTA
-          <input type="text" formControlName="cta_label" placeholder="Reservar plaza" />
-          <small class="field-helper">
-            Sugerencias:
-            <strong *ngFor="let suggestion of eventoCtaSuggestions; let last = last">
-              {{ suggestion }}<span *ngIf="!last"> · </span>
-            </strong>
-          </small>
-        </label>
-      </div>
-
-      <!-- Imagen -->
-      <label>
-        URL de imagen
-        <input type="url" formControlName="image_url" placeholder="https://..." />
-        <small class="field-helper">Usa una imagen real del centro o sesión para aumentar confianza.</small>
-      </label>
-
-      <!-- Reglas para gratuitos -->
-      <ng-container *ngIf="isEventoFreeSelected">
-        <div class="block-section">
-          <p class="block-section-title">Restricciones para eventos gratuitos</p>
-          <p class="field-helper" style="margin:0">
-            Estas restricciones evitan que una misma persona reserve múltiples clases gratuitas. Recomendado para mantener la calidad del servicio.
-          </p>
-          <div class="grid-two">
-            <label>
-              Máx. eventos gratis por persona
-              <input type="number" formControlName="free_limit_per_person" min="1" />
-            </label>
-            <label>
-              Días de cooldown entre gratuitos
-              <input type="number" formControlName="free_cooldown_days" min="0" />
-            </label>
-          </div>
+    <form id="evento-modal-form" [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form modal-form--evento">
+      <div class="event-modal__body">
+        <!-- Título + slug -->
+        <div class="slug-row full-width">
+          <label style="flex:1">
+            Título *
+            <input type="text" formControlName="title" placeholder="Pilates terapéutico" />
+          </label>
         </div>
-      </ng-container>
+        <div class="slug-row full-width">
+          <label style="flex:1">
+            Slug (URL)
+            <input type="text" formControlName="slug" placeholder="pilates-terapeutico" />
+          </label>
+          <button type="button" class="btn-ghost btn-sm" (click)="generateEventoSlug()" style="margin-top:22px">Auto</button>
+        </div>
 
-      <!-- Estado + opciones -->
-      <label>
-        Estado
-        <select formControlName="status">
-          <option value="active">Activo</option>
-          <option value="inactive">Inactivo</option>
-          <option value="completed">Completo</option>
-          <option value="cancelled">Cancelado</option>
-        </select>
-      </label>
+        <!-- Descripción corta -->
+        <label class="full-width">
+          Descripción corta *
+          <input
+            type="text"
+            formControlName="short_description"
+            placeholder="Mejora tu movilidad y reduce molestias desde la primera sesión."
+          />
+          <small class="field-helper">Este texto se muestra en la home. Enfócalo en el beneficio para el paciente.</small>
+        </label>
 
-      <div class="inline-checks">
-        <label class="inline-check">
-          <input type="checkbox" formControlName="is_active" />
-          <span>Activo</span>
+        <!-- Descripción larga -->
+        <label class="full-width">
+          Descripción completa
+          <textarea
+            rows="3"
+            formControlName="long_description"
+            placeholder="Explica qué va a sentir la persona después de la sesión, no solo qué se hará.&#10;Ejemplo: Sesión enfocada en aliviar tensiones, mejorar movilidad y ayudarte a sentirte mejor desde el primer día."
+          ></textarea>
         </label>
-        <label class="inline-check">
-          <input type="checkbox" formControlName="is_visible" />
-          <span>Visible en web</span>
+
+        <!-- Categoría + modalidad -->
+        <div class="grid-two">
+          <label>
+            Categoría *
+            <select formControlName="category">
+              <option value="pilates">Pilates</option>
+              <option value="fisioterapia">Fisioterapia</option>
+              <option value="taller">Taller</option>
+              <option value="evento_especial">Evento especial</option>
+              <option value="otro">Otro</option>
+            </select>
+          </label>
+
+          <label>
+            Modalidad *
+            <select formControlName="pricing_type">
+              <option value="free">Primera experiencia</option>
+              <option value="paid">De pago</option>
+            </select>
+          </label>
+        </div>
+
+        <p class="field-notice" *ngIf="isEventoFreeSelected">
+          Este tipo de evento está pensado para primeras visitas. Evita crear demasiados seguidos para mantener exclusividad.
+        </p>
+
+        <!-- Precio (solo pago) -->
+        <label *ngIf="isEventoPaidSelected">
+          Precio (€) *
+          <input type="number" formControlName="price" min="0" step="0.5" placeholder="12.00" />
         </label>
-        <label class="inline-check">
-          <input type="checkbox" formControlName="highlight_on_home" />
-          <span>Mostrar como destacado (recomendado para eventos de captación)</span>
+
+        <!-- Fecha inicio + fin -->
+        <div class="grid-two">
+          <label>
+            Fecha y hora de inicio *
+            <input type="datetime-local" formControlName="start_at" />
+          </label>
+          <label>
+            Fecha y hora de fin
+            <input type="datetime-local" formControlName="end_at" />
+          </label>
+        </div>
+
+        <!-- Plazas + duración -->
+        <div class="grid-two">
+          <label>
+            Plazas totales *
+            <input type="number" formControlName="total_slots" min="1" />
+          </label>
+          <label>
+            Duración (minutos)
+            <input type="number" formControlName="duration_minutes" min="1" placeholder="60" />
+          </label>
+        </div>
+
+        <!-- Ubicación + CTA -->
+        <div class="grid-two">
+          <label>
+            Ubicación
+            <input type="text" formControlName="location" placeholder="CBM Fisioterapia — Terrassa" />
+          </label>
+          <label>
+            Texto del botón CTA
+            <input type="text" formControlName="cta_label" placeholder="Reservar plaza" />
+            <small class="field-helper">
+              Sugerencias:
+              <strong *ngFor="let suggestion of eventoCtaSuggestions; let last = last">
+                {{ suggestion }}<span *ngIf="!last"> · </span>
+              </strong>
+            </small>
+          </label>
+        </div>
+
+        <!-- Imagen -->
+        <label class="full-width">
+          URL de imagen
+          <input type="url" formControlName="image_url" placeholder="https://..." />
+          <small class="field-helper">Usa una imagen real del centro o sesión para aumentar confianza.</small>
         </label>
-        <label class="inline-check">
-          <input type="checkbox" formControlName="is_new_clients_only" />
-          <span>Solo para nuevos pacientes (recomendado para eventos de primera experiencia)</span>
+
+        <!-- Reglas para gratuitos -->
+        <ng-container *ngIf="isEventoFreeSelected">
+          <div class="block-section full-width">
+            <p class="block-section-title">Restricciones para eventos gratuitos</p>
+            <p class="field-helper" style="margin:0">
+              Estas restricciones evitan que una misma persona reserve múltiples clases gratuitas. Recomendado para mantener la calidad del servicio.
+            </p>
+            <div class="grid-two free-rules-grid">
+              <label>
+                Máx. eventos gratis por persona
+                <input type="number" formControlName="free_limit_per_person" min="1" />
+              </label>
+              <label>
+                Días de cooldown entre gratuitos
+                <input type="number" formControlName="free_cooldown_days" min="0" />
+              </label>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Estado + opciones -->
+        <label class="full-width">
+          Estado
+          <select formControlName="status">
+            <option value="active">Activo</option>
+            <option value="inactive">Inactivo</option>
+            <option value="completed">Completo</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
         </label>
+
+        <div class="inline-checks full-width">
+          <label class="inline-check">
+            <input type="checkbox" formControlName="is_active" />
+            <span>Activo</span>
+          </label>
+          <label class="inline-check">
+            <input type="checkbox" formControlName="is_visible" />
+            <span>Visible en web</span>
+          </label>
+          <label class="inline-check">
+            <input type="checkbox" formControlName="highlight_on_home" />
+            <span>Mostrar como destacado (recomendado para eventos de captación)</span>
+          </label>
+          <label class="inline-check">
+            <input type="checkbox" formControlName="is_new_clients_only" />
+            <span>Solo para nuevos pacientes (recomendado para eventos de primera experiencia)</span>
+          </label>
+        </div>
+
+        <p class="field-helper full-width" style="margin:0">Este evento será visible en la web para nuevos pacientes.</p>
+
+        <p class="status error full-width" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
       </div>
 
-      <p class="field-helper" style="margin:0">Este evento será visible en la web para nuevos pacientes.</p>
-
-      <p class="status error" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
-
-      <div class="modal-actions">
+      <div class="modal-actions modal-footer full-width event-modal__footer">
         <button type="button" class="btn-ghost" (click)="closeEventoModal()" [disabled]="eventosSaving">Cancelar</button>
         <button type="submit" class="btn-primary" [disabled]="eventosSaving">
           {{ eventosSaving ? 'Guardando...' : 'Guardar' }}
