@@ -166,10 +166,7 @@ export class EventsService {
     payload: CreateRegistrationPayload,
     event: CbmEvent
   ): Promise<{ registration: EventRegistration; rejected: boolean }> {
-    if (this.isFull(event)) throw new Error('no_slots');
-
-    let status: RegistrationStatus = 'confirmed';
-
+    // ── Validación de evento gratuito (client-side, no ocupa plaza) ──────────
     if (event.pricing_type === 'free') {
       const { data: vData } = await supabase.rpc('validate_free_event_registration', {
         p_email:    payload.email.toLowerCase().trim(),
@@ -178,32 +175,47 @@ export class EventsService {
       });
       const v = vData as { valid: boolean; reason: string | null } | null;
       if (v && !v.valid) {
-        status = 'rejected';
+        // Registrar el rechazo sin ocupar plaza (insert directo, status: rejected)
+        const { data, error } = await supabase
+          .from('event_registrations')
+          .insert({
+            event_id:      payload.event_id,
+            full_name:     payload.full_name.trim(),
+            email:         payload.email.toLowerCase().trim(),
+            phone:         payload.phone.trim(),
+            notes:         payload.notes?.trim() || null,
+            source:        payload.source ?? 'home',
+            is_free_event: true,
+            status:        'rejected'
+          })
+          .select('*')
+          .single();
+        if (error) throw error;
+        return { registration: data as EventRegistration, rejected: true };
       }
     }
 
-    const accessCode = status === 'confirmed'
-      ? 'CBM-' + Math.random().toString(36).substring(2, 8).toUpperCase()
-      : null;
+    // ── Inscripción confirmada: RPC atómico (cuenta plazas + inserta) ────────
+    // SELECT FOR UPDATE en Supabase impide race conditions: dos peticiones
+    // simultáneas no pueden pasar el conteo al mismo tiempo.
+    const accessCode = 'CBM-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
-    const { data, error } = await supabase
-      .from('event_registrations')
-      .insert({
-        event_id:      payload.event_id,
-        full_name:     payload.full_name.trim(),
-        email:         payload.email.toLowerCase().trim(),
-        phone:         payload.phone.trim(),
-        notes:         payload.notes?.trim() || null,
-        source:        payload.source ?? 'home',
-        is_free_event: event.pricing_type === 'free',
-        status,
-        access_code:   accessCode
-      })
-      .select('*')
-      .single();
+    const { data, error } = await supabase.rpc('register_for_event', {
+      p_event_id:    payload.event_id,
+      p_full_name:   payload.full_name,
+      p_email:       payload.email,
+      p_phone:       payload.phone,
+      p_notes:       payload.notes ?? null,
+      p_source:      payload.source ?? 'home',
+      p_access_code: accessCode
+    });
 
     if (error) throw error;
-    return { registration: data as EventRegistration, rejected: status === 'rejected' };
+
+    const result = data as { ok: boolean; error?: string; registration?: EventRegistration };
+    if (!result.ok) throw new Error(result.error ?? 'registration_failed');
+
+    return { registration: result.registration!, rejected: false };
   }
 
   async updateRegistrationStatus(id: string, status: RegistrationStatus): Promise<void> {
