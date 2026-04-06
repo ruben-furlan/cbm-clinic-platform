@@ -289,127 +289,170 @@ textarea {
 }
 
 
-.modal-card--evento .modal-title {
-  margin: 0 0 16px;
+.modal-overlay--evento {
+  z-index: 1200;
+  padding: 24px;
 }
+
+.modal-card--wide.event-modal {
+  width: min(1180px, 92vw);
+  max-width: 1180px;
+  max-height: 90vh;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 24px 58px rgba(37, 28, 70, 0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+}
+
+.event-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid rgba(123, 77, 255, 0.14);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.event-modal .modal-title {
+  margin: 0;
+  line-height: 1.12;
+}
+
+.event-modal__close {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.modal-form--evento {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.event-modal__body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 18px;
+  padding: 24px 32px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+  flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(93, 75, 150, 0.32) transparent;
+}
+
 
 .modal-form--evento .full-width {
   grid-column: 1 / -1;
 }
 
-@media (min-width: 1024px) {
-  .modal-card--evento {
-    width: min(1200px, 92vw);
-    max-width: 1200px;
-    max-height: 90vh;
-    border-radius: 20px;
-    padding: 32px 32px 24px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 24px 58px rgba(37, 28, 70, 0.18);
+.modal-form--evento .slug-row {
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.modal-form--evento .slug-row .btn-sm {
+  margin-top: 0 !important;
+  margin-bottom: 1px;
+  white-space: nowrap;
+}
+
+.modal-form--evento .grid-two {
+  gap: 24px;
+}
+
+.modal-form--evento .field-helper {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #766f8a;
+}
+
+.modal-form--evento .field-notice {
+  grid-column: 1 / -1;
+  margin-top: -2px;
+  margin-bottom: 0;
+}
+
+.modal-form--evento .block-section {
+  border: 1px solid rgba(123, 77, 255, 0.2);
+  background: linear-gradient(180deg, rgba(248, 245, 255, 0.78) 0%, rgba(255, 255, 255, 0.96) 100%);
+  padding: 20px 24px;
+  gap: 14px;
+  border-radius: 14px;
+}
+
+.modal-form--evento .block-section .field-helper {
+  margin-top: 0;
+}
+
+.modal-form--evento .free-rules-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+
+.modal-form--evento .inline-checks {
+  gap: 18px 20px;
+  align-items: flex-start;
+}
+
+.modal-form--evento .inline-check {
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.modal-form--evento .inline-check input {
+  margin-top: 2px;
+}
+
+.event-modal__footer {
+  margin: 0;
+  padding: 16px 32px 20px;
+  border-top: 1px solid rgba(123, 77, 255, 0.14);
+  background: #fff;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+
+@media (max-width: 1023px) {
+  .modal-overlay--evento {
+    padding: 16px;
   }
 
-  .modal-card--evento .modal-title {
-    margin-bottom: 22px;
-    font-size: 34px;
-    line-height: 1.08;
-    letter-spacing: -0.01em;
+  .modal-card--wide.event-modal {
+    width: min(100%, 720px);
+    max-height: 92vh;
+    border-radius: 16px;
   }
 
-  .modal-form--evento {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 20px;
-    row-gap: 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 8px;
-    padding-bottom: 4px;
-    min-height: 0;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(93, 75, 150, 0.32) transparent;
+  .event-modal__header {
+    padding: 20px 20px 16px;
   }
 
-  .modal-form--evento::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  .modal-form--evento::-webkit-scrollbar-thumb {
-    background: rgba(93, 75, 150, 0.28);
-    border-radius: 999px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-  }
-
-  .modal-form--evento .field-helper {
-    margin-top: 4px;
-    font-size: 12px;
-    line-height: 1.5;
-    color: #766f8a;
-  }
-
-  .modal-form--evento .field-notice {
-    grid-column: 1 / -1;
-    margin-top: -4px;
-    margin-bottom: 2px;
-  }
-
-  .modal-form--evento .slug-row {
-    align-items: flex-end;
-    gap: 12px;
-  }
-
-  .modal-form--evento .slug-row .btn-sm {
-    margin-top: 0 !important;
-    margin-bottom: 1px;
-    white-space: nowrap;
-  }
-
-  .modal-form--evento .grid-two {
-    gap: 20px;
-  }
-
-  .modal-form--evento .block-section {
-    border: 1px solid rgba(123, 77, 255, 0.2);
-    background: linear-gradient(180deg, rgba(248, 245, 255, 0.78) 0%, rgba(255, 255, 255, 0.96) 100%);
-    padding: 20px;
+  .event-modal__body {
+    grid-template-columns: 1fr;
     gap: 14px;
-    border-radius: 14px;
+    padding: 16px 20px;
   }
 
-  .modal-form--evento .block-section .field-helper {
-    margin-top: 0;
-  }
-
+  .modal-form--evento .grid-two,
   .modal-form--evento .free-rules-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
-  .modal-form--evento .inline-checks {
-    gap: 18px 20px;
-    align-items: flex-start;
-  }
-
-  .modal-form--evento .inline-check {
-    gap: 10px;
-  }
-
-  .modal-form--evento .inline-check input {
-    margin-top: 1px;
-  }
-
-  .modal-form--evento .modal-footer {
-    position: sticky;
-    bottom: 0;
-    margin-top: 8px;
-    padding-top: 12px;
-    padding-bottom: 2px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.86) 0%, #ffffff 46%);
-    border-top: 1px solid rgba(123, 77, 255, 0.12);
-    justify-content: flex-end;
-    gap: 12px;
-    z-index: 2;
+  .event-modal__footer {
+    padding: 12px 20px 16px;
   }
 }
 
