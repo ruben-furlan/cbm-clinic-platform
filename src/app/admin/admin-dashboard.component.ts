@@ -200,8 +200,12 @@ export class AdminDashboardComponent implements OnInit {
       pricing_type: ['free' as EventPricingType, Validators.required],
       price: [null as number | null],
       currency: ['EUR'],
-      start_at: ['', Validators.required],
+      start_at: [''],
       end_at: [''],
+      start_date: ['', Validators.required],
+      start_time: ['', Validators.required],
+      end_date: [''],
+      end_time: [''],
       duration_minutes: [null as number | null],
       total_slots: [10, [Validators.required, Validators.min(1)]],
       image_url: [''],
@@ -940,7 +944,8 @@ export class AdminDashboardComponent implements OnInit {
     this.eventoForm.reset({
       title: '', slug: '', short_description: '', long_description: '',
       category: 'pilates', pricing_type: 'free', price: null, currency: 'EUR',
-      start_at: '', end_at: '', duration_minutes: null, total_slots: 10,
+      start_at: '', end_at: '', start_date: '', start_time: '', end_date: '', end_time: '',
+      duration_minutes: null, total_slots: 10,
       image_url: '', location: '', cta_label: '', highlight_on_home: false,
       is_active: true, is_visible: true, is_new_clients_only: false,
       free_limit_per_person: 1, free_cooldown_days: 30, status: 'active'
@@ -950,6 +955,11 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   openEventoEditModal(evento: CbmEvent): void {
+    const startLocal = evento.start_at ? this.toLocalDatetimeInput(evento.start_at) : '';
+    const endLocal = evento.end_at ? this.toLocalDatetimeInput(evento.end_at) : '';
+    const startSplit = this.splitLocalDatetimeInput(startLocal);
+    const endSplit = this.splitLocalDatetimeInput(endLocal);
+
     this.editingEvento = evento;
     this.eventoForm.reset({
       title: evento.title,
@@ -960,8 +970,12 @@ export class AdminDashboardComponent implements OnInit {
       pricing_type: evento.pricing_type,
       price: evento.price,
       currency: evento.currency,
-      start_at: evento.start_at ? this.toLocalDatetimeInput(evento.start_at) : '',
-      end_at: evento.end_at ? this.toLocalDatetimeInput(evento.end_at) : '',
+      start_at: startLocal,
+      end_at: endLocal,
+      start_date: startSplit.date,
+      start_time: startSplit.time,
+      end_date: endSplit.date,
+      end_time: endSplit.time,
       duration_minutes: evento.duration_minutes,
       total_slots: evento.total_slots,
       image_url: evento.image_url ?? '',
@@ -997,6 +1011,23 @@ export class AdminDashboardComponent implements OnInit {
 
     this.eventosSaving = true;
     const v = this.eventoForm.getRawValue();
+    const startAtIso = this.combineDateAndTime(v.start_date, v.start_time);
+    const hasEndDate = !!v.end_date;
+    const hasEndTime = !!v.end_time;
+    const hasPartialEndDateTime = hasEndDate !== hasEndTime;
+
+    if (!startAtIso || hasPartialEndDateTime) {
+      this.eventosSaving = false;
+      this.eventoForm.markAllAsTouched();
+      this.eventosMessage = hasPartialEndDateTime
+        ? 'Si completas fecha de fin, añade también la hora (y viceversa).'
+        : 'Completa la fecha y hora de inicio.';
+      return;
+    }
+
+    const endAtIso = hasEndDate && hasEndTime
+      ? this.combineDateAndTime(v.end_date, v.end_time)
+      : null;
 
     const payload = {
       title: v.title.trim(),
@@ -1007,8 +1038,8 @@ export class AdminDashboardComponent implements OnInit {
       pricing_type: v.pricing_type,
       price: v.pricing_type === 'paid' ? (v.price ?? null) : null,
       currency: v.currency || 'EUR',
-      start_at: v.start_at ? new Date(v.start_at).toISOString() : '',
-      end_at: v.end_at ? new Date(v.end_at).toISOString() : null,
+      start_at: startAtIso,
+      end_at: endAtIso,
       duration_minutes: v.duration_minutes ?? null,
       total_slots: v.total_slots,
       image_url: v.image_url.trim() || null,
@@ -1231,6 +1262,17 @@ export class AdminDashboardComponent implements OnInit {
     // Restar el offset del timezone local para obtener la hora local como si fuera UTC
     const offsetMs = d.getTimezoneOffset() * 60_000;
     return new Date(d.getTime() - offsetMs).toISOString().substring(0, 16);
+  }
+
+  private splitLocalDatetimeInput(value: string): { date: string; time: string } {
+    if (!value.includes('T')) return { date: '', time: '' };
+    const [date, time] = value.split('T');
+    return { date, time: time?.substring(0, 5) ?? '' };
+  }
+
+  private combineDateAndTime(date: string, time: string): string | null {
+    if (!date || !time) return null;
+    return new Date(`${date}T${time}`).toISOString();
   }
 
   generateEventoSlug(): void {

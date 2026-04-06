@@ -550,14 +550,33 @@
 
         <!-- Fecha inicio + fin -->
         <div class="grid-two">
-          <label>
-            Fecha y hora de inicio *
-            <input type="datetime-local" formControlName="start_at" />
-          </label>
-          <label>
-            Fecha y hora de fin
-            <input type="datetime-local" formControlName="end_at" />
-          </label>
+          <div style="display:grid;gap:8px">
+            <p style="margin:0;color:#332d43;font-size:14px;font-weight:600">Fecha y hora de inicio *</p>
+            <div class="grid-two" style="gap:10px">
+              <label style="font-size:12px;color:#6a6380">
+                Fecha
+                <input type="date" formControlName="start_date" />
+              </label>
+              <label style="font-size:12px;color:#6a6380">
+                Hora
+                <input type="time" formControlName="start_time" />
+              </label>
+            </div>
+          </div>
+
+          <div style="display:grid;gap:8px">
+            <p style="margin:0;color:#332d43;font-size:14px;font-weight:600">Fecha y hora de fin</p>
+            <div class="grid-two" style="gap:10px">
+              <label style="font-size:12px;color:#6a6380">
+                Fecha
+                <input type="date" formControlName="end_date" />
+              </label>
+              <label style="font-size:12px;color:#6a6380">
+                Hora
+                <input type="time" formControlName="end_time" />
+              </label>
+            </div>
+          </div>
         </div>
 
         <!-- Plazas + duración -->
