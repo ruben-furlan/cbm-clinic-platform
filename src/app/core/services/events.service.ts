@@ -38,6 +38,8 @@ export interface CbmEvent {
   updated_at: string;
 }
 
+export type CheckinStatus = 'pending' | 'checked_in';
+
 export interface EventRegistration {
   id: string;
   event_id: string;
@@ -50,6 +52,10 @@ export interface EventRegistration {
   validation_status: ValidationStatus;
   status: RegistrationStatus;
   blocked_reason: string | null;
+  // Digital pass
+  access_code: string | null;
+  checkin_status: CheckinStatus;
+  checked_in_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -225,6 +231,14 @@ export class EventsService {
       .from('event_registrations')
       .update({ status, updated_at: new Date().toISOString() })
       .eq('id', id);
+
+    if (error) throw error;
+  }
+
+  async checkInRegistration(id: string): Promise<void> {
+    const { error } = await supabase.rpc('checkin_registration', {
+      p_registration_id: id
+    });
 
     if (error) throw error;
   }

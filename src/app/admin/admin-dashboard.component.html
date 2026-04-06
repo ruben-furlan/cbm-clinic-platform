@@ -658,6 +658,7 @@
             <th>Persona</th>
             <th>Contacto</th>
             <th>Estado</th>
+            <th>Código</th>
             <th>Fecha</th>
             <th>Acciones</th>
           </tr>
@@ -694,6 +695,20 @@
               <span class="reg-blocked-reason" *ngIf="reg.blocked_reason">
                 {{ reg.blocked_reason }}
               </span>
+            </td>
+
+            <!-- Código de acceso + check-in -->
+            <td>
+              <span class="reg-code" *ngIf="reg.access_code">{{ reg.access_code }}</span>
+              <span class="reg-code reg-code--empty" *ngIf="!reg.access_code">—</span>
+              <button
+                *ngIf="reg.status === 'confirmed' && reg.checkin_status === 'pending'"
+                type="button"
+                class="reg-btn reg-btn--checkin"
+                (click)="checkInRegistro(reg)"
+                [disabled]="!!updatingRegistrationId"
+              >Check-in</button>
+              <span class="reg-checkedin" *ngIf="reg.checkin_status === 'checked_in'">✓ Entró</span>
             </td>
 
             <!-- Fecha -->

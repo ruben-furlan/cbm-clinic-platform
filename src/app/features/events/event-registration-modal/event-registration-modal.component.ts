@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CbmEvent, EventsService } from '../../../core/services/events.service';
+import { CbmEvent, EventRegistration, EventsService } from '../../../core/services/events.service';
+import { EventPassComponent } from '../event-pass/event-pass.component';
 
 type ModalStep = 'details' | 'form' | 'success' | 'blocked' | 'full';
 
@@ -10,7 +11,7 @@ const WHATSAPP_PHONE = '34662561672';
 @Component({
   selector: 'app-event-registration-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, EventPassComponent],
   templateUrl: './event-registration-modal.component.html',
   styleUrl: './event-registration-modal.component.css'
 })
@@ -21,6 +22,8 @@ export class EventRegistrationModalComponent implements OnInit {
   step: ModalStep = 'details';
   saving = false;
   error = '';
+
+  registration: EventRegistration | null = null;
 
   formData = { fullName: '', email: '', phone: '', notes: '' };
   touched = { fullName: false, email: false, phone: false };
@@ -98,7 +101,7 @@ export class EventRegistrationModalComponent implements OnInit {
     this.error = '';
 
     try {
-      const { blocked } = await this.eventsService.registerForEvent(
+      const { registration, blocked } = await this.eventsService.registerForEvent(
         {
           event_id: this.event.id,
           full_name: this.formData.fullName,
@@ -110,6 +113,7 @@ export class EventRegistrationModalComponent implements OnInit {
         this.event
       );
 
+      this.registration = registration;
       this.step = blocked ? 'blocked' : 'success';
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : '';

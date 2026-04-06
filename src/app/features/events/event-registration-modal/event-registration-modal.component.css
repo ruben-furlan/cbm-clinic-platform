@@ -286,6 +286,10 @@
   margin-top: 20px;
 }
 
+.modal-actions--pass {
+  margin-top: 4px;
+}
+
 .btn-full {
   width: 100%;
   justify-content: center;

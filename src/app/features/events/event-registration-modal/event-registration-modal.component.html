@@ -5,7 +5,7 @@
     <button type="button" class="modal-close" (click)="close()" aria-label="Cerrar">✕</button>
 
     <!-- ── Cabecera del evento ──────────────────────────────────────────── -->
-    <div class="modal-header">
+    <div class="modal-header" *ngIf="step !== 'success'">
       <div class="modal-badges">
         <span class="badge" [class.badge--free]="event.pricing_type === 'free'" [class.badge--paid]="event.pricing_type === 'paid'">
           {{ event.pricing_type === 'free' ? 'Gratis' : displayPrice }}
@@ -127,20 +127,13 @@
     </ng-container>
 
     <!-- ── Step: success ──────────────────────────────────────────────────── -->
-    <ng-container *ngIf="step === 'success'">
-      <div class="feedback-block feedback-block--success">
-        <div class="feedback-icon">✓</div>
-        <h3 class="feedback-title">¡Solicitud recibida!</h3>
-        <p class="feedback-text">
-          Hemos registrado tu solicitud para <strong>{{ event.title }}</strong>.
-          Nos pondremos en contacto contigo en las próximas horas para confirmar tu plaza.
-        </p>
-      </div>
-
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary btn-full" (click)="openWhatsApp()">
-          Confirmar también por WhatsApp
-        </button>
+    <ng-container *ngIf="step === 'success' && registration">
+      <app-event-pass
+        [registration]="registration"
+        [event]="event"
+        (whatsappClicked)="close()"
+      />
+      <div class="modal-actions modal-actions--pass">
         <button type="button" class="btn-ghost btn-full" (click)="close()">Cerrar</button>
       </div>
     </ng-container>

@@ -1134,6 +1134,32 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  async checkInRegistro(reg: EventRegistration): Promise<void> {
+    if (this.updatingRegistrationId) return;
+
+    this.updatingRegistrationId = reg.id;
+    this.registrosMessage = '';
+
+    // Optimistic update
+    this.eventoRegistros = this.eventoRegistros.map((r) =>
+      r.id === reg.id ? { ...r, checkin_status: 'checked_in' as const, checked_in_at: new Date().toISOString() } : r
+    );
+
+    try {
+      await this.withTimeout(this.eventsService.checkInRegistration(reg.id));
+      this.registrosMessage = `Check-in registrado para ${reg.full_name}.`;
+    } catch {
+      // Rollback
+      this.eventoRegistros = this.eventoRegistros.map((r) =>
+        r.id === reg.id ? { ...r, checkin_status: 'pending' as const, checked_in_at: null } : r
+      );
+      this.registrosMessage = 'No se pudo registrar el check-in. Inténtalo de nuevo.';
+    } finally {
+      this.updatingRegistrationId = null;
+      this.flushUiState();
+    }
+  }
+
   getEventoAvailableSlots(evento: CbmEvent): number {
     return this.eventsService.getAvailableSlots(evento);
   }
