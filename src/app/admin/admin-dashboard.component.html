@@ -13,6 +13,7 @@
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
     <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
+    <button type="button" [class.active]="seccion === 'checkin'" (click)="setSeccion('checkin')">Check-in</button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -769,6 +770,127 @@
     </div>
   </section>
 </div>
+
+<!-- ═══════════════════════════════ CHECK-IN ══════════════════════════════ -->
+<ng-container *ngIf="seccion === 'checkin'">
+  <div class="checkin-wrap">
+    <div class="checkin-search-block">
+      <h2 class="checkin-title">Validar acceso</h2>
+      <p class="checkin-subtitle">Introduce el código del pase para confirmar la asistencia</p>
+
+      <div class="checkin-input-row">
+        <input
+          type="text"
+          class="checkin-input"
+          [(ngModel)]="checkinCode"
+          placeholder="CBM-A7F3K2"
+          (keydown.enter)="searchCheckin()"
+          maxlength="12"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          class="btn-primary checkin-btn"
+          (click)="searchCheckin()"
+          [disabled]="checkinLoading || !checkinCode.trim()"
+        >
+          {{ checkinLoading ? 'Buscando...' : 'Buscar' }}
+        </button>
+        <button
+          type="button"
+          class="btn-ghost checkin-btn"
+          (click)="resetCheckin()"
+          *ngIf="checkinResult || checkinError"
+          title="Nueva búsqueda"
+        >↺</button>
+      </div>
+
+      <p class="checkin-error" *ngIf="checkinError && !checkinResult">{{ checkinError }}</p>
+    </div>
+
+    <!-- Tarjeta de resultado -->
+    <div class="checkin-card" *ngIf="checkinResult">
+
+      <!-- Estado visual en cabecera -->
+      <div class="checkin-card-header"
+        [class.checkin-card-header--ok]="checkinResult.status === 'confirmed' && !checkinResult.checked_in_at"
+        [class.checkin-card-header--done]="!!checkinResult.checked_in_at"
+        [class.checkin-card-header--warn]="checkinResult.status !== 'confirmed'"
+      >
+        <span class="checkin-status-icon">
+          <ng-container *ngIf="checkinResult.checked_in_at">✓</ng-container>
+          <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'">◎</ng-container>
+          <ng-container *ngIf="checkinResult.status !== 'confirmed'">✕</ng-container>
+        </span>
+        <div>
+          <p class="checkin-status-title">
+            <ng-container *ngIf="checkinResult.checked_in_at">Asistencia ya registrada</ng-container>
+            <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'">Inscripción válida</ng-container>
+            <ng-container *ngIf="checkinResult.status === 'cancelled'">Inscripción cancelada</ng-container>
+            <ng-container *ngIf="checkinResult.status === 'rejected'">Inscripción rechazada</ng-container>
+          </p>
+          <p class="checkin-code-display">{{ checkinResult.access_code }}</p>
+        </div>
+      </div>
+
+      <!-- Datos -->
+      <div class="checkin-card-body">
+        <div class="checkin-data-grid">
+          <div class="checkin-data-item">
+            <span class="checkin-data-label">Nombre</span>
+            <span class="checkin-data-value">{{ checkinResult.full_name }}</span>
+          </div>
+          <div class="checkin-data-item">
+            <span class="checkin-data-label">Email</span>
+            <span class="checkin-data-value">{{ checkinResult.email }}</span>
+          </div>
+          <div class="checkin-data-item">
+            <span class="checkin-data-label">Teléfono</span>
+            <span class="checkin-data-value">{{ checkinResult.phone }}</span>
+          </div>
+          <div class="checkin-data-item" *ngIf="checkinResult.events">
+            <span class="checkin-data-label">Evento</span>
+            <span class="checkin-data-value">{{ checkinResult.events?.title }}</span>
+          </div>
+          <div class="checkin-data-item" *ngIf="checkinResult.events?.start_at">
+            <span class="checkin-data-label">Fecha</span>
+            <span class="checkin-data-value">{{ checkinResult.events?.start_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+          </div>
+          <div class="checkin-data-item" *ngIf="checkinResult.checked_in_at">
+            <span class="checkin-data-label">Check-in</span>
+            <span class="checkin-data-value checkin-data-value--green">{{ checkinResult.checked_in_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+          </div>
+        </div>
+
+        <!-- Acción principal -->
+        <div class="checkin-action">
+          <button
+            *ngIf="checkinResult.status === 'confirmed' && !checkinResult.checked_in_at"
+            type="button"
+            class="btn-primary checkin-confirm-btn"
+            (click)="doCheckin()"
+            [disabled]="checkinUpdating"
+          >
+            {{ checkinUpdating ? 'Registrando...' : '✓ Marcar asistencia' }}
+          </button>
+
+          <p class="checkin-done-msg" *ngIf="checkinResult.checked_in_at">
+            ✓ Asistencia confirmada
+          </p>
+
+          <p class="checkin-blocked-msg"
+            *ngIf="checkinResult.status === 'cancelled' || checkinResult.status === 'rejected'">
+            No se puede registrar asistencia en una inscripción {{ registroStatusLabels[checkinResult.status] | lowercase }}.
+          </p>
+
+          <p class="checkin-error" *ngIf="checkinError">{{ checkinError }}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
 
 <div class="busy-overlay" *ngIf="showInitialLoader" aria-live="polite" aria-busy="true">
   <div class="busy-content">

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
 import { FaqsService, Faq } from '../core/services/faqs.service';
@@ -17,13 +17,13 @@ import {
 import { supabase } from '../core/supabase.client';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'checkin';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
@@ -107,6 +107,15 @@ export class AdminDashboardComponent implements OnInit {
   eventoRegistrosTitle = '';
   updatingRegistrationId: string | null = null;
   registrosMessage = '';
+
+  // ── Check-in ──────────────────────────────────────────────────────────────
+  checkinCode = '';
+  checkinLoading = false;
+  checkinUpdating = false;
+  checkinError = '';
+  checkinResult: (EventRegistration & {
+    events: { title: string; start_at: string; location: string | null } | null
+  }) | null = null;
 
   readonly registroStatusLabels: Record<string, string> = {
     confirmed: 'Confirmado',
@@ -1157,6 +1166,48 @@ export class AdminDashboardComponent implements OnInit {
       this.updatingRegistrationId = null;
       this.flushUiState();
     }
+  }
+
+  async searchCheckin(): Promise<void> {
+    if (!this.checkinCode.trim()) return;
+    this.checkinLoading = true;
+    this.checkinError = '';
+    this.checkinResult = null;
+
+    try {
+      const result = await this.withTimeout(
+        this.eventsService.findRegistrationByCode(this.checkinCode)
+      );
+      if (!result) {
+        this.checkinError = 'No hemos encontrado ninguna inscripción con ese código.';
+      } else {
+        this.checkinResult = result;
+      }
+    } catch {
+      this.checkinError = 'Error al buscar. Inténtalo de nuevo.';
+    } finally {
+      this.zone.run(() => { this.checkinLoading = false; this.flushUiState(); });
+    }
+  }
+
+  async doCheckin(): Promise<void> {
+    if (!this.checkinResult) return;
+    this.checkinUpdating = true;
+
+    try {
+      await this.withTimeout(this.eventsService.checkInRegistration(this.checkinResult.id));
+      this.checkinResult = { ...this.checkinResult, checked_in_at: new Date().toISOString() };
+    } catch {
+      this.checkinError = 'No se pudo registrar la asistencia. Inténtalo de nuevo.';
+    } finally {
+      this.zone.run(() => { this.checkinUpdating = false; this.flushUiState(); });
+    }
+  }
+
+  resetCheckin(): void {
+    this.checkinCode = '';
+    this.checkinResult = null;
+    this.checkinError = '';
   }
 
   getEventoAvailableSlots(evento: CbmEvent): number {

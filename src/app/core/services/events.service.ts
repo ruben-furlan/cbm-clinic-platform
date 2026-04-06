@@ -169,7 +169,6 @@ export class EventsService {
     if (this.isFull(event)) throw new Error('no_slots');
 
     let status: RegistrationStatus = 'confirmed';
-    let rejectionReason: string | null = null;
 
     if (event.pricing_type === 'free') {
       const { data: vData } = await supabase.rpc('validate_free_event_registration', {
@@ -180,21 +179,25 @@ export class EventsService {
       const v = vData as { valid: boolean; reason: string | null } | null;
       if (v && !v.valid) {
         status = 'rejected';
-        rejectionReason = v.reason;
       }
     }
+
+    const accessCode = status === 'confirmed'
+      ? 'CBM-' + Math.random().toString(36).substring(2, 8).toUpperCase()
+      : null;
 
     const { data, error } = await supabase
       .from('event_registrations')
       .insert({
-        event_id:     payload.event_id,
-        full_name:    payload.full_name.trim(),
-        email:        payload.email.toLowerCase().trim(),
-        phone:        payload.phone.trim(),
-        notes:        payload.notes?.trim() || null,
-        source:       payload.source ?? 'home',
+        event_id:      payload.event_id,
+        full_name:     payload.full_name.trim(),
+        email:         payload.email.toLowerCase().trim(),
+        phone:         payload.phone.trim(),
+        notes:         payload.notes?.trim() || null,
+        source:        payload.source ?? 'home',
         is_free_event: event.pricing_type === 'free',
-        status
+        status,
+        access_code:   accessCode
       })
       .select('*')
       .single();
@@ -213,11 +216,27 @@ export class EventsService {
   }
 
   async checkInRegistration(id: string): Promise<void> {
-    const { error } = await supabase.rpc('checkin_registration', {
-      p_registration_id: id
-    });
+    const { error } = await supabase
+      .from('event_registrations')
+      .update({ checked_in_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .eq('id', id);
 
     if (error) throw error;
+  }
+
+  async findRegistrationByCode(code: string): Promise<(EventRegistration & {
+    events: { title: string; start_at: string; location: string | null } | null
+  }) | null> {
+    const { data, error } = await supabase
+      .from('event_registrations')
+      .select('*, events(title, start_at, location)')
+      .eq('access_code', code.trim().toUpperCase())
+      .single();
+
+    if (error) return null;
+    return data as EventRegistration & {
+      events: { title: string; start_at: string; location: string | null } | null
+    };
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
