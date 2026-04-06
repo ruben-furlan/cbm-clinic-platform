@@ -1,4 +1,15 @@
-<section class="events-section section" *ngIf="!loading && events.length">
+<!-- ── Estado: cargando ──────────────────────────────────────────────────── -->
+<div class="events-loader-wrap" *ngIf="loading" aria-live="polite">
+  <cbm-loader />
+</div>
+
+<!-- ── Estado: error ─────────────────────────────────────────────────────── -->
+<div class="events-error-wrap" *ngIf="!loading && loadError" aria-live="polite">
+  <p class="events-error-msg">No pudimos cargar las clases en este momento. Visítanos en Instagram o escríbenos.</p>
+</div>
+
+<!-- ── Estado: con eventos ───────────────────────────────────────────────── -->
+<section class="events-section section" *ngIf="!loading && !loadError && events.length">
   <div class="container">
 
     <div class="section-head" appRevealOnScroll>

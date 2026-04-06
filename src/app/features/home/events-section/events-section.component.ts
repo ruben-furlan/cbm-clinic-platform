@@ -3,28 +3,28 @@ import { Component, OnInit } from '@angular/core';
 import { CbmEvent, EventsService } from '../../../core/services/events.service';
 import { EventRegistrationModalComponent } from '../../events/event-registration-modal/event-registration-modal.component';
 import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-scroll.directive';
+import { CbmLoaderComponent } from '../../../shared/components/cbm-loader/cbm-loader.component';
 
 @Component({
   selector: 'app-events-section',
   standalone: true,
-  imports: [CommonModule, EventRegistrationModalComponent, RevealOnScrollDirective],
+  imports: [CommonModule, EventRegistrationModalComponent, RevealOnScrollDirective, CbmLoaderComponent],
   templateUrl: './events-section.component.html',
   styleUrl: './events-section.component.css'
 })
 export class EventsSectionComponent implements OnInit {
   events: CbmEvent[] = [];
   loading = true;
+  loadError = false;
   selectedEvent: CbmEvent | null = null;
 
   constructor(private readonly eventsService: EventsService) {}
 
   async ngOnInit(): Promise<void> {
     try {
-      // Carga todos los próximos eventos visibles.
-      // Los destacados (highlight_on_home=true) se ordenan primero en la query.
       this.events = await this.eventsService.getUpcomingEvents(6);
     } catch {
-      // Silent fail — sección opcional, no bloquear la home
+      this.loadError = true;
     } finally {
       this.loading = false;
     }

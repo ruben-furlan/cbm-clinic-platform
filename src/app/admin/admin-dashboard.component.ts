@@ -222,7 +222,9 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get showInitialLoader(): boolean {
-    return this.loading && !this.tarifas.length;
+    // Solo muestra el overlay de carga global la primera vez (cuando no hay datos aún
+    // y no hay error). Una vez que los datos llegaron o falló, nunca más.
+    return this.loading && !this.tarifas.length && !this.error;
   }
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -250,6 +252,35 @@ export class AdminDashboardComponent implements OnInit {
     this.zone.run(() => {
       this.cdr.detectChanges();
     });
+  }
+
+  /**
+   * Muestra un mensaje de feedback en la sección indicada y lo borra
+   * automáticamente después de `ttl` ms para que no quede pegado para siempre.
+   */
+  private showMsg(
+    section: 'tarifas' | 'faqs' | 'blog' | 'eventos' | 'registros',
+    text: string,
+    ttl = 4000
+  ): void {
+    switch (section) {
+      case 'tarifas':   this.message = text; break;
+      case 'faqs':      this.faqMessage = text; break;
+      case 'blog':      this.blogMessage = text; break;
+      case 'eventos':   this.eventosMessage = text; break;
+      case 'registros': this.registrosMessage = text; break;
+    }
+    this.flushUiState();
+    setTimeout(() => {
+      this.zone.run(() => {
+        if (section === 'tarifas'   && this.message === text)         this.message = '';
+        if (section === 'faqs'      && this.faqMessage === text)      this.faqMessage = '';
+        if (section === 'blog'      && this.blogMessage === text)     this.blogMessage = '';
+        if (section === 'eventos'   && this.eventosMessage === text)  this.eventosMessage = '';
+        if (section === 'registros' && this.registrosMessage === text) this.registrosMessage = '';
+        this.flushUiState();
+      });
+    }, ttl);
   }
 
   trackByIndex(index: number): number {
@@ -414,12 +445,15 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       await this.withTimeout(this.tarifasService.deleteTarifa(tarifa.id));
-      this.message = 'Tarifa eliminada.';
+      this.showMsg('tarifas', 'Tarifa eliminada.');
     } catch {
       this.tarifas = previous;
-      this.message = 'No se pudo eliminar la tarifa.';
+      this.showMsg('tarifas', 'No se pudo eliminar la tarifa.');
     } finally {
-      this.deletingId = null;
+      this.zone.run(() => {
+        this.deletingId = null;
+        this.flushUiState();
+      });
     }
   }
 
@@ -539,12 +573,15 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       await this.withTimeout(this.faqsService.deleteFaq(faq.id));
-      this.faqMessage = 'Pregunta eliminada.';
+      this.showMsg('faqs', 'Pregunta eliminada.');
     } catch {
       this.faqs = previous;
-      this.faqMessage = 'No se pudo eliminar la pregunta.';
+      this.showMsg('faqs', 'No se pudo eliminar la pregunta.');
     } finally {
-      this.faqDeletingId = null;
+      this.zone.run(() => {
+        this.faqDeletingId = null;
+        this.flushUiState();
+      });
     }
   }
 
@@ -796,12 +833,15 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       await this.withTimeout(this.blogService.deletePost(post.id));
-      this.blogMessage = 'Post eliminado.';
+      this.showMsg('blog', 'Post eliminado.');
     } catch {
       this.blogPosts = previous;
-      this.blogMessage = 'No se pudo eliminar el post.';
+      this.showMsg('blog', 'No se pudo eliminar el post.');
     } finally {
-      this.blogDeletingId = null;
+      this.zone.run(() => {
+        this.blogDeletingId = null;
+        this.flushUiState();
+      });
     }
   }
 
@@ -997,16 +1037,22 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   async duplicateEvento(evento: CbmEvent): Promise<void> {
-    if (this.eventosDeletingId) return;
+    if (this.eventosDeletingId || this.eventosSaving) return;
+
+    this.eventosSaving = true;
+    this.eventosMessage = '';
 
     try {
       const copy = await this.withTimeout(this.eventsService.duplicateEvent(evento));
       this.eventos = [copy, ...this.eventos];
-      this.eventosMessage = 'Evento duplicado. Ahora puedes editarlo.';
-      this.flushUiState();
+      this.showMsg('eventos', 'Evento duplicado. Ahora puedes editarlo.');
     } catch {
-      this.eventosMessage = 'No se pudo duplicar el evento.';
-      this.flushUiState();
+      this.showMsg('eventos', 'No se pudo duplicar el evento.');
+    } finally {
+      this.zone.run(() => {
+        this.eventosSaving = false;
+        this.flushUiState();
+      });
     }
   }
 
@@ -1022,12 +1068,15 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       await this.withTimeout(this.eventsService.deleteEvent(evento.id));
-      this.eventosMessage = 'Evento eliminado.';
+      this.showMsg('eventos', 'Evento eliminado.');
     } catch {
       this.eventos = previous;
-      this.eventosMessage = 'No se pudo eliminar el evento.';
+      this.showMsg('eventos', 'No se pudo eliminar el evento.');
     } finally {
-      this.eventosDeletingId = null;
+      this.zone.run(() => {
+        this.eventosDeletingId = null;
+        this.flushUiState();
+      });
     }
   }
 
