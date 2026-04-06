@@ -18,6 +18,7 @@ const WHATSAPP_PHONE = '34662561672';
 export class EventRegistrationModalComponent implements OnInit {
   @Input({ required: true }) event!: CbmEvent;
   @Output() closed = new EventEmitter<void>();
+  @Output() registered = new EventEmitter<string>(); // emite event.id tras inscripción exitosa
 
   step: ModalStep = 'details';
   saving = false;
@@ -135,6 +136,7 @@ export class EventRegistrationModalComponent implements OnInit {
         this.rejectionReason = (registration.rejection_reason as typeof this.rejectionReason) ?? null;
         this.step = 'rejected';
       } else {
+        this.registered.emit(this.event.id);
         this.step = 'success';
       }
     } catch (err: unknown) {

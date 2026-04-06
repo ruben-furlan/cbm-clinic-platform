@@ -38,6 +38,19 @@ export class EventsSectionComponent implements OnInit {
     this.selectedEvent = null;
   }
 
+  onRegistered(eventId: string): void {
+    // Incrementar reserved_slots en el array local para que la card refleje
+    // el estado correcto sin necesidad de recargar toda la lista.
+    this.events = this.events.map(e =>
+      e.id === eventId ? { ...e, reserved_slots: e.reserved_slots + 1 } : e
+    );
+    // Actualizar también selectedEvent para que el modal tenga datos frescos
+    // si el usuario no lo cierra inmediatamente.
+    if (this.selectedEvent?.id === eventId) {
+      this.selectedEvent = this.events.find(e => e.id === eventId) ?? null;
+    }
+  }
+
   getAvailableSlots(event: CbmEvent): number {
     return this.eventsService.getAvailableSlots(event);
   }
