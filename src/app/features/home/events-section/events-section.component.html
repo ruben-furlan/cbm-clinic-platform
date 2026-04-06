@@ -1,0 +1,123 @@
+<!-- ── Estado: cargando ──────────────────────────────────────────────────── -->
+<div class="events-loader-wrap" *ngIf="loading" aria-live="polite">
+  <cbm-loader />
+</div>
+
+<!-- ── Estado: error ─────────────────────────────────────────────────────── -->
+<div class="events-error-wrap" *ngIf="!loading && loadError" aria-live="polite">
+  <p class="events-error-msg">No pudimos cargar las clases en este momento. Visítanos en Instagram o escríbenos.</p>
+</div>
+
+<!-- ── Estado: con eventos ───────────────────────────────────────────────── -->
+<section class="events-section section" *ngIf="!loading && !loadError && events.length">
+  <div class="container">
+
+    <div class="section-head" appRevealOnScroll>
+      <p class="section-eyebrow">Clases y eventos</p>
+      <h2 class="section-title">Próximas clases<br><span class="heading-highlight">y eventos</span></h2>
+      <p class="section-subtitle">
+        Grupos reducidos para una atención personalizada.
+        Algunas sesiones son gratuitas como primera toma de contacto.
+      </p>
+    </div>
+
+    <!-- Cards grid / horizontal scroll -->
+    <div class="events-track">
+      <article
+        class="event-card floating-card"
+        *ngFor="let event of events; trackBy: trackById; let i = index"
+        [class.event-card--full]="isFull(event)"
+        appRevealOnScroll
+        [attr.data-delay]="i % 3"
+      >
+
+        <!-- Badges -->
+        <div class="card-badges">
+          <span
+            class="card-badge"
+            [class.card-badge--free]="event.pricing_type === 'free'"
+            [class.card-badge--paid]="event.pricing_type === 'paid'"
+          >
+            {{ event.pricing_type === 'free' ? 'Gratis' : event.price + '€' }}
+          </span>
+
+          <span class="card-badge card-badge--urgent" *ngIf="isAlmostFull(event) && !isFull(event)">
+            Últimas plazas
+          </span>
+
+          <span class="card-badge card-badge--full" *ngIf="isFull(event)">
+            Completo
+          </span>
+
+          <span class="card-badge card-badge--new" *ngIf="event.is_new_clients_only">
+            Nuevos clientes
+          </span>
+        </div>
+
+        <!-- Content -->
+        <div class="card-body">
+          <h3 class="card-title">{{ event.title }}</h3>
+          <p class="card-description" *ngIf="event.short_description">{{ event.short_description }}</p>
+
+          <dl class="card-meta">
+            <div class="card-meta-item">
+              <dt class="sr-only">Fecha</dt>
+              <dd>
+                <span class="meta-icon" aria-hidden="true">📅</span>
+                <span class="meta-text">{{ formatDate(event.start_at) }}</span>
+              </dd>
+            </div>
+            <div class="card-meta-item">
+              <dt class="sr-only">Hora</dt>
+              <dd>
+                <span class="meta-icon" aria-hidden="true">🕙</span>
+                <span class="meta-text">{{ formatTime(event.start_at) }}</span>
+              </dd>
+            </div>
+            <div class="card-meta-item" *ngIf="!isFull(event)">
+              <dt class="sr-only">Plazas</dt>
+              <dd>
+                <span class="meta-icon" aria-hidden="true">👥</span>
+                <span class="meta-text"
+                  [class.slots--urgent]="isAlmostFull(event)"
+                >
+                  {{ getAvailableSlots(event) }}
+                  {{ getAvailableSlots(event) === 1 ? 'plaza disponible' : 'plazas disponibles' }}
+                </span>
+              </dd>
+            </div>
+            <div class="card-meta-item" *ngIf="event.location">
+              <dt class="sr-only">Ubicación</dt>
+              <dd>
+                <span class="meta-icon" aria-hidden="true">📍</span>
+                <span class="meta-text">{{ event.location }}</span>
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- CTA -->
+        <div class="card-footer">
+          <button
+            type="button"
+            class="card-cta"
+            [class.card-cta--secondary]="isFull(event)"
+            (click)="openModal(event)"
+          >
+            {{ getCtaLabel(event) }}
+          </button>
+        </div>
+
+      </article>
+    </div>
+
+  </div>
+</section>
+
+<!-- Modal -->
+<app-event-registration-modal
+  *ngIf="selectedEvent"
+  [event]="selectedEvent"
+  (closed)="closeModal()"
+  (registered)="onRegistered($event)"
+/>

@@ -1,0 +1,350 @@
+/* ── Wrapper ──────────────────────────────────────────────────────────────── */
+
+.pass-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0 8px;
+  animation: passReveal 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes passReveal {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── Tarjeta ──────────────────────────────────────────────────────────────── */
+
+.pass-card {
+  position: relative;
+  width: 100%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(
+    148deg,
+    rgba(255, 248, 252, 1) 0%,
+    rgba(243, 236, 255, 1) 100%
+  );
+  border: 1px solid rgba(241, 216, 230, 0.9);
+  box-shadow:
+    0 2px 0 rgba(255, 79, 163, 0.08),
+    0 12px 32px rgba(31, 27, 45, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+}
+
+/* ── Orbs decorativos de fondo ───────────────────────────────────────────── */
+
+.pass-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pass-bg-orb--a {
+  width: 160px;
+  height: 160px;
+  top: -60px;
+  right: -40px;
+  background: radial-gradient(circle, rgba(123, 77, 255, 0.1) 0%, transparent 70%);
+}
+
+.pass-bg-orb--b {
+  width: 120px;
+  height: 120px;
+  bottom: 20px;
+  left: -30px;
+  background: radial-gradient(circle, rgba(255, 79, 163, 0.1) 0%, transparent 70%);
+}
+
+/* ── Cabecera ────────────────────────────────────────────────────────────── */
+
+.pass-header {
+  position: relative;
+  z-index: 1;
+  padding: 20px 20px 16px;
+}
+
+.pass-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.pass-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.pass-brand-name {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: linear-gradient(120deg, #ff4fa3, #7b4dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pass-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pass-status-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(72, 199, 116, 0.15), rgba(72, 199, 116, 0.08));
+  border: 2px solid rgba(72, 199, 116, 0.4);
+  color: #1a7a47;
+  font-size: 18px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  animation: iconPop 0.4s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes iconPop {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.pass-status-title {
+  margin: 0 0 2px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #1f1b2d;
+  line-height: 1.2;
+}
+
+.pass-status-sub {
+  margin: 0;
+  font-size: 12.5px;
+  color: #7a7090;
+  line-height: 1.4;
+}
+
+/* ── Info del evento ─────────────────────────────────────────────────────── */
+
+.pass-event-block {
+  position: relative;
+  z-index: 1;
+  padding: 0 20px 18px;
+  display: grid;
+  gap: 6px;
+}
+
+.pass-event-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f1b2d;
+  line-height: 1.3;
+}
+
+.pass-event-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pass-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #574f6b;
+}
+
+.pass-meta-cap {
+  text-transform: capitalize;
+}
+
+.pass-meta-sep {
+  color: rgba(123, 77, 255, 0.35);
+  font-size: 13px;
+}
+
+.pass-attendee {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #7b4dff;
+  font-weight: 600;
+}
+
+/* ── Tear separator ──────────────────────────────────────────────────────── */
+
+.pass-tear {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 0;
+  margin: 0 -1px;
+  z-index: 2;
+}
+
+.pass-tear-line {
+  flex: 1;
+  border-top: 1.5px dashed rgba(123, 77, 255, 0.2);
+  margin: 0 12px;
+}
+
+.pass-tear-notch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--modal-bg, #fff);
+  border: 1px solid rgba(241, 216, 230, 0.86);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
+}
+
+/* ── Sección del código ──────────────────────────────────────────────────── */
+
+.pass-code-section {
+  position: relative;
+  z-index: 1;
+  padding: 22px 20px 20px;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+
+.pass-code-label {
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9090a8;
+}
+
+.pass-code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1.5px solid rgba(123, 77, 255, 0.2);
+  border-radius: 14px;
+  padding: 12px 18px;
+  box-shadow:
+    0 0 0 4px rgba(123, 77, 255, 0.05),
+    0 4px 14px rgba(31, 27, 45, 0.07);
+}
+
+.pass-code {
+  font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #1f1b2d;
+  user-select: all;
+}
+
+.pass-copy-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(123, 77, 255, 0.2);
+  border-radius: 8px;
+  background: rgba(123, 77, 255, 0.06);
+  color: #7b4dff;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  transition: background 0.14s, transform 0.14s;
+  flex-shrink: 0;
+}
+
+.pass-copy-btn:hover {
+  background: rgba(123, 77, 255, 0.12);
+  transform: scale(1.06);
+}
+
+.pass-copy-btn--done {
+  background: rgba(72, 199, 116, 0.12);
+  border-color: rgba(72, 199, 116, 0.35);
+  color: #1a7a47;
+}
+
+.pass-code-hint {
+  margin: 0;
+  font-size: 12px;
+  color: #9090a8;
+  line-height: 1.5;
+}
+
+.pass-copied-msg {
+  margin: 0;
+  font-size: 11.5px;
+  color: #1a7a47;
+  font-weight: 600;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── CTAs ────────────────────────────────────────────────────────────────── */
+
+.pass-actions {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+}
+
+.pass-cta {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 20px;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.pass-cta--wa {
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+}
+
+.pass-cta--wa:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 400px) {
+  .pass-code {
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+  }
+
+  .pass-header,
+  .pass-event-block,
+  .pass-code-section {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

@@ -12,6 +12,7 @@
     <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">Tarifas</button>
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
+    <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -167,6 +168,91 @@
     </div>
 
     <p class="status" *ngIf="!blogLoading && !blogPosts.length && !blogError">No hay posts todavía.</p>
+  </ng-container>
+
+  <!-- ══════════════════════════════ CLASES ════════════════════════════════ -->
+  <ng-container *ngIf="seccion === 'clases'">
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filtro de eventos">
+        <button
+          type="button"
+          *ngFor="let tab of eventosFiltroTabs"
+          [class.active]="filtroEventos === tab.value"
+          (click)="setFiltroEventos(tab.value)"
+        >
+          {{ tab.label }}
+        </button>
+      </div>
+      <button type="button" class="btn-primary" (click)="openEventoCreateModal()" [disabled]="eventosSaving || !!eventosDeletingId">
+        Nuevo evento
+      </button>
+    </div>
+
+    <p class="status error" *ngIf="eventosError">{{ eventosError }}</p>
+    <p class="status message" *ngIf="eventosMessage">{{ eventosMessage }}</p>
+    <p class="status" *ngIf="eventosLoading && !eventos.length">Cargando eventos...</p>
+
+    <div class="table-wrap" *ngIf="eventosFiltrados.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Título</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Precio</th>
+            <th>Plazas</th>
+            <th>Estado</th>
+            <th>Home</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let evento of eventosFiltrados">
+            <td><strong>{{ evento.title }}</strong><br><span style="font-size:12px;color:#7a7090">{{ eventoCategoryLabels[evento.category] }}</span></td>
+            <td style="white-space:nowrap;font-size:13px">{{ evento.start_at | date:'dd/MM/yy HH:mm' }}</td>
+            <td>
+              <span class="ev-badge" [class.ev-badge--free]="evento.pricing_type === 'free'" [class.ev-badge--paid]="evento.pricing_type === 'paid'">
+                {{ evento.pricing_type === 'free' ? 'Gratis' : 'Pago' }}
+              </span>
+            </td>
+            <td>{{ evento.pricing_type === 'paid' ? (evento.price + '€') : '—' }}</td>
+            <td style="white-space:nowrap;font-size:13px">
+              {{ evento.reserved_slots }}/{{ evento.total_slots }}
+              <span style="color:#9090a0"> ({{ getEventoAvailableSlots(evento) }} libre{{ getEventoAvailableSlots(evento) !== 1 ? 's' : '' }})</span>
+            </td>
+            <td>
+              <span class="ev-status" [class.ev-status--active]="evento.status === 'active'" [class.ev-status--full]="evento.status === 'completed'">
+                {{ eventoStatusLabels[evento.status] }}
+              </span>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="evento.highlight_on_home" [disabled]="eventosSaving || !!eventosDeletingId"
+                  (change)="saveEvento_toggleHome(evento, $event)" />
+                <span></span>
+              </label>
+            </td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="evento.is_active" (change)="toggleEventoActivo(evento, $event)" [disabled]="eventosSaving || !!eventosDeletingId" />
+                <span></span>
+              </label>
+            </td>
+            <td class="actions">
+              <button type="button" class="btn-ghost btn-sm" (click)="openRegistrosModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Inscritos</button>
+              <button type="button" class="btn-ghost btn-sm" (click)="openEventoEditModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Editar</button>
+              <button type="button" class="btn-ghost btn-sm" (click)="duplicateEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Duplicar</button>
+              <button type="button" class="btn-danger btn-sm" (click)="deleteEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">
+                {{ eventosDeletingId === evento.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="status" *ngIf="!eventosLoading && !eventosFiltrados.length && !eventosError">No hay eventos para este filtro.</p>
   </ng-container>
 </section>
 
@@ -383,6 +469,427 @@
     </form>
   </section>
 </div>
+
+<!-- ══════════════ Modal evento ════════════════ -->
+<div class="modal-overlay" *ngIf="isEventoModalOpen" (click)="closeEventoModal()">
+  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
+    <h2>{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
+
+    <form [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form">
+
+      <!-- Título + slug -->
+      <div class="slug-row">
+        <label style="flex:1">
+          Título *
+          <input type="text" formControlName="title" placeholder="Pilates terapéutico" />
+        </label>
+      </div>
+      <div class="slug-row">
+        <label style="flex:1">
+          Slug (URL)
+          <input type="text" formControlName="slug" placeholder="pilates-terapeutico" />
+        </label>
+        <button type="button" class="btn-ghost btn-sm" (click)="generateEventoSlug()" style="margin-top:22px">Auto</button>
+      </div>
+
+      <!-- Descripción corta -->
+      <label>
+        Descripción corta *
+        <input type="text" formControlName="short_description" placeholder="Descripción visible en la card de la home" />
+      </label>
+
+      <!-- Descripción larga -->
+      <label>
+        Descripción completa
+        <textarea rows="3" formControlName="long_description" placeholder="Descripción detallada del evento (opcional)"></textarea>
+      </label>
+
+      <!-- Categoría + modalidad -->
+      <div class="grid-two">
+        <label>
+          Categoría *
+          <select formControlName="category">
+            <option value="pilates">Pilates</option>
+            <option value="fisioterapia">Fisioterapia</option>
+            <option value="taller">Taller</option>
+            <option value="evento_especial">Evento especial</option>
+            <option value="otro">Otro</option>
+          </select>
+        </label>
+
+        <label>
+          Modalidad *
+          <select formControlName="pricing_type">
+            <option value="free">Gratis</option>
+            <option value="paid">De pago</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Precio (solo pago) -->
+      <label *ngIf="isEventoPaidSelected">
+        Precio (€) *
+        <input type="number" formControlName="price" min="0" step="0.5" placeholder="12.00" />
+      </label>
+
+      <!-- Fecha inicio + fin -->
+      <div class="grid-two">
+        <label>
+          Fecha y hora de inicio *
+          <input type="datetime-local" formControlName="start_at" />
+        </label>
+        <label>
+          Fecha y hora de fin
+          <input type="datetime-local" formControlName="end_at" />
+        </label>
+      </div>
+
+      <!-- Plazas + duración -->
+      <div class="grid-two">
+        <label>
+          Plazas totales *
+          <input type="number" formControlName="total_slots" min="1" />
+        </label>
+        <label>
+          Duración (minutos)
+          <input type="number" formControlName="duration_minutes" min="1" placeholder="60" />
+        </label>
+      </div>
+
+      <!-- Ubicación + CTA -->
+      <div class="grid-two">
+        <label>
+          Ubicación
+          <input type="text" formControlName="location" placeholder="CBM Fisioterapia — Terrassa" />
+        </label>
+        <label>
+          Texto del botón CTA
+          <input type="text" formControlName="cta_label" placeholder="Reservar plaza" />
+        </label>
+      </div>
+
+      <!-- Imagen -->
+      <label>
+        URL de imagen
+        <input type="url" formControlName="image_url" placeholder="https://..." />
+      </label>
+
+      <!-- Reglas para gratuitos -->
+      <ng-container *ngIf="isEventoFreeSelected">
+        <div class="block-section">
+          <p class="block-section-title">Restricciones para eventos gratuitos</p>
+          <div class="grid-two">
+            <label>
+              Máx. eventos gratis por persona
+              <input type="number" formControlName="free_limit_per_person" min="1" />
+            </label>
+            <label>
+              Días de cooldown entre gratuitos
+              <input type="number" formControlName="free_cooldown_days" min="0" />
+            </label>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Estado + opciones -->
+      <label>
+        Estado
+        <select formControlName="status">
+          <option value="active">Activo</option>
+          <option value="inactive">Inactivo</option>
+          <option value="completed">Completo</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+      </label>
+
+      <div class="inline-checks">
+        <label class="inline-check">
+          <input type="checkbox" formControlName="is_active" />
+          <span>Activo</span>
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="is_visible" />
+          <span>Visible en web</span>
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="highlight_on_home" />
+          <span>Destacar en home</span>
+        </label>
+        <label class="inline-check">
+          <input type="checkbox" formControlName="is_new_clients_only" />
+          <span>Solo nuevos clientes</span>
+        </label>
+      </div>
+
+      <p class="status error" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="closeEventoModal()" [disabled]="eventosSaving">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="eventosSaving">
+          {{ eventosSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+
+<!-- ══════════════ Modal registros ════════════════ -->
+<div class="modal-overlay" *ngIf="isRegistrosModalOpen" (click)="closeRegistrosModal()">
+  <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
+
+    <div class="reg-modal-header">
+      <div>
+        <h2 class="reg-modal-title">Inscritos</h2>
+        <p class="reg-modal-subtitle">{{ eventoRegistrosTitle }}</p>
+      </div>
+      <div class="reg-modal-counter" *ngIf="eventoRegistros.length">
+        {{ eventoRegistros.length }} {{ eventoRegistros.length === 1 ? 'inscripción' : 'inscripciones' }}
+      </div>
+    </div>
+
+    <p class="status message reg-inline-msg" *ngIf="registrosMessage">{{ registrosMessage }}</p>
+
+    <p class="status" *ngIf="registrosLoading">Cargando inscripciones...</p>
+
+    <div class="table-wrap" *ngIf="!registrosLoading && eventoRegistros.length" style="max-height:440px;overflow-y:auto">
+      <table class="reg-table">
+        <thead>
+          <tr>
+            <th>Persona</th>
+            <th>Contacto</th>
+            <th>Estado</th>
+            <th>Código</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let reg of eventoRegistros"
+            [class.reg-row--updating]="updatingRegistrationId === reg.id"
+          >
+            <!-- Nombre + nota -->
+            <td>
+              <span class="reg-name">{{ reg.full_name }}</span>
+              <span class="reg-note" *ngIf="reg.notes">{{ reg.notes }}</span>
+            </td>
+
+            <!-- Email + teléfono -->
+            <td>
+              <span class="reg-contact">{{ reg.email }}</span>
+              <span class="reg-contact reg-contact--muted">{{ reg.phone }}</span>
+            </td>
+
+            <!-- Badge de estado -->
+            <td>
+              <span
+                class="reg-badge"
+                [class.reg-badge--confirmed]="reg.status === 'confirmed'"
+                [class.reg-badge--rejected]="reg.status === 'rejected'"
+                [class.reg-badge--cancelled]="reg.status === 'cancelled'"
+              >
+                {{ registroStatusLabels[reg.status] }}
+              </span>
+              <span class="reg-rejection-reason" *ngIf="reg.rejection_reason">
+                {{ reg.rejection_reason }}
+              </span>
+            </td>
+
+            <!-- Código de acceso + check-in -->
+            <td>
+              <span class="reg-code" *ngIf="reg.access_code">{{ reg.access_code }}</span>
+              <span class="reg-code reg-code--empty" *ngIf="!reg.access_code">—</span>
+              <button
+                *ngIf="reg.status === 'confirmed' && !reg.checked_in_at"
+                type="button"
+                class="reg-btn reg-btn--checkin"
+                (click)="checkInRegistro(reg)"
+                [disabled]="!!updatingRegistrationId"
+              >Check-in</button>
+              <span class="reg-checkedin" *ngIf="reg.checked_in_at">✓ Entró</span>
+            </td>
+
+            <!-- Fecha -->
+            <td class="reg-date">{{ reg.created_at | date:'dd/MM/yy · HH:mm' }}</td>
+
+            <!-- Acciones de transición -->
+            <td>
+              <div class="reg-actions" [class.reg-actions--busy]="updatingRegistrationId === reg.id">
+
+                <!-- confirmed: cancelar -->
+                <ng-container *ngIf="reg.status === 'confirmed'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--cancel"
+                    (click)="updateRegistroStatus(reg, 'cancelled')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Cancelar inscripción confirmada"
+                  >Cancelar</button>
+                </ng-container>
+
+                <!-- rejected: confirmar (override admin) o cancelar -->
+                <ng-container *ngIf="reg.status === 'rejected'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--confirm"
+                    (click)="updateRegistroStatus(reg, 'confirmed')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Confirmar manualmente"
+                  >Confirmar</button>
+                </ng-container>
+
+                <!-- cancelled: restaurar -->
+                <ng-container *ngIf="reg.status === 'cancelled'">
+                  <button
+                    type="button"
+                    class="reg-btn reg-btn--confirm"
+                    (click)="updateRegistroStatus(reg, 'confirmed')"
+                    [disabled]="!!updatingRegistrationId"
+                    title="Restaurar inscripción"
+                  >Restaurar</button>
+                </ng-container>
+
+                <!-- Spinner por fila -->
+                <span class="reg-spinner" *ngIf="updatingRegistrationId === reg.id" aria-label="Actualizando...">
+                  <span class="reg-spinner-dot"></span>
+                  <span class="reg-spinner-dot"></span>
+                  <span class="reg-spinner-dot"></span>
+                </span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="status" *ngIf="!registrosLoading && !eventoRegistros.length">No hay inscripciones todavía.</p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeRegistrosModal()">Cerrar</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════════════════ CHECK-IN ══════════════════════════════ -->
+<ng-container *ngIf="seccion === 'checkin'">
+  <div class="checkin-wrap">
+    <div class="checkin-search-block">
+      <h2 class="checkin-title">Validar acceso</h2>
+      <p class="checkin-subtitle">Introduce el código del pase para confirmar la asistencia</p>
+
+      <div class="checkin-input-row">
+        <input
+          type="text"
+          class="checkin-input"
+          [(ngModel)]="checkinCode"
+          placeholder="CBM-A7F3K2"
+          (keydown.enter)="searchCheckin()"
+          maxlength="12"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          class="btn-primary checkin-btn"
+          (click)="searchCheckin()"
+          [disabled]="checkinLoading || !checkinCode.trim()"
+        >
+          {{ checkinLoading ? 'Buscando...' : 'Buscar' }}
+        </button>
+        <button
+          type="button"
+          class="btn-ghost checkin-btn"
+          (click)="resetCheckin()"
+          *ngIf="checkinResult || checkinError"
+          title="Nueva búsqueda"
+        >↺</button>
+      </div>
+
+      <p class="checkin-error" *ngIf="checkinError && !checkinResult">{{ checkinError }}</p>
+    </div>
+
+    <!-- Tarjeta de resultado -->
+    <div class="checkin-card" *ngIf="checkinResult">
+
+      <!-- Estado visual en cabecera -->
+      <div class="checkin-card-header"
+        [class.checkin-card-header--ok]="checkinResult.status === 'confirmed' && !checkinResult.checked_in_at"
+        [class.checkin-card-header--done]="!!checkinResult.checked_in_at"
+        [class.checkin-card-header--warn]="checkinResult.status !== 'confirmed'"
+      >
+        <span class="checkin-status-icon">
+          <ng-container *ngIf="checkinResult.checked_in_at">✓</ng-container>
+          <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'">◎</ng-container>
+          <ng-container *ngIf="checkinResult.status !== 'confirmed'">✕</ng-container>
+        </span>
+        <div>
+          <p class="checkin-status-title">
+            <ng-container *ngIf="checkinResult.checked_in_at">Asistencia ya registrada</ng-container>
+            <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'">Inscripción válida</ng-container>
+            <ng-container *ngIf="checkinResult.status === 'cancelled'">Inscripción cancelada</ng-container>
+            <ng-container *ngIf="checkinResult.status === 'rejected'">Inscripción rechazada</ng-container>
+          </p>
+          <p class="checkin-code-display">{{ checkinResult.access_code }}</p>
+        </div>
+      </div>
+
+      <!-- Datos -->
+      <div class="checkin-card-body">
+        <div class="checkin-data-grid">
+          <div class="checkin-data-item">
+            <span class="checkin-data-label">Nombre</span>
+            <span class="checkin-data-value">{{ checkinResult.full_name }}</span>
+          </div>
+          <div class="checkin-data-item">
+            <span class="checkin-data-label">Email</span>
+            <span class="checkin-data-value">{{ checkinResult.email }}</span>
+          </div>
+          <div class="checkin-data-item">
+            <span class="checkin-data-label">Teléfono</span>
+            <span class="checkin-data-value">{{ checkinResult.phone }}</span>
+          </div>
+          <div class="checkin-data-item" *ngIf="checkinResult.events">
+            <span class="checkin-data-label">Evento</span>
+            <span class="checkin-data-value">{{ checkinResult.events?.title }}</span>
+          </div>
+          <div class="checkin-data-item" *ngIf="checkinResult.events?.start_at">
+            <span class="checkin-data-label">Fecha</span>
+            <span class="checkin-data-value">{{ checkinResult.events?.start_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+          </div>
+          <div class="checkin-data-item" *ngIf="checkinResult.checked_in_at">
+            <span class="checkin-data-label">Check-in</span>
+            <span class="checkin-data-value checkin-data-value--green">{{ checkinResult.checked_in_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+          </div>
+        </div>
+
+        <!-- Acción principal -->
+        <div class="checkin-action">
+          <button
+            *ngIf="checkinResult.status === 'confirmed' && !checkinResult.checked_in_at"
+            type="button"
+            class="btn-primary checkin-confirm-btn"
+            (click)="doCheckin()"
+            [disabled]="checkinUpdating"
+          >
+            {{ checkinUpdating ? 'Registrando...' : '✓ Marcar asistencia' }}
+          </button>
+
+          <p class="checkin-done-msg" *ngIf="checkinResult.checked_in_at">
+            ✓ Asistencia confirmada
+          </p>
+
+          <p class="checkin-blocked-msg"
+            *ngIf="checkinResult.status === 'cancelled' || checkinResult.status === 'rejected'">
+            No se puede registrar asistencia en una inscripción {{ registroStatusLabels[checkinResult.status] | lowercase }}.
+          </p>
+
+          <p class="checkin-error" *ngIf="checkinError">{{ checkinError }}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ng-container>
 
 <div class="busy-overlay" *ngIf="showInitialLoader" aria-live="polite" aria-busy="true">
   <div class="busy-content">
