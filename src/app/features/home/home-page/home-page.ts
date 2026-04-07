@@ -77,6 +77,16 @@ export class HomePage implements OnInit, OnDestroy {
     }, 5000);
   }
 
+  scrollToReviews(): void {
+    const target = document.getElementById('resenas-google');
+    if (!target) return;
+
+    const header = document.querySelector('.header') as HTMLElement | null;
+    const offset = header ? header.offsetHeight : 80;
+    const top = target.getBoundingClientRect().top + window.scrollY - offset - 16;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+
   private stopHeroAutoplay(): void {
     if (!this.autoplayId) {
       return;

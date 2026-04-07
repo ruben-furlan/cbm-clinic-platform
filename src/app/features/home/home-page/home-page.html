@@ -34,7 +34,14 @@
         <a class="btn-secondary" href="#servicios">Ver tratamientos</a>
       </div>
 
-      <div class="hero-trust" aria-label="Valoración en Google">
+      <div
+        class="hero-trust"
+        role="button"
+        tabindex="0"
+        aria-label="Ver opiniones de nuestros pacientes en Google"
+        (click)="scrollToReviews()"
+        (keydown.enter)="scrollToReviews()"
+      >
         <div class="google-badge">
           <svg class="google-badge__logo" viewBox="0 0 24 24" width="16" height="16" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

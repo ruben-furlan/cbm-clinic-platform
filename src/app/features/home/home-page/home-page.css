@@ -95,6 +95,8 @@
 .hero-trust{
   margin-top: 18px;
   margin-bottom: 0;
+  cursor: pointer;
+  display: inline-block;
 }
 
 /* ── Google badge ──────────────────────────────────────── */
@@ -107,6 +109,17 @@
   background: #ffffff;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.hero-trust:hover .google-badge{
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
+  transform: translateY(-1px);
+}
+
+.hero-trust:focus-visible .google-badge{
+  outline: 2px solid #7b4dff;
+  outline-offset: 3px;
 }
 
 .google-badge__logo{
