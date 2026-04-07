@@ -170,7 +170,14 @@ export class RegaloComponent implements OnInit {
       this.confirmado = true;
 
     } catch (err) {
-      console.error('Error guardando solicitud bono:', err);
+      const e = err as Record<string, unknown>;
+      console.error('=== ERROR createSolicitudBono ===');
+      console.error('Objeto completo:', err);
+      console.error('code:   ', e['code']);
+      console.error('message:', e['message']);
+      console.error('details:', e['details']);
+      console.error('hint:   ', e['hint']);
+      console.error('=================================');
       this.errorGuardando = true;
     } finally {
       this.guardando = false;
