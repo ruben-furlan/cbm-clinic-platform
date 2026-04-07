@@ -60,21 +60,29 @@ export class RegaloComponent implements OnInit {
     this.cargando = true;
     this.servicios = [];
 
+    // 1) Leer configuración — si falla aquí, mostramos "Muy pronto"
     try {
       const valor = await this.withTimeout(this.configuracionService.getConfiguracion('bonos_regalo_activo'), null);
       console.log('bonos_regalo_activo valor:', valor, '| tipo:', typeof valor);
       this.bonosActivo = valor === 'true';
-
-      if (this.bonosActivo) {
-        this.servicios = await this.withTimeout(this.serviciosRegaloService.getServiciosRegalo(), [] as ServicioRegalo[]);
-      }
     } catch (err) {
-      console.error('Error cargando config bonos:', err);
+      console.error('Error leyendo config bonos:', err);
       this.bonosActivo = false;
-      this.servicios = [];
-    } finally {
       this.cargando = false;
+      return;
     }
+
+    // 2) Leer servicios — si falla (ej: tabla no creada aún) no bloquea la página
+    if (this.bonosActivo) {
+      try {
+        this.servicios = await this.withTimeout(this.serviciosRegaloService.getServiciosRegalo(), [] as ServicioRegalo[]);
+      } catch (err) {
+        console.error('Error cargando servicios regalo:', err);
+        this.servicios = [];
+      }
+    }
+
+    this.cargando = false;
   }
 
   setTab(tab: TabRegalo): void {
