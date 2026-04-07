@@ -20,7 +20,6 @@ const REQUEST_TIMEOUT_MS = 10000;
 })
 export class RegaloComponent implements OnInit {
   bonosActivo = false;
-  loadingConfig = true;
   tab: TabRegalo = 'regalar';
   tarifas: Tarifa[] = [];
   tarifaSeleccionada: Tarifa | null = null;
@@ -56,6 +55,9 @@ export class RegaloComponent implements OnInit {
     ]);
   }
   async ngOnInit(): Promise<void> {
+    this.bonosActivo = false;
+    this.tarifas = [];
+
     try {
       this.bonosActivo = await this.withTimeout(this.configuracionService.isBonosRegaloActivo(), false);
 
@@ -65,8 +67,6 @@ export class RegaloComponent implements OnInit {
     } catch {
       this.bonosActivo = false;
       this.tarifas = [];
-    } finally {
-      this.loadingConfig = false;
     }
   }
 

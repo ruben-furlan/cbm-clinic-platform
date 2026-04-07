@@ -1,4 +1,4 @@
-<section class="regalo-page section" *ngIf="!loadingConfig; else loadingTpl">
+<section class="regalo-page section">
   <div class="container">
     <ng-container *ngIf="bonosActivo; else proximamenteTpl">
       <header class="regalo-header">
@@ -87,15 +87,6 @@
     <div class="actions">
       <button class="btn-primary" (click)="contactarWhatsApp()">WhatsApp</button>
       <a class="btn-secondary" routerLink="/">← Volver a inicio</a>
-    </div>
-  </section>
-</ng-template>
-
-
-<ng-template #loadingTpl>
-  <section class="regalo-loading section">
-    <div class="container">
-      <p>Cargando experiencia de bonos regalo... 💜</p>
     </div>
   </section>
 </ng-template>
