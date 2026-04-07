@@ -65,17 +65,37 @@ export interface CreateRegistrationPayload {
   source?: string;
 }
 
+// Columnas necesarias para la home (excluye slug, long_description, image_url,
+// end_at, duration_minutes, currency, created_at, updated_at).
+const HOME_EVENT_FIELDS = [
+  'id', 'title', 'short_description', 'category',
+  'pricing_type', 'price', 'start_at',
+  'total_slots', 'reserved_slots',
+  'location', 'cta_label', 'highlight_on_home',
+  'is_active', 'is_visible', 'is_new_clients_only',
+  'free_limit_per_person', 'free_cooldown_days', 'status',
+].join(', ');
+
+const HOME_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+
 // ── Service ───────────────────────────────────────────────────────────────────
 
 @Injectable({ providedIn: 'root' })
 export class EventsService {
+  private _homeCache: CbmEvent[] | null = null;
+  private _homeCacheTs = 0;
+
   // ── Public (home) ─────────────────────────────────────────────────────────
 
   async getUpcomingEvents(limit = 6): Promise<CbmEvent[]> {
+    if (this._homeCache && Date.now() - this._homeCacheTs < HOME_CACHE_TTL_MS) {
+      return this._homeCache;
+    }
+
     const now = new Date().toISOString();
     const { data, error } = await supabase
       .from('events')
-      .select('*')
+      .select(HOME_EVENT_FIELDS)
       .eq('is_active', true)
       .eq('is_visible', true)
       .in('status', ['active', 'completed'])
@@ -85,7 +105,15 @@ export class EventsService {
       .limit(limit);
 
     if (error) throw error;
-    return (data ?? []) as CbmEvent[];
+
+    this._homeCache = (data ?? []) as CbmEvent[];
+    this._homeCacheTs = Date.now();
+    return this._homeCache;
+  }
+
+  private invalidateHomeCache(): void {
+    this._homeCache = null;
+    this._homeCacheTs = 0;
   }
 
   // ── Admin ─────────────────────────────────────────────────────────────────
@@ -110,6 +138,7 @@ export class EventsService {
       .single();
 
     if (error) throw error;
+    this.invalidateHomeCache();
     return data as CbmEvent;
   }
 
@@ -125,6 +154,7 @@ export class EventsService {
       .single();
 
     if (error) throw error;
+    this.invalidateHomeCache();
     return data as CbmEvent;
   }
 
@@ -143,6 +173,7 @@ export class EventsService {
   async deleteEvent(id: string): Promise<void> {
     const { error } = await supabase.from('events').delete().eq('id', id);
     if (error) throw error;
+    this.invalidateHomeCache();
   }
 
   async toggleActive(id: string, value: boolean): Promise<CbmEvent> {
