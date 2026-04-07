@@ -2,11 +2,76 @@
   <div class="container">
     <ng-container *ngIf="!cargando; else loaderTpl">
       <ng-container *ngIf="bonosActivo; else proximamenteTpl">
+
       <header class="regalo-header">
         <p class="eyebrow">BONOS REGALO · CBM FISIOTERAPIA</p>
         <h1>Regala bienestar 💜</h1>
         <p>El regalo más bonito es cuidar a alguien que quieres. Dale la experiencia de sentirse mejor.</p>
       </header>
+
+      <!-- ── PANTALLA DE CONFIRMACIÓN ──────────────────────────────── -->
+      <div class="confirmar-section" *ngIf="confirmado && datosConfirmacion">
+
+        <div class="confirmar-check">✅</div>
+
+        <h2 class="confirmar-titulo">¡Tu regalo está reservado! 🎁</h2>
+        <p class="confirmar-sub">
+          Hemos recibido tu solicitud con mucho cariño.
+          En menos de 2 horas nos ponemos en contacto
+          contigo para confirmar el pago y enviarte el código regalo.
+        </p>
+
+        <div class="resumen-card">
+          <p class="resumen-titulo">RESUMEN DE TU RESERVA</p>
+          <div class="resumen-row">
+            <span class="resumen-icon">🎁</span>
+            <span>{{ datosConfirmacion.nombre_emotivo }} — {{ datosConfirmacion.nombre_servicio }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">👤</span>
+            <span>{{ datosConfirmacion.nombre_comprador }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">📧</span>
+            <span>{{ datosConfirmacion.email_comprador }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">📱</span>
+            <span>{{ datosConfirmacion.telefono }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">💳</span>
+            <span>{{ datosConfirmacion.metodo_pago_label }}</span>
+          </div>
+          <div class="resumen-row" *ngIf="datosConfirmacion.tiene_mensaje">
+            <span class="resumen-icon">💌</span>
+            <span>Con mensaje personal incluido</span>
+          </div>
+        </div>
+
+        <p class="confirmar-contacto">
+          Te escribiremos a <strong>{{ datosConfirmacion.email_comprador }}</strong>
+          o al <strong>{{ datosConfirmacion.telefono }}</strong> para continuar con el proceso 💜
+        </p>
+
+        <hr class="confirmar-sep" />
+
+        <p class="confirmar-wa-hint">¿Prefieres contactarnos tú directamente?</p>
+
+        <a
+          class="btn-wa-fallback"
+          [href]="whatsAppConfirmacionUrl()"
+          target="_blank"
+          rel="noopener"
+        >💬 Escríbenos por WhatsApp</a>
+
+        <a class="btn-volver" routerLink="/">← Volver al inicio</a>
+
+      </div>
+      <!-- ── FIN CONFIRMACIÓN ──────────────────────────────────────── -->
+
+      <!-- ── FORMULARIO DE COMPRA ──────────────────────────────────── -->
+      <ng-container *ngIf="!confirmado">
 
         <!-- PASO 1 -->
         <div class="step-header">
@@ -50,21 +115,21 @@
             <span class="step-num">2</span>
             <div>
               <h2 class="step-title">Tus datos de contacto</h2>
-              <p class="step-sub">Para que podamos enviarte el código regalo</p>
+              <p class="step-sub">Para que podamos confirmar el pago y enviarte el código regalo</p>
             </div>
           </div>
 
-          <form class="gift-form" [formGroup]="form" (ngSubmit)="continuarWhatsApp()">
+          <form class="gift-form" [formGroup]="form" (ngSubmit)="reservarRegalo()">
 
             <div class="form-field">
               <label class="field-label">Tu nombre <span class="required">*</span></label>
               <input
                 type="text"
                 formControlName="nombre_comprador"
-                placeholder="¿Cómo te llamamos a ti?"
+                placeholder="¿Cómo te llamamos?"
                 [class.input-error]="form.controls.nombre_comprador.invalid && form.controls.nombre_comprador.touched"
               />
-              <p class="field-note">Los datos son tuyos, no de quien recibe el regalo</p>
+              <p class="field-note">Tus datos, no los de quien recibe el regalo</p>
               <p class="field-error" *ngIf="form.controls.nombre_comprador.invalid && form.controls.nombre_comprador.touched">
                 Introduce tu nombre para continuar
               </p>
@@ -78,9 +143,22 @@
                 placeholder="Tu correo electrónico"
                 [class.input-error]="form.controls.email_comprador.invalid && form.controls.email_comprador.touched"
               />
-              <p class="field-note">Aquí te confirmaremos el pago y te enviaremos el código</p>
               <p class="field-error" *ngIf="form.controls.email_comprador.invalid && form.controls.email_comprador.touched">
                 Introduce un email válido para continuar
+              </p>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Tu teléfono <span class="required">*</span></label>
+              <input
+                type="tel"
+                formControlName="telefono"
+                placeholder="666 000 000"
+                [class.input-error]="form.controls.telefono.invalid && form.controls.telefono.touched"
+              />
+              <p class="field-note">Te contactaremos por aquí para confirmar</p>
+              <p class="field-error" *ngIf="form.controls.telefono.invalid && form.controls.telefono.touched">
+                Introduce un teléfono válido para continuar
               </p>
             </div>
 
@@ -112,16 +190,30 @@
               <p class="counter">{{ form.controls.mensaje_personal.value.length }}/300</p>
             </div>
 
+            <!-- Error al guardar -->
+            <div class="error-guardar" *ngIf="errorGuardando">
+              <p>Hubo un problema al guardar tu reserva.<br>Por favor escríbenos directamente por WhatsApp.</p>
+              <a class="btn-wa-inline" [href]="whatsAppFallbackUrl()" target="_blank" rel="noopener">💬 Escríbenos por WhatsApp</a>
+            </div>
+
             <button
               type="submit"
-              class="btn-whatsapp"
-              [class.btn-whatsapp--disabled]="!formCompleto"
+              class="btn-reservar"
+              [class.btn-reservar--disabled]="guardando || !formCompleto"
+              [disabled]="guardando"
             >
-              💬 Continuar por WhatsApp
+              <span *ngIf="!guardando">Reservar mi regalo 💜</span>
+              <span *ngIf="guardando" class="btn-spinner-row">
+                <span class="btn-spinner"></span>
+                Guardando tu reserva...
+              </span>
             </button>
 
           </form>
         </div><!-- /form-section -->
+
+      </ng-container>
+      <!-- ── FIN FORMULARIO ────────────────────────────────────────── -->
 
     </ng-container><!-- /bonosActivo -->
     </ng-container><!-- /!cargando -->

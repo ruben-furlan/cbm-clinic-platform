@@ -13,7 +13,10 @@
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
     <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
-    <button type="button" [class.active]="seccion === 'bonos'" (click)="setSeccion('bonos')">🎁 Bonos regalo</button>
+    <button type="button" [class.active]="seccion === 'bonos'" (click)="setSeccion('bonos')">
+      🎁 Bonos regalo
+      <span class="tab-badge" *ngIf="bonosStats.pendientes > 0">{{ bonosStats.pendientes }}</span>
+    </button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -338,13 +341,14 @@
 
     <div class="table-wrap" *ngIf="bonosFiltrados.length">
       <table>
-        <thead><tr><th>Código</th><th>Servicio</th><th>Comprador</th><th>Email</th><th>Método pago</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+        <thead><tr><th>Código</th><th>Servicio</th><th>Comprador</th><th>Email</th><th>Teléfono</th><th>Método pago</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
         <tbody>
           <tr *ngFor="let bono of bonosFiltrados">
             <td>{{ bono.codigo }}</td>
             <td>{{ bono.nombre_servicio }}</td>
             <td>{{ bono.nombre_comprador }}</td>
             <td>{{ bono.email_comprador }}</td>
+            <td>{{ bono.telefono }}</td>
             <td>{{ bono.metodo_pago }}</td>
             <td>
               <select [value]="bono.estado" (change)="updateBonoEstado(bono, $event)">
@@ -1042,7 +1046,9 @@
   <section class="modal-card" (click)="$event.stopPropagation()" *ngIf="bonoDetalle">
     <h2>Detalle bono {{ bonoDetalle.codigo }}</h2>
     <p><strong>Servicio:</strong> {{ bonoDetalle.nombre_servicio }} — {{ bonoDetalle.precio }}€</p>
-    <p><strong>Comprador:</strong> {{ bonoDetalle.nombre_comprador }} ({{ bonoDetalle.email_comprador }})</p>
+    <p><strong>Comprador:</strong> {{ bonoDetalle.nombre_comprador }}</p>
+    <p><strong>Email:</strong> {{ bonoDetalle.email_comprador }}</p>
+    <p><strong>Teléfono:</strong> {{ bonoDetalle.telefono }}</p>
     <p><strong>Método:</strong> {{ bonoDetalle.metodo_pago }}</p>
     <p><strong>Estado:</strong> {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
     <p *ngIf="bonoDetalle.mensaje_personal" class="bono-msg">"{{ bonoDetalle.mensaje_personal }}"</p>

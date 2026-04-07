@@ -12,6 +12,7 @@ export interface BonoRegalo {
   precio: number;
   nombre_comprador: string;
   email_comprador: string;
+  telefono: string;
   mensaje_personal?: string | null;
   estado: BonoEstado;
   metodo_pago: BonoMetodoPago;
