@@ -15,7 +15,6 @@ import { CbmLoaderComponent } from '../../../shared/components/cbm-loader/cbm-lo
 export class EventsSectionComponent implements OnInit {
   events: CbmEvent[] = [];
   loading = true;
-  loadError = false;
   selectedEvent: CbmEvent | null = null;
 
   constructor(private readonly eventsService: EventsService) {}
@@ -24,7 +23,7 @@ export class EventsSectionComponent implements OnInit {
     try {
       this.events = await this.eventsService.getUpcomingEvents(6);
     } catch {
-      this.loadError = true;
+      this.events = [];
     } finally {
       this.loading = false;
     }
