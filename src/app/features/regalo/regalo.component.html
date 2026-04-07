@@ -1,6 +1,7 @@
 <section class="regalo-page section">
   <div class="container">
-    <ng-container *ngIf="bonosActivo; else proximamenteTpl">
+    <ng-container *ngIf="!cargando; else loaderTpl">
+      <ng-container *ngIf="bonosActivo; else proximamenteTpl">
       <header class="regalo-header">
         <p class="eyebrow">BONOS REGALO · CBM FISIOTERAPIA</p>
         <h1>Regala bienestar 💜</h1>
@@ -75,9 +76,17 @@
           <button class="btn-primary" (click)="reservarSesion()">💬 Reservar mi sesión</button>
         </div>
       </ng-container>
-    </ng-container>
+    </ng-container><!-- /bonosActivo -->
+    </ng-container><!-- /!cargando -->
   </div>
 </section>
+
+<ng-template #loaderTpl>
+  <div class="regalo-loader">
+    <img src="/favicon-192x192.png" alt="Cargando" class="loader-icon" />
+    <p>Cargando...</p>
+  </div>
+</ng-template>
 
 <ng-template #proximamenteTpl>
   <section class="proximamente">

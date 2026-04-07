@@ -27,4 +27,7 @@
 .actions { display:flex; gap:10px; justify-content:center; }
 @keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.07)} }
 @keyframes fadeIn { from{opacity:0}to{opacity:1} }
+.regalo-loader { text-align:center; padding:60px 20px; color:#7a7090; }
+.loader-icon { width:64px; height:64px; margin:0 auto 14px; display:block; animation:spin 1.2s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
 

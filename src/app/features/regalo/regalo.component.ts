@@ -20,6 +20,7 @@ const REQUEST_TIMEOUT_MS = 10000;
 })
 export class RegaloComponent implements OnInit {
   bonosActivo = false;
+  cargando = true;
   tab: TabRegalo = 'regalar';
   servicios: ServicioRegalo[] = [];
   servicioSeleccionado: ServicioRegalo | null = null;
@@ -56,17 +57,23 @@ export class RegaloComponent implements OnInit {
   }
   async ngOnInit(): Promise<void> {
     this.bonosActivo = false;
+    this.cargando = true;
     this.servicios = [];
 
     try {
-      this.bonosActivo = await this.withTimeout(this.configuracionService.isBonosRegaloActivo(), false);
+      const valor = await this.withTimeout(this.configuracionService.getConfiguracion('bonos_regalo_activo'), null);
+      console.log('bonos_regalo_activo valor:', valor, '| tipo:', typeof valor);
+      this.bonosActivo = valor === 'true';
 
       if (this.bonosActivo) {
         this.servicios = await this.withTimeout(this.serviciosRegaloService.getServiciosRegalo(), [] as ServicioRegalo[]);
       }
-    } catch {
+    } catch (err) {
+      console.error('Error cargando config bonos:', err);
       this.bonosActivo = false;
       this.servicios = [];
+    } finally {
+      this.cargando = false;
     }
   }
 
