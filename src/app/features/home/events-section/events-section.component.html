@@ -1,7 +1,55 @@
-<!-- ── Estado: cargando ──────────────────────────────────────────────────── -->
-<div class="events-loader-wrap" *ngIf="loading" aria-live="polite">
-  <cbm-loader />
-</div>
+<!-- ── Estado: cargando (skeleton) ──────────────────────────────────────── -->
+<section class="events-section section" *ngIf="loading" aria-hidden="true" aria-busy="true">
+  <div class="container">
+
+    <div class="skeleton-head">
+      <div class="sk-bone sk-eyebrow"></div>
+      <div class="sk-bone sk-h-line"></div>
+      <div class="sk-bone sk-h-line sk-h-line--short"></div>
+      <div class="sk-bone sk-sub-line"></div>
+    </div>
+
+    <div class="events-track">
+
+      <div class="event-card skeleton-card">
+        <div class="sk-bone sk-badge"></div>
+        <div class="card-body">
+          <div class="sk-bone sk-t1"></div>
+          <div class="sk-bone sk-t2"></div>
+          <div class="sk-bone sk-d1"></div>
+          <div class="sk-bone sk-d2"></div>
+          <div class="sk-meta-block">
+            <div class="sk-meta-row"><div class="sk-bone sk-dot"></div><div class="sk-bone sk-m-long"></div></div>
+            <div class="sk-meta-row"><div class="sk-bone sk-dot"></div><div class="sk-bone sk-m-short"></div></div>
+            <div class="sk-meta-row"><div class="sk-bone sk-dot"></div><div class="sk-bone sk-m-long"></div></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="sk-bone sk-cta"></div>
+        </div>
+      </div>
+
+      <div class="event-card skeleton-card skeleton-card--hide-mobile">
+        <div class="sk-bone sk-badge"></div>
+        <div class="card-body">
+          <div class="sk-bone sk-t1"></div>
+          <div class="sk-bone sk-t2"></div>
+          <div class="sk-bone sk-d1"></div>
+          <div class="sk-bone sk-d2"></div>
+          <div class="sk-meta-block">
+            <div class="sk-meta-row"><div class="sk-bone sk-dot"></div><div class="sk-bone sk-m-long"></div></div>
+            <div class="sk-meta-row"><div class="sk-bone sk-dot"></div><div class="sk-bone sk-m-short"></div></div>
+            <div class="sk-meta-row"><div class="sk-bone sk-dot"></div><div class="sk-bone sk-m-long"></div></div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="sk-bone sk-cta"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- ── Estado: con eventos ───────────────────────────────────────────────── -->
 <section class="events-section section" *ngIf="!loading && events.length">
