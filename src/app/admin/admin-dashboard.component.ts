@@ -1353,6 +1353,13 @@ export class AdminDashboardComponent implements OnInit {
     this.bonoDetalle = null;
   }
 
+  copiarLinkCanjear(): void {
+    void navigator.clipboard.writeText('https://cbmfisioterapia.com/canjear')
+      .then(() => { this.zone.run(() => { this.bonosMessage = 'Link copiado'; this.flushUiState(); }); })
+      .catch(() => { this.zone.run(() => { this.bonosMessage = 'No se pudo copiar'; this.flushUiState(); }); });
+    setTimeout(() => this.zone.run(() => { if (this.bonosMessage === 'Link copiado') { this.bonosMessage = ''; this.flushUiState(); } }), 3000);
+  }
+
   async deleteBono(bono: BonoRegalo): Promise<void> {
     if (!window.confirm(`¿Eliminar bono ${bono.codigo}?`)) return;
 

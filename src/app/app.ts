@@ -17,6 +17,7 @@ import { CanonicalService } from './core/seo/canonical.service';
 })
 export class App implements OnInit, OnDestroy {
   isDisplayRoute = false;
+  isCanjearRoute = false;
   showScrollTop = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
@@ -87,6 +88,9 @@ export class App implements OnInit, OnDestroy {
 
   private updateRouteState(url: string): void {
     const isDisplay = url.startsWith('/display');
+    const isCanjear = url.startsWith('/canjear');
+
+    this.isCanjearRoute = isCanjear;
 
     if (this.isDisplayRoute === isDisplay) {
       return;

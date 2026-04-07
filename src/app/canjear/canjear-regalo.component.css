@@ -1,0 +1,499 @@
+/* ── Página completa ────────────────────────────────────────────────────── */
+.canjear-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #fff5fb 0%, #f5f0ff 50%, #fff5fb 100%);
+  padding: 24px 16px;
+}
+
+/* ── Estado inicial ─────────────────────────────────────────────────────── */
+.estado-inicial {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: fadeInUp .4s ease;
+  max-width: 440px;
+  width: 100%;
+}
+
+.logo-cbm {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  opacity: .85;
+}
+
+.regalo-icon {
+  font-size: 80px;
+  line-height: 1;
+  animation: pulse-gentle 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 8px 20px rgba(255,79,163,.3));
+}
+
+.titulo-principal {
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 800;
+  color: #1f1b2d;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.subtitulo {
+  color: #7a7090;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.input-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.codigo-input {
+  width: 100%;
+  max-width: 360px;
+  border: 2px solid #e2d5ee;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-family: inherit;
+  color: #1f1b2d;
+  background: #fff;
+  transition: border-color .15s, box-shadow .15s;
+  box-sizing: border-box;
+}
+
+.codigo-input:focus {
+  outline: none;
+  border-color: #7b4dff;
+  box-shadow: 0 0 0 4px rgba(123,77,255,.12);
+}
+
+.codigo-input::placeholder {
+  color: #c0b8d0;
+  letter-spacing: 2px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.btn-abrir {
+  width: 100%;
+  max-width: 360px;
+  padding: 16px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #ff4fa3, #7b4dff);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .15s, transform .12s, box-shadow .15s;
+  box-shadow: 0 8px 24px rgba(123,77,255,.3);
+}
+
+.btn-abrir:hover {
+  opacity: .92;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(123,77,255,.4);
+}
+
+.firma {
+  font-size: 12px;
+  color: #b0a8c0;
+  margin: 4px 0 0;
+}
+
+/* ── Estado cargando ────────────────────────────────────────────────────── */
+.estado-cargando {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  color: #7a7090;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.logo-spin {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  animation: spin 1.2s linear infinite;
+}
+
+/* ── Estados mensaje (error / pendiente / ya_canjeado) ──────────────────── */
+.estado-mensaje {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: fadeInUp .35s ease;
+  max-width: 400px;
+}
+
+.estado-emoji {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.estado-mensaje h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #1f1b2d;
+}
+
+.estado-sub {
+  color: #7a7090;
+  font-size: 15px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.estado-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.btn-secondary {
+  border: 1.5px solid #e2d5ee;
+  background: #fff;
+  border-radius: 999px;
+  padding: 11px 22px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #5f5476;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.btn-secondary:hover { border-color: #9b7acf; }
+
+.btn-whatsapp-sm {
+  border: 0;
+  background: linear-gradient(120deg, #25d366, #128c7e);
+  border-radius: 999px;
+  padding: 11px 22px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+
+.btn-whatsapp-sm:hover { opacity: .88; }
+
+/* ── Overlay animación apertura ─────────────────────────────────────────── */
+.overlay-animacion {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(145deg, #2d0a3e 0%, #1a0a2e 50%, #3d1050 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  overflow: hidden;
+  animation: fadeIn .25s ease;
+}
+
+.animacion-content {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.regalo-abriendo {
+  font-size: 96px;
+  line-height: 1;
+  animation: regalo-abre 2.5s ease forwards;
+  filter: drop-shadow(0 0 40px rgba(255,79,163,.6));
+}
+
+.animacion-titulo {
+  color: #fff;
+  font-size: clamp(24px, 6vw, 36px);
+  font-weight: 800;
+  margin: 0;
+  animation: fadeInUp .6s ease .4s both;
+}
+
+.animacion-sub {
+  color: rgba(255,255,255,.7);
+  font-size: 16px;
+  margin: 0;
+  animation: fadeInUp .6s ease .8s both;
+}
+
+/* Confeti animación */
+.confeti-p {
+  position: absolute;
+  border-radius: 2px;
+  animation: confeti-caer linear forwards;
+  top: -20px;
+  opacity: 0;
+}
+
+/* ── Estado vale ────────────────────────────────────────────────────────── */
+.estado-vale {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: fadeInUp .4s ease;
+  width: 100%;
+  max-width: 480px;
+  overflow: hidden;
+  padding: 8px 0 24px;
+}
+
+/* Confeti sutil de fondo en el vale */
+.confeti-fondo {
+  position: fixed;
+  border-radius: 2px;
+  animation: confeti-caer linear infinite;
+  top: -20px;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Card del vale ──────────────────────────────────────────────────────── */
+.vale-card {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(37,28,70,.16);
+  overflow: hidden;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.vale-franja {
+  height: 8px;
+  background: linear-gradient(90deg, #ff4fa3, #7b4dff);
+}
+
+.vale-franja--bottom {
+  height: 4px;
+}
+
+.vale-interior {
+  padding: 24px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.vale-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
+.vale-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: #b0a8c0;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.vale-empresa {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  color: #c8c0d8;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.vale-separador {
+  color: #e2d5ee;
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin: 4px 0;
+}
+
+.vale-emotivo {
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 800;
+  margin: 6px 0;
+  background: linear-gradient(120deg, #ff4fa3, #7b4dff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.vale-mensaje {
+  background: rgba(123,77,255,.05);
+  border-radius: 14px;
+  padding: 16px 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.vale-corazon {
+  font-size: 20px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.vale-msg-texto {
+  font-style: italic;
+  font-size: 16px;
+  color: #4a4060;
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.vale-msg-firma {
+  font-size: 13px;
+  color: #9b94ab;
+  margin: 0;
+}
+
+.vale-codigo-box {
+  background: #f7f4fc;
+  border-radius: 10px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.vale-codigo-label {
+  font-size: 13px;
+  color: #7a7090;
+  font-weight: 600;
+}
+
+.vale-codigo {
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: 800;
+  color: #1f1b2d;
+  letter-spacing: 2px;
+}
+
+.vale-instruccion {
+  font-size: 13px;
+  color: #7a7090;
+  margin: 4px 0 0;
+}
+
+.vale-direccion {
+  font-size: 12px;
+  color: #b0a8c0;
+  margin: 0;
+}
+
+.vale-fecha {
+  font-size: 11px;
+  color: #c8c0d8;
+  margin: 0;
+}
+
+/* ── Acciones del vale ──────────────────────────────────────────────────── */
+.vale-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.btn-guardar {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid #e2d5ee;
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #5f5476;
+  cursor: pointer;
+  transition: border-color .15s, transform .12s;
+}
+
+.btn-guardar:hover { border-color: #9b7acf; transform: translateY(-1px); }
+
+.btn-reservar {
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(120deg, #25d366, #128c7e);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(18,140,126,.25);
+  transition: opacity .15s, transform .12s;
+}
+
+.btn-reservar:hover { opacity: .9; transform: translateY(-2px); }
+
+/* ── Keyframes ──────────────────────────────────────────────────────────── */
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+@keyframes pulse-gentle {
+  0%,100% { transform: scale(1) rotate(-2deg); }
+  50%      { transform: scale(1.06) rotate(2deg); }
+}
+
+@keyframes regalo-abre {
+  0%   { transform: scale(.8) rotate(-5deg); opacity: .7; }
+  20%  { transform: scale(1.15) rotate(3deg); opacity: 1; }
+  40%  { transform: scale(1) rotate(0deg); }
+  60%  { transform: scale(1.08) translateY(-12px); }
+  80%  { transform: scale(0.95) translateY(-4px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+@keyframes confeti-caer {
+  0%   { transform: translateY(0) rotate(0deg);   opacity: 1; }
+  100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .vale-interior { padding: 20px 18px 16px; }
+  .vale-codigo-box { flex-direction: column; gap: 4px; }
+}

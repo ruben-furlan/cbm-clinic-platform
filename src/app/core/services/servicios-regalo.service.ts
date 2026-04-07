@@ -81,6 +81,17 @@ export class ServiciosRegaloService {
     return this.updateServicioRegalo(id, { activo: valor });
   }
 
+  async getServicioRegaloById(id: string): Promise<ServicioRegalo | null> {
+    const { data, error } = await supabase
+      .from('servicios_regalo')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) return null;
+    return (data as ServicioRegalo | null) ?? null;
+  }
+
   async deleteServicioRegalo(id: string): Promise<void> {
     const { error } = await supabase
       .from('servicios_regalo')

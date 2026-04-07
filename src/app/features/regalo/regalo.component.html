@@ -8,14 +8,6 @@
         <p>El regalo más bonito es cuidar a alguien que quieres. Dale la experiencia de sentirse mejor.</p>
       </header>
 
-      <div class="regalo-tabs">
-        <button type="button" [class.active]="tab==='regalar'" (click)="setTab('regalar')">Regalar</button>
-        <button type="button" [class.active]="tab==='canjear'" (click)="setTab('canjear')">Canjear código</button>
-      </div>
-
-      <!-- ── TAB REGALAR ───────────────────────────────────────────────── -->
-      <ng-container *ngIf="tab==='regalar'">
-
         <!-- PASO 1 -->
         <div class="step-header">
           <span class="step-num">1</span>
@@ -131,44 +123,6 @@
           </form>
         </div><!-- /form-section -->
 
-      </ng-container>
-      <!-- ── FIN TAB REGALAR ─────────────────────────────────────────── -->
-
-      <!-- ── TAB CANJEAR ────────────────────────────────────────────── -->
-      <ng-container *ngIf="tab==='canjear'">
-        <section class="canje-box" *ngIf="!bonoEncontrado && !loadingCodigo">
-          <h2>¿Tienes un regalo especial? ✨</h2>
-          <p>Ingresa tu código y descubre lo que alguien preparó para ti con mucho cariño 💜</p>
-          <input [(ngModel)]="codigoInput" [ngModelOptions]="{standalone: true}" placeholder="Ingresa tu código aquí" style="text-transform:uppercase" />
-          <button class="btn-primary" (click)="abrirRegalo()">Abrir mi regalo →</button>
-          <p class="error" *ngIf="codigoError">{{ codigoError }}</p>
-        </section>
-
-        <p *ngIf="loadingCodigo">Buscando tu regalo... 💜</p>
-
-        <section *ngIf="mostrarAnimacionRegalo" class="magic-opening">
-          <div class="gift">🎁</div>
-          <h3>¡Alguien pensó en ti! 💜</h3>
-        </section>
-
-        <section class="vale" *ngIf="bonoEncontrado" id="vale-regalo">
-          <div class="franja"></div>
-          <img src="/favicon-192x192.png" alt="CBM" width="48" height="48" />
-          <p class="small">BONO REGALO</p>
-          <h3>{{ bonoEncontrado.nombre_servicio }}</h3>
-          <p class="precio">{{ bonoEncontrado.precio }}€</p>
-          <p *ngIf="bonoEncontrado.mensaje_personal" class="msg">"{{ bonoEncontrado.mensaje_personal }}"</p>
-          <p class="codigo">Código: {{ bonoEncontrado.codigo }}</p>
-          <p class="small">Calle Arquímedes 227, Local 2 · Terrassa · 662 56 16 72</p>
-          <div class="franja"></div>
-        </section>
-
-        <div class="vale-actions" *ngIf="bonoEncontrado">
-          <button class="btn-secondary" (click)="descargarVale()">📥 Descargar mi regalo</button>
-          <button class="btn-primary" (click)="reservarSesion()">💬 Reservar mi sesión</button>
-        </div>
-      </ng-container>
-
     </ng-container><!-- /bonosActivo -->
     </ng-container><!-- /!cargando -->
   </div>
@@ -187,7 +141,7 @@
     <h2>Muy pronto... 🎁</h2>
     <p>Estamos preparando algo especial. Vuelve pronto o escríbenos si quieres ser de los primeros en saberlo 💜</p>
     <div class="actions">
-      <button class="btn-primary" (click)="contactarWhatsApp()">WhatsApp</button>
+      <a class="btn-primary" href="https://wa.me/34662561672" target="_blank" rel="noopener">WhatsApp</a>
       <a class="btn-secondary" routerLink="/">← Volver a inicio</a>
     </div>
   </section>

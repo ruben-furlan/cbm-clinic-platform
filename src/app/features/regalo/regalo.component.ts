@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { BonosRegaloService, BonoMetodoPago, BonoRegalo } from '../../core/services/bonos-regalo.service';
+import { BonosRegaloService, BonoMetodoPago } from '../../core/services/bonos-regalo.service';
 import { ConfiguracionService } from '../../core/services/configuracion.service';
 import { ServicioRegalo, ServiciosRegaloService } from '../../core/services/servicios-regalo.service';
 
 const WHATSAPP_PHONE = '34662561672';
 
-type TabRegalo = 'regalar' | 'canjear';
 const REQUEST_TIMEOUT_MS = 10000;
 
 interface MetodoPago {
@@ -28,7 +27,6 @@ interface MetodoPago {
 export class RegaloComponent implements OnInit {
   bonosActivo = false;
   cargando = true;
-  tab: TabRegalo = 'regalar';
   servicios: ServicioRegalo[] = [];
   servicioSeleccionado: ServicioRegalo | null = null;
   errorSinServicio = false;
@@ -38,13 +36,6 @@ export class RegaloComponent implements OnInit {
     { value: 'transferencia', icono: '🏦', label: 'Transferencia', subtexto: 'Te damos los datos al confirmar' },
     { value: 'efectivo',     icono: '🏥', label: 'En el centro', subtexto: 'Págalo cuando vengas' }
   ];
-
-  codigoInput = '';
-  loadingCodigo = false;
-  codigoError = '';
-  bonoEncontrado: BonoRegalo | null = null;
-  mostrarAnimacionRegalo = false;
-  canjeRegistrado = false;
 
   readonly form;
 
@@ -101,10 +92,6 @@ export class RegaloComponent implements OnInit {
     }
 
     this.cargando = false;
-  }
-
-  setTab(tab: TabRegalo): void {
-    this.tab = tab;
   }
 
   seleccionarServicio(servicio: ServicioRegalo): void {
@@ -174,69 +161,4 @@ export class RegaloComponent implements OnInit {
     }).catch(err => console.error('Error guardando solicitud bono:', err));
   }
 
-  async abrirRegalo(): Promise<void> {
-    if (!this.codigoInput.trim()) return;
-
-    this.loadingCodigo = true;
-    this.codigoError = '';
-    this.bonoEncontrado = null;
-    this.canjeRegistrado = false;
-
-    try {
-      const bono = await this.bonosRegaloService.getBonosByCodigo(this.codigoInput.trim().toUpperCase());
-      if (!bono) {
-        this.codigoError = 'Hmm, no encontramos ese código 🤔 Revisa que esté bien escrito o contacta con nosotros.';
-        return;
-      }
-
-      this.bonoEncontrado = bono;
-
-      if ((bono.estado === 'pagado' || bono.estado === 'enviado') && !this.canjeRegistrado) {
-        this.mostrarAnimacionRegalo = true;
-        setTimeout(() => this.mostrarAnimacionRegalo = false, 2500);
-        await this.bonosRegaloService.canjearBono(bono.codigo);
-        this.bonoEncontrado = { ...bono, estado: 'canjeado', fecha_canje: new Date().toISOString() };
-        this.canjeRegistrado = true;
-      }
-    } catch {
-      this.codigoError = 'No pudimos abrir tu regalo ahora mismo. Escríbenos por WhatsApp 💜';
-    } finally {
-      this.loadingCodigo = false;
-    }
-  }
-
-  async descargarVale(): Promise<void> {
-    const node = document.getElementById('vale-regalo');
-    if (!node) return;
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1280"><foreignObject width="100%" height="100%">${new XMLSerializer().serializeToString(node)}</foreignObject></svg>`;
-    const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 960;
-      canvas.height = 1280;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'bono-regalo-cbm.png';
-      link.click();
-      URL.revokeObjectURL(url);
-    };
-    image.src = url;
-  }
-
-  reservarSesion(): void {
-    if (!this.bonoEncontrado) return;
-    const text = `Hola CBM! Tengo un bono regalo con código ${this.bonoEncontrado.codigo} y quiero reservar mi sesión 💜\n¿Cuándo podríais atenderme?`;
-    window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
-  }
-
-  contactarWhatsApp(): void {
-    window.open(`https://wa.me/${WHATSAPP_PHONE}`, '_blank');
-  }
 }

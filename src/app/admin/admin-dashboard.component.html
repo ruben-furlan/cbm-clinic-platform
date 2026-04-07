@@ -1047,6 +1047,12 @@
     <p><strong>Estado:</strong> {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
     <p *ngIf="bonoDetalle.mensaje_personal" class="bono-msg">"{{ bonoDetalle.mensaje_personal }}"</p>
     <p><strong>Historial:</strong> Compra {{ bonoDetalle.fecha_compra | date:'dd/MM/yy HH:mm' }} · Estado actual {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
+    <div class="canjear-link-box">
+      <p class="canjear-link-label"><strong>Link para canjear:</strong></p>
+      <p class="canjear-link-url">https://cbmfisioterapia.com/canjear</p>
+      <p class="canjear-link-hint">Comparte este link junto al código: <strong>{{ bonoDetalle.codigo }}</strong></p>
+      <button type="button" class="btn-copy" (click)="copiarLinkCanjear()">📋 Copiar link</button>
+    </div>
     <div class="modal-actions">
       <button type="button" class="btn-primary" (click)="closeBonoDetalle()">Cerrar</button>
     </div>

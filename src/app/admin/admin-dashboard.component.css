@@ -1163,6 +1163,12 @@ textarea:disabled {
 
 .section-subtitle { margin:0; font-size:16px; font-weight:700; color:#1f1b2d; }
 .bono-msg { font-style:italic; color:#6c6580; }
+.canjear-link-box { background:#f7f4fc; border-radius:12px; padding:14px 16px; margin:12px 0; display:flex; flex-direction:column; gap:4px; }
+.canjear-link-label { margin:0; font-size:13px; }
+.canjear-link-url { margin:0; font-size:14px; font-weight:700; color:#7b4dff; font-family:monospace; word-break:break-all; }
+.canjear-link-hint { margin:0; font-size:13px; color:#7a7090; }
+.btn-copy { align-self:flex-start; margin-top:6px; border:1.5px solid #c8b8ef; background:#fff; border-radius:8px; padding:7px 14px; font:inherit; font-size:13px; font-weight:600; color:#5f5476; cursor:pointer; transition:border-color .15s; }
+.btn-copy:hover { border-color:#7b4dff; }
 .switch-lg { width:58px; height:32px; }
 .switch-lg span::before { width:26px; height:26px; }
 .switch-lg input:checked + span::before { transform:translateX(26px); }
