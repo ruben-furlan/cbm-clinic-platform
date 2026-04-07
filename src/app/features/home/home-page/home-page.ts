@@ -7,11 +7,12 @@ import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-sc
 import { FaqComponent } from '../../faq/faq';
 import { PricingComponent } from '../../../sections/pricing/pricing.component';
 import { EventsSectionComponent } from '../events-section/events-section.component';
+import { BannerBonosRegaloComponent } from '../banner-bonos-regalo/banner-bonos-regalo.component';
 
 @Component({
   selector: 'app-home-page',
   standalone: true,
-  imports: [CommonModule, Testimonials, LocationComponent, RevealOnScrollDirective, FaqComponent, PricingComponent, RouterLink, EventsSectionComponent],
+  imports: [CommonModule, Testimonials, LocationComponent, RevealOnScrollDirective, FaqComponent, PricingComponent, RouterLink, EventsSectionComponent, BannerBonosRegaloComponent],
   templateUrl: './home-page.html',
   styleUrls: ['./home-page.css']
 })

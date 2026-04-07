@@ -15,9 +15,11 @@ import {
   RegistrationStatus
 } from '../core/services/events.service';
 import { supabase } from '../core/supabase.client';
+import { BonosRegaloService, BonoEstado, BonoRegalo } from '../core/services/bonos-regalo.service';
+import { ConfiguracionService } from '../core/services/configuracion.service';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'checkin';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 
 @Component({
@@ -117,6 +119,19 @@ export class AdminDashboardComponent implements OnInit {
     events: { title: string; start_at: string; location: string | null } | null
   }) | null = null;
 
+  // ── Bonos regalo ─────────────────────────────────────────────────────────
+  bonos: BonoRegalo[] = [];
+  bonosLoading = false;
+  bonosError = '';
+  bonosMessage = '';
+  bonosActivosWeb = false;
+  filtroBonos: 'todos' | BonoEstado = 'todos';
+  isBonoModalOpen = false;
+  bonoDetalle: BonoRegalo | null = null;
+  codigoManual = '';
+
+  readonly bonosEstados: BonoEstado[] = ['pendiente_pago', 'pagado', 'enviado', 'canjeado'];
+
   readonly registroStatusLabels: Record<string, string> = {
     confirmed: 'Confirmado',
     rejected:  'Rechazado',
@@ -159,6 +174,8 @@ export class AdminDashboardComponent implements OnInit {
     private readonly faqsService: FaqsService,
     private readonly blogService: BlogService,
     private readonly eventsService: EventsService,
+    private readonly bonosRegaloService: BonosRegaloService,
+    private readonly configuracionService: ConfiguracionService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -242,7 +259,7 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos()]);
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig()]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -1214,6 +1231,117 @@ export class AdminDashboardComponent implements OnInit {
     this.checkinCode = '';
     this.checkinResult = null;
     this.checkinError = '';
+  }
+
+
+
+  get bonosFiltrados(): BonoRegalo[] {
+    if (this.filtroBonos === 'todos') {
+      return this.bonos;
+    }
+
+    return this.bonos.filter((bono) => bono.estado === this.filtroBonos);
+  }
+
+  get bonosStats(): { total: number; pendientes: number; pagados: number; canjeados: number } {
+    return {
+      total: this.bonos.length,
+      pendientes: this.bonos.filter((b) => b.estado === 'pendiente_pago').length,
+      pagados: this.bonos.filter((b) => b.estado === 'pagado').length,
+      canjeados: this.bonos.filter((b) => b.estado === 'canjeado').length
+    };
+  }
+
+  estadoBonoLabel(estado: BonoEstado): string {
+    const map: Record<BonoEstado, string> = {
+      pendiente_pago: 'Pendiente pago',
+      pagado: 'Pagado',
+      enviado: 'Enviado',
+      canjeado: 'Canjeado'
+    };
+
+    return map[estado];
+  }
+
+  async loadBonosConfig(): Promise<void> {
+    try {
+      this.bonosActivosWeb = await this.configuracionService.isBonosRegaloActivo();
+    } catch {
+      this.bonosActivosWeb = false;
+    }
+  }
+
+  async toggleBonosActivos(event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    const valor = target.checked;
+
+    try {
+      await this.withTimeout(this.configuracionService.updateConfiguracion('bonos_regalo_activo', valor ? 'true' : 'false'));
+      this.bonosActivosWeb = valor;
+      this.showMsg('eventos', 'Configuración de bonos actualizada.');
+    } catch {
+      target.checked = !valor;
+      this.bonosMessage = 'No se pudo actualizar la configuración.';
+    }
+  }
+
+  async loadBonos(): Promise<void> {
+    this.bonosLoading = true;
+    this.bonosError = '';
+
+    try {
+      this.bonos = await this.withTimeout(this.bonosRegaloService.getAllBonos());
+    } catch {
+      this.bonosError = 'No se pudieron cargar los bonos regalo.';
+    } finally {
+      this.bonosLoading = false;
+    }
+  }
+
+  async updateBonoEstado(bono: BonoRegalo, event: Event): Promise<void> {
+    const target = event.target as HTMLSelectElement;
+    const estado = target.value as BonoEstado;
+
+    try {
+      const updated = await this.withTimeout(this.bonosRegaloService.updateEstado(bono.id, estado));
+      this.bonos = this.bonos.map((item) => item.id === updated.id ? updated : item);
+      this.bonosMessage = 'Estado del bono actualizado.';
+    } catch {
+      target.value = bono.estado;
+      this.bonosMessage = 'No se pudo actualizar el estado del bono.';
+    }
+  }
+
+  openBonoDetalle(bono: BonoRegalo): void {
+    this.bonoDetalle = bono;
+    this.isBonoModalOpen = true;
+  }
+
+  closeBonoDetalle(): void {
+    this.isBonoModalOpen = false;
+    this.bonoDetalle = null;
+  }
+
+  async deleteBono(bono: BonoRegalo): Promise<void> {
+    if (!window.confirm(`¿Eliminar bono ${bono.codigo}?`)) return;
+
+    const previous = [...this.bonos];
+    this.bonos = this.bonos.filter((item) => item.id !== bono.id);
+
+    try {
+      await this.withTimeout(this.bonosRegaloService.deleteBono(bono.id));
+      this.bonosMessage = 'Bono eliminado.';
+    } catch {
+      this.bonos = previous;
+      this.bonosMessage = 'No se pudo eliminar el bono.';
+    }
+  }
+
+  generarCodigoBono(): void {
+    const code = this.bonosRegaloService.generarCodigo();
+    this.codigoManual = code;
+    navigator.clipboard?.writeText(code);
+    this.bonosMessage = 'Código generado y copiado al portapapeles.';
   }
 
   getEventoAvailableSlots(evento: CbmEvent): number {

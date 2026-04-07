@@ -1,0 +1,92 @@
+<section class="regalo-page section" *ngIf="!loadingConfig">
+  <div class="container">
+    <ng-container *ngIf="bonosActivo; else proximamenteTpl">
+      <header class="regalo-header">
+        <p class="eyebrow">BONOS REGALO · CBM FISIOTERAPIA</p>
+        <h1>Regala bienestar 💜</h1>
+        <p>El regalo más bonito es cuidar a alguien que quieres. Dale la experiencia de sentirse mejor.</p>
+      </header>
+
+      <div class="regalo-tabs">
+        <button type="button" [class.active]="tab==='regalar'" (click)="setTab('regalar')">Regalar</button>
+        <button type="button" [class.active]="tab==='canjear'" (click)="setTab('canjear')">Canjear código</button>
+      </div>
+
+      <ng-container *ngIf="tab==='regalar'">
+        <section class="cards-grid">
+          <article class="tarifa-card" *ngFor="let tarifa of tarifas" [class.selected]="tarifaSeleccionada?.id === tarifa.id" (click)="seleccionarTarifa(tarifa)">
+            <p class="mini">{{ getMensajeEmotivo(tarifa) }}</p>
+            <h3>{{ tarifa.nombre }}</h3>
+            <p class="precio">{{ tarifa.precio }}{{ tarifa.unidad }}</p>
+            <p>{{ tarifa.descripcion }}</p>
+          </article>
+        </section>
+
+        <form class="gift-form" [formGroup]="form">
+          <input type="text" formControlName="nombre_comprador" placeholder="Nombre completo" />
+          <input type="email" formControlName="email_comprador" placeholder="Email" />
+
+          <div class="pay-methods">
+            <label><input type="radio" formControlName="metodo_pago" value="bizum" /> 💳 Bizum</label>
+            <label><input type="radio" formControlName="metodo_pago" value="transferencia" /> 🏦 Transferencia</label>
+            <label><input type="radio" formControlName="metodo_pago" value="efectivo" /> 🏥 Efectivo en centro</label>
+          </div>
+
+          <label>
+            ¿Quieres dedicarle unas palabras? 💜
+            <textarea formControlName="mensaje_personal" maxlength="300" placeholder="Escribe algo bonito para quien va a recibir este regalo..."></textarea>
+          </label>
+          <p class="counter">{{ form.controls.mensaje_personal.value.length }}/300</p>
+
+          <button type="button" class="btn-primary" (click)="continuarWhatsApp()">💬 Continuar por WhatsApp</button>
+        </form>
+      </ng-container>
+
+      <ng-container *ngIf="tab==='canjear'">
+        <section class="canje-box" *ngIf="!bonoEncontrado && !loadingCodigo">
+          <h2>¿Tienes un regalo especial? ✨</h2>
+          <p>Ingresa tu código y descubre lo que alguien preparó para ti con mucho cariño 💜</p>
+          <input [(ngModel)]="codigoInput" [ngModelOptions]="{standalone: true}" placeholder="Ingresa tu código aquí" style="text-transform:uppercase" />
+          <button class="btn-primary" (click)="abrirRegalo()">Abrir mi regalo →</button>
+          <p class="error" *ngIf="codigoError">{{ codigoError }}</p>
+        </section>
+
+        <p *ngIf="loadingCodigo">Buscando tu regalo... 💜</p>
+
+        <section *ngIf="mostrarAnimacionRegalo" class="magic-opening">
+          <div class="gift">🎁</div>
+          <h3>¡Alguien pensó en ti! 💜</h3>
+        </section>
+
+        <section class="vale" *ngIf="bonoEncontrado" id="vale-regalo">
+          <div class="franja"></div>
+          <img src="/favicon-192x192.png" alt="CBM" width="48" height="48" />
+          <p class="small">BONO REGALO</p>
+          <h3>{{ bonoEncontrado.nombre_servicio }}</h3>
+          <p class="precio">{{ bonoEncontrado.precio }}€</p>
+          <p *ngIf="bonoEncontrado.mensaje_personal" class="msg">“{{ bonoEncontrado.mensaje_personal }}”</p>
+          <p class="codigo">Código: {{ bonoEncontrado.codigo }}</p>
+          <p class="small">Calle Arquímedes 227, Local 2 · Terrassa · 662 56 16 72</p>
+          <div class="franja"></div>
+        </section>
+
+        <div class="vale-actions" *ngIf="bonoEncontrado">
+          <button class="btn-secondary" (click)="descargarVale()">📥 Descargar mi regalo</button>
+          <button class="btn-primary" (click)="reservarSesion()">💬 Reservar mi sesión</button>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</section>
+
+<ng-template #proximamenteTpl>
+  <section class="proximamente">
+    <img src="/logo-header.png" alt="CBM" />
+    <h2>Muy pronto... 🎁</h2>
+    <p>Estamos preparando algo especial. Vuelve pronto o escríbenos si quieres ser de los primeros en saberlo 💜</p>
+    <div class="actions">
+      <button class="btn-primary" (click)="contactarWhatsApp()">WhatsApp</button>
+      <a class="btn-secondary" routerLink="/">← Volver a inicio</a>
+    </div>
+  </section>
+</ng-template>

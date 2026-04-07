@@ -10,6 +10,7 @@ import { EspacioCbmPage } from './features/espacio-cbm/espacio-cbm-page';
 import { adminAuthGuard } from './admin/admin-auth.guard';
 import { AdminLoginComponent } from './admin/admin-login.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard.component';
+import { RegaloComponent } from './features/regalo/regalo.component';
 
 export const routes: Routes = [
   {
@@ -48,6 +49,10 @@ export const routes: Routes = [
   {
     path: 'tratamientos/:categoria',
     component: TreatmentsPage
+  },
+  {
+    path: 'regalo',
+    component: RegaloComponent
   },
   {
     path: 'admin',

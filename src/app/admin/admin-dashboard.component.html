@@ -13,6 +13,7 @@
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
     <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
+    <button type="button" [class.active]="seccion === 'bonos'" (click)="setSeccion('bonos')">🎁 Bonos regalo</button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -254,6 +255,67 @@
 
     <p class="status" *ngIf="!eventosLoading && !eventosFiltrados.length && !eventosError">No hay eventos para este filtro.</p>
   </ng-container>
+
+
+  <!-- ═════════════════════════════ BONOS REGALO ═══════════════════════════ -->
+  <ng-container *ngIf="seccion === 'bonos'">
+    <section class="bonos-config">
+      <h3>Bonos regalo activos en la web</h3>
+      <p>Activa esto para mostrar el banner en la home y permitir el acceso a /regalo.</p>
+      <label class="switch switch-lg">
+        <input type="checkbox" [checked]="bonosActivosWeb" (change)="toggleBonosActivos($event)" />
+        <span></span>
+      </label>
+      <div class="bonos-code-row">
+        <button type="button" class="btn-primary" (click)="generarCodigoBono()">Generar código</button>
+        <input type="text" [(ngModel)]="codigoManual" placeholder="Código manual" />
+      </div>
+    </section>
+
+    <div class="stats-grid" *ngIf="bonos.length">
+      <article class="stat-card"><p>Total</p><strong>{{ bonosStats.total }}</strong></article>
+      <article class="stat-card"><p>Pendientes pago</p><strong>{{ bonosStats.pendientes }}</strong></article>
+      <article class="stat-card"><p>Pagados</p><strong>{{ bonosStats.pagados }}</strong></article>
+      <article class="stat-card"><p>Canjeados</p><strong>{{ bonosStats.canjeados }}</strong></article>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Filtro bonos">
+      <button type="button" [class.active]="filtroBonos==='todos'" (click)="filtroBonos='todos'">Todos</button>
+      <button type="button" [class.active]="filtroBonos==='pendiente_pago'" (click)="filtroBonos='pendiente_pago'">Pendiente pago</button>
+      <button type="button" [class.active]="filtroBonos==='pagado'" (click)="filtroBonos='pagado'">Pagado</button>
+      <button type="button" [class.active]="filtroBonos==='enviado'" (click)="filtroBonos='enviado'">Enviado</button>
+      <button type="button" [class.active]="filtroBonos==='canjeado'" (click)="filtroBonos='canjeado'">Canjeado</button>
+    </div>
+
+    <p class="status error" *ngIf="bonosError">{{ bonosError }}</p>
+    <p class="status message" *ngIf="bonosMessage">{{ bonosMessage }}</p>
+
+    <div class="table-wrap" *ngIf="bonosFiltrados.length">
+      <table>
+        <thead><tr><th>Código</th><th>Servicio</th><th>Comprador</th><th>Email</th><th>Método pago</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let bono of bonosFiltrados">
+            <td>{{ bono.codigo }}</td>
+            <td>{{ bono.nombre_servicio }}</td>
+            <td>{{ bono.nombre_comprador }}</td>
+            <td>{{ bono.email_comprador }}</td>
+            <td>{{ bono.metodo_pago }}</td>
+            <td>
+              <select [value]="bono.estado" (change)="updateBonoEstado(bono, $event)">
+                <option *ngFor="let estado of bonosEstados" [value]="estado">{{ estadoBonoLabel(estado) }}</option>
+              </select>
+            </td>
+            <td>{{ bono.fecha_compra | date:'dd/MM/yy HH:mm' }}</td>
+            <td class="actions">
+              <button type="button" class="btn-ghost" (click)="openBonoDetalle(bono)">Ver detalle</button>
+              <button type="button" class="btn-danger" (click)="deleteBono(bono)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
 </section>
 
 <!-- ═══════════════ Modal tarifas ════════════════ -->
@@ -927,4 +989,20 @@
     <img src="/favicon-192x192.png" alt="Cargando" />
     <p>Cargando datos...</p>
   </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="isBonoModalOpen" (click)="closeBonoDetalle()">
+  <section class="modal-card" (click)="$event.stopPropagation()" *ngIf="bonoDetalle">
+    <h2>Detalle bono {{ bonoDetalle.codigo }}</h2>
+    <p><strong>Servicio:</strong> {{ bonoDetalle.nombre_servicio }} — {{ bonoDetalle.precio }}€</p>
+    <p><strong>Comprador:</strong> {{ bonoDetalle.nombre_comprador }} ({{ bonoDetalle.email_comprador }})</p>
+    <p><strong>Método:</strong> {{ bonoDetalle.metodo_pago }}</p>
+    <p><strong>Estado:</strong> {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
+    <p *ngIf="bonoDetalle.mensaje_personal" class="bono-msg">“{{ bonoDetalle.mensaje_personal }}”</p>
+    <p><strong>Historial:</strong> Compra {{ bonoDetalle.fecha_compra | date:'dd/MM/yy HH:mm' }} · Estado actual {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeBonoDetalle()">Cerrar</button>
+    </div>
+  </section>
 </div>
