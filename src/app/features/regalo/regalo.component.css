@@ -1,33 +1,100 @@
+/* ── Layout general ─────────────────────────────────────────────────────── */
 .regalo-header { text-align: center; max-width: 760px; margin: 0 auto 24px; }
-.eyebrow { color: #ff4fa3; font-weight: 700; letter-spacing: .08em; font-size: 12px; }
-.regalo-tabs { display:flex; gap:10px; justify-content:center; margin-bottom:22px; }
-.regalo-tabs button { border:1px solid #e8d5ee; background:#fff; border-radius:999px; padding:10px 16px; }
-.regalo-tabs button.active { background: var(--gradient-brand); color:#fff; }
-.cards-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:18px; }
-.tarifa-card { border:1px solid #ecdaf0; border-radius:18px; padding:16px; cursor:pointer; background:#fff; }
-.tarifa-card.selected { border-color:#7b4dff; box-shadow:0 8px 22px rgba(123,77,255,.2); }
-.mini { color:#ff4fa3; font-size:12px; font-weight:700; }
-.precio { font-size:28px; font-weight:800; margin:8px 0; }
-.gift-form { display:grid; gap:12px; max-width:720px; margin:auto; }
-.gift-form input,.gift-form textarea { width:100%; border:1px solid #e7d9ec; border-radius:12px; padding:12px; }
-.pay-methods { display:grid; gap:8px; }
-.counter { text-align:right; color:#7b7290; font-size:12px; margin:0; }
-.canje-box { text-align:center; max-width:620px; margin:auto; padding:24px; border-radius:20px; background:linear-gradient(145deg, rgba(255,79,163,.08), rgba(123,77,255,.08)); }
-.canje-box input { width:100%; max-width:380px; border:1px solid #e7d9ec; border-radius:12px; padding:13px; margin:10px 0; }
-.magic-opening { text-align:center; padding:28px; animation: fadeIn .5s ease; }
+.eyebrow { color: #ff4fa3; font-weight: 700; letter-spacing: .08em; font-size: 12px; text-transform: uppercase; }
+.regalo-tabs { display:flex; gap:10px; justify-content:center; margin-bottom:28px; }
+.regalo-tabs button { border:1px solid #e8d5ee; background:#fff; border-radius:999px; padding:10px 22px; font:inherit; cursor:pointer; color:#5f5476; font-weight:600; transition:.15s; }
+.regalo-tabs button.active { background: linear-gradient(120deg,#ff4fa3,#7b4dff); color:#fff; border-color:transparent; }
+
+/* ── Step headers ───────────────────────────────────────────────────────── */
+.step-header { display:flex; align-items:center; gap:14px; margin:0 auto 18px; max-width:720px; }
+.step-num { flex-shrink:0; width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ff4fa3,#7b4dff); color:#fff; font-weight:800; font-size:16px; display:grid; place-items:center; }
+.step-title { margin:0; font-size:clamp(17px,3vw,20px); color:#1f1b2d; }
+.step-sub { margin:2px 0 0; font-size:13px; color:#7a7090; }
+
+/* ── Error sin servicio ─────────────────────────────────────────────────── */
+.error-sin-servicio { max-width:720px; margin:0 auto 14px; padding:12px 16px; border-radius:12px; background:linear-gradient(135deg,rgba(255,79,163,.1),rgba(123,77,255,.1)); color:#a0366b; font-weight:600; font-size:14px; text-align:center; animation:fadeIn .2s ease; }
+
+/* ── Cards de servicio ──────────────────────────────────────────────────── */
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:12px; max-width:860px; margin-left:auto; margin-right:auto; }
+.tarifa-card { position:relative; border:2px solid #ecdaf0; border-radius:18px; padding:18px 16px; cursor:pointer; background:#fff; transition:border-color .18s,box-shadow .18s,transform .12s; }
+.tarifa-card:hover { border-color:#c8aadc; box-shadow:0 4px 16px rgba(123,77,255,.12); transform:translateY(-2px); }
+.tarifa-card.selected { border-color:#7b4dff; background:linear-gradient(145deg,rgba(123,77,255,.04),rgba(255,79,163,.04)); box-shadow:0 8px 28px rgba(123,77,255,.2); }
+.card-check { position:absolute; top:10px; right:12px; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,#ff4fa3,#7b4dff); color:#fff; font-size:12px; font-weight:800; display:grid; place-items:center; animation:popIn .2s cubic-bezier(.34,1.56,.64,1); }
+.mini { color:#ff4fa3; font-size:12px; font-weight:700; margin:0 0 6px; }
+.precio { font-size:26px; font-weight:800; margin:6px 0; color:#1f1b2d; }
+.card-desc { font-size:13px; color:#7a7090; margin:0; }
+
+/* ── Hint "selecciona para continuar" ───────────────────────────────────── */
+.hint-seleccionar { text-align:center; padding:16px 0 8px; color:#b0a8c0; font-size:14px; font-weight:500; }
+.bounce-arrow { display:block; font-size:22px; animation:bounce .9s ease-in-out infinite; margin-bottom:4px; }
+
+/* ── Sección formulario (fade-in al aparecer) ───────────────────────────── */
+.form-section { max-width:720px; margin:28px auto 0; animation:fadeInUp .35s ease; }
+
+/* ── Campos del formulario ──────────────────────────────────────────────── */
+.gift-form { display:grid; gap:20px; }
+.form-field { display:grid; gap:6px; }
+.field-label { font-weight:700; font-size:14px; color:#332d43; }
+.required { color:#ff4fa3; margin-left:2px; }
+.field-optional { font-weight:500; color:#9b94ab; font-size:13px; }
+.gift-form input,
+.gift-form textarea { width:100%; border:1.5px solid #e2d5ee; border-radius:12px; padding:13px 14px; font:inherit; font-size:15px; color:#1f1b2d; background:#fff; transition:border-color .15s,box-shadow .15s; box-sizing:border-box; }
+.gift-form input:focus,
+.gift-form textarea:focus { outline:none; border-color:#7b4dff; box-shadow:0 0 0 3px rgba(123,77,255,.12); }
+.input-error { border-color:#e0326c !important; }
+.field-note { margin:0; font-size:12px; color:#9b94ab; }
+.field-error { margin:0; font-size:12px; color:#e0326c; font-weight:600; animation:fadeIn .15s ease; }
+.counter { text-align:right; color:#b0a8c0; font-size:12px; margin:0; }
+
+/* ── Cards de método de pago ────────────────────────────────────────────── */
+.pay-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.pay-card { border:1.5px solid #e2d5ee; border-radius:14px; padding:14px 10px; background:#fff; cursor:pointer; display:grid; gap:4px; justify-items:center; text-align:center; transition:border-color .15s,box-shadow .15s,transform .12s; font:inherit; }
+.pay-card:hover { border-color:#c8aadc; transform:translateY(-2px); }
+.pay-card.selected { border-color:#7b4dff; background:linear-gradient(145deg,rgba(123,77,255,.06),rgba(255,79,163,.04)); box-shadow:0 4px 16px rgba(123,77,255,.16); }
+.pay-icon { font-size:22px; }
+.pay-label { font-size:14px; font-weight:700; color:#1f1b2d; }
+.pay-sub { font-size:11px; color:#9b94ab; line-height:1.3; }
+
+/* ── Botón WhatsApp ─────────────────────────────────────────────────────── */
+.btn-whatsapp { width:100%; padding:16px; border:0; border-radius:14px; background:linear-gradient(120deg,#25d366,#128c7e); color:#fff; font:inherit; font-size:16px; font-weight:700; cursor:pointer; transition:opacity .2s,transform .12s,box-shadow .15s; box-shadow:0 6px 20px rgba(18,140,126,.25); }
+.btn-whatsapp:hover:not(.btn-whatsapp--disabled) { opacity:.92; transform:translateY(-2px); box-shadow:0 10px 28px rgba(18,140,126,.35); }
+.btn-whatsapp--disabled { opacity:.45; cursor:not-allowed; }
+
+/* ── Tab canjear ────────────────────────────────────────────────────────── */
+.canje-box { text-align:center; max-width:620px; margin:auto; padding:28px 24px; border-radius:20px; background:linear-gradient(145deg,rgba(255,79,163,.08),rgba(123,77,255,.08)); }
+.canje-box input { width:100%; max-width:380px; border:1.5px solid #e7d9ec; border-radius:12px; padding:13px; margin:10px 0; font:inherit; font-size:15px; }
+.error { color:#e0326c; font-size:14px; font-weight:600; margin-top:8px; }
+
+/* ── Vale regalo ────────────────────────────────────────────────────────── */
+.magic-opening { text-align:center; padding:28px; animation:fadeIn .5s ease; }
 .magic-opening .gift { font-size:72px; animation:pulse 1s infinite; }
 .vale { max-width:480px; margin:16px auto; background:#fff; border-radius:20px; box-shadow:0 20px 60px rgba(0,0,0,.12); overflow:hidden; text-align:center; padding:18px; }
-.franja { height:8px; background: var(--gradient-brand); margin: -18px -18px 14px; }
-.vale .franja:last-child { height:4px; margin: 14px -18px -18px; }
+.franja { height:8px; background:linear-gradient(120deg,#ff4fa3,#7b4dff); margin:-18px -18px 14px; }
+.vale .franja:last-child { height:4px; margin:14px -18px -18px; }
 .msg { font-style:italic; color:#5f5476; }
-.codigo { font-family: monospace; background:#f5f4f8; border-radius:8px; padding:10px; }
-.vale-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.codigo { font-family:monospace; background:#f5f4f8; border-radius:8px; padding:10px; }
+.vale-actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:12px; }
+
+/* ── Proximamente ───────────────────────────────────────────────────────── */
 .proximamente { text-align:center; padding:72px 20px; }
 .proximamente img { margin:0 auto 14px; max-width:120px; }
 .actions { display:flex; gap:10px; justify-content:center; }
-@keyframes pulse { 0%,100%{transform:scale(1)}50%{transform:scale(1.07)} }
-@keyframes fadeIn { from{opacity:0}to{opacity:1} }
+
+/* ── Loader ─────────────────────────────────────────────────────────────── */
 .regalo-loader { text-align:center; padding:60px 20px; color:#7a7090; }
 .loader-icon { width:64px; height:64px; margin:0 auto 14px; display:block; animation:spin 1.2s linear infinite; }
-@keyframes spin { from{transform:rotate(0deg)}to{transform:rotate(360deg)} }
 
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes fadeInUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+@keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .pay-cards { grid-template-columns:1fr; }
+  .cards-grid { grid-template-columns:1fr; }
+  .btn-whatsapp { font-size:15px; padding:14px; }
+}

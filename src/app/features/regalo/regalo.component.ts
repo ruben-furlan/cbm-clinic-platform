@@ -11,6 +11,13 @@ const WHATSAPP_PHONE = '34662561672';
 type TabRegalo = 'regalar' | 'canjear';
 const REQUEST_TIMEOUT_MS = 10000;
 
+interface MetodoPago {
+  value: BonoMetodoPago;
+  icono: string;
+  label: string;
+  subtexto: string;
+}
+
 @Component({
   selector: 'app-regalo',
   standalone: true,
@@ -24,6 +31,13 @@ export class RegaloComponent implements OnInit {
   tab: TabRegalo = 'regalar';
   servicios: ServicioRegalo[] = [];
   servicioSeleccionado: ServicioRegalo | null = null;
+  errorSinServicio = false;
+
+  readonly metodosPago: MetodoPago[] = [
+    { value: 'bizum',        icono: '💳', label: 'Bizum',        subtexto: 'Te damos el número al confirmar' },
+    { value: 'transferencia', icono: '🏦', label: 'Transferencia', subtexto: 'Te damos los datos al confirmar' },
+    { value: 'efectivo',     icono: '🏥', label: 'En el centro', subtexto: 'Págalo cuando vengas' }
+  ];
 
   codigoInput = '';
   loadingCodigo = false;
@@ -33,6 +47,10 @@ export class RegaloComponent implements OnInit {
   canjeRegistrado = false;
 
   readonly form;
+
+  get formCompleto(): boolean {
+    return !!this.servicioSeleccionado && this.form.valid;
+  }
 
   constructor(
     private readonly fb: FormBuilder,
@@ -48,13 +66,13 @@ export class RegaloComponent implements OnInit {
     });
   }
 
-
   private withTimeout<T>(promise: Promise<T>, fallback: T): Promise<T> {
     return Promise.race([
       promise,
       new Promise<T>((resolve) => setTimeout(() => resolve(fallback), REQUEST_TIMEOUT_MS))
     ]);
   }
+
   async ngOnInit(): Promise<void> {
     this.bonosActivo = false;
     this.cargando = true;
@@ -90,19 +108,60 @@ export class RegaloComponent implements OnInit {
   }
 
   seleccionarServicio(servicio: ServicioRegalo): void {
+    const esPrimerClick = !this.servicioSeleccionado;
     this.servicioSeleccionado = servicio;
+    this.errorSinServicio = false;
+
+    if (esPrimerClick) {
+      setTimeout(() => {
+        document.getElementById('paso-2')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 80);
+    }
   }
 
-  async continuarWhatsApp(): Promise<void> {
-    if (!this.servicioSeleccionado || this.form.invalid) {
+  seleccionarMetodoPago(metodo: BonoMetodoPago): void {
+    this.form.controls.metodo_pago.setValue(metodo);
+  }
+
+  continuarWhatsApp(): void {
+    if (!this.servicioSeleccionado) {
+      this.errorSinServicio = true;
+      document.querySelector<HTMLElement>('.cards-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
+      setTimeout(() => {
+        document.querySelector<HTMLElement>('.input-error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 50);
       return;
     }
 
     const v = this.form.getRawValue();
-    const codigo = this.bonosRegaloService.generarCodigo();
+    const metodoPagoLabel = this.metodosPago.find(m => m.value === v.metodo_pago)?.label ?? v.metodo_pago;
 
-    await this.bonosRegaloService.createSolicitudBono({
+    const lineas = [
+      'Hola CBM 😊 Quiero regalar una experiencia a alguien especial 🎁',
+      '',
+      `🎁 Servicio: ${this.servicioSeleccionado.nombre_servicio} — ${this.servicioSeleccionado.precio}${this.servicioSeleccionado.unidad}`,
+      `👤 Mi nombre: ${v.nombre_comprador}`,
+      `📧 Mi email: ${v.email_comprador}`,
+      `💳 Método de pago: ${metodoPagoLabel}`,
+    ];
+    if (v.mensaje_personal) {
+      lineas.push(`💌 Mensaje para el receptor: ${v.mensaje_personal}`);
+    }
+    lineas.push('', '¿Podéis confirmarme los pasos a seguir? 💜');
+
+    const url = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lineas.join('\n'))}`;
+
+    // Abrir WhatsApp en contexto directo del click (antes de cualquier await)
+    window.open(url, '_blank');
+
+    // Guardar solicitud en background sin bloquear el flujo
+    const codigo = this.bonosRegaloService.generarCodigo();
+    void this.bonosRegaloService.createSolicitudBono({
       codigo,
       tarifa_id: this.servicioSeleccionado.id,
       nombre_servicio: this.servicioSeleccionado.nombre_servicio,
@@ -112,21 +171,7 @@ export class RegaloComponent implements OnInit {
       mensaje_personal: v.mensaje_personal || null,
       estado: 'pendiente_pago',
       metodo_pago: v.metodo_pago
-    });
-
-    const mensaje = [
-      'Hola CBM 😊 Quiero regalar una experiencia a alguien especial 🎁',
-      '',
-      `Servicio elegido: ${this.servicioSeleccionado.nombre_servicio} — ${this.servicioSeleccionado.precio}${this.servicioSeleccionado.unidad}`,
-      `Mi nombre: ${v.nombre_comprador}`,
-      `Mi email: ${v.email_comprador}`,
-      `Método de pago: ${v.metodo_pago}`,
-      v.mensaje_personal ? `💌 Mensaje para el receptor: ${v.mensaje_personal}` : '',
-      '',
-      '¿Podéis confirmarme los pasos a seguir? 💜'
-    ].filter(Boolean).join('\n');
-
-    window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }).catch(err => console.error('Error guardando solicitud bono:', err));
   }
 
   async abrirRegalo(): Promise<void> {
