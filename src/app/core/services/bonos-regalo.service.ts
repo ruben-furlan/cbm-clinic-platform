@@ -7,8 +7,9 @@ export type BonoMetodoPago = 'bizum' | 'transferencia' | 'efectivo';
 export interface BonoRegalo {
   id: string;
   codigo: string;
-  tarifa_id: string;
+  servicio_regalo_id: string;
   nombre_servicio: string;
+  nombre_emotivo: string;
   precio: number;
   nombre_comprador: string;
   email_comprador: string;

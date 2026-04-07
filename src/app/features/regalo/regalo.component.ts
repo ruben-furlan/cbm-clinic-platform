@@ -147,8 +147,9 @@ export class RegaloComponent implements OnInit {
     try {
       await this.bonosRegaloService.createSolicitudBono({
         codigo,
-        tarifa_id: this.servicioSeleccionado.id,
+        servicio_regalo_id: this.servicioSeleccionado.id,
         nombre_servicio: this.servicioSeleccionado.nombre_servicio,
+        nombre_emotivo: this.servicioSeleccionado.nombre_emotivo,
         precio: this.servicioSeleccionado.precio,
         nombre_comprador: v.nombre_comprador,
         email_comprador: v.email_comprador,
@@ -170,14 +171,7 @@ export class RegaloComponent implements OnInit {
       this.confirmado = true;
 
     } catch (err) {
-      const e = err as Record<string, unknown>;
-      console.error('=== ERROR createSolicitudBono ===');
-      console.error('Objeto completo:', err);
-      console.error('code:   ', e['code']);
-      console.error('message:', e['message']);
-      console.error('details:', e['details']);
-      console.error('hint:   ', e['hint']);
-      console.error('=================================');
+      console.error('Error guardando solicitud bono:', err);
       this.errorGuardando = true;
     } finally {
       this.guardando = false;

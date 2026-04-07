@@ -75,9 +75,9 @@ export class CanjearRegaloComponent {
 
       this.bono = bono;
 
-      // Buscar nombre emotivo en servicios_regalo (tarifa_id = id del servicio)
+      // Buscar nombre emotivo en servicios_regalo
       void this.serviciosRegaloService
-        .getServicioRegaloById(bono.tarifa_id)
+        .getServicioRegaloById(bono.servicio_regalo_id)
         .then(s => { this.servicioRegalo = s; });
 
       if (bono.estado === 'pendiente_pago') {
