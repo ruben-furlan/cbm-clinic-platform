@@ -879,11 +879,11 @@
           </div>
           <div class="checkin-data-item" *ngIf="checkinResult.events">
             <span class="checkin-data-label">Evento</span>
-            <span class="checkin-data-value">{{ checkinResult.events?.title }}</span>
+            <span class="checkin-data-value">{{ checkinResult.events.title }}</span>
           </div>
-          <div class="checkin-data-item" *ngIf="checkinResult.events?.start_at">
+          <div class="checkin-data-item" *ngIf="checkinResult.events.start_at">
             <span class="checkin-data-label">Fecha</span>
-            <span class="checkin-data-value">{{ checkinResult.events?.start_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+            <span class="checkin-data-value">{{ checkinResult.events.start_at | date:'dd/MM/yyyy · HH:mm' }}</span>
           </div>
           <div class="checkin-data-item" *ngIf="checkinResult.checked_in_at">
             <span class="checkin-data-label">Check-in</span>

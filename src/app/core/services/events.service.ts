@@ -106,7 +106,7 @@ export class EventsService {
 
     if (error) throw error;
 
-    this._homeCache = (data ?? []) as CbmEvent[];
+    this._homeCache = (data ?? []) as unknown as CbmEvent[];
     this._homeCacheTs = Date.now();
     return this._homeCache;
   }
