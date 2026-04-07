@@ -4,7 +4,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { RouterLink } from '@angular/router';
 import { BonosRegaloService, BonoMetodoPago, BonoRegalo } from '../../core/services/bonos-regalo.service';
 import { ConfiguracionService } from '../../core/services/configuracion.service';
-import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
+import { ServicioRegalo, ServiciosRegaloService } from '../../core/services/servicios-regalo.service';
 
 const WHATSAPP_PHONE = '34662561672';
 
@@ -21,8 +21,8 @@ const REQUEST_TIMEOUT_MS = 10000;
 export class RegaloComponent implements OnInit {
   bonosActivo = false;
   tab: TabRegalo = 'regalar';
-  tarifas: Tarifa[] = [];
-  tarifaSeleccionada: Tarifa | null = null;
+  servicios: ServicioRegalo[] = [];
+  servicioSeleccionado: ServicioRegalo | null = null;
 
   codigoInput = '';
   loadingCodigo = false;
@@ -36,7 +36,7 @@ export class RegaloComponent implements OnInit {
   constructor(
     private readonly fb: FormBuilder,
     private readonly configuracionService: ConfiguracionService,
-    private readonly tarifasService: TarifasService,
+    private readonly serviciosRegaloService: ServiciosRegaloService,
     private readonly bonosRegaloService: BonosRegaloService
   ) {
     this.form = this.fb.nonNullable.group({
@@ -56,17 +56,17 @@ export class RegaloComponent implements OnInit {
   }
   async ngOnInit(): Promise<void> {
     this.bonosActivo = false;
-    this.tarifas = [];
+    this.servicios = [];
 
     try {
       this.bonosActivo = await this.withTimeout(this.configuracionService.isBonosRegaloActivo(), false);
 
       if (this.bonosActivo) {
-        this.tarifas = await this.withTimeout(this.tarifasService.getTarifas(), [] as Tarifa[]);
+        this.servicios = await this.withTimeout(this.serviciosRegaloService.getServiciosRegalo(), [] as ServicioRegalo[]);
       }
     } catch {
       this.bonosActivo = false;
-      this.tarifas = [];
+      this.servicios = [];
     }
   }
 
@@ -74,18 +74,12 @@ export class RegaloComponent implements OnInit {
     this.tab = tab;
   }
 
-  seleccionarTarifa(tarifa: Tarifa): void {
-    this.tarifaSeleccionada = tarifa;
-  }
-
-  getMensajeEmotivo(tarifa: Tarifa): string {
-    if (tarifa.categoria === 'fisioterapia') return 'Regala recuperación 💆';
-    if (tarifa.categoria === 'pilates') return 'Regala movimiento 🧘';
-    return 'Regala bienestar ✨';
+  seleccionarServicio(servicio: ServicioRegalo): void {
+    this.servicioSeleccionado = servicio;
   }
 
   async continuarWhatsApp(): Promise<void> {
-    if (!this.tarifaSeleccionada || this.form.invalid) {
+    if (!this.servicioSeleccionado || this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
@@ -95,9 +89,9 @@ export class RegaloComponent implements OnInit {
 
     await this.bonosRegaloService.createSolicitudBono({
       codigo,
-      tarifa_id: this.tarifaSeleccionada.id,
-      nombre_servicio: this.tarifaSeleccionada.nombre,
-      precio: this.tarifaSeleccionada.precio,
+      tarifa_id: this.servicioSeleccionado.id,
+      nombre_servicio: this.servicioSeleccionado.nombre_servicio,
+      precio: this.servicioSeleccionado.precio,
       nombre_comprador: v.nombre_comprador,
       email_comprador: v.email_comprador,
       mensaje_personal: v.mensaje_personal || null,
@@ -108,7 +102,7 @@ export class RegaloComponent implements OnInit {
     const mensaje = [
       'Hola CBM 😊 Quiero regalar una experiencia a alguien especial 🎁',
       '',
-      `Servicio elegido: ${this.tarifaSeleccionada.nombre} — ${this.tarifaSeleccionada.precio}€`,
+      `Servicio elegido: ${this.servicioSeleccionado.nombre_servicio} — ${this.servicioSeleccionado.precio}${this.servicioSeleccionado.unidad}`,
       `Mi nombre: ${v.nombre_comprador}`,
       `Mi email: ${v.email_comprador}`,
       `Método de pago: ${v.metodo_pago}`,

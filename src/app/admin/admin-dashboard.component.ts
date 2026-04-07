@@ -17,6 +17,7 @@ import {
 import { supabase } from '../core/supabase.client';
 import { BonosRegaloService, BonoEstado, BonoRegalo } from '../core/services/bonos-regalo.service';
 import { ConfiguracionService } from '../core/services/configuracion.service';
+import { ServiciosRegaloService, ServicioRegalo, ServicioRegaloCategoria } from '../core/services/servicios-regalo.service';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
 type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin';
@@ -128,9 +129,20 @@ export class AdminDashboardComponent implements OnInit {
   filtroBonos: 'todos' | BonoEstado = 'todos';
   isBonoModalOpen = false;
   bonoDetalle: BonoRegalo | null = null;
-  codigoManual = '';
 
   readonly bonosEstados: BonoEstado[] = ['pendiente_pago', 'pagado', 'enviado', 'canjeado'];
+
+  // ── Servicios de regalo ───────────────────────────────────────────────────
+  serviciosRegalo: ServicioRegalo[] = [];
+  serviciosRegaloLoading = false;
+  serviciosRegaloSaving = false;
+  serviciosRegaloDeletingId: string | null = null;
+  serviciosRegaloError = '';
+  serviciosRegaloMessage = '';
+  isServicioRegaloModalOpen = false;
+  editingServicioRegalo: ServicioRegalo | null = null;
+
+  readonly servicioRegaloForm;
 
   readonly registroStatusLabels: Record<string, string> = {
     confirmed: 'Confirmado',
@@ -176,6 +188,7 @@ export class AdminDashboardComponent implements OnInit {
     private readonly eventsService: EventsService,
     private readonly bonosRegaloService: BonosRegaloService,
     private readonly configuracionService: ConfiguracionService,
+    private readonly serviciosRegaloService: ServiciosRegaloService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -232,6 +245,17 @@ export class AdminDashboardComponent implements OnInit {
       free_cooldown_days: [30, Validators.min(0)],
       status: ['active' as EventStatus]
     });
+
+    this.servicioRegaloForm = this.fb.nonNullable.group({
+      nombre_emotivo: ['', Validators.required],
+      nombre_servicio: ['', Validators.required],
+      descripcion: [''],
+      precio: [0, [Validators.required, Validators.min(0)]],
+      unidad: ['€'],
+      categoria: ['fisioterapia' as ServicioRegaloCategoria, Validators.required],
+      orden: [0, Validators.required],
+      activo: [true]
+    });
   }
 
   // ── Getters ───────────────────────────────────────────────────────────────
@@ -259,7 +283,7 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig()]);
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo()]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -1304,11 +1328,18 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       const updated = await this.withTimeout(this.bonosRegaloService.updateEstado(bono.id, estado));
-      this.bonos = this.bonos.map((item) => item.id === updated.id ? updated : item);
-      this.bonosMessage = 'Estado del bono actualizado.';
+      this.zone.run(() => {
+        this.bonos = this.bonos.map((item) => item.id === updated.id ? updated : item);
+        this.bonosMessage = 'Estado actualizado';
+        this.flushUiState();
+      });
+      setTimeout(() => this.zone.run(() => { if (this.bonosMessage === 'Estado actualizado') { this.bonosMessage = ''; this.flushUiState(); } }), 3000);
     } catch {
-      target.value = bono.estado;
-      this.bonosMessage = 'No se pudo actualizar el estado del bono.';
+      this.zone.run(() => {
+        target.value = bono.estado;
+        this.bonosMessage = 'No se pudo actualizar el estado del bono.';
+        this.flushUiState();
+      });
     }
   }
 
@@ -1339,9 +1370,138 @@ export class AdminDashboardComponent implements OnInit {
 
   generarCodigoBono(): void {
     const code = this.bonosRegaloService.generarCodigo();
-    this.codigoManual = code;
     navigator.clipboard?.writeText(code);
-    this.bonosMessage = 'Código generado y copiado al portapapeles.';
+    this.bonosMessage = `Código ${code} generado y copiado al portapapeles.`;
+  }
+
+  // ── Servicios de regalo ───────────────────────────────────────────────────
+
+  async loadServiciosRegalo(): Promise<void> {
+    this.serviciosRegaloLoading = true;
+    this.serviciosRegaloError = '';
+
+    try {
+      this.serviciosRegalo = await this.withTimeout(this.serviciosRegaloService.getAllServiciosRegalo());
+    } catch {
+      this.serviciosRegaloError = 'No se pudieron cargar los servicios de regalo.';
+    } finally {
+      this.serviciosRegaloLoading = false;
+    }
+  }
+
+  openCreateServicioRegaloModal(): void {
+    this.editingServicioRegalo = null;
+    this.servicioRegaloForm.reset({
+      nombre_emotivo: '',
+      nombre_servicio: '',
+      descripcion: '',
+      precio: 0,
+      unidad: '€',
+      categoria: 'fisioterapia',
+      orden: 0,
+      activo: true
+    });
+    this.isServicioRegaloModalOpen = true;
+  }
+
+  openEditServicioRegaloModal(servicio: ServicioRegalo): void {
+    this.editingServicioRegalo = servicio;
+    this.servicioRegaloForm.reset({
+      nombre_emotivo: servicio.nombre_emotivo,
+      nombre_servicio: servicio.nombre_servicio,
+      descripcion: servicio.descripcion ?? '',
+      precio: servicio.precio,
+      unidad: servicio.unidad,
+      categoria: servicio.categoria,
+      orden: servicio.orden,
+      activo: servicio.activo
+    });
+    this.isServicioRegaloModalOpen = true;
+  }
+
+  closeServicioRegaloModal(): void {
+    this.isServicioRegaloModalOpen = false;
+    this.editingServicioRegalo = null;
+  }
+
+  async saveServicioRegalo(): Promise<void> {
+    if (this.servicioRegaloForm.invalid) {
+      this.servicioRegaloForm.markAllAsTouched();
+      return;
+    }
+
+    this.serviciosRegaloSaving = true;
+    this.serviciosRegaloError = '';
+
+    const v = this.servicioRegaloForm.getRawValue();
+    const payload: Omit<ServicioRegalo, 'id'> = {
+      nombre_emotivo: v.nombre_emotivo,
+      nombre_servicio: v.nombre_servicio,
+      descripcion: v.descripcion || null,
+      precio: v.precio,
+      unidad: v.unidad,
+      categoria: v.categoria,
+      orden: v.orden,
+      activo: v.activo
+    };
+
+    try {
+      if (this.editingServicioRegalo) {
+        const updated = await this.withTimeout(this.serviciosRegaloService.updateServicioRegalo(this.editingServicioRegalo.id, payload));
+        this.serviciosRegalo = this.serviciosRegalo.map((s) => s.id === updated.id ? updated : s);
+        this.serviciosRegaloMessage = 'Servicio actualizado.';
+      } else {
+        const created = await this.withTimeout(this.serviciosRegaloService.createServicioRegalo(payload));
+        this.serviciosRegalo = [created, ...this.serviciosRegalo];
+        this.serviciosRegaloMessage = 'Servicio creado.';
+      }
+
+      this.closeServicioRegaloModal();
+      this.flushUiState();
+    } catch {
+      this.serviciosRegaloError = 'No se pudo guardar el servicio.';
+      this.flushUiState();
+    } finally {
+      this.zone.run(() => {
+        this.serviciosRegaloSaving = false;
+        this.flushUiState();
+      });
+    }
+  }
+
+  async toggleServicioRegaloActivo(servicio: ServicioRegalo, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+
+    try {
+      const updated = await this.withTimeout(this.serviciosRegaloService.toggleActivo(servicio.id, target.checked));
+      this.serviciosRegalo = this.serviciosRegalo.map((s) => s.id === updated.id ? updated : s);
+      this.serviciosRegaloMessage = 'Estado actualizado.';
+    } catch {
+      target.checked = servicio.activo;
+      this.serviciosRegaloMessage = 'Error al actualizar el estado.';
+    } finally {
+      this.flushUiState();
+    }
+  }
+
+  async deleteServicioRegalo(servicio: ServicioRegalo): Promise<void> {
+    if (!window.confirm(`¿Eliminar el servicio "${servicio.nombre_servicio}"?`)) return;
+
+    const previous = [...this.serviciosRegalo];
+    this.serviciosRegalo = this.serviciosRegalo.filter((s) => s.id !== servicio.id);
+
+    try {
+      await this.withTimeout(this.serviciosRegaloService.deleteServicioRegalo(servicio.id));
+      this.serviciosRegaloMessage = 'Servicio eliminado.';
+    } catch {
+      this.serviciosRegalo = previous;
+      this.serviciosRegaloMessage = 'No se pudo eliminar el servicio.';
+    } finally {
+      this.zone.run(() => {
+        this.serviciosRegaloDeletingId = null;
+        this.flushUiState();
+      });
+    }
   }
 
   getEventoAvailableSlots(evento: CbmEvent): number {

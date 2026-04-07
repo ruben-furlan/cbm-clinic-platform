@@ -1148,3 +1148,23 @@ textarea:disabled {
   .checkin-input-row { flex-wrap: wrap; }
   .checkin-input     { min-width: 0; }
 }
+
+/* ── Bonos regalo ────────────────────────────────────────────────────────── */
+
+.bonos-config { max-width:1200px; margin:20px auto; background:#fff; border-radius:16px; border:1px solid rgba(123,77,255,.15); padding:20px 24px; display:grid; gap:14px; }
+.bonos-config h3 { margin:0; color:#1f1b2d; }
+.bonos-config p { margin:0; color:#6c6580; font-size:14px; }
+.bonos-code-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+.stats-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.stat-card { background:#fff; border-radius:14px; border:1px solid rgba(123,77,255,.14); padding:16px 20px; text-align:center; }
+.stat-card p { margin:0 0 6px; color:#6c6580; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.stat-card strong { font-size:28px; font-weight:800; color:#1f1b2d; }
+
+.section-subtitle { margin:0; font-size:16px; font-weight:700; color:#1f1b2d; }
+.bono-msg { font-style:italic; color:#6c6580; }
+.switch-lg { width:58px; height:32px; }
+.switch-lg span::before { width:26px; height:26px; }
+.switch-lg input:checked + span::before { transform:translateX(26px); }
+
+@media (max-width:720px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }

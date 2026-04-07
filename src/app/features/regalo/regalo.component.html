@@ -14,11 +14,11 @@
 
       <ng-container *ngIf="tab==='regalar'">
         <section class="cards-grid">
-          <article class="tarifa-card" *ngFor="let tarifa of tarifas" [class.selected]="tarifaSeleccionada?.id === tarifa.id" (click)="seleccionarTarifa(tarifa)">
-            <p class="mini">{{ getMensajeEmotivo(tarifa) }}</p>
-            <h3>{{ tarifa.nombre }}</h3>
-            <p class="precio">{{ tarifa.precio }}{{ tarifa.unidad }}</p>
-            <p>{{ tarifa.descripcion }}</p>
+          <article class="tarifa-card" *ngFor="let servicio of servicios" [class.selected]="servicioSeleccionado?.id === servicio.id" (click)="seleccionarServicio(servicio)">
+            <p class="mini">{{ servicio.nombre_emotivo }}</p>
+            <h3>{{ servicio.nombre_servicio }}</h3>
+            <p class="precio">{{ servicio.precio }}{{ servicio.unidad }}</p>
+            <p>{{ servicio.descripcion }}</p>
           </article>
         </section>
 
@@ -64,7 +64,7 @@
           <p class="small">BONO REGALO</p>
           <h3>{{ bonoEncontrado.nombre_servicio }}</h3>
           <p class="precio">{{ bonoEncontrado.precio }}€</p>
-          <p *ngIf="bonoEncontrado.mensaje_personal" class="msg">“{{ bonoEncontrado.mensaje_personal }}”</p>
+          <p *ngIf="bonoEncontrado.mensaje_personal" class="msg">"{{ bonoEncontrado.mensaje_personal }}"</p>
           <p class="codigo">Código: {{ bonoEncontrado.codigo }}</p>
           <p class="small">Calle Arquímedes 227, Local 2 · Terrassa · 662 56 16 72</p>
           <div class="franja"></div>
