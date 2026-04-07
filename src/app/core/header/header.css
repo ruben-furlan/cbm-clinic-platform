@@ -307,24 +307,30 @@
     justify-content: center;
   }
 
+  /* Menú abierto: sube el header sobre los floating buttons */
+  .header:has(.mobile-menu.is-open){
+    z-index: 1300;
+  }
+
   .mobile-menu{
     display: block;
     max-height: 0;
     overflow: hidden;
     border-top: 1px solid transparent;
-    transition: max-height 0.25s ease;
+    transition: max-height 0.35s ease;
     background: rgba(255, 255, 255, 0.97);
   }
 
   .mobile-menu.is-open{
-    max-height: 520px;
+    max-height: calc(100dvh - 70px);
+    overflow-y: auto;
     border-top-color: #f1d8e6;
   }
 
   .mobile-menu-links{
     display: grid;
     gap: 6px;
-    padding: 10px 20px 14px;
+    padding: 10px 20px calc(28px + env(safe-area-inset-bottom));
   }
 
   .mobile-menu-links a{
