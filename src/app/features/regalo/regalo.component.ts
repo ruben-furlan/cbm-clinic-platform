@@ -9,6 +9,7 @@ import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
 const WHATSAPP_PHONE = '34662561672';
 
 type TabRegalo = 'regalar' | 'canjear';
+const REQUEST_TIMEOUT_MS = 10000;
 
 @Component({
   selector: 'app-regalo',
@@ -47,12 +48,23 @@ export class RegaloComponent implements OnInit {
     });
   }
 
+
+  private withTimeout<T>(promise: Promise<T>, fallback: T): Promise<T> {
+    return Promise.race([
+      promise,
+      new Promise<T>((resolve) => setTimeout(() => resolve(fallback), REQUEST_TIMEOUT_MS))
+    ]);
+  }
   async ngOnInit(): Promise<void> {
     try {
-      this.bonosActivo = await this.configuracionService.isBonosRegaloActivo();
+      this.bonosActivo = await this.withTimeout(this.configuracionService.isBonosRegaloActivo(), false);
+
       if (this.bonosActivo) {
-        this.tarifas = await this.tarifasService.getTarifas();
+        this.tarifas = await this.withTimeout(this.tarifasService.getTarifas(), [] as Tarifa[]);
       }
+    } catch {
+      this.bonosActivo = false;
+      this.tarifas = [];
     } finally {
       this.loadingConfig = false;
     }
