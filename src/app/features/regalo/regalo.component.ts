@@ -1,5 +1,5 @@
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { BonosRegaloService, BonoMetodoPago } from '../../core/services/bonos-regalo.service';
@@ -59,6 +59,7 @@ export class RegaloComponent implements OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
+    private readonly cdr: ChangeDetectorRef,
     private readonly configuracionService: ConfiguracionService,
     private readonly serviciosRegaloService: ServiciosRegaloService,
     private readonly bonosRegaloService: BonosRegaloService
@@ -169,14 +170,17 @@ export class RegaloComponent implements OnInit {
         tiene_mensaje: !!v.mensaje_personal
       };
       this.confirmado = true;
+      this.guardando = false;
+      this.cdr.detectChanges();
 
     } catch (err) {
       console.error('Error guardando solicitud bono:', err);
       this.errorGuardando = true;
-    } finally {
       this.guardando = false;
+      this.cdr.detectChanges();
     }
   }
+
 
   whatsAppFallbackUrl(): string {
     if (!this.servicioSeleccionado) return `https://wa.me/${WHATSAPP_PHONE}`;
