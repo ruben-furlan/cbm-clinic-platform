@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BonosRegaloService, BonoRegalo } from '../core/services/bonos-regalo.service';
@@ -6,8 +6,22 @@ import { ServiciosRegaloService, ServicioRegalo } from '../core/services/servici
 
 const WHATSAPP_PHONE = '34662561672';
 const CANJEAR_URL = 'https://cbmfisioterapia.com/canjear';
+const MENSAJES_APERTURA = [
+  '',
+  'En proceso de abrir...',
+  'Falta menos para tu sorpresa...',
+  '¡Ya casi está...! ✨'
+];
 
-type EstadoCanje = 'inicial' | 'cargando' | 'no_encontrado' | 'pendiente_pago' | 'ya_canjeado' | 'animacion' | 'vale';
+type EstadoCanje =
+  | 'inicial'
+  | 'cargando'
+  | 'no_encontrado'
+  | 'pendiente_pago'
+  | 'ya_canjeado'
+  | 'regalo-interactivo'
+  | 'animacion'
+  | 'vale';
 
 interface ConfetiParticula {
   left: string;
@@ -26,11 +40,19 @@ const CONFETI_COLORES = ['#ff4fa3', '#7b4dff', '#ffd700', '#ffffff', '#ff85c8', 
   templateUrl: './canjear-regalo.component.html',
   styleUrl: './canjear-regalo.component.css'
 })
-export class CanjearRegaloComponent {
+export class CanjearRegaloComponent implements OnDestroy {
   estado: EstadoCanje = 'inicial';
   codigoInput = '';
   bono: BonoRegalo | null = null;
   servicioRegalo: ServicioRegalo | null = null;
+
+  regaloTocado = false;
+  mensajeSecuencial = '';
+  mostrarInstrucciones = false;
+  codigoCopiadoOk = false;
+
+  private mensajeIntervalId: ReturnType<typeof setInterval> | null = null;
+  private codigoTimeoutId: ReturnType<typeof setTimeout> | null = null;
 
   readonly confeti: ConfetiParticula[] = Array.from({ length: 32 }, (_, i) => ({
     left:     `${(i * 37 + 11) % 100}%`,
@@ -59,6 +81,11 @@ export class CanjearRegaloComponent {
     private readonly serviciosRegaloService: ServiciosRegaloService,
     private readonly cdr: ChangeDetectorRef
   ) {}
+
+  ngOnDestroy(): void {
+    this.detenerMensajesSecuenciales();
+    if (this.codigoTimeoutId !== null) clearTimeout(this.codigoTimeoutId);
+  }
 
   async abrirRegalo(): Promise<void> {
     const codigo = this.codigoInput.trim().toUpperCase();
@@ -91,19 +118,15 @@ export class CanjearRegaloComponent {
         return;
       }
 
-      // Estado pagado o enviado: experiencia de apertura
+      // Estado pagado o enviado: fase 0 — interacción antes de la animación
       if (bono.estado === 'pagado' || bono.estado === 'enviado') {
-        this.estado = 'animacion';
-        // Canjear en background (sin bloquear la animación)
-        void this.bonosRegaloService.canjearBono(bono.codigo)
-          .then(actualizado => { this.bono = actualizado; this.cdr.detectChanges(); })
-          .catch(err => console.error('Error canjeando bono:', err));
-        // Pasar al vale tras la animación
-        setTimeout(() => { this.estado = 'vale'; this.cdr.detectChanges(); }, 2600);
+        this.estado = 'regalo-interactivo';
+        this.regaloTocado = false;
+        this.iniciarMensajesSecuenciales();
         return;
       }
 
-      // Cualquier otro estado (ej: ya estaba en animacion previa): mostrar vale
+      // Cualquier otro estado: mostrar vale directamente
       this.estado = 'vale';
 
     } catch (err) {
@@ -114,16 +137,66 @@ export class CanjearRegaloComponent {
     }
   }
 
+  private iniciarMensajesSecuenciales(): void {
+    let idx = 0;
+    this.mensajeSecuencial = MENSAJES_APERTURA[idx];
+    this.cdr.detectChanges();
+
+    this.mensajeIntervalId = setInterval(() => {
+      idx = (idx + 1) % MENSAJES_APERTURA.length;
+      this.mensajeSecuencial = MENSAJES_APERTURA[idx];
+      this.cdr.detectChanges();
+    }, 1200);
+  }
+
+  private detenerMensajesSecuenciales(): void {
+    if (this.mensajeIntervalId !== null) {
+      clearInterval(this.mensajeIntervalId);
+      this.mensajeIntervalId = null;
+    }
+  }
+
+  tocarRegalo(): void {
+    if (this.regaloTocado) return;
+    this.regaloTocado = true;
+    this.detenerMensajesSecuenciales();
+    this.cdr.detectChanges();
+
+    // Esperar que termine la animación CSS de explosión (500ms) antes de cambiar estado
+    setTimeout(() => {
+      this.estado = 'animacion';
+      // Canjear en background sin bloquear la animación
+      if (this.bono) {
+        void this.bonosRegaloService.canjearBono(this.bono.codigo)
+          .then(actualizado => { this.bono = actualizado; this.cdr.detectChanges(); })
+          .catch(err => console.error('Error canjeando bono:', err));
+      }
+      // Pasar al vale tras la animación de apertura
+      setTimeout(() => { this.estado = 'vale'; this.cdr.detectChanges(); }, 2600);
+      this.cdr.detectChanges();
+    }, 500);
+  }
+
   resetear(): void {
+    this.detenerMensajesSecuenciales();
+    if (this.codigoTimeoutId !== null) clearTimeout(this.codigoTimeoutId);
     this.estado = 'inicial';
     this.codigoInput = '';
     this.bono = null;
     this.servicioRegalo = null;
+    this.regaloTocado = false;
+    this.mensajeSecuencial = '';
+    this.mostrarInstrucciones = false;
+    this.codigoCopiadoOk = false;
   }
 
-  reservarSesion(): void {
+  coordinarWhatsApp(): void {
     if (!this.bono) return;
-    const text = `Hola CBM! Tengo un bono regalo con código ${this.bono.codigo} y quiero reservar mi sesión 💜\n¿Cuándo podríais atenderme?`;
+    const text = [
+      `Hola CBM! 😊 Tengo un bono regalo con código ${this.bono.codigo} — ${this.nombreEmotivo}`,
+      'Me gustaría coordinar mi sesión 💜',
+      '¿Cuándo tendríais disponibilidad?'
+    ].join('\n');
     window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
   }
 
@@ -131,40 +204,20 @@ export class CanjearRegaloComponent {
     window.open(`https://wa.me/${WHATSAPP_PHONE}`, '_blank');
   }
 
-  guardarVale(): void {
-    const node = document.getElementById('vale-regalo');
-    if (!node) return;
+  copiarCodigo(): void {
+    if (!this.bono) return;
+    void navigator.clipboard.writeText(this.bono.codigo).then(() => {
+      this.codigoCopiadoOk = true;
+      this.cdr.detectChanges();
+      this.codigoTimeoutId = setTimeout(() => {
+        this.codigoCopiadoOk = false;
+        this.cdr.detectChanges();
+      }, 2000);
+    });
+  }
 
-    const width = 680;
-    const height = node.scrollHeight * 2;
-
-    const svg = [
-      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`,
-      `<foreignObject width="${width}" height="${height}">`,
-      new XMLSerializer().serializeToString(node),
-      `</foreignObject></svg>`
-    ].join('');
-
-    const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const image = new Image();
-    image.onload = () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = width * 2;
-      canvas.height = height * 2;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.scale(2, 2);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, width, height);
-      ctx.drawImage(image, 0, 0, width, height);
-      const link = document.createElement('a');
-      link.href = canvas.toDataURL('image/png');
-      link.download = 'bono-regalo-cbm.png';
-      link.click();
-      URL.revokeObjectURL(url);
-    };
-    image.src = url;
+  toggleInstrucciones(): void {
+    this.mostrarInstrucciones = !this.mostrarInstrucciones;
   }
 
   readonly canjearUrl = CANJEAR_URL;

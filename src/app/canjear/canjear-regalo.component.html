@@ -70,6 +70,29 @@
     </div>
   </div>
 
+  <!-- ── ESTADO REGALO INTERACTIVO — FASE 0 ──────────────────────────── -->
+  <div class="overlay-regalo-interactivo" *ngIf="estado === 'regalo-interactivo'">
+    <div class="regalo-interactivo-content">
+
+      <p class="toca-instruccion">
+        <span class="tap-icon">👆</span>
+        <span class="instruccion-touch">Toca el regalo para abrirlo</span>
+        <span class="instruccion-click">Haz clic en el regalo para abrirlo</span>
+      </p>
+
+      <button
+        type="button"
+        class="regalo-btn"
+        [class.regalo-explotando]="regaloTocado"
+        (click)="tocarRegalo()"
+        aria-label="Abrir regalo"
+      >🎁</button>
+
+      <p class="mensaje-secuencial">{{ mensajeSecuencial }}</p>
+
+    </div>
+  </div>
+
   <!-- ── ESTADO ANIMACION ─────────────────────────────────────────────── -->
   <div class="overlay-animacion" *ngIf="estado === 'animacion'">
     <!-- Confeti -->
@@ -130,6 +153,13 @@
         <div class="vale-codigo-box">
           <span class="vale-codigo-label">Tu código:</span>
           <span class="vale-codigo">{{ bono.codigo }}</span>
+          <button
+            type="button"
+            class="btn-copiar-codigo"
+            [class.copiado]="codigoCopiadoOk"
+            (click)="copiarCodigo()"
+            aria-label="Copiar código"
+          >{{ codigoCopiadoOk ? '✓ Copiado!' : '📋 Copiar' }}</button>
         </div>
 
         <p class="vale-instruccion">Preséntate en CBM Fisioterapia con este código</p>
@@ -141,8 +171,32 @@
     </div>
 
     <div class="vale-acciones">
-      <button type="button" class="btn-guardar" (click)="guardarVale()">📥 Guardar mi regalo</button>
-      <button type="button" class="btn-reservar" (click)="reservarSesion()">💬 Reservar mi sesión</button>
+      <button type="button" class="btn-coordinar" (click)="coordinarWhatsApp()">
+        💬 Coordinar mi sesión por WhatsApp
+      </button>
+      <button type="button" class="btn-instrucciones" (click)="toggleInstrucciones()">
+        {{ mostrarInstrucciones ? '🔼 Ocultar instrucciones' : '📋 Ver instrucciones de uso' }}
+      </button>
+    </div>
+
+    <div class="instrucciones-card" *ngIf="mostrarInstrucciones">
+      <p class="instrucciones-titulo">¿Cómo usar tu bono regalo? 💜</p>
+      <ol class="instrucciones-lista">
+        <li>💬 Escríbenos por WhatsApp con tu código</li>
+        <li>📅 Te ayudamos a elegir el mejor horario</li>
+        <li>🏥 Ven al centro el día acordado</li>
+        <li>✨ ¡Disfruta tu experiencia CBM!</li>
+      </ol>
+      <div class="instrucciones-contacto">
+        <p>📍 Calle Arquímedes 227, Local 2 · Terrassa</p>
+        <p>📱 662 56 16 72</p>
+        <p>⏰ L-V 9:00-14:00 / 17:00-21:00 · Sábados 10:00-15:00</p>
+      </div>
+      <div class="instrucciones-codigo">
+        <span>Tu código:</span>
+        <strong>{{ bono.codigo }}</strong>
+        <span class="instrucciones-guardalo">Guárdalo bien 💜</span>
+      </div>
     </div>
   </div>
 

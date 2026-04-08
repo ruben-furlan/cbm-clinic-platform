@@ -492,8 +492,244 @@
   100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
 }
 
+/* ── Overlay regalo interactivo — Fase 0 ───────────────────────────────── */
+.overlay-regalo-interactivo {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(145deg, #2d0a3e 0%, #1a0a2e 50%, #3d1050 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  overflow: hidden;
+  animation: fadeIn .25s ease;
+}
+
+.regalo-interactivo-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.toca-instruccion {
+  color: rgba(255,255,255,.65);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  animation: pulse-glow 1.8s ease-in-out infinite;
+}
+
+.tap-icon {
+  display: inline-block;
+  animation: tap-bounce 1.2s ease-in-out infinite;
+}
+
+/* Mobile: "Toca". Desktop con puntero fino: "Haz clic" */
+.instruccion-click { display: none; }
+.instruccion-touch { display: inline; }
+
+@media (hover: hover) and (pointer: fine) {
+  .instruccion-touch { display: none; }
+  .instruccion-click { display: inline; }
+}
+
+.regalo-btn {
+  font-size: 100px;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 20px;
+  animation: wobble 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 24px rgba(255,79,163,.5)) drop-shadow(0 0 48px rgba(123,77,255,.3));
+  transition: filter .2s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.regalo-btn:not(.regalo-explotando):active {
+  filter: drop-shadow(0 0 40px rgba(255,79,163,.9)) drop-shadow(0 0 80px rgba(123,77,255,.7));
+}
+
+.regalo-explotando {
+  animation: regalo-explota .5s ease forwards !important;
+}
+
+.mensaje-secuencial {
+  color: rgba(255,255,255,.85);
+  font-size: 18px;
+  font-weight: 600;
+  min-height: 28px;
+  margin: 0;
+  transition: opacity .4s ease;
+}
+
+/* ── Botón copiar código (inline en vale-codigo-box) ────────────────────── */
+.btn-copiar-codigo {
+  border: 1.5px solid rgba(123,77,255,.3);
+  background: rgba(123,77,255,.08);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: #7b4dff;
+  cursor: pointer;
+  transition: background .15s, color .15s, border-color .15s;
+  white-space: nowrap;
+}
+
+.btn-copiar-codigo:hover { background: rgba(123,77,255,.15); }
+
+.btn-copiar-codigo.copiado {
+  background: rgba(37,211,102,.12);
+  border-color: rgba(37,211,102,.4);
+  color: #128c7e;
+}
+
+/* ── Acciones rediseñadas ────────────────────────────────────────────────── */
+.btn-coordinar {
+  width: 100%;
+  padding: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(120deg, #ff4fa3, #7b4dff);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(123,77,255,.3);
+  transition: opacity .15s, transform .12s;
+}
+
+.btn-coordinar:hover { opacity: .9; transform: translateY(-2px); }
+
+.btn-instrucciones {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid #e2d5ee;
+  border-radius: 14px;
+  background: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: #5f5476;
+  cursor: pointer;
+  transition: border-color .15s, transform .12s;
+}
+
+.btn-instrucciones:hover { border-color: #9b7acf; transform: translateY(-1px); }
+
+/* ── Card instrucciones colapsable ──────────────────────────────────────── */
+.instrucciones-card {
+  background: #fff;
+  border: 1.5px solid #ede0f8;
+  border-radius: 16px;
+  padding: 20px 22px;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp .25s ease;
+}
+
+.instrucciones-titulo {
+  font-size: 16px;
+  font-weight: 800;
+  color: #1f1b2d;
+  margin: 0 0 14px;
+}
+
+.instrucciones-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  counter-reset: instrucciones;
+}
+
+.instrucciones-lista li {
+  font-size: 14px;
+  color: #4a4060;
+  line-height: 1.5;
+}
+
+.instrucciones-contacto {
+  background: rgba(123,77,255,.04);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.instrucciones-contacto p {
+  font-size: 13px;
+  color: #7a7090;
+  margin: 0 0 4px;
+  line-height: 1.5;
+}
+
+.instrucciones-contacto p:last-child { margin-bottom: 0; }
+
+.instrucciones-codigo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 13px;
+  color: #7a7090;
+  background: #f7f4fc;
+  border-radius: 10px;
+  padding: 10px 16px;
+}
+
+.instrucciones-codigo strong {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  color: #1f1b2d;
+  letter-spacing: 2px;
+}
+
+.instrucciones-guardalo {
+  color: #9b7acf;
+  font-style: italic;
+}
+
+/* ── Nuevos keyframes ───────────────────────────────────────────────────── */
+@keyframes wobble {
+  0%, 100% { transform: rotate(-3deg) scale(1); }
+  50%       { transform: rotate(3deg) scale(1.05); }
+}
+
+@keyframes regalo-explota {
+  0%   { transform: scale(1)   rotate(0deg);  opacity: 1; }
+  50%  { transform: scale(2.2) rotate(10deg); opacity: .9; }
+  100% { transform: scale(0)   rotate(25deg); opacity: 0; }
+}
+
+@keyframes tap-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: .65; }
+  50%       { opacity: 1; }
+}
+
 /* ── Mobile ─────────────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .vale-interior { padding: 20px 18px 16px; }
-  .vale-codigo-box { flex-direction: column; gap: 4px; }
+  .vale-codigo-box { flex-wrap: wrap; justify-content: center; }
+  .instrucciones-card { padding: 16px 16px; }
 }
