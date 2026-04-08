@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ConfiguracionService } from '../../../core/services/configuracion.service';
 import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-scroll.directive';
