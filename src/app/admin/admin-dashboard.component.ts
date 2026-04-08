@@ -361,6 +361,7 @@ export class AdminDashboardComponent implements OnInit {
       this.error = 'No se pudieron cargar las tarifas. Recarga la página e inténtalo de nuevo.';
     } finally {
       this.loading = false;
+      this.flushUiState();
     }
   }
 
