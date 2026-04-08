@@ -174,29 +174,58 @@
       <button type="button" class="btn-coordinar" (click)="coordinarWhatsApp()">
         💬 Coordinar mi sesión por WhatsApp
       </button>
-      <button type="button" class="btn-instrucciones" (click)="toggleInstrucciones()">
-        {{ mostrarInstrucciones ? '🔼 Ocultar instrucciones' : '📋 Ver instrucciones de uso' }}
+      <button type="button" class="btn-instrucciones" (click)="abrirInstrucciones()">
+        📋 Ver instrucciones de uso
       </button>
     </div>
+  </div>
 
-    <div class="instrucciones-card" *ngIf="mostrarInstrucciones">
-      <p class="instrucciones-titulo">¿Cómo usar tu bono regalo? 💜</p>
-      <ol class="instrucciones-lista">
-        <li>💬 Escríbenos por WhatsApp con tu código</li>
-        <li>📅 Te ayudamos a elegir el mejor horario</li>
-        <li>🏥 Ven al centro el día acordado</li>
-        <li>✨ ¡Disfruta tu experiencia CBM!</li>
-      </ol>
-      <div class="instrucciones-contacto">
+  <!-- ── OVERLAY bottom sheet ─────────────────────────────────────────── -->
+  <div
+    class="bs-overlay"
+    [class.bs-overlay--visible]="mostrarInstrucciones"
+    (click)="cerrarInstrucciones()"
+  ></div>
+
+  <!-- ── BOTTOM SHEET instrucciones ──────────────────────────────────── -->
+  <div
+    class="bottom-sheet"
+    [class.bottom-sheet--open]="mostrarInstrucciones"
+    (touchstart)="onSheetTouchStart($event)"
+    (touchmove)="onSheetTouchMove($event)"
+    (touchend)="onSheetTouchEnd($event)"
+  >
+    <div class="bottom-sheet__handle"></div>
+
+    <div class="bottom-sheet__content">
+      <h3 class="bs-titulo">¿Cómo usar tu bono? 💜</h3>
+
+      <div class="bs-lista">
+        <div class="bs-item"><span>💬</span><p>Escríbenos por WhatsApp con tu código</p></div>
+        <div class="bs-item"><span>📅</span><p>Elegimos el mejor horario juntos</p></div>
+        <div class="bs-item"><span>🏥</span><p>Ven al centro el día acordado</p></div>
+        <div class="bs-item"><span>✨</span><p>¡Disfruta tu experiencia CBM!</p></div>
+      </div>
+
+      <div class="bs-info">
         <p>📍 Calle Arquímedes 227, Local 2 · Terrassa</p>
         <p>📱 662 56 16 72</p>
-        <p>⏰ L-V 9:00-14:00 / 17:00-21:00 · Sábados 10:00-15:00</p>
+        <p>⏰ L-V 9:00-14:00 / 17:00-21:00 · Sáb 10:00-15:00</p>
       </div>
-      <div class="instrucciones-codigo">
+
+      <div class="bs-codigo">
         <span>Tu código:</span>
-        <strong>{{ bono.codigo }}</strong>
-        <span class="instrucciones-guardalo">Guárdalo bien 💜</span>
+        <strong>{{ bono?.codigo }}</strong>
+        <button type="button" class="bs-copiar" [class.copiado]="codigoCopiadoOk" (click)="copiarCodigo()">
+          {{ codigoCopiadoOk ? '✓ Copiado!' : '📋 Copiar' }}
+        </button>
       </div>
+
+      <p class="bs-nota">Guárdalo bien 💜</p>
+
+      <button type="button" class="bottom-sheet__cerrar" (click)="cerrarInstrucciones()">
+        Cerrar
+      </button>
     </div>
   </div>
 

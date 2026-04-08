@@ -53,6 +53,7 @@ export class CanjearRegaloComponent implements OnDestroy {
 
   private mensajeIntervalId: ReturnType<typeof setInterval> | null = null;
   private codigoTimeoutId: ReturnType<typeof setTimeout> | null = null;
+  private touchStartY = 0;
 
   readonly confeti: ConfetiParticula[] = Array.from({ length: 32 }, (_, i) => ({
     left:     `${(i * 37 + 11) % 100}%`,
@@ -85,6 +86,7 @@ export class CanjearRegaloComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.detenerMensajesSecuenciales();
     if (this.codigoTimeoutId !== null) clearTimeout(this.codigoTimeoutId);
+    document.body.style.overflow = '';
   }
 
   async abrirRegalo(): Promise<void> {
@@ -180,13 +182,13 @@ export class CanjearRegaloComponent implements OnDestroy {
   resetear(): void {
     this.detenerMensajesSecuenciales();
     if (this.codigoTimeoutId !== null) clearTimeout(this.codigoTimeoutId);
+    this.cerrarInstrucciones();
     this.estado = 'inicial';
     this.codigoInput = '';
     this.bono = null;
     this.servicioRegalo = null;
     this.regaloTocado = false;
     this.mensajeSecuencial = '';
-    this.mostrarInstrucciones = false;
     this.codigoCopiadoOk = false;
   }
 
@@ -216,8 +218,32 @@ export class CanjearRegaloComponent implements OnDestroy {
     });
   }
 
-  toggleInstrucciones(): void {
-    this.mostrarInstrucciones = !this.mostrarInstrucciones;
+  abrirInstrucciones(): void {
+    this.mostrarInstrucciones = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  cerrarInstrucciones(): void {
+    this.mostrarInstrucciones = false;
+    document.body.style.overflow = '';
+  }
+
+  onSheetTouchStart(e: TouchEvent): void {
+    this.touchStartY = e.touches[0].clientY;
+  }
+
+  onSheetTouchMove(e: TouchEvent): void {
+    const sheet = e.currentTarget as HTMLElement;
+    // Si el sheet tiene scroll interno activo, no interferir
+    if (sheet.scrollTop > 0) return;
+    // overscroll-behavior: contain en CSS maneja la contención del scroll
+  }
+
+  onSheetTouchEnd(e: TouchEvent): void {
+    const diff = e.changedTouches[0].clientY - this.touchStartY;
+    if (diff > 80) {
+      this.cerrarInstrucciones();
+    }
   }
 
   readonly canjearUrl = CANJEAR_URL;

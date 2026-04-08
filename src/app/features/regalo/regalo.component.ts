@@ -174,6 +174,7 @@ export class RegaloComponent implements OnInit {
       this.confirmado = true;
       this.guardando = false;
       this.cdr.detectChanges();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (err) {
       console.error('Error guardando solicitud bono:', err);

@@ -628,81 +628,188 @@
 
 .btn-instrucciones:hover { border-color: #9b7acf; transform: translateY(-1px); }
 
-/* ── Card instrucciones colapsable ──────────────────────────────────────── */
-.instrucciones-card {
+/* ── Overlay bottom sheet ────────────────────────────────────────────────── */
+.bs-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0);
+  z-index: 999;
+  pointer-events: none;
+  transition: background 300ms ease;
+}
+
+.bs-overlay--visible {
+  background: rgba(0,0,0,.5);
+  pointer-events: all;
+}
+
+/* ── Bottom sheet ────────────────────────────────────────────────────────── */
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   background: #fff;
-  border: 1.5px solid #ede0f8;
-  border-radius: 16px;
-  padding: 20px 22px;
-  width: 100%;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 1;
-  animation: fadeInUp .25s ease;
+  border-radius: 24px 24px 0 0;
+  padding: 12px 24px 40px;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 75vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
-.instrucciones-titulo {
-  font-size: 16px;
-  font-weight: 800;
+.bottom-sheet--open {
+  transform: translateY(0);
+}
+
+.bottom-sheet__handle {
+  width: 40px;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  margin: 0 auto 20px;
+}
+
+.bs-titulo {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 20px;
+  text-align: center;
   color: #1f1b2d;
-  margin: 0 0 14px;
 }
 
-.instrucciones-lista {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 14px;
+.bs-lista {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  counter-reset: instrucciones;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
-.instrucciones-lista li {
-  font-size: 14px;
-  color: #4a4060;
-  line-height: 1.5;
+.bs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
 }
 
-.instrucciones-contacto {
-  background: rgba(123,77,255,.04);
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 14px;
+.bs-item span {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1.4;
 }
 
-.instrucciones-contacto p {
+.bs-item p {
+  font-size: 15px;
+  color: #374151;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.bs-info {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.bs-info p {
   font-size: 13px;
-  color: #7a7090;
+  color: #6b7280;
   margin: 0 0 4px;
   line-height: 1.5;
 }
 
-.instrucciones-contacto p:last-child { margin-bottom: 0; }
+.bs-info p:last-child { margin-bottom: 0; }
 
-.instrucciones-codigo {
+.bs-codigo {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
   justify-content: center;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: #f3f4f6;
+  border-radius: 12px;
+  margin-bottom: 8px;
   font-size: 13px;
-  color: #7a7090;
-  background: #f7f4fc;
-  border-radius: 10px;
-  padding: 10px 16px;
+  color: #6b7280;
 }
 
-.instrucciones-codigo strong {
+.bs-codigo strong {
   font-family: 'Courier New', monospace;
-  font-size: 14px;
-  color: #1f1b2d;
+  font-size: 15px;
   letter-spacing: 2px;
+  color: #1f1b2d;
 }
 
-.instrucciones-guardalo {
-  color: #9b7acf;
-  font-style: italic;
+.bs-copiar {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #7c3aed;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bs-copiar:hover { background: rgba(123,77,255,.08); }
+
+.bs-copiar.copiado {
+  background: rgba(37,211,102,.12);
+  border-color: rgba(37,211,102,.4);
+  color: #128c7e;
+}
+
+.bs-nota {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0 0 16px;
+}
+
+.bottom-sheet__cerrar {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  color: #6b7280;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+
+.bottom-sheet__cerrar:hover { border-color: #9b7acf; }
+
+/* Desktop: comportamiento de modal centrado */
+@media (min-width: 768px) {
+  .bottom-sheet {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    bottom: auto;
+    right: auto;
+    width: 480px;
+    border-radius: 24px;
+    max-height: 80vh;
+    transform: translate(-50%, -60%);
+    opacity: 0;
+    transition: transform 300ms ease, opacity 300ms ease;
+    padding-bottom: 32px;
+  }
+
+  .bottom-sheet--open {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
 }
 
 /* ── Nuevos keyframes ───────────────────────────────────────────────────── */
@@ -731,5 +838,4 @@
 @media (max-width: 480px) {
   .vale-interior { padding: 20px 18px 16px; }
   .vale-codigo-box { flex-wrap: wrap; justify-content: center; }
-  .instrucciones-card { padding: 16px 16px; }
 }
