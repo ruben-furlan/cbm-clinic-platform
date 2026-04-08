@@ -49,3 +49,253 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Botón "¿Cómo funciona?" ────────────────────────────────────────────── */
+.btn-como-funciona {
+  background: none;
+  border: none;
+  padding: 4px 0;
+  font: inherit;
+  font-size: 13px;
+  color: #8a7aaa;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+  text-align: left;
+}
+
+.btn-como-funciona:hover {
+  color: #6b4dcc;
+  text-decoration-color: rgba(107, 77, 204, 0.4);
+}
+
+/* ── Overlay ────────────────────────────────────────────────────────────── */
+.cf-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 999;
+  pointer-events: none;
+  transition: background 300ms ease;
+}
+
+.cf-overlay--visible {
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: all;
+}
+
+/* ── Modal / Bottom sheet ────────────────────────────────────────────────── */
+.cf-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 12px 24px 40px;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  max-height: 80vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.cf-sheet--open {
+  transform: translateY(0);
+}
+
+/* ── Handle (mobile) ────────────────────────────────────────────────────── */
+.cf-handle {
+  width: 40px;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  margin: 0 auto 20px;
+}
+
+/* ── Botón X (desktop) ──────────────────────────────────────────────────── */
+.cf-btn-x {
+  display: none;
+}
+
+/* ── Contenido ──────────────────────────────────────────────────────────── */
+.cf-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cf-header {
+  text-align: center;
+}
+
+.cf-titulo {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1f1b2d;
+  margin: 0 0 6px;
+}
+
+.cf-subtitulo {
+  font-size: 14px;
+  color: #9b94ab;
+  margin: 0;
+}
+
+/* ── Pasos ──────────────────────────────────────────────────────────────── */
+.cf-pasos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cf-paso {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.cf-paso--visible {
+  animation: cf-paso-in 0.4s ease both;
+  animation-delay: calc(var(--i) * 100ms + 80ms);
+}
+
+@keyframes cf-paso-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cf-paso-icono {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 79, 163, 0.12), rgba(123, 77, 255, 0.12));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.cf-paso-texto strong {
+  display: block;
+  font-size: 15px;
+  color: #1f1b2d;
+  margin-bottom: 2px;
+}
+
+.cf-paso-texto p {
+  margin: 0;
+  font-size: 13px;
+  color: #7a7090;
+  line-height: 1.5;
+}
+
+.cf-sep {
+  height: 1px;
+  background: #f0eaf8;
+  margin: 4px 0;
+}
+
+/* ── Acciones ────────────────────────────────────────────────────────────── */
+.cf-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cf-btn-cta {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(120deg, #ff4fa3, #7b4dff);
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(123, 77, 255, 0.28);
+  transition: opacity 0.15s, transform 0.12s;
+}
+
+.cf-btn-cta:hover {
+  opacity: 0.92;
+  transform: translateY(-2px);
+}
+
+.cf-btn-cerrar {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  color: #6b7280;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.cf-btn-cerrar:hover {
+  border-color: #9b7acf;
+}
+
+/* ── Desktop: modal centrado ─────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  .cf-sheet {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    bottom: auto;
+    right: auto;
+    width: 480px;
+    border-radius: 24px;
+    max-height: 80vh;
+    transform: translate(-50%, -60%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 300ms ease, opacity 300ms ease;
+    padding: 40px 32px 32px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.15);
+  }
+
+  .cf-sheet--open {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .cf-handle {
+    display: none;
+  }
+
+  .cf-btn-x {
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    color: #9b94ab;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .cf-btn-x:hover {
+    color: #1f1b2d;
+    background: #f5f0ff;
+  }
+}

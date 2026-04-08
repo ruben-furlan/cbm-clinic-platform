@@ -10,9 +10,95 @@
         </div>
         <div class="bonos-banner-right">
           <button type="button" class="btn-primary" (click)="goToRegalo()">Ver bonos regalo →</button>
+          <button type="button" class="btn-como-funciona" (click)="abrirComoFunciona()">¿Cómo funciona? →</button>
           <p>Elige el servicio, personaliza el mensaje y nosotros nos encargamos del resto</p>
         </div>
       </article>
     </div>
   </section>
+
+  <!-- ── OVERLAY ──────────────────────────────────────────────────────── -->
+  <div
+    class="cf-overlay"
+    [class.cf-overlay--visible]="mostrarComoFunciona"
+    (click)="cerrarComoFunciona()"
+  ></div>
+
+  <!-- ── MODAL / BOTTOM SHEET ─────────────────────────────────────────── -->
+  <div
+    class="cf-sheet"
+    [class.cf-sheet--open]="mostrarComoFunciona"
+  >
+    <!-- Handle (mobile) -->
+    <div class="cf-handle"></div>
+
+    <!-- Botón X (desktop) -->
+    <button type="button" class="cf-btn-x" (click)="cerrarComoFunciona()" aria-label="Cerrar">✕</button>
+
+    <div class="cf-content">
+      <div class="cf-header">
+        <p class="cf-titulo">¿Cómo funciona? 🎁</p>
+        <p class="cf-subtitulo">Regalar bienestar es muy sencillo</p>
+      </div>
+
+      <div class="cf-pasos">
+        <div class="cf-paso" [class.cf-paso--visible]="mostrarComoFunciona" style="--i:0">
+          <div class="cf-paso-icono">🎁</div>
+          <div class="cf-paso-texto">
+            <strong>Elige el servicio</strong>
+            <p>Selecciona el tratamiento que quieres regalar y personalízalo</p>
+          </div>
+        </div>
+
+        <div class="cf-paso" [class.cf-paso--visible]="mostrarComoFunciona" style="--i:1">
+          <div class="cf-paso-icono">💌</div>
+          <div class="cf-paso-texto">
+            <strong>Escríbele unas palabras</strong>
+            <p>Opcional pero muy especial — tu mensaje aparecerá cuando abra el regalo</p>
+          </div>
+        </div>
+
+        <div class="cf-sep"></div>
+
+        <div class="cf-paso" [class.cf-paso--visible]="mostrarComoFunciona" style="--i:2">
+          <div class="cf-paso-icono">📱</div>
+          <div class="cf-paso-texto">
+            <strong>Nos ponemos en contacto</strong>
+            <p>Te escribimos durante el día para coordinar todo contigo</p>
+          </div>
+        </div>
+
+        <div class="cf-paso" [class.cf-paso--visible]="mostrarComoFunciona" style="--i:3">
+          <div class="cf-paso-icono">💳</div>
+          <div class="cf-paso-texto">
+            <strong>Realizas el pago</strong>
+            <p>Bizum, transferencia o efectivo en el centro — tú eliges</p>
+          </div>
+        </div>
+
+        <div class="cf-sep"></div>
+
+        <div class="cf-paso" [class.cf-paso--visible]="mostrarComoFunciona" style="--i:4">
+          <div class="cf-paso-icono">✨</div>
+          <div class="cf-paso-texto">
+            <strong>Te enviamos el código regalo</strong>
+            <p>Un código único y especial para la persona que quieres sorprender</p>
+          </div>
+        </div>
+
+        <div class="cf-paso" [class.cf-paso--visible]="mostrarComoFunciona" style="--i:5">
+          <div class="cf-paso-icono">🤲</div>
+          <div class="cf-paso-texto">
+            <strong>La persona vive la magia</strong>
+            <p>Entra en nuestra web, ingresa el código y vive una experiencia única 💜</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cf-acciones">
+        <button type="button" class="cf-btn-cta" (click)="irARegalo()">Quiero regalar bienestar →</button>
+        <button type="button" class="cf-btn-cerrar" (click)="cerrarComoFunciona()">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </ng-container>

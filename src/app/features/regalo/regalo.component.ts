@@ -204,7 +204,7 @@ export class RegaloComponent implements OnInit {
     const lines = [
       `Hola CBM 😊 Acabo de reservar un bono regalo para ${d.nombre_servicio}.`,
       `Mi nombre es ${d.nombre_comprador} y mi email es ${d.email_comprador}.`,
-      '¿Podéis confirmarme los pasos? 💜'
+      'Os escribo para coordinar todo cuando podáis 💜'
     ];
     return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(lines.join('\n'))}`;
   }
