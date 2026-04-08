@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { ConfiguracionService } from '../services/configuracion.service';
 export class Header implements OnInit {
   private readonly languageService = inject(LanguageService);
   private readonly configuracionService = inject(ConfiguracionService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   isMobileMenuOpen = false;
   showBonosRegalo = false;
@@ -37,6 +38,7 @@ export class Header implements OnInit {
     } catch {
       this.showBonosRegalo = false;
     }
+    this.cdr.markForCheck();
   }
 
   toggleMobileMenu(): void {

@@ -92,6 +92,7 @@ export class RegaloComponent implements OnInit {
       console.error('Error leyendo config bonos:', err);
       this.bonosActivo = false;
       this.cargando = false;
+      this.cdr.markForCheck();
       return;
     }
 
@@ -105,6 +106,7 @@ export class RegaloComponent implements OnInit {
     }
 
     this.cargando = false;
+    this.cdr.markForCheck();
   }
 
   seleccionarServicio(servicio: ServicioRegalo): void {

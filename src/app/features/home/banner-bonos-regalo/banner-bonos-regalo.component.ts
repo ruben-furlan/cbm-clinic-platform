@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfiguracionService } from '../../../core/services/configuracion.service';
@@ -16,7 +16,8 @@ export class BannerBonosRegaloComponent implements OnInit {
 
   constructor(
     private readonly configuracionService: ConfiguracionService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -25,6 +26,7 @@ export class BannerBonosRegaloComponent implements OnInit {
     } catch {
       this.isActivo = false;
     }
+    this.cdr.markForCheck();
   }
 
   goToRegalo(): void {
