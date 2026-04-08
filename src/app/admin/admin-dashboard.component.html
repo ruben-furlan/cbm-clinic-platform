@@ -328,12 +328,15 @@
       <article class="stat-card"><p>Canjeados</p><strong>{{ bonosStats.canjeados }}</strong></article>
     </div>
 
-    <div class="tabs" role="tablist" aria-label="Filtro bonos" style="margin-top: 20px">
-      <button type="button" [class.active]="filtroBonos==='todos'" (click)="filtroBonos='todos'">Todos</button>
-      <button type="button" [class.active]="filtroBonos==='pendiente_pago'" (click)="filtroBonos='pendiente_pago'">Pendiente pago</button>
-      <button type="button" [class.active]="filtroBonos==='pagado'" (click)="filtroBonos='pagado'">Pagado</button>
-      <button type="button" [class.active]="filtroBonos==='enviado'" (click)="filtroBonos='enviado'">Enviado</button>
-      <button type="button" [class.active]="filtroBonos==='canjeado'" (click)="filtroBonos='canjeado'">Canjeado</button>
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filtro bonos">
+        <button type="button" [class.active]="filtroBonos==='todos'" (click)="filtroBonos='todos'">Todos</button>
+        <button type="button" [class.active]="filtroBonos==='pendiente_pago'" (click)="filtroBonos='pendiente_pago'">Pendiente pago</button>
+        <button type="button" [class.active]="filtroBonos==='pagado'" (click)="filtroBonos='pagado'">Pagado</button>
+        <button type="button" [class.active]="filtroBonos==='enviado'" (click)="filtroBonos='enviado'">Enviado</button>
+        <button type="button" [class.active]="filtroBonos==='canjeado'" (click)="filtroBonos='canjeado'">Canjeado</button>
+      </div>
+      <button type="button" class="btn-primary" (click)="copiarLinkCanjear()">Copiar link /canjear</button>
     </div>
 
     <p class="status error" *ngIf="bonosError">{{ bonosError }}</p>

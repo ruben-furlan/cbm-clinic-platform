@@ -1326,18 +1326,22 @@ export class AdminDashboardComponent implements OnInit {
   async updateBonoEstado(bono: BonoRegalo, event: Event): Promise<void> {
     const target = event.target as HTMLSelectElement;
     const estado = target.value as BonoEstado;
+    const estadoAnterior = bono.estado;
+
+    // Actualización optimista para evitar que Angular CD revierta el select visualmente
+    this.bonos = this.bonos.map((item) => item.id === bono.id ? { ...item, estado } : item);
+    this.flushUiState();
 
     try {
-      const updated = await this.withTimeout(this.bonosRegaloService.updateEstado(bono.id, estado));
+      await this.withTimeout(this.bonosRegaloService.updateEstado(bono.id, estado));
       this.zone.run(() => {
-        this.bonos = this.bonos.map((item) => item.id === updated.id ? updated : item);
         this.bonosMessage = 'Estado actualizado';
         this.flushUiState();
       });
       setTimeout(() => this.zone.run(() => { if (this.bonosMessage === 'Estado actualizado') { this.bonosMessage = ''; this.flushUiState(); } }), 3000);
     } catch {
       this.zone.run(() => {
-        target.value = bono.estado;
+        this.bonos = this.bonos.map((item) => item.id === bono.id ? { ...item, estado: estadoAnterior } : item);
         this.bonosMessage = 'No se pudo actualizar el estado del bono.';
         this.flushUiState();
       });
@@ -1499,8 +1503,16 @@ export class AdminDashboardComponent implements OnInit {
     this.serviciosRegalo = this.serviciosRegalo.filter((s) => s.id !== servicio.id);
 
     try {
-      await this.withTimeout(this.serviciosRegaloService.deleteServicioRegalo(servicio.id));
-      this.serviciosRegaloMessage = 'Servicio eliminado.';
+      const result = await this.withTimeout(this.serviciosRegaloService.deleteServicioRegalo(servicio.id));
+      if (result.desactivado) {
+        this.serviciosRegalo = previous.map((s) =>
+          s.id === servicio.id ? { ...s, activo: false } : s
+        );
+        this.serviciosRegaloMessage =
+          'Este servicio tiene reservas asociadas. Se ha desactivado en lugar de eliminar para mantener el historial 💜';
+      } else {
+        this.serviciosRegaloMessage = 'Servicio eliminado.';
+      }
     } catch {
       this.serviciosRegalo = previous;
       this.serviciosRegaloMessage = 'No se pudo eliminar el servicio.';

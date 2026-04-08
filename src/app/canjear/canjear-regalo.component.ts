@@ -1,5 +1,5 @@
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BonosRegaloService, BonoRegalo } from '../core/services/bonos-regalo.service';
 import { ServiciosRegaloService, ServicioRegalo } from '../core/services/servicios-regalo.service';
@@ -56,7 +56,8 @@ export class CanjearRegaloComponent {
 
   constructor(
     private readonly bonosRegaloService: BonosRegaloService,
-    private readonly serviciosRegaloService: ServiciosRegaloService
+    private readonly serviciosRegaloService: ServiciosRegaloService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   async abrirRegalo(): Promise<void> {
@@ -78,7 +79,7 @@ export class CanjearRegaloComponent {
       // Buscar nombre emotivo en servicios_regalo
       void this.serviciosRegaloService
         .getServicioRegaloById(bono.servicio_regalo_id)
-        .then(s => { this.servicioRegalo = s; });
+        .then(s => { this.servicioRegalo = s; this.cdr.detectChanges(); });
 
       if (bono.estado === 'pendiente_pago') {
         this.estado = 'pendiente_pago';
@@ -95,10 +96,10 @@ export class CanjearRegaloComponent {
         this.estado = 'animacion';
         // Canjear en background (sin bloquear la animación)
         void this.bonosRegaloService.canjearBono(bono.codigo)
-          .then(actualizado => { this.bono = actualizado; })
+          .then(actualizado => { this.bono = actualizado; this.cdr.detectChanges(); })
           .catch(err => console.error('Error canjeando bono:', err));
         // Pasar al vale tras la animación
-        setTimeout(() => { this.estado = 'vale'; }, 2600);
+        setTimeout(() => { this.estado = 'vale'; this.cdr.detectChanges(); }, 2600);
         return;
       }
 
@@ -108,6 +109,8 @@ export class CanjearRegaloComponent {
     } catch (err) {
       console.error('Error buscando bono:', err);
       this.estado = 'no_encontrado';
+    } finally {
+      this.cdr.detectChanges();
     }
   }
 

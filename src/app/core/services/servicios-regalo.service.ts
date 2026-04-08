@@ -92,14 +92,28 @@ export class ServiciosRegaloService {
     return (data as ServicioRegalo | null) ?? null;
   }
 
-  async deleteServicioRegalo(id: string): Promise<void> {
+  async deleteServicioRegalo(id: string): Promise<{ desactivado: boolean }> {
+    const { data: bonosAsociados } = await supabase
+      .from('bonos_regalo')
+      .select('id')
+      .eq('servicio_regalo_id', id)
+      .limit(1);
+
+    if (bonosAsociados && bonosAsociados.length > 0) {
+      const { error } = await supabase
+        .from('servicios_regalo')
+        .update({ activo: false })
+        .eq('id', id);
+      if (error) throw error;
+      return { desactivado: true };
+    }
+
     const { error } = await supabase
       .from('servicios_regalo')
       .delete()
       .eq('id', id);
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
+    return { desactivado: false };
   }
 }
