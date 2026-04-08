@@ -802,6 +802,7 @@
     max-height: 80vh;
     transform: translate(-50%, -60%);
     opacity: 0;
+    pointer-events: none;
     transition: transform 300ms ease, opacity 300ms ease;
     padding-bottom: 32px;
   }
@@ -809,6 +810,7 @@
   .bottom-sheet--open {
     transform: translate(-50%, -50%);
     opacity: 1;
+    pointer-events: auto;
   }
 }
 

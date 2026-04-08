@@ -86,6 +86,7 @@ export class BonosRegaloService {
       .from('bonos_regalo')
       .update({ estado: 'canjeado', fecha_canje: new Date().toISOString() })
       .eq('codigo', codigo.toUpperCase().trim())
+      .in('estado', ['pagado', 'enviado'])
       .select('*')
       .single();
 
