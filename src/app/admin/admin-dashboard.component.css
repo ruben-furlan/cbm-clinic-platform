@@ -95,6 +95,9 @@
   font-weight: 700;
 }
 
+.tabs button { position: relative; }
+.tab-badge { display:inline-flex; align-items:center; justify-content:center; min-width:18px; height:18px; padding:0 5px; border-radius:999px; background:#e0326c; color:#fff; font-size:11px; font-weight:800; margin-left:6px; vertical-align:middle; line-height:1; }
+
 .btn-primary {
   background: linear-gradient(120deg, #ff4fa3, #7b4dff);
   color: #fff;
@@ -1148,3 +1151,29 @@ textarea:disabled {
   .checkin-input-row { flex-wrap: wrap; }
   .checkin-input     { min-width: 0; }
 }
+
+/* ── Bonos regalo ────────────────────────────────────────────────────────── */
+
+.bonos-config { max-width:1200px; margin:20px auto; background:#fff; border-radius:16px; border:1px solid rgba(123,77,255,.15); padding:20px 24px; display:grid; gap:14px; }
+.bonos-config h3 { margin:0; color:#1f1b2d; }
+.bonos-config p { margin:0; color:#6c6580; font-size:14px; }
+.bonos-code-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+.stats-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.stat-card { background:#fff; border-radius:14px; border:1px solid rgba(123,77,255,.14); padding:16px 20px; text-align:center; }
+.stat-card p { margin:0 0 6px; color:#6c6580; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; }
+.stat-card strong { font-size:28px; font-weight:800; color:#1f1b2d; }
+
+.section-subtitle { margin:0; font-size:16px; font-weight:700; color:#1f1b2d; }
+.bono-msg { font-style:italic; color:#6c6580; }
+.canjear-link-box { background:#f7f4fc; border-radius:12px; padding:14px 16px; margin:12px 0; display:flex; flex-direction:column; gap:4px; }
+.canjear-link-label { margin:0; font-size:13px; }
+.canjear-link-url { margin:0; font-size:14px; font-weight:700; color:#7b4dff; font-family:monospace; word-break:break-all; }
+.canjear-link-hint { margin:0; font-size:13px; color:#7a7090; }
+.btn-copy { align-self:flex-start; margin-top:6px; border:1.5px solid #c8b8ef; background:#fff; border-radius:8px; padding:7px 14px; font:inherit; font-size:13px; font-weight:600; color:#5f5476; cursor:pointer; transition:border-color .15s; }
+.btn-copy:hover { border-color:#7b4dff; }
+.switch-lg { width:58px; height:32px; }
+.switch-lg span::before { width:26px; height:26px; }
+.switch-lg input:checked + span::before { transform:translateX(26px); }
+
+@media (max-width:720px) { .stats-grid { grid-template-columns:repeat(2,1fr); } }

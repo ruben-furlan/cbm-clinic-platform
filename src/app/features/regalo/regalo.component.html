@@ -1,0 +1,240 @@
+<section class="regalo-page section">
+  <div class="container">
+    <ng-container *ngIf="!cargando; else loaderTpl">
+      <ng-container *ngIf="bonosActivo; else proximamenteTpl">
+
+      <header class="regalo-header">
+        <p class="eyebrow">BONOS REGALO · CBM FISIOTERAPIA</p>
+        <h1>Regala bienestar 💜</h1>
+        <p>El regalo más bonito es cuidar a alguien que quieres. Dale la experiencia de sentirse mejor.</p>
+      </header>
+
+      <!-- ── PANTALLA DE CONFIRMACIÓN ──────────────────────────────── -->
+      <div class="confirmar-section" *ngIf="confirmado && datosConfirmacion">
+
+        <div class="confirmar-check">✅</div>
+
+        <h2 class="confirmar-titulo">¡Tu regalo está reservado! 🎁</h2>
+        <p class="confirmar-sub">
+          Hemos recibido tu solicitud con mucho cariño.
+          En menos de 2 horas nos ponemos en contacto
+          contigo para confirmar el pago y enviarte el código regalo.
+        </p>
+
+        <div class="resumen-card">
+          <p class="resumen-titulo">RESUMEN DE TU RESERVA</p>
+          <div class="resumen-row">
+            <span class="resumen-icon">🎁</span>
+            <span>{{ datosConfirmacion.nombre_emotivo }} — {{ datosConfirmacion.nombre_servicio }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">👤</span>
+            <span>{{ datosConfirmacion.nombre_comprador }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">📧</span>
+            <span>{{ datosConfirmacion.email_comprador }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">📱</span>
+            <span>{{ datosConfirmacion.telefono }}</span>
+          </div>
+          <div class="resumen-row">
+            <span class="resumen-icon">💳</span>
+            <span>{{ datosConfirmacion.metodo_pago_label }}</span>
+          </div>
+          <div class="resumen-row" *ngIf="datosConfirmacion.tiene_mensaje">
+            <span class="resumen-icon">💌</span>
+            <span>Con mensaje personal incluido</span>
+          </div>
+        </div>
+
+        <p class="confirmar-contacto">
+          Te escribiremos a <strong>{{ datosConfirmacion.email_comprador }}</strong>
+          o al <strong>{{ datosConfirmacion.telefono }}</strong> para continuar con el proceso 💜
+        </p>
+
+        <hr class="confirmar-sep" />
+
+        <p class="confirmar-wa-hint">¿Prefieres contactarnos tú directamente?</p>
+
+        <a
+          class="btn-wa-fallback"
+          [href]="whatsAppConfirmacionUrl()"
+          target="_blank"
+          rel="noopener"
+        >💬 Escríbenos por WhatsApp</a>
+
+        <a class="btn-volver" routerLink="/">← Volver al inicio</a>
+
+      </div>
+      <!-- ── FIN CONFIRMACIÓN ──────────────────────────────────────── -->
+
+      <!-- ── FORMULARIO DE COMPRA ──────────────────────────────────── -->
+      <ng-container *ngIf="!confirmado">
+
+        <!-- PASO 1 -->
+        <div class="step-header">
+          <span class="step-num">1</span>
+          <div>
+            <h2 class="step-title">Elige qué quieres regalar</h2>
+            <p class="step-sub">Selecciona el servicio que quieres regalar</p>
+          </div>
+        </div>
+
+        <p class="error-sin-servicio" *ngIf="errorSinServicio">
+          👆 Primero selecciona el servicio que quieres regalar
+        </p>
+
+        <section class="cards-grid">
+          <article
+            class="tarifa-card"
+            *ngFor="let servicio of servicios"
+            [class.selected]="servicioSeleccionado?.id === servicio.id"
+            (click)="seleccionarServicio(servicio)"
+            role="button"
+            [attr.aria-pressed]="servicioSeleccionado?.id === servicio.id"
+          >
+            <span class="card-check" *ngIf="servicioSeleccionado?.id === servicio.id">✓</span>
+            <p class="mini">{{ servicio.nombre_emotivo }}</p>
+            <h3>{{ servicio.nombre_servicio }}</h3>
+            <p class="precio">{{ servicio.precio }}{{ servicio.unidad }}</p>
+            <p *ngIf="servicio.descripcion" class="card-desc">{{ servicio.descripcion }}</p>
+          </article>
+        </section>
+
+        <div class="hint-seleccionar" *ngIf="!servicioSeleccionado">
+          <span class="bounce-arrow">↓</span>
+          <p>Selecciona una opción para continuar</p>
+        </div>
+
+        <!-- PASO 2 — solo visible tras seleccionar -->
+        <div id="paso-2" class="form-section" *ngIf="servicioSeleccionado">
+
+          <div class="step-header">
+            <span class="step-num">2</span>
+            <div>
+              <h2 class="step-title">Tus datos de contacto</h2>
+              <p class="step-sub">Para que podamos confirmar el pago y enviarte el código regalo</p>
+            </div>
+          </div>
+
+          <form class="gift-form" [formGroup]="form" (ngSubmit)="reservarRegalo()">
+
+            <div class="form-field">
+              <label class="field-label">Tu nombre <span class="required">*</span></label>
+              <input
+                type="text"
+                formControlName="nombre_comprador"
+                placeholder="¿Cómo te llamamos?"
+                [class.input-error]="form.controls.nombre_comprador.invalid && form.controls.nombre_comprador.touched"
+              />
+              <p class="field-note">Tus datos, no los de quien recibe el regalo</p>
+              <p class="field-error" *ngIf="form.controls.nombre_comprador.invalid && form.controls.nombre_comprador.touched">
+                Introduce tu nombre para continuar
+              </p>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Tu email <span class="required">*</span></label>
+              <input
+                type="email"
+                formControlName="email_comprador"
+                placeholder="Tu correo electrónico"
+                [class.input-error]="form.controls.email_comprador.invalid && form.controls.email_comprador.touched"
+              />
+              <p class="field-error" *ngIf="form.controls.email_comprador.invalid && form.controls.email_comprador.touched">
+                Introduce un email válido para continuar
+              </p>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Tu teléfono <span class="required">*</span></label>
+              <input
+                type="tel"
+                formControlName="telefono"
+                placeholder="666 000 000"
+                [class.input-error]="form.controls.telefono.invalid && form.controls.telefono.touched"
+              />
+              <p class="field-note">Te contactaremos por aquí para confirmar</p>
+              <p class="field-error" *ngIf="form.controls.telefono.invalid && form.controls.telefono.touched">
+                Introduce un teléfono válido para continuar
+              </p>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">Método de pago <span class="required">*</span></label>
+              <div class="pay-cards">
+                <button
+                  type="button"
+                  class="pay-card"
+                  *ngFor="let metodo of metodosPago"
+                  [class.selected]="form.controls.metodo_pago.value === metodo.value"
+                  (click)="seleccionarMetodoPago(metodo.value)"
+                >
+                  <span class="pay-icon">{{ metodo.icono }}</span>
+                  <strong class="pay-label">{{ metodo.label }}</strong>
+                  <span class="pay-sub">{{ metodo.subtexto }}</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label class="field-label">¿Le dedicas unas palabras? 💜 <span class="field-optional">(opcional)</span></label>
+              <textarea
+                formControlName="mensaje_personal"
+                maxlength="300"
+                placeholder="Escribe algo bonito para quien va a recibir este regalo..."
+                rows="3"
+              ></textarea>
+              <p class="counter">{{ form.controls.mensaje_personal.value.length }}/300</p>
+            </div>
+
+            <!-- Error al guardar -->
+            <div class="error-guardar" *ngIf="errorGuardando">
+              <p>Hubo un problema al guardar tu reserva.<br>Por favor escríbenos directamente por WhatsApp.</p>
+              <a class="btn-wa-inline" [href]="whatsAppFallbackUrl()" target="_blank" rel="noopener">💬 Escríbenos por WhatsApp</a>
+            </div>
+
+            <button
+              type="submit"
+              class="btn-reservar"
+              [class.btn-reservar--disabled]="guardando || !formCompleto"
+              [disabled]="guardando"
+            >
+              <span *ngIf="!guardando">Reservar mi regalo 💜</span>
+              <span *ngIf="guardando" class="btn-spinner-row">
+                <span class="btn-spinner"></span>
+                Guardando tu reserva...
+              </span>
+            </button>
+
+          </form>
+        </div><!-- /form-section -->
+
+      </ng-container>
+      <!-- ── FIN FORMULARIO ────────────────────────────────────────── -->
+
+    </ng-container><!-- /bonosActivo -->
+    </ng-container><!-- /!cargando -->
+  </div>
+</section>
+
+<ng-template #loaderTpl>
+  <div class="regalo-loader">
+    <img src="/favicon-192x192.png" alt="Cargando" class="loader-icon" />
+    <p>Cargando...</p>
+  </div>
+</ng-template>
+
+<ng-template #proximamenteTpl>
+  <section class="proximamente">
+    <img src="/logo-header.png" alt="CBM" />
+    <h2>Muy pronto... 🎁</h2>
+    <p>Estamos preparando algo especial. Vuelve pronto o escríbenos si quieres ser de los primeros en saberlo 💜</p>
+    <div class="actions">
+      <a class="btn-primary" href="https://wa.me/34662561672" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="btn-secondary" routerLink="/">← Volver a inicio</a>
+    </div>
+  </section>
+</ng-template>

@@ -1,0 +1,232 @@
+<div class="canjear-page">
+
+  <!-- ── ESTADO INICIAL ───────────────────────────────────────────────── -->
+  <div class="estado-inicial" *ngIf="estado === 'inicial'">
+    <img src="/favicon-192x192.png" alt="CBM Fisioterapia" class="logo-cbm" />
+
+    <div class="regalo-icon">🎁</div>
+
+    <h1 class="titulo-principal">¿Tienes un regalo especial? ✨</h1>
+    <p class="subtitulo">
+      Ingresa tu código y descubre lo que<br />alguien preparó para ti con mucho cariño 💜
+    </p>
+
+    <div class="input-group">
+      <input
+        type="text"
+        class="codigo-input"
+        [(ngModel)]="codigoInput"
+        placeholder="CBM-XXXX-XXXX"
+        (input)="codigoInput = codigoInput.toUpperCase()"
+        (keyup.enter)="abrirRegalo()"
+        autocomplete="off"
+        autocapitalize="characters"
+        spellcheck="false"
+      />
+      <button type="button" class="btn-abrir" (click)="abrirRegalo()">
+        Abrir mi regalo →
+      </button>
+    </div>
+
+    <p class="firma">CBM Fisioterapia · Terrassa</p>
+  </div>
+
+  <!-- ── ESTADO CARGANDO ──────────────────────────────────────────────── -->
+  <div class="estado-cargando" *ngIf="estado === 'cargando'">
+    <img src="/favicon-192x192.png" alt="Cargando" class="logo-spin" />
+    <p>Buscando tu regalo... 💜</p>
+  </div>
+
+  <!-- ── ESTADO NO ENCONTRADO ─────────────────────────────────────────── -->
+  <div class="estado-mensaje" *ngIf="estado === 'no_encontrado'">
+    <div class="estado-emoji">🤔</div>
+    <h2>Hmm, no encontramos ese código</h2>
+    <p class="estado-sub">Revisa que esté bien escrito o contacta con nosotros</p>
+    <div class="estado-btns">
+      <button type="button" class="btn-secondary" (click)="resetear()">Intentar de nuevo</button>
+      <button type="button" class="btn-whatsapp-sm" (click)="contactarWhatsApp()">💬 Escríbenos</button>
+    </div>
+  </div>
+
+  <!-- ── ESTADO PENDIENTE PAGO ────────────────────────────────────────── -->
+  <div class="estado-mensaje" *ngIf="estado === 'pendiente_pago'">
+    <div class="estado-emoji">⏳</div>
+    <h2>Tu regalo está casi listo</h2>
+    <p class="estado-sub">El pago está siendo confirmado. En breve podrás abrirlo 💜</p>
+    <div class="estado-btns">
+      <button type="button" class="btn-whatsapp-sm" (click)="contactarWhatsApp()">💬 ¿Tienes dudas? Escríbenos</button>
+      <button type="button" class="btn-secondary" (click)="resetear()">Volver</button>
+    </div>
+  </div>
+
+  <!-- ── ESTADO YA CANJEADO ───────────────────────────────────────────── -->
+  <div class="estado-mensaje" *ngIf="estado === 'ya_canjeado'">
+    <div class="estado-emoji">💜</div>
+    <h2>Este regalo ya fue abierto</h2>
+    <p class="estado-sub">Si crees que es un error, escríbenos y lo resolvemos</p>
+    <div class="estado-btns">
+      <button type="button" class="btn-whatsapp-sm" (click)="contactarWhatsApp()">💬 Contactar con CBM</button>
+      <button type="button" class="btn-secondary" (click)="resetear()">Volver</button>
+    </div>
+  </div>
+
+  <!-- ── ESTADO REGALO INTERACTIVO — FASE 0 ──────────────────────────── -->
+  <div class="overlay-regalo-interactivo" *ngIf="estado === 'regalo-interactivo'">
+    <div class="regalo-interactivo-content">
+
+      <p class="toca-instruccion">
+        <span class="tap-icon">👆</span>
+        <span class="instruccion-touch">Toca el regalo para abrirlo</span>
+        <span class="instruccion-click">Haz clic en el regalo para abrirlo</span>
+      </p>
+
+      <button
+        type="button"
+        class="regalo-btn"
+        [class.regalo-explotando]="regaloTocado"
+        (click)="tocarRegalo()"
+        aria-label="Abrir regalo"
+      >🎁</button>
+
+      <p class="mensaje-secuencial">{{ mensajeSecuencial }}</p>
+
+    </div>
+  </div>
+
+  <!-- ── ESTADO ANIMACION ─────────────────────────────────────────────── -->
+  <div class="overlay-animacion" *ngIf="estado === 'animacion'">
+    <!-- Confeti -->
+    <span
+      class="confeti-p"
+      *ngFor="let p of confeti"
+      [style.left]="p.left"
+      [style.animationDelay]="p.delay"
+      [style.animationDuration]="p.duracion"
+      [style.width]="p.size"
+      [style.height]="p.size"
+      [style.background]="p.color"
+    ></span>
+
+    <div class="animacion-content">
+      <div class="regalo-abriendo">🎁</div>
+      <h2 class="animacion-titulo">¡Alguien pensó en ti! 💜</h2>
+      <p class="animacion-sub">Abre tu regalo...</p>
+    </div>
+  </div>
+
+  <!-- ── ESTADO VALE ──────────────────────────────────────────────────── -->
+  <div class="estado-vale" *ngIf="estado === 'vale' && bono">
+    <!-- Confeti sutil de fondo -->
+    <span
+      class="confeti-fondo"
+      *ngFor="let p of confeti"
+      [style.left]="p.left"
+      [style.animationDelay]="p.delay"
+      [style.animationDuration]="p.duracion"
+      [style.width]="p.size"
+      [style.height]="p.size"
+      [style.background]="p.color"
+    ></span>
+
+    <div class="vale-card" id="vale-regalo">
+      <div class="vale-franja"></div>
+
+      <div class="vale-interior">
+        <img src="/favicon-192x192.png" alt="CBM" class="vale-logo" />
+        <p class="vale-tag">BONO REGALO</p>
+        <p class="vale-empresa">CBM FISIOTERAPIA · TERRASSA</p>
+
+        <div class="vale-separador">– – – – – – – – – – –</div>
+
+        <h2 class="vale-emotivo">{{ nombreEmotivo }}</h2>
+
+        <div class="vale-separador">– – – – – – – – – – –</div>
+
+        <div class="vale-mensaje" *ngIf="bono.mensaje_personal">
+          <span class="vale-corazon">💜</span>
+          <p class="vale-msg-texto">"{{ bono.mensaje_personal }}"</p>
+          <p class="vale-msg-firma">— Con mucho cariño 💜</p>
+        </div>
+
+        <div class="vale-separador" *ngIf="bono.mensaje_personal">– – – – – – – – – – –</div>
+
+        <div class="vale-codigo-box">
+          <span class="vale-codigo-label">Tu código:</span>
+          <span class="vale-codigo">{{ bono.codigo }}</span>
+          <button
+            type="button"
+            class="btn-copiar-codigo"
+            [class.copiado]="codigoCopiadoOk"
+            (click)="copiarCodigo()"
+            aria-label="Copiar código"
+          >{{ codigoCopiadoOk ? '✓ Copiado!' : '📋 Copiar' }}</button>
+        </div>
+
+        <p class="vale-instruccion">Preséntate en CBM Fisioterapia con este código</p>
+        <p class="vale-direccion">Calle Arquímedes 227, Local 2 · Terrassa</p>
+        <p class="vale-fecha" *ngIf="fechaCompraFormateada">Emitido el {{ fechaCompraFormateada }}</p>
+      </div>
+
+      <div class="vale-franja vale-franja--bottom"></div>
+    </div>
+
+    <div class="vale-acciones">
+      <button type="button" class="btn-coordinar" (click)="coordinarWhatsApp()">
+        💬 Coordinar mi sesión por WhatsApp
+      </button>
+      <button type="button" class="btn-instrucciones" (click)="abrirInstrucciones()">
+        📋 Ver instrucciones de uso
+      </button>
+    </div>
+  </div>
+
+  <!-- ── OVERLAY bottom sheet ─────────────────────────────────────────── -->
+  <div
+    class="bs-overlay"
+    [class.bs-overlay--visible]="mostrarInstrucciones"
+    (click)="cerrarInstrucciones()"
+  ></div>
+
+  <!-- ── BOTTOM SHEET instrucciones ──────────────────────────────────── -->
+  <div
+    class="bottom-sheet"
+    [class.bottom-sheet--open]="mostrarInstrucciones"
+    (touchstart)="onSheetTouchStart($event)"
+    (touchmove)="onSheetTouchMove($event)"
+    (touchend)="onSheetTouchEnd($event)"
+  >
+    <div class="bottom-sheet__handle"></div>
+
+    <div class="bottom-sheet__content">
+      <h3 class="bs-titulo">¿Cómo usar tu bono? 💜</h3>
+
+      <div class="bs-lista">
+        <div class="bs-item"><span>💬</span><p>Escríbenos por WhatsApp con tu código</p></div>
+        <div class="bs-item"><span>📅</span><p>Elegimos el mejor horario juntos</p></div>
+        <div class="bs-item"><span>🏥</span><p>Ven al centro el día acordado</p></div>
+        <div class="bs-item"><span>✨</span><p>¡Disfruta tu experiencia CBM!</p></div>
+      </div>
+
+      <div class="bs-info">
+        <p>📍 Calle Arquímedes 227, Local 2 · Terrassa</p>
+        <p>📱 662 56 16 72</p>
+        <p>⏰ L-V 9:00-14:00 / 17:00-21:00 · Sáb 10:00-15:00</p>
+      </div>
+
+      <div class="bs-codigo">
+        <span>Tu código:</span>
+        <strong>{{ bono?.codigo }}</strong>
+        <button type="button" class="bs-copiar" [class.copiado]="codigoCopiadoOk" (click)="copiarCodigo()">
+          {{ codigoCopiadoOk ? '✓ Copiado!' : '📋 Copiar' }}
+        </button>
+      </div>
+
+      <p class="bs-nota">Guárdalo bien 💜</p>
+
+      <button type="button" class="bottom-sheet__cerrar" (click)="cerrarInstrucciones()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+</div>

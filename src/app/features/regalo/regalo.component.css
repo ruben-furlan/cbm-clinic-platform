@@ -1,0 +1,109 @@
+/* ── Layout general ─────────────────────────────────────────────────────── */
+.regalo-header { text-align: center; max-width: 760px; margin: 0 auto 24px; }
+.eyebrow { color: #ff4fa3; font-weight: 700; letter-spacing: .08em; font-size: 12px; text-transform: uppercase; }
+
+/* ── Step headers ───────────────────────────────────────────────────────── */
+.step-header { display:flex; align-items:center; gap:14px; margin:0 auto 18px; max-width:720px; }
+.step-num { flex-shrink:0; width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#ff4fa3,#7b4dff); color:#fff; font-weight:800; font-size:16px; display:grid; place-items:center; }
+.step-title { margin:0; font-size:clamp(17px,3vw,20px); color:#1f1b2d; }
+.step-sub { margin:2px 0 0; font-size:13px; color:#7a7090; }
+
+/* ── Error sin servicio ─────────────────────────────────────────────────── */
+.error-sin-servicio { max-width:720px; margin:0 auto 14px; padding:12px 16px; border-radius:12px; background:linear-gradient(135deg,rgba(255,79,163,.1),rgba(123,77,255,.1)); color:#a0366b; font-weight:600; font-size:14px; text-align:center; animation:fadeIn .2s ease; }
+
+/* ── Cards de servicio ──────────────────────────────────────────────────── */
+.cards-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:12px; max-width:860px; margin-left:auto; margin-right:auto; }
+.tarifa-card { position:relative; border:2px solid #ecdaf0; border-radius:18px; padding:18px 16px; cursor:pointer; background:#fff; transition:border-color .18s,box-shadow .18s,transform .12s; }
+.tarifa-card:hover { border-color:#c8aadc; box-shadow:0 4px 16px rgba(123,77,255,.12); transform:translateY(-2px); }
+.tarifa-card.selected { border-color:#7b4dff; background:linear-gradient(145deg,rgba(123,77,255,.04),rgba(255,79,163,.04)); box-shadow:0 8px 28px rgba(123,77,255,.2); }
+.card-check { position:absolute; top:10px; right:12px; width:22px; height:22px; border-radius:50%; background:linear-gradient(135deg,#ff4fa3,#7b4dff); color:#fff; font-size:12px; font-weight:800; display:grid; place-items:center; animation:popIn .2s cubic-bezier(.34,1.56,.64,1); }
+.mini { color:#ff4fa3; font-size:12px; font-weight:700; margin:0 0 6px; }
+.precio { font-size:26px; font-weight:800; margin:6px 0; color:#1f1b2d; }
+.card-desc { font-size:13px; color:#7a7090; margin:0; }
+
+/* ── Hint "selecciona para continuar" ───────────────────────────────────── */
+.hint-seleccionar { text-align:center; padding:16px 0 8px; color:#b0a8c0; font-size:14px; font-weight:500; }
+.bounce-arrow { display:block; font-size:22px; animation:bounce .9s ease-in-out infinite; margin-bottom:4px; }
+
+/* ── Sección formulario ─────────────────────────────────────────────────── */
+.form-section { max-width:720px; margin:28px auto 0; animation:fadeInUp .35s ease; }
+
+/* ── Campos del formulario ──────────────────────────────────────────────── */
+.gift-form { display:grid; gap:20px; }
+.form-field { display:grid; gap:6px; }
+.field-label { font-weight:700; font-size:14px; color:#332d43; }
+.required { color:#ff4fa3; margin-left:2px; }
+.field-optional { font-weight:500; color:#9b94ab; font-size:13px; }
+.gift-form input,
+.gift-form textarea { width:100%; border:1.5px solid #e2d5ee; border-radius:12px; padding:13px 14px; font:inherit; font-size:15px; color:#1f1b2d; background:#fff; transition:border-color .15s,box-shadow .15s; box-sizing:border-box; }
+.gift-form input:focus,
+.gift-form textarea:focus { outline:none; border-color:#7b4dff; box-shadow:0 0 0 3px rgba(123,77,255,.12); }
+.input-error { border-color:#e0326c !important; }
+.field-note { margin:0; font-size:12px; color:#9b94ab; }
+.field-error { margin:0; font-size:12px; color:#e0326c; font-weight:600; animation:fadeIn .15s ease; }
+.counter { text-align:right; color:#b0a8c0; font-size:12px; margin:0; }
+
+/* ── Cards de método de pago ────────────────────────────────────────────── */
+.pay-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.pay-card { border:1.5px solid #e2d5ee; border-radius:14px; padding:14px 10px; background:#fff; cursor:pointer; display:grid; gap:4px; justify-items:center; text-align:center; transition:border-color .15s,box-shadow .15s,transform .12s; font:inherit; }
+.pay-card:hover { border-color:#c8aadc; transform:translateY(-2px); }
+.pay-card.selected { border-color:#7b4dff; background:linear-gradient(145deg,rgba(123,77,255,.06),rgba(255,79,163,.04)); box-shadow:0 4px 16px rgba(123,77,255,.16); }
+.pay-icon { font-size:22px; }
+.pay-label { font-size:14px; font-weight:700; color:#1f1b2d; }
+.pay-sub { font-size:11px; color:#9b94ab; line-height:1.3; }
+
+/* ── Error al guardar ───────────────────────────────────────────────────── */
+.error-guardar { background:rgba(224,50,108,.08); border:1px solid rgba(224,50,108,.25); border-radius:12px; padding:14px 16px; text-align:center; font-size:14px; color:#a02050; display:flex; flex-direction:column; gap:10px; align-items:center; }
+.btn-wa-inline { display:inline-block; padding:10px 20px; border-radius:999px; background:linear-gradient(120deg,#25d366,#128c7e); color:#fff; font-weight:700; font-size:14px; text-decoration:none; transition:opacity .15s; }
+.btn-wa-inline:hover { opacity:.9; }
+
+/* ── Botón reservar ─────────────────────────────────────────────────────── */
+.btn-reservar { width:100%; padding:16px; border:0; border-radius:14px; background:linear-gradient(120deg,#ff4fa3,#7b4dff); color:#fff; font:inherit; font-size:16px; font-weight:700; cursor:pointer; transition:opacity .2s,transform .12s,box-shadow .15s; box-shadow:0 6px 20px rgba(123,77,255,.3); }
+.btn-reservar:hover:not(.btn-reservar--disabled) { opacity:.92; transform:translateY(-2px); box-shadow:0 10px 28px rgba(123,77,255,.42); }
+.btn-reservar--disabled { opacity:.45; cursor:not-allowed; }
+.btn-spinner-row { display:flex; align-items:center; justify-content:center; gap:10px; }
+.btn-spinner { width:18px; height:18px; border:3px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin .75s linear infinite; flex-shrink:0; }
+
+/* ── Pantalla de confirmación ───────────────────────────────────────────── */
+.confirmar-section { max-width:560px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; animation:fadeInUp .4s ease; padding-bottom:32px; }
+.confirmar-check { font-size:72px; line-height:1; animation:checkPop .5s cubic-bezier(.34,1.56,.64,1); }
+.confirmar-titulo { margin:0; font-size:clamp(22px,5vw,28px); font-weight:800; color:#1f1b2d; }
+.confirmar-sub { margin:0; font-size:16px; color:#7a7090; line-height:1.6; max-width:440px; }
+.resumen-card { background:#f7f4fc; border-radius:16px; padding:18px 20px; width:100%; display:flex; flex-direction:column; gap:10px; text-align:left; }
+.resumen-titulo { margin:0 0 4px; font-size:11px; font-weight:800; letter-spacing:.14em; color:#b0a8c0; text-transform:uppercase; }
+.resumen-row { display:flex; align-items:flex-start; gap:10px; font-size:14px; color:#4a4060; }
+.resumen-icon { font-size:16px; flex-shrink:0; line-height:1.4; }
+.confirmar-contacto { margin:0; font-size:14px; color:#7a7090; line-height:1.6; }
+.confirmar-sep { width:100%; border:0; border-top:1px solid #ece8f4; margin:4px 0; }
+.confirmar-wa-hint { margin:0; font-size:13px; color:#b0a8c0; }
+.btn-wa-fallback { display:inline-block; padding:12px 24px; border-radius:999px; background:linear-gradient(120deg,#25d366,#128c7e); color:#fff; font-weight:700; font-size:15px; text-decoration:none; transition:opacity .15s,transform .12s; box-shadow:0 4px 14px rgba(18,140,126,.25); }
+.btn-wa-fallback:hover { opacity:.9; transform:translateY(-1px); }
+.btn-volver { font-size:13px; color:#b0a8c0; text-decoration:none; transition:color .15s; }
+.btn-volver:hover { color:#7a7090; }
+
+/* ── Proximamente ───────────────────────────────────────────────────────── */
+.proximamente { text-align:center; padding:72px 20px; }
+.proximamente img { margin:0 auto 14px; max-width:120px; }
+.actions { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.btn-primary { display:inline-block; padding:12px 24px; border-radius:999px; background:linear-gradient(120deg,#ff4fa3,#7b4dff); color:#fff; font-weight:700; font-size:15px; text-decoration:none; border:0; cursor:pointer; }
+.btn-secondary { display:inline-block; padding:12px 24px; border-radius:999px; border:1.5px solid #e2d5ee; color:#5f5476; font-weight:600; font-size:15px; text-decoration:none; background:#fff; }
+
+/* ── Loader ─────────────────────────────────────────────────────────────── */
+.regalo-loader { text-align:center; padding:60px 20px; color:#7a7090; }
+.loader-icon { width:64px; height:64px; margin:0 auto 14px; display:block; animation:spin 1.2s linear infinite; }
+
+/* ── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes fadeInUp { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+@keyframes popIn { from{transform:scale(0)} to{transform:scale(1)} }
+@keyframes checkPop { 0%{transform:scale(0) rotate(-10deg);opacity:0} 60%{transform:scale(1.15) rotate(4deg)} 100%{transform:scale(1) rotate(0);opacity:1} }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .pay-cards { grid-template-columns:1fr; }
+  .cards-grid { grid-template-columns:1fr; }
+  .btn-reservar { font-size:15px; padding:14px; }
+  .resumen-card { padding:14px 16px; }
+}

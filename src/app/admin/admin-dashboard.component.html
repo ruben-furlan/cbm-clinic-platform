@@ -13,6 +13,10 @@
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
     <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
+    <button type="button" [class.active]="seccion === 'bonos'" (click)="setSeccion('bonos')">
+      🎁 Bonos regalo
+      <span class="tab-badge" *ngIf="bonosStats.pendientes > 0">{{ bonosStats.pendientes }}</span>
+    </button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -254,6 +258,117 @@
 
     <p class="status" *ngIf="!eventosLoading && !eventosFiltrados.length && !eventosError">No hay eventos para este filtro.</p>
   </ng-container>
+
+
+  <!-- ═════════════════════════════ BONOS REGALO ═══════════════════════════ -->
+  <ng-container *ngIf="seccion === 'bonos'">
+    <!-- Configuración global -->
+    <section class="bonos-config">
+      <h3>Bonos regalo activos en la web</h3>
+      <p>Activa esto para mostrar el banner en la home y permitir el acceso a /regalo.</p>
+      <label class="switch switch-lg">
+        <input type="checkbox" [checked]="bonosActivosWeb" (change)="toggleBonosActivos($event)" />
+        <span></span>
+      </label>
+      <div class="bonos-code-row">
+        <button type="button" class="btn-primary" (click)="generarCodigoBono()">Generar código</button>
+      </div>
+    </section>
+
+    <!-- Servicios disponibles para regalo -->
+    <div class="toolbar">
+      <h3 class="section-subtitle">Servicios disponibles para regalo</h3>
+      <button type="button" class="btn-primary" (click)="openCreateServicioRegaloModal()" [disabled]="serviciosRegaloSaving">Nuevo servicio regalo</button>
+    </div>
+
+    <p class="status error" *ngIf="serviciosRegaloError">{{ serviciosRegaloError }}</p>
+    <p class="status message" *ngIf="serviciosRegaloMessage">{{ serviciosRegaloMessage }}</p>
+    <p class="status" *ngIf="serviciosRegaloLoading && !serviciosRegalo.length">Cargando servicios...</p>
+
+    <div class="table-wrap" *ngIf="serviciosRegalo.length">
+      <table>
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Nombre emotivo</th>
+            <th>Servicio</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let servicio of serviciosRegalo">
+            <td>{{ servicio.orden }}</td>
+            <td>{{ servicio.nombre_emotivo }}</td>
+            <td>{{ servicio.nombre_servicio }}</td>
+            <td>{{ servicio.precio }}{{ servicio.unidad }}</td>
+            <td>{{ servicio.categoria }}</td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" [checked]="servicio.activo" (change)="toggleServicioRegaloActivo(servicio, $event)" />
+                <span></span>
+              </label>
+            </td>
+            <td class="actions">
+              <button type="button" class="btn-ghost" (click)="openEditServicioRegaloModal(servicio)">Editar</button>
+              <button type="button" class="btn-danger" (click)="deleteServicioRegalo(servicio)" [disabled]="serviciosRegaloDeletingId === servicio.id">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Estadísticas de bonos -->
+    <div class="stats-grid" *ngIf="bonos.length" style="margin-top: 32px">
+      <article class="stat-card"><p>Total bonos</p><strong>{{ bonosStats.total }}</strong></article>
+      <article class="stat-card"><p>Pendientes pago</p><strong>{{ bonosStats.pendientes }}</strong></article>
+      <article class="stat-card"><p>Pagados</p><strong>{{ bonosStats.pagados }}</strong></article>
+      <article class="stat-card"><p>Canjeados</p><strong>{{ bonosStats.canjeados }}</strong></article>
+    </div>
+
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filtro bonos">
+        <button type="button" [class.active]="filtroBonos==='todos'" (click)="filtroBonos='todos'">Todos</button>
+        <button type="button" [class.active]="filtroBonos==='pendiente_pago'" (click)="filtroBonos='pendiente_pago'">Pendiente pago</button>
+        <button type="button" [class.active]="filtroBonos==='pagado'" (click)="filtroBonos='pagado'">Pagado</button>
+        <button type="button" [class.active]="filtroBonos==='enviado'" (click)="filtroBonos='enviado'">Enviado</button>
+        <button type="button" [class.active]="filtroBonos==='canjeado'" (click)="filtroBonos='canjeado'">Canjeado</button>
+      </div>
+      <button type="button" class="btn-primary" (click)="copiarLinkCanjear()">Copiar link /canjear</button>
+    </div>
+
+    <p class="status error" *ngIf="bonosError">{{ bonosError }}</p>
+    <p class="status message" *ngIf="bonosMessage">{{ bonosMessage }}</p>
+
+    <div class="table-wrap" *ngIf="bonosFiltrados.length">
+      <table>
+        <thead><tr><th>Código</th><th>Servicio</th><th>Comprador</th><th>Email</th><th>Teléfono</th><th>Método pago</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let bono of bonosFiltrados">
+            <td>{{ bono.codigo }}</td>
+            <td>{{ bono.nombre_servicio }}</td>
+            <td>{{ bono.nombre_comprador }}</td>
+            <td>{{ bono.email_comprador }}</td>
+            <td>{{ bono.telefono }}</td>
+            <td>{{ bono.metodo_pago }}</td>
+            <td>
+              <select (change)="updateBonoEstado(bono, $event)">
+                <option *ngFor="let estado of bonosEstados" [value]="estado" [selected]="estado === bono.estado">{{ estadoBonoLabel(estado) }}</option>
+              </select>
+            </td>
+            <td>{{ bono.fecha_compra | date:'dd/MM/yy HH:mm' }}</td>
+            <td class="actions">
+              <button type="button" class="btn-ghost" (click)="openBonoDetalle(bono)">Ver detalle</button>
+              <button type="button" class="btn-danger" (click)="deleteBono(bono)">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ng-container>
+
 </section>
 
 <!-- ═══════════════ Modal tarifas ════════════════ -->
@@ -927,4 +1042,95 @@
     <img src="/favicon-192x192.png" alt="Cargando" />
     <p>Cargando datos...</p>
   </div>
+</div>
+
+
+<div class="modal-overlay" *ngIf="isBonoModalOpen" (click)="closeBonoDetalle()">
+  <section class="modal-card" (click)="$event.stopPropagation()" *ngIf="bonoDetalle">
+    <h2>Detalle bono {{ bonoDetalle.codigo }}</h2>
+    <p><strong>Servicio:</strong> {{ bonoDetalle.nombre_servicio }} — {{ bonoDetalle.precio }}€</p>
+    <p><strong>Comprador:</strong> {{ bonoDetalle.nombre_comprador }}</p>
+    <p><strong>Email:</strong> {{ bonoDetalle.email_comprador }}</p>
+    <p><strong>Teléfono:</strong> {{ bonoDetalle.telefono }}</p>
+    <p><strong>Método:</strong> {{ bonoDetalle.metodo_pago }}</p>
+    <p><strong>Estado:</strong> {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
+    <p *ngIf="bonoDetalle.mensaje_personal" class="bono-msg">"{{ bonoDetalle.mensaje_personal }}"</p>
+    <p><strong>Historial:</strong> Compra {{ bonoDetalle.fecha_compra | date:'dd/MM/yy HH:mm' }} · Estado actual {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
+    <div class="canjear-link-box">
+      <p class="canjear-link-label"><strong>Link para canjear:</strong></p>
+      <p class="canjear-link-url">https://cbmfisioterapia.com/canjear</p>
+      <p class="canjear-link-hint">Comparte este link junto al código: <strong>{{ bonoDetalle.codigo }}</strong></p>
+      <button type="button" class="btn-copy" (click)="copiarLinkCanjear()">📋 Copiar link</button>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeBonoDetalle()">Cerrar</button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════ Modal servicio regalo ════════════════ -->
+<div class="modal-overlay" *ngIf="isServicioRegaloModalOpen" (click)="closeServicioRegaloModal()">
+  <section class="modal-card" (click)="$event.stopPropagation()">
+    <h2>{{ editingServicioRegalo ? 'Editar servicio regalo' : 'Nuevo servicio regalo' }}</h2>
+
+    <form [formGroup]="servicioRegaloForm" (ngSubmit)="saveServicioRegalo()" class="modal-form">
+      <label>
+        Categoría
+        <select formControlName="categoria">
+          <option value="fisioterapia">Fisioterapia</option>
+          <option value="pilates">Pilates</option>
+          <option value="promocion">Promoción</option>
+        </select>
+      </label>
+
+      <label>
+        Nombre emotivo
+        <input type="text" formControlName="nombre_emotivo" placeholder="Regala recuperación 💆" />
+      </label>
+
+      <label>
+        Nombre del servicio
+        <input type="text" formControlName="nombre_servicio" placeholder="Sesión individual" />
+      </label>
+
+      <label>
+        Descripción (opcional)
+        <textarea rows="2" formControlName="descripcion" placeholder="Descripción breve..."></textarea>
+      </label>
+
+      <div class="grid-two">
+        <label>
+          Precio
+          <input type="number" formControlName="precio" min="0" step="0.01" />
+        </label>
+
+        <label>
+          Unidad
+          <select formControlName="unidad">
+            <option value="€">€</option>
+            <option value="€/mes">€/mes</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="grid-two">
+        <label>
+          Orden
+          <input type="number" formControlName="orden" min="0" step="1" />
+        </label>
+
+        <label class="inline-check">
+          <input type="checkbox" formControlName="activo" />
+          Activo
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-ghost" (click)="closeServicioRegaloModal()">Cancelar</button>
+        <button type="submit" class="btn-primary" [disabled]="serviciosRegaloSaving">
+          {{ serviciosRegaloSaving ? 'Guardando...' : (editingServicioRegalo ? 'Actualizar' : 'Crear') }}
+        </button>
+      </div>
+    </form>
+  </section>
 </div>

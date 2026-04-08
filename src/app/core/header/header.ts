@@ -1,20 +1,24 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { NgClass, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LanguageService } from '../language/language.service';
+import { ConfiguracionService } from '../services/configuracion.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, NgClass, FormsModule],
+  imports: [RouterLink, NgClass, NgIf, FormsModule],
   templateUrl: './header.html',
   styleUrl: './header.css'
 })
 export class Header implements OnInit {
   private readonly languageService = inject(LanguageService);
+  private readonly configuracionService = inject(ConfiguracionService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   isMobileMenuOpen = false;
+  showBonosRegalo = false;
   readonly languages = this.languageService.languages;
 
   get selectedLanguage(): 'es' | 'en' | 'ca' {
@@ -27,8 +31,14 @@ export class Header implements OnInit {
     return shortCodeMap[this.selectedLanguage];
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.languageService.initGoogleTranslate();
+    try {
+      this.showBonosRegalo = await this.configuracionService.isBonosRegaloActivo();
+    } catch {
+      this.showBonosRegalo = false;
+    }
+    this.cdr.markForCheck();
   }
 
   toggleMobileMenu(): void {
