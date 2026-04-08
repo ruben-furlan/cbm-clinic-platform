@@ -288,6 +288,9 @@ export class AdminDashboardComponent implements OnInit {
 
   setSeccion(seccion: Seccion): void {
     this.seccion = seccion;
+    if (seccion === 'bonos') {
+      void this.loadBonos();
+    }
   }
 
   // ── Utilities ─────────────────────────────────────────────────────────────
@@ -1334,6 +1337,7 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       await this.withTimeout(this.bonosRegaloService.updateEstado(bono.id, estado));
+      await this.loadBonos();
       this.zone.run(() => {
         this.bonosMessage = 'Estado actualizado';
         this.flushUiState();

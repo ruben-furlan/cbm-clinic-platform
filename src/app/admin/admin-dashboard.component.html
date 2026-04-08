@@ -354,8 +354,8 @@
             <td>{{ bono.telefono }}</td>
             <td>{{ bono.metodo_pago }}</td>
             <td>
-              <select [value]="bono.estado" (change)="updateBonoEstado(bono, $event)">
-                <option *ngFor="let estado of bonosEstados" [value]="estado">{{ estadoBonoLabel(estado) }}</option>
+              <select (change)="updateBonoEstado(bono, $event)">
+                <option *ngFor="let estado of bonosEstados" [value]="estado" [selected]="estado === bono.estado">{{ estadoBonoLabel(estado) }}</option>
               </select>
             </td>
             <td>{{ bono.fecha_compra | date:'dd/MM/yy HH:mm' }}</td>
