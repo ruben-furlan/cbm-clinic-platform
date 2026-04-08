@@ -82,18 +82,42 @@ export class BonosRegaloService {
   }
 
   async canjearBono(codigo: string): Promise<BonoRegalo> {
+    const normalizedCode = codigo.toUpperCase().trim();
     const { data, error } = await supabase
       .from('bonos_regalo')
       .update({ estado: 'canjeado', fecha_canje: new Date().toISOString() })
-      .eq('codigo', codigo.toUpperCase().trim())
+      .eq('codigo', normalizedCode)
+      .in('estado', ['pagado', 'enviado'])
       .select('*')
-      .single();
+      .maybeSingle();
 
     if (error) {
       throw error;
     }
 
-    return data as BonoRegalo;
+    if (data) {
+      return data as BonoRegalo;
+    }
+
+    const { data: existing, error: existingError } = await supabase
+      .from('bonos_regalo')
+      .select('estado')
+      .eq('codigo', normalizedCode)
+      .maybeSingle();
+
+    if (existingError) {
+      throw existingError;
+    }
+
+    if (!existing) {
+      throw Object.assign(new Error('Bono no encontrado'), { code: 'BONO_NO_ENCONTRADO' });
+    }
+
+    if (existing.estado === 'canjeado') {
+      throw Object.assign(new Error('Este bono ya ha sido canjeado'), { code: 'BONO_YA_CANJEADO' });
+    }
+
+    throw Object.assign(new Error('Este bono no está disponible para canjear'), { code: 'BONO_NO_DISPONIBLE' });
   }
 
   async deleteBono(id: string): Promise<void> {

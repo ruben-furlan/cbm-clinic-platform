@@ -165,17 +165,42 @@ export class CanjearRegaloComponent implements OnDestroy {
     this.cdr.detectChanges();
 
     // Esperar que termine la animación CSS de explosión (500ms) antes de cambiar estado
-    setTimeout(() => {
+    setTimeout(async () => {
       this.estado = 'animacion';
-      // Canjear en background sin bloquear la animación
-      if (this.bono) {
-        void this.bonosRegaloService.canjearBono(this.bono.codigo)
-          .then(actualizado => { this.bono = actualizado; this.cdr.detectChanges(); })
-          .catch(err => console.error('Error canjeando bono:', err));
-      }
-      // Pasar al vale tras la animación de apertura
-      setTimeout(() => { this.estado = 'vale'; this.cdr.detectChanges(); }, 2600);
       this.cdr.detectChanges();
+
+      const waitForOpeningAnimation = new Promise<void>((resolve) => setTimeout(resolve, 2600));
+
+      try {
+        if (!this.bono) {
+          await waitForOpeningAnimation;
+          this.estado = 'no_encontrado';
+          return;
+        }
+
+        const actualizado = await this.bonosRegaloService.canjearBono(this.bono.codigo);
+        await waitForOpeningAnimation;
+        this.bono = actualizado;
+        this.estado = 'vale';
+      } catch (err) {
+        console.error('Error canjeando bono:', err);
+        await waitForOpeningAnimation;
+        const errorCode = (err as { code?: string } | null)?.code;
+
+        if (errorCode === 'BONO_YA_CANJEADO') {
+          this.estado = 'ya_canjeado';
+          return;
+        }
+
+        if (errorCode === 'BONO_NO_DISPONIBLE') {
+          this.estado = 'pendiente_pago';
+          return;
+        }
+
+        this.estado = 'no_encontrado';
+      } finally {
+        this.cdr.detectChanges();
+      }
     }, 500);
   }
 
