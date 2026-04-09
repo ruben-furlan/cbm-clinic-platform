@@ -64,8 +64,8 @@ export class CanjearRegaloComponent implements OnDestroy {
   }));
 
   get nombreEmotivo(): string {
-    if (this.servicioRegalo?.nombre_emotivo) {
-      return this.servicioRegalo.nombre_emotivo;
+    if (this.servicioRegalo?.nombre_servicio) {
+      return this.servicioRegalo.nombre_servicio;
     }
     return this.bono?.nombre_servicio ?? '';
   }
