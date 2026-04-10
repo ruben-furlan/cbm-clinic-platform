@@ -235,7 +235,13 @@ export class BookingFormComponent implements OnInit {
       });
       clearTimeout(timeout);
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        const details = await response.text().catch(() => '');
+        console.error(`Error enviando solicitud HTTP ${response.status}:`, details);
+        this.enviando = false;
+        this.errorEnvio = true;
+        return;
+      }
 
       this.enviando = false;
       this.solicitudEnviada = true;

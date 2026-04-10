@@ -12,7 +12,9 @@ const handler: Handler = async (event) => {
       console.error('RESEND_API_KEY no configurado')
       return { statusCode: 500, body: JSON.stringify({ error: 'Configuración incompleta' }) }
     }
-    const FROM_EMAIL = 'noreply@cbmfisioterapia.com'
+    const FROM_EMAIL = process.env['RESEND_DOMAIN_VERIFIED'] === 'true'
+      ? 'noreply@cbmfisioterapia.com'
+      : 'onboarding@resend.dev'
     const ADMIN_EMAIL = 'rubenfurlan@gmail.com'
 
     const htmlCliente = `
@@ -212,10 +214,16 @@ const handler: Handler = async (event) => {
       })
     ])
 
-    if (!r1.ok || !r2.ok) {
-      const e1 = !r1.ok ? await r1.text() : ''
-      const e2 = !r2.ok ? await r2.text() : ''
-      throw new Error(`Resend error: ${e1} ${e2}`.trim())
+    if (!r1.ok) {
+      const body = await r1.text()
+      console.error(`Resend error (cliente) ${r1.status}:`, body)
+      return { statusCode: 500, body: JSON.stringify({ error: 'Resend error (cliente)', status: r1.status, details: body }) }
+    }
+
+    if (!r2.ok) {
+      const body = await r2.text()
+      console.error(`Resend error (admin) ${r2.status}:`, body)
+      return { statusCode: 500, body: JSON.stringify({ error: 'Resend error (admin)', status: r2.status, details: body }) }
     }
 
     return {
@@ -223,10 +231,10 @@ const handler: Handler = async (event) => {
       body: JSON.stringify({ ok: true })
     }
   } catch (err) {
-    console.error('Error:', err)
+    console.error('Error inesperado:', err)
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'Error enviando email' })
+      body: JSON.stringify({ error: 'Error inesperado', details: String(err) })
     }
   }
 }
