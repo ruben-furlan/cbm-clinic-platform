@@ -1,3 +1,6 @@
+[functions]
+  directory = "netlify/functions"
+
 [build]
 command = """
   sed -i "s|__SUPABASE_URL__|$SUPABASE_URL|g" src/environments/environment.prod.ts &&

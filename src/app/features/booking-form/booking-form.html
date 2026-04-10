@@ -237,56 +237,84 @@
 
           <!-- Paso 3: ¡Listo! -->
           <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
-            <h3 class="step-title">¡Todo listo, {{ formData.name }}! 🎉</h3>
 
-            <div class="summary-card">
-              <div class="summary-row">
-                <span class="summary-label">Tratamiento</span>
-                <span class="summary-value">
-                  {{ selectedTreatmentOption?.nombre }}
-                  <strong class="summary-price">{{ selectedTreatmentOption?.precio }}</strong>
-                </span>
+            <!-- Estado éxito -->
+            <ng-container *ngIf="solicitudEnviada">
+              <div class="success-screen">
+                <div class="success-icon" aria-hidden="true">✅</div>
+                <h3 class="step-title">¡Solicitud enviada! 💜</h3>
+                <p class="success-subtitle">
+                  Te hemos enviado un email de confirmación a <strong>{{ formData.email }}</strong>.
+                  Nos pondremos en contacto contigo para confirmar tu cita.
+                </p>
+                <a routerLink="/" class="step-btn-back btn-back-home">← Volver al inicio</a>
               </div>
-              <div class="summary-row">
-                <span class="summary-label">Nombre</span>
-                <span class="summary-value">
-                  {{ formData.name }}{{ formData.surname ? ' ' + formData.surname : '' }}
-                </span>
-              </div>
-              <div *ngIf="formData.email" class="summary-row">
-                <span class="summary-label">Email</span>
-                <span class="summary-value">{{ formData.email }}</span>
-              </div>
-              <div *ngIf="promoCode" class="summary-row">
-                <span class="summary-label">Código promo</span>
-                <span class="summary-value summary-promo">{{ promoCode }}</span>
-              </div>
-            </div>
+            </ng-container>
 
-            <p class="step3-info">
-              Te llevamos a WhatsApp con tu solicitud preparada.<br />
-              La confirmación final se realiza por WhatsApp o email.<br />
-              El pago se realiza en el centro el día de la sesión.
-            </p>
+            <!-- Estado normal / enviando / error -->
+            <ng-container *ngIf="!solicitudEnviada">
+              <h3 class="step-title">¡Todo listo, {{ formData.name }}! 🎉</h3>
 
-            <div class="step-actions step-actions--with-back">
-              <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
-              <button
-                type="button"
-                class="btn-primary btn-booking step-btn-whatsapp"
-                [class.step-btn-whatsapp--sent]="whatsAppFeedback"
-                [disabled]="whatsAppFeedback"
-                (click)="sendWhatsApp()"
-              >
-                <ng-container *ngIf="!whatsAppFeedback">
-                  <span class="btn-icon" aria-hidden="true">💬</span>
-                  <span>Continuar por WhatsApp</span>
-                </ng-container>
-                <span *ngIf="whatsAppFeedback" class="whatsapp-feedback">
-                  ✓ Abriendo WhatsApp...
-                </span>
-              </button>
-            </div>
+              <div class="summary-card">
+                <div class="summary-row">
+                  <span class="summary-label">Tratamiento</span>
+                  <span class="summary-value">
+                    {{ selectedTreatmentOption?.nombre }}
+                    <strong class="summary-price">{{ selectedTreatmentOption?.precio }}</strong>
+                  </span>
+                </div>
+                <div class="summary-row">
+                  <span class="summary-label">Nombre</span>
+                  <span class="summary-value">
+                    {{ formData.name }}{{ formData.surname ? ' ' + formData.surname : '' }}
+                  </span>
+                </div>
+                <div *ngIf="formData.email" class="summary-row">
+                  <span class="summary-label">Email</span>
+                  <span class="summary-value">{{ formData.email }}</span>
+                </div>
+                <div *ngIf="promoCode" class="summary-row">
+                  <span class="summary-label">Código promo</span>
+                  <span class="summary-value summary-promo">{{ promoCode }}</span>
+                </div>
+              </div>
+
+              <p class="step3-info">
+                Revisa tu solicitud y confírmala. Te contactaremos para confirmar disponibilidad y horario.<br />
+                El pago se realiza en el centro el día de la sesión.
+              </p>
+
+              <!-- Fallback WhatsApp si falla el envío de email -->
+              <div *ngIf="errorEnvio" class="email-error-card">
+                <p class="email-error-text">
+                  No pudimos enviar el email en este momento.
+                  Puedes contactarnos directamente por WhatsApp:
+                </p>
+                <a
+                  [href]="whatsAppFallbackUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-whatsapp-fallback"
+                >
+                  💬 Escríbenos por WhatsApp
+                </a>
+              </div>
+
+              <div class="step-actions step-actions--with-back">
+                <button type="button" class="step-btn-back" (click)="prevStep()" [disabled]="enviando">← Atrás</button>
+                <button
+                  type="button"
+                  class="btn-primary step-btn-whatsapp"
+                  [class.step-btn-whatsapp--loading]="enviando"
+                  [disabled]="enviando"
+                  (click)="confirmarSolicitud()"
+                >
+                  <span *ngIf="!enviando">Confirmar solicitud 💜</span>
+                  <span *ngIf="enviando" class="whatsapp-feedback">Enviando tu solicitud...</span>
+                </button>
+              </div>
+            </ng-container>
+
           </div>
 
         </form>

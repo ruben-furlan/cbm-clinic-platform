@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
 import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
@@ -20,7 +21,7 @@ interface TreatmentOption {
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RevealOnScrollDirective, CbmLoaderComponent],
+  imports: [CommonModule, FormsModule, RouterLink, RevealOnScrollDirective, CbmLoaderComponent],
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css']
 })
@@ -40,6 +41,9 @@ export class BookingFormComponent implements OnInit {
   whatsAppFeedback = false;
   loadingTarifas = true;
   errorTarifas = false;
+  enviando = false;
+  errorEnvio = false;
+  solicitudEnviada = false;
 
   treatmentOptions: TreatmentOption[] = [];
 
@@ -207,6 +211,46 @@ export class BookingFormComponent implements OnInit {
       window.open(url, '_blank');
       this.whatsAppFeedback = false;
     }, 1500);
+  }
+
+  async confirmarSolicitud(): Promise<void> {
+    this.enviando = true;
+    this.errorEnvio = false;
+
+    try {
+      const response = await fetch('/.netlify/functions/send-appointment-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: this.formData.name,
+          apellido: this.formData.surname,
+          email: this.formData.email,
+          tratamiento: this.selectedTreatmentOption?.nombre,
+          codigoPromo: this.promoCode.trim() || null
+        })
+      });
+
+      if (!response.ok) throw new Error('Error en el envío');
+
+      this.enviando = false;
+      this.solicitudEnviada = true;
+    } catch (err) {
+      console.error('Error:', err);
+      this.enviando = false;
+      this.errorEnvio = true;
+    }
+  }
+
+  get whatsAppFallbackUrl(): string {
+    const phone = '34662561672';
+    const promo = this.promoCode.trim() ? `\nCódigo: ${this.promoCode}` : '';
+    const apellido = this.formData.surname.trim() ? ` ${this.formData.surname}` : '';
+    const msg =
+      `Hola CBM 😊 Quiero solicitar una cita.\n` +
+      `Tratamiento: ${this.selectedTreatmentOption?.nombre}\n` +
+      `Nombre: ${this.formData.name}${apellido}\n` +
+      `Email: ${this.formData.email}${promo}`;
+    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   }
 
   togglePromoCode(): void {
