@@ -55,50 +55,38 @@ const handler: Handler = async (event) => {
             color: #7c3aed; letter-spacing: 1px; text-transform: uppercase;">
               Resumen de tu solicitud
             </p>
-            <table style="width: 100%; border-collapse: collapse;">
-              <tr style="border-bottom: 1px solid #e9d5ff;">
-                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                  🏥 Tratamiento
-                </td>
-                <td style="padding: 10px 0; font-weight: 600; color: #111827;">
-                  ${data.tratamiento}
-                </td>
-              </tr>
-              <tr style="border-bottom: 1px solid #e9d5ff;">
-                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                  👤 Nombre
-                </td>
-                <td style="padding: 10px 0; font-weight: 600; color: #111827;">
-                  ${data.nombre} ${data.apellido || ''}
-                </td>
-              </tr>
-              <tr style="border-bottom: 1px solid #e9d5ff;">
-                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                  📧 Email
-                </td>
-                <td style="padding: 10px 0; font-weight: 600; color: #111827;">
-                  ${data.email}
-                </td>
-              </tr>
-              <tr${data.codigoPromo ? ' style="border-bottom: 1px solid #e9d5ff;"' : ''}>
-                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                  📱 Teléfono
-                </td>
-                <td style="padding: 10px 0; font-weight: 600; color: #111827;">
-                  ${data.telefono}
-                </td>
-              </tr>
-              ${data.codigoPromo ? `
-              <tr>
-                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
-                  🎟️ Código promocional
-                </td>
-                <td style="padding: 10px 0; font-weight: 600; color: #a855f7;">
-                  ${data.codigoPromo}
-                </td>
-              </tr>
-              ` : ''}
-            </table>
+            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">🏥 Tratamiento</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+                ${data.tratamiento}
+              </p>
+            </div>
+            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">👤 Nombre</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+                ${data.nombre} ${data.apellido || ''}
+              </p>
+            </div>
+            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">📧 Email</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px; word-break: break-all;">
+                ${data.email}
+              </p>
+            </div>
+            <div style="${data.codigoPromo ? 'border-bottom: 1px solid #e9d5ff;' : ''} padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">📱 Teléfono</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+                ${data.telefono}
+              </p>
+            </div>
+            ${data.codigoPromo ? `
+            <div style="padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">🎟️ Código promocional</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #a855f7; font-size: 15px;">
+                ${data.codigoPromo}
+              </p>
+            </div>
+            ` : ''}
           </div>
 
           <div style="background: #f0fdf4; border-radius: 12px;
@@ -160,60 +148,46 @@ const handler: Handler = async (event) => {
         </div>
         <div style="background: white; border: 1px solid #e5e7eb;
         border-top: none; border-radius: 0 0 16px 16px; padding: 32px;">
-          <table style="width: 100%; border-collapse: collapse;">
-            <tr style="border-bottom: 1px solid #f3f4f6;">
-              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
-                🏥 Tratamiento
-              </td>
-              <td style="padding: 12px 0; font-weight: 600; color: #111827;">
-                ${data.tratamiento}
-              </td>
-            </tr>
-            ${data.precio ? `
-            <tr style="border-bottom: 1px solid #f3f4f6;">
-              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
-                💰 Precio
-              </td>
-              <td style="padding: 12px 0; font-weight: 700; color: #111827;">
-                ${data.precio}
-              </td>
-            </tr>
-            ` : ''}
-            <tr style="border-bottom: 1px solid #f3f4f6;">
-              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
-                👤 Nombre
-              </td>
-              <td style="padding: 12px 0; font-weight: 600; color: #111827;">
-                ${data.nombre} ${data.apellido || ''}
-              </td>
-            </tr>
-            <tr style="border-bottom: 1px solid #f3f4f6;">
-              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
-                📧 Email
-              </td>
-              <td style="padding: 12px 0; font-weight: 600; color: #111827;">
-                ${data.email}
-              </td>
-            </tr>
-            <tr style="border-bottom: 1px solid #f3f4f6;">
-              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
-                📱 Teléfono
-              </td>
-              <td style="padding: 12px 0; font-weight: 600; color: #111827;">
-                ${data.telefono}
-              </td>
-            </tr>
-            ${data.codigoPromo ? `
-            <tr style="border-bottom: 1px solid #f3f4f6;">
-              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
-                🎟️ Código promo
-              </td>
-              <td style="padding: 12px 0; font-weight: 600; color: #a855f7;">
-                ${data.codigoPromo}
-              </td>
-            </tr>
-            ` : ''}
-          </table>
+          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">🏥 Tratamiento</p>
+            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+              ${data.tratamiento}
+            </p>
+          </div>
+          ${data.precio ? `
+          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">💰 Precio</p>
+            <p style="margin: 4px 0 0; font-weight: 700; color: #111827; font-size: 15px;">
+              ${data.precio}
+            </p>
+          </div>
+          ` : ''}
+          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">👤 Nombre</p>
+            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+              ${data.nombre} ${data.apellido || ''}
+            </p>
+          </div>
+          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">📧 Email</p>
+            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px; word-break: break-all;">
+              ${data.email}
+            </p>
+          </div>
+          <div style="${data.codigoPromo ? 'border-bottom: 1px solid #f3f4f6;' : ''} padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">📱 Teléfono</p>
+            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+              ${data.telefono}
+            </p>
+          </div>
+          ${data.codigoPromo ? `
+          <div style="padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">🎟️ Código promo</p>
+            <p style="margin: 4px 0 0; font-weight: 600; color: #a855f7; font-size: 15px;">
+              ${data.codigoPromo}
+            </p>
+          </div>
+          ` : ''}
 
           <div style="margin-top: 24px; padding: 16px; background: #fdf4ff;
           border-radius: 12px; border: 1px solid #e9d5ff;">
