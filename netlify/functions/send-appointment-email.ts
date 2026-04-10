@@ -22,6 +22,14 @@ const handler: Handler = async (event) => {
       margin: 0 auto; padding: 32px;">
         <div style="background: linear-gradient(135deg, #f472b6, #a855f7);
         padding: 24px; border-radius: 16px 16px 0 0; text-align: center;">
+          <img
+            src="https://cbmfisioterapia.com/favicon-192x192.png"
+            alt="CBM Fisioterapia"
+            width="56"
+            height="56"
+            style="border-radius: 12px; margin-bottom: 12px;
+            display: block; margin-left: auto; margin-right: auto;"
+          />
           <h1 style="color: white; margin: 0; font-size: 24px;">
             💜 Tu cita en CBM está en camino
           </h1>
@@ -135,6 +143,14 @@ const handler: Handler = async (event) => {
       margin: 0 auto; padding: 32px;">
         <div style="background: linear-gradient(135deg, #f472b6, #a855f7);
         padding: 24px; border-radius: 16px 16px 0 0; text-align: center;">
+          <img
+            src="https://cbmfisioterapia.com/favicon-192x192.png"
+            alt="CBM Fisioterapia"
+            width="56"
+            height="56"
+            style="border-radius: 12px; margin-bottom: 12px;
+            display: block; margin-left: auto; margin-right: auto;"
+          />
           <h1 style="color: white; margin: 0; font-size: 24px;">
             📅 Nueva solicitud de cita
           </h1>
