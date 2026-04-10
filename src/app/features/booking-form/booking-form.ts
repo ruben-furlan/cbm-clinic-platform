@@ -240,16 +240,19 @@ export class BookingFormComponent implements OnInit {
         console.error(`Error enviando solicitud HTTP ${response.status}:`, details);
         this.enviando = false;
         this.errorEnvio = true;
+        this.cdr.detectChanges();
         return;
       }
 
       this.enviando = false;
       this.solicitudEnviada = true;
+      this.cdr.detectChanges();
     } catch (err) {
       clearTimeout(timeout);
       console.error('Error enviando solicitud:', err);
       this.enviando = false;
       this.errorEnvio = true;
+      this.cdr.detectChanges();
     }
   }
 
