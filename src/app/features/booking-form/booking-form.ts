@@ -51,6 +51,7 @@ export class BookingFormComponent implements OnInit {
     name: '',
     surname: '',
     email: '',
+    phone: '',
     treatment: '',
     message: ''
   };
@@ -108,12 +109,22 @@ export class BookingFormComponent implements OnInit {
     return emailRegex.test(this.formData.email);
   }
 
+  get isPhoneValid(): boolean {
+    return /^\d{9,}$/.test(this.formData.phone.replace(/\s/g, ''));
+  }
+
   get canAdvanceStep1(): boolean {
     return !!this.formData.treatment;
   }
 
   get canAdvanceStep2(): boolean {
-    return !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid;
+    return !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid && this.isPhoneValid;
+  }
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^\d\s]/g, '');
+    this.formData.phone = input.value;
   }
 
   selectCard(value: string): void {
@@ -127,6 +138,18 @@ export class BookingFormComponent implements OnInit {
     }
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep++;
+    this.scrollToForm();
+  }
+
+  private scrollToForm(): void {
+    setTimeout(() => {
+      const el = document.querySelector('.form-card');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 100);
   }
 
   prevStep(): void {
@@ -228,6 +251,7 @@ export class BookingFormComponent implements OnInit {
           nombre: this.formData.name,
           apellido: this.formData.surname,
           email: this.formData.email,
+          telefono: '+34' + this.formData.phone.replace(/\s/g, ''),
           tratamiento: this.selectedTreatmentOption?.nombre,
           precio: this.selectedTreatmentOption?.precio,
           codigoPromo: this.promoCode.trim() || null
@@ -248,6 +272,7 @@ export class BookingFormComponent implements OnInit {
       this.enviando = false;
       this.solicitudEnviada = true;
       this.cdr.detectChanges();
+      this.scrollToForm();
     } catch (err) {
       clearTimeout(timeout);
       console.error('Error enviando solicitud:', err);

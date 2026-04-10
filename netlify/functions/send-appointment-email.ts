@@ -64,12 +64,20 @@ const handler: Handler = async (event) => {
                   ${data.nombre} ${data.apellido || ''}
                 </td>
               </tr>
-              <tr${data.codigoPromo ? ' style="border-bottom: 1px solid #e9d5ff;"' : ''}>
+              <tr style="border-bottom: 1px solid #e9d5ff;">
                 <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
                   📧 Email
                 </td>
                 <td style="padding: 10px 0; font-weight: 600; color: #111827;">
                   ${data.email}
+                </td>
+              </tr>
+              <tr${data.codigoPromo ? ' style="border-bottom: 1px solid #e9d5ff;"' : ''}>
+                <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
+                  📱 Teléfono
+                </td>
+                <td style="padding: 10px 0; font-weight: 600; color: #111827;">
+                  ${data.telefono}
                 </td>
               </tr>
               ${data.codigoPromo ? `
@@ -88,8 +96,9 @@ const handler: Handler = async (event) => {
           <div style="background: #f0fdf4; border-radius: 12px;
           padding: 16px; margin-bottom: 24px; border: 1px solid #bbf7d0;">
             <p style="margin: 0; font-size: 14px; color: #166534;">
-              Te escribiremos a <strong>${data.email}</strong> para confirmar
-              tu cita. Suele ser durante el mismo día 😊
+              Te escribiremos a <strong>${data.email}</strong> o al
+              <strong>${data.telefono}</strong> para confirmar tu cita.
+              Suele ser durante el mismo día 😊
             </p>
           </div>
 
@@ -168,6 +177,14 @@ const handler: Handler = async (event) => {
               </td>
               <td style="padding: 12px 0; font-weight: 600; color: #111827;">
                 ${data.email}
+              </td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f3f4f6;">
+              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
+                📱 Teléfono
+              </td>
+              <td style="padding: 12px 0; font-weight: 600; color: #111827;">
+                ${data.telefono}
               </td>
             </tr>
             ${data.codigoPromo ? `
