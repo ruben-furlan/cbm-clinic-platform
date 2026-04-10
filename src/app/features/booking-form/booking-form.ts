@@ -229,6 +229,7 @@ export class BookingFormComponent implements OnInit {
           apellido: this.formData.surname,
           email: this.formData.email,
           tratamiento: this.selectedTreatmentOption?.nombre,
+          precio: this.selectedTreatmentOption?.precio,
           codigoPromo: this.promoCode.trim() || null
         }),
         signal: controller.signal
