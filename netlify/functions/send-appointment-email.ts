@@ -23,7 +23,7 @@ const handler: Handler = async (event) => {
         <div style="background: linear-gradient(135deg, #f472b6, #a855f7);
         padding: 24px; border-radius: 16px 16px 0 0; text-align: center;">
           <h1 style="color: white; margin: 0; font-size: 24px;">
-            ✅ Solicitud recibida
+            💜 Tu cita en CBM está en camino
           </h1>
           <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0;">
             CBM Fisioterapia
@@ -36,9 +36,9 @@ const handler: Handler = async (event) => {
             Hola ${data.nombre} 😊
           </p>
           <p style="color: #374151; font-size: 15px; line-height: 1.6;">
-            Hemos recibido tu solicitud de cita con mucho cariño 💜<br>
-            Nos pondremos en contacto contigo por WhatsApp o email
-            para confirmar disponibilidad y horario.
+            Nos alegra que hayas dado el primer paso 💜<br>
+            Hemos recibido tu solicitud y nos pondremos en contacto
+            contigo para encontrar el mejor momento para ti.
           </p>
 
           <div style="background: #fdf4ff; border-radius: 16px;
@@ -64,7 +64,7 @@ const handler: Handler = async (event) => {
                   ${data.nombre} ${data.apellido || ''}
                 </td>
               </tr>
-              <tr>
+              <tr${data.codigoPromo ? ' style="border-bottom: 1px solid #e9d5ff;"' : ''}>
                 <td style="padding: 10px 0; color: #6b7280; font-size: 14px;">
                   📧 Email
                 </td>
@@ -88,9 +88,8 @@ const handler: Handler = async (event) => {
           <div style="background: #f0fdf4; border-radius: 12px;
           padding: 16px; margin-bottom: 24px; border: 1px solid #bbf7d0;">
             <p style="margin: 0; font-size: 14px; color: #166534;">
-              📱 Nos pondremos en contacto contigo en
-              <strong>${data.email}</strong>
-              para confirmar tu cita.
+              Te escribiremos a <strong>${data.email}</strong> para confirmar
+              tu cita. Suele ser durante el mismo día 😊
             </p>
           </div>
 
@@ -108,8 +107,10 @@ const handler: Handler = async (event) => {
             </a>
           </div>
 
-          <p style="color: #6b7280; font-size: 13px; line-height: 1.6;">
-            El pago se realiza en el centro el día de la sesión.
+          <p style="color: #374151; font-size: 14px; line-height: 1.7;
+          font-style: italic;">
+            Estamos deseando acompañarte 💜<br>
+            — El equipo CBM
           </p>
         </div>
         <p style="text-align: center; color: #9ca3af;
@@ -143,6 +144,16 @@ const handler: Handler = async (event) => {
                 ${data.tratamiento}
               </td>
             </tr>
+            ${data.precio ? `
+            <tr style="border-bottom: 1px solid #f3f4f6;">
+              <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
+                💰 Precio
+              </td>
+              <td style="padding: 12px 0; font-weight: 700; color: #111827;">
+                ${data.precio}
+              </td>
+            </tr>
+            ` : ''}
             <tr style="border-bottom: 1px solid #f3f4f6;">
               <td style="padding: 12px 0; color: #6b7280; font-size: 14px;">
                 👤 Nombre
@@ -191,14 +202,14 @@ const handler: Handler = async (event) => {
       Authorization: `Bearer ${RESEND_API_KEY}`
     }
 
-    const [r1, r2] = await Promise.all([
+    const [resCliente, resAdmin] = await Promise.allSettled([
       fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers,
         body: JSON.stringify({
           from: `CBM Fisioterapia <${FROM_EMAIL}>`,
           to: [data.email],
-          subject: `✅ Hemos recibido tu solicitud — CBM Fisioterapia`,
+          subject: `💜 Tu cita en CBM está en camino`,
           html: htmlCliente
         })
       }),
@@ -214,16 +225,26 @@ const handler: Handler = async (event) => {
       })
     ])
 
-    if (!r1.ok) {
-      const body = await r1.text()
-      console.error(`Resend error (cliente) ${r1.status}:`, body)
-      return { statusCode: 500, body: JSON.stringify({ error: 'Resend error (cliente)', status: r1.status, details: body }) }
+    console.log('Cliente settled:', resCliente.status)
+    console.log('Admin settled:', resAdmin.status)
+
+    if (resCliente.status === 'rejected') {
+      console.error('Error cliente (network):', resCliente.reason)
+    } else if (!resCliente.value.ok) {
+      const body = await resCliente.value.text()
+      console.error(`Resend error (cliente) ${resCliente.value.status}:`, body)
+      return { statusCode: 500, body: JSON.stringify({ error: 'Resend error (cliente)', status: resCliente.value.status, details: body }) }
     }
 
-    if (!r2.ok) {
-      const body = await r2.text()
-      console.error(`Resend error (admin) ${r2.status}:`, body)
-      return { statusCode: 500, body: JSON.stringify({ error: 'Resend error (admin)', status: r2.status, details: body }) }
+    if (resAdmin.status === 'rejected') {
+      console.error('Error admin (network):', resAdmin.reason)
+    } else if (!resAdmin.value.ok) {
+      const body = await resAdmin.value.text()
+      console.error(`Resend error (admin) ${resAdmin.value.status}:`, body)
+    }
+
+    if (resCliente.status === 'rejected') {
+      return { statusCode: 500, body: JSON.stringify({ error: 'Error de red enviando email al cliente' }) }
     }
 
     return {
