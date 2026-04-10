@@ -8,6 +8,10 @@ const handler: Handler = async (event) => {
   try {
     const data = JSON.parse(event.body || '{}')
     const RESEND_API_KEY = process.env['RESEND_API_KEY']
+    if (!RESEND_API_KEY) {
+      console.error('RESEND_API_KEY no configurado')
+      return { statusCode: 500, body: JSON.stringify({ error: 'Configuración incompleta' }) }
+    }
     const FROM_EMAIL = 'noreply@cbmfisioterapia.com'
     const ADMIN_EMAIL = 'rubenfurlan@gmail.com'
 
@@ -180,13 +184,15 @@ const handler: Handler = async (event) => {
       </div>
     `
 
-    await Promise.all([
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${RESEND_API_KEY}`
+    }
+
+    const [r1, r2] = await Promise.all([
       fetch('https://api.resend.com/emails', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${RESEND_API_KEY}`
-        },
+        headers,
         body: JSON.stringify({
           from: `CBM Fisioterapia <${FROM_EMAIL}>`,
           to: [data.email],
@@ -196,10 +202,7 @@ const handler: Handler = async (event) => {
       }),
       fetch('https://api.resend.com/emails', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${RESEND_API_KEY}`
-        },
+        headers,
         body: JSON.stringify({
           from: `CBM Fisioterapia <${FROM_EMAIL}>`,
           to: [ADMIN_EMAIL],
@@ -208,6 +211,12 @@ const handler: Handler = async (event) => {
         })
       })
     ])
+
+    if (!r1.ok || !r2.ok) {
+      const e1 = !r1.ok ? await r1.text() : ''
+      const e2 = !r2.ok ? await r2.text() : ''
+      throw new Error(`Resend error: ${e1} ${e2}`.trim())
+    }
 
     return {
       statusCode: 200,

@@ -217,6 +217,9 @@ export class BookingFormComponent implements OnInit {
     this.enviando = true;
     this.errorEnvio = false;
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
     try {
       const response = await fetch('/.netlify/functions/send-appointment-email', {
         method: 'POST',
@@ -227,15 +230,18 @@ export class BookingFormComponent implements OnInit {
           email: this.formData.email,
           tratamiento: this.selectedTreatmentOption?.nombre,
           codigoPromo: this.promoCode.trim() || null
-        })
+        }),
+        signal: controller.signal
       });
+      clearTimeout(timeout);
 
-      if (!response.ok) throw new Error('Error en el envío');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       this.enviando = false;
       this.solicitudEnviada = true;
     } catch (err) {
-      console.error('Error:', err);
+      clearTimeout(timeout);
+      console.error('Error enviando solicitud:', err);
       this.enviando = false;
       this.errorEnvio = true;
     }
