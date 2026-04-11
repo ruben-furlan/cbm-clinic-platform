@@ -7,7 +7,11 @@ type SeoSlug =
   | 'fisioterapia-dolor-lumbar-terrassa'
   | 'fisioterapia-cervical-terrassa'
   | 'puncion-seca-terrassa'
-  | 'pilates-terapeutico-terrassa';
+  | 'pilates-terapeutico-terrassa'
+  | 'fisioterapia-lesiones-deportivas-terrassa'
+  | 'fisioterapia-tendinitis-terrassa'
+  | 'fisioterapia-recuperacion-postquirurgica-terrassa'
+  | 'fisioterapia-dolor-hombro-terrassa';
 
 interface SeoPageContent {
   title: string;
@@ -123,6 +127,102 @@ export class SeoPageComponent {
         'Si quieres prevenir recaídas y fortalecer tu cuerpo de forma segura.',
         'Si tras una lesión necesitas recuperar confianza al moverte.',
         'Si buscas una opción terapéutica activa y personalizada.'
+      ]
+    },
+    'fisioterapia-lesiones-deportivas-terrassa': {
+      title: 'Fisioterapia para lesiones deportivas en Terrassa',
+      intro:
+        'En CBM Fisioterapia atendemos a pacientes de Terrassa con lesiones deportivas: esguinces, roturas fibrilares, sobrecargas y tendinopatías. Te acompañamos desde el primer día hasta la vuelta al deporte.',
+      problemDescription:
+        'Las lesiones deportivas pueden aparecer por un traumatismo puntual, una sobrecarga acumulada o un gesto mal ejecutado. Sin una recuperación bien planificada, el riesgo de recaída aumenta significativamente.',
+      symptoms: [
+        'Dolor localizado al movimiento o al cargar sobre la zona afectada.',
+        'Inflamación, hematoma o sensación de calor en la zona lesionada.',
+        'Pérdida de fuerza o sensación de inestabilidad.',
+        'Limitación funcional para correr, saltar o hacer gestos deportivos.'
+      ],
+      treatment: [
+        'Valoración funcional para identificar el tipo y grado de lesión.',
+        'Terapia manual para reducir inflamación y recuperar movilidad en la fase aguda.',
+        'Readaptación progresiva al deporte mediante ejercicio terapéutico específico.',
+        'Trabajo de propiocepción y control motor para prevenir recaídas.'
+      ],
+      whenToCome: [
+        'Si el dolor no mejora con reposo tras 48-72 horas.',
+        'Si hay inflamación persistente o no puedes apoyar bien la zona afectada.',
+        'Antes de volver al entrenamiento, para asegurarte de que estás listo.'
+      ]
+    },
+    'fisioterapia-tendinitis-terrassa': {
+      title: 'Fisioterapia para tendinitis en Terrassa',
+      intro:
+        'En CBM Fisioterapia tratamos tendinopatías y tendinitis en pacientes de Terrassa. Abordamos la causa real de la sobrecarga del tendón para que el alivio sea duradero y puedas volver a moverte sin miedo.',
+      problemDescription:
+        'La tendinitis aparece cuando el tendón se inflama por sobrecarga repetida, gestos mal ejecutados o falta de calentamiento. Es frecuente en el talón, el codo, el hombro y la rodilla, y tiende a cronificarse si no se trata bien.',
+      symptoms: [
+        'Dolor al iniciar el movimiento que mejora al calentar pero vuelve al parar.',
+        'Sensibilidad al tacto justo sobre el tendón afectado.',
+        'Rigidez matutina en la zona o después de periodos de reposo.',
+        'Dolor que aumenta con la actividad y limita el rendimiento deportivo o laboral.'
+      ],
+      treatment: [
+        'Valoración de la carga y los factores que perpetúan la tendinopatía.',
+        'Descarga del tendón en la fase inicial para controlar el dolor.',
+        'Ejercicio excéntrico y progresivo para recuperar la capacidad de carga del tendón.',
+        'Electroterapia o técnicas complementarias cuando el caso lo requiere.'
+      ],
+      whenToCome: [
+        'Si el dolor en el tendón dura más de dos semanas sin mejorar.',
+        'Si reaparece cada vez que retomas el deporte o la actividad habitual.',
+        'Si está limitando tu día a día: bajar escaleras, caminar o levantar el brazo.'
+      ]
+    },
+    'fisioterapia-recuperacion-postquirurgica-terrassa': {
+      title: 'Rehabilitación postquirúrgica en Terrassa',
+      intro:
+        'En CBM Fisioterapia acompañamos a pacientes de Terrassa en su recuperación tras cirugías de rodilla, hombro, columna, cadera y otras intervenciones. Trabajamos codo con codo con tu equipo médico para que la vuelta a la vida normal sea segura y progresiva.',
+      problemDescription:
+        'Después de una operación, el cuerpo necesita tiempo y un plan de rehabilitación adaptado. Sin fisioterapia, es frecuente que aparezcan rigideces, pérdida de fuerza o cicatrices con adherencias que limitan el movimiento a largo plazo.',
+      symptoms: [
+        'Pérdida de movilidad en la articulación operada.',
+        'Debilidad muscular por el tiempo de inmovilización.',
+        'Cicatriz sensible, tensa o con adherencias al tejido profundo.',
+        'Miedo o inseguridad al volver a cargar sobre la zona intervenida.'
+      ],
+      treatment: [
+        'Protocolo de rehabilitación adaptado al tipo de cirugía y a tu evolución.',
+        'Trabajo de movilidad articular progresiva desde las primeras semanas.',
+        'Fortalecimiento muscular para recuperar la función y la estabilidad.',
+        'Tratamiento de la cicatriz para mejorar su elasticidad y reducir adherencias.'
+      ],
+      whenToCome: [
+        'Desde las primeras semanas postcirugía, siguiendo las indicaciones de tu médico.',
+        'Si notas que la movilidad no avanza o que la cicatriz tira y duele.',
+        'Antes de retomar el deporte o el trabajo físico tras la operación.'
+      ]
+    },
+    'fisioterapia-dolor-hombro-terrassa': {
+      title: 'Fisioterapia para dolor de hombro en Terrassa',
+      intro:
+        'En CBM Fisioterapia tratamos el dolor de hombro en pacientes de Terrassa: manguito rotador, bursitis, tendinitis del supraespinoso e impingement. Te ayudamos a recuperar el movimiento y a dormir sin dolor.',
+      problemDescription:
+        'El dolor de hombro es una de las consultas más frecuentes en fisioterapia. Puede aparecer de forma gradual por sobrecarga o de forma brusca tras un golpe o caída, y si no se trata bien, tiende a limitar cada vez más actividades cotidianas.',
+      symptoms: [
+        'Dolor al levantar el brazo por encima de la cabeza o hacia los lados.',
+        'Dificultad para dormir del lado afectado por el dolor nocturno.',
+        'Pérdida de fuerza para empujar, tirar o cargar peso con el brazo.',
+        'Sensación de chasquido o bloqueo al mover el hombro.'
+      ],
+      treatment: [
+        'Exploración funcional para identificar la estructura afectada y la causa del dolor.',
+        'Terapia manual para recuperar movilidad y reducir la inflamación periarticular.',
+        'Ejercicio de estabilización escapular y reeducación del movimiento del hombro.',
+        'Pautas para el día a día que eviten sobrecargar la zona mientras se recupera.'
+      ],
+      whenToCome: [
+        'Si el dolor de hombro no mejora en una semana o te impide dormir bien.',
+        'Si tienes limitación para actividades cotidianas como peinarte o vestirte.',
+        'Si el dolor apareció tras un golpe, caída o esfuerzo brusco.'
       ]
     }
   };

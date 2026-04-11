@@ -93,5 +93,21 @@ export const routes: Routes = [
   {
     path: 'pilates-terapeutico-terrassa',
     component: SeoPageComponent
+  },
+  {
+    path: 'fisioterapia-lesiones-deportivas-terrassa',
+    component: SeoPageComponent
+  },
+  {
+    path: 'fisioterapia-tendinitis-terrassa',
+    component: SeoPageComponent
+  },
+  {
+    path: 'fisioterapia-recuperacion-postquirurgica-terrassa',
+    component: SeoPageComponent
+  },
+  {
+    path: 'fisioterapia-dolor-hombro-terrassa',
+    component: SeoPageComponent
   }
 ];
