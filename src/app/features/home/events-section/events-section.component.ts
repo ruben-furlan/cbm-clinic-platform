@@ -72,7 +72,13 @@ export class EventsSectionComponent implements OnInit {
 
   getCtaLabel(event: CbmEvent): string {
     if (this.isFull(event)) return 'Quiero empezar';
-    return event.cta_label ?? (event.pricing_type === 'free' ? 'Apuntarme gratis' : 'Reservar plaza');
+    return event.cta_label ?? (event.pricing_type === 'free' ? 'Apuntarme' : 'Reservar plaza');
+  }
+
+  getEventCost(event: CbmEvent): string {
+    if (event.pricing_type === 'free') return 'Sin coste · sesión de bienvenida';
+    const price = event.price?.toLocaleString('es-ES') ?? '';
+    return `${price} € · sesión`;
   }
 
   trackById(_: number, event: CbmEvent): string {

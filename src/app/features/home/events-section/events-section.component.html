@@ -80,14 +80,6 @@
 
         <!-- Badges -->
         <div class="card-badges">
-          <span
-            class="card-badge"
-            [class.card-badge--free]="event.pricing_type === 'free'"
-            [class.card-badge--paid]="event.pricing_type === 'paid'"
-          >
-            {{ event.pricing_type === 'free' ? 'Gratis' : event.price + '€' }}
-          </span>
-
           <span class="card-badge card-badge--urgent" *ngIf="isAlmostFull(event) && !isFull(event)">
             Últimas plazas
           </span>
@@ -138,6 +130,13 @@
               <dd>
                 <span class="meta-icon" aria-hidden="true">📍</span>
                 <span class="meta-text">{{ event.location }}</span>
+              </dd>
+            </div>
+            <div class="card-meta-item">
+              <dt class="sr-only">Coste</dt>
+              <dd>
+                <span class="meta-icon" aria-hidden="true">💜</span>
+                <span class="meta-text">{{ getEventCost(event) }}</span>
               </dd>
             </div>
           </dl>
