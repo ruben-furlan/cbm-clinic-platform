@@ -375,103 +375,85 @@
 
   <!-- ══════════════════════════════ NEWSLETTER ════════════════════════════ -->
   <ng-container *ngIf="seccion === 'newsletter'">
+
+    <p class="status error" *ngIf="newsletterError">{{ newsletterError }}</p>
+    <p class="status" *ngIf="newsletterLoading && !suscriptores.length">Cargando suscriptores...</p>
+
+    <!-- Feedback de envío -->
+    <p class="status message" *ngIf="nlToast && nlToast.tipo === 'exito'" role="status" aria-live="polite">✅ {{ nlToast.texto }}</p>
+    <p class="status nl-warn" *ngIf="nlToast && nlToast.tipo === 'parcial'" role="status" aria-live="polite">⚠️ {{ nlToast.texto }}</p>
+    <p class="status error" *ngIf="nlToast && nlToast.tipo === 'error'" role="status" aria-live="polite">❌ {{ nlToast.texto }}</p>
+
+    <!-- 1 — Estadísticas -->
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 20px;" *ngIf="!newsletterLoading">
+      <article class="stat-card"><p>Total suscriptores</p><strong>{{ newsletterStats.total }}</strong></article>
+      <article class="stat-card"><p>Activos</p><strong>{{ newsletterStats.activos }}</strong></article>
+      <article class="stat-card"><p>Dados de baja</p><strong>{{ newsletterStats.bajas }}</strong></article>
+    </div>
+
+    <!-- 2 — Editor de envío -->
+    <section class="bonos-config" *ngIf="!newsletterLoading">
+      <div class="bonos-code-row" style="justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+        <div>
+          <h3>Enviar newsletter</h3>
+          <p>Se enviará a todos los suscriptores activos</p>
+        </div>
+        <span class="nl-origen-badge" style="border-radius: 999px; padding: 6px 14px; font-size: 13px; align-self: flex-start;">
+          📧 {{ nlEmailsActivos.length }} suscriptores activos
+        </span>
+      </div>
+
+      <div class="modal-form">
+        <label>
+          Asunto del email *
+          <input
+            type="text"
+            [(ngModel)]="nlAsunto"
+            placeholder="Ej: Nuevas clases disponibles en CBM 💜"
+            [disabled]="nlEnviando"
+            maxlength="150"
+          />
+        </label>
+
+        <label>
+          Mensaje *
+          <textarea
+            [(ngModel)]="nlMensaje"
+            rows="7"
+            placeholder="Escribe aquí el mensaje para tus suscriptores...
+
+Puedes usar saltos de línea para separar párrafos.
+El email se enviará con el diseño CBM automáticamente."
+            [disabled]="nlEnviando"
+          ></textarea>
+          <span class="field-helper">{{ nlMensaje.length }} caracteres</span>
+        </label>
+      </div>
+
+      <div class="bonos-code-row">
+        <button
+          type="button"
+          class="btn-primary"
+          [disabled]="!nlPuedeEnviar || nlEmailsActivos.length === 0"
+          (click)="confirmarEnvioNewsletter()"
+          style="min-width: 180px; min-height: 44px; display: flex; align-items: center; justify-content: center;"
+        >
+          <span *ngIf="!nlEnviando">Enviar newsletter →</span>
+          <span *ngIf="nlEnviando" class="nl-admin-spinner"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3 — Filtros + Tabla -->
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Filtro newsletter">
         <button type="button" [class.active]="filtroNewsletter === 'todos'" (click)="filtroNewsletter = 'todos'">Todos</button>
         <button type="button" [class.active]="filtroNewsletter === 'activos'" (click)="filtroNewsletter = 'activos'">Activos</button>
         <button type="button" [class.active]="filtroNewsletter === 'bajas'" (click)="filtroNewsletter = 'bajas'">Dados de baja</button>
       </div>
-      <button type="button" class="btn-primary" (click)="exportarNewsletterCSV()" [disabled]="newsletterLoading">
-        Exportar CSV
-      </button>
+      <button type="button" class="btn-primary" (click)="exportarNewsletterCSV()" [disabled]="newsletterLoading">Exportar CSV</button>
     </div>
 
-    <p class="status error" *ngIf="newsletterError">{{ newsletterError }}</p>
-    <p class="status" *ngIf="newsletterLoading && !suscriptores.length">Cargando suscriptores...</p>
-
-    <!-- Toast de estado -->
-    <div
-      class="nl-toast"
-      *ngIf="nlToast"
-      [class.nl-toast--exito]="nlToast.tipo === 'exito'"
-      [class.nl-toast--parcial]="nlToast.tipo === 'parcial'"
-      [class.nl-toast--error]="nlToast.tipo === 'error'"
-      role="status"
-      aria-live="polite"
-    >
-      <span *ngIf="nlToast.tipo === 'exito'">✅</span>
-      <span *ngIf="nlToast.tipo === 'parcial'">⚠️</span>
-      <span *ngIf="nlToast.tipo === 'error'">❌</span>
-      {{ nlToast.texto }}
-    </div>
-
-    <!-- Editor de envío -->
-    <div class="nl-editor" *ngIf="!newsletterLoading">
-      <div class="nl-editor-header">
-        <div>
-          <h3 class="nl-editor-title">Enviar newsletter</h3>
-          <p class="nl-editor-sub">Se enviará a todos los suscriptores activos</p>
-        </div>
-        <span class="nl-activos-badge">📧 {{ nlEmailsActivos.length }} suscriptores activos</span>
-      </div>
-
-      <label class="nl-field-label">
-        Asunto del email *
-        <input
-          class="nl-field-input"
-          type="text"
-          [(ngModel)]="nlAsunto"
-          placeholder="Ej: Nuevas clases disponibles en CBM 💜"
-          [disabled]="nlEnviando"
-          maxlength="150"
-        />
-      </label>
-
-      <label class="nl-field-label">
-        Mensaje *
-        <textarea
-          class="nl-field-textarea"
-          [(ngModel)]="nlMensaje"
-          rows="7"
-          placeholder="Escribe aquí el mensaje para tus suscriptores...
-
-Puedes usar saltos de línea para separar párrafos.
-El email se enviará con el diseño CBM automáticamente."
-          [disabled]="nlEnviando"
-        ></textarea>
-        <span class="nl-char-count">{{ nlMensaje.length }} caracteres</span>
-      </label>
-
-      <div class="nl-editor-footer">
-        <button
-          type="button"
-          class="nl-send-btn"
-          [disabled]="!nlPuedeEnviar || nlEmailsActivos.length === 0"
-          (click)="confirmarEnvioNewsletter()"
-        >
-          <span *ngIf="!nlEnviando">Enviar newsletter →</span>
-          <span *ngIf="nlEnviando" class="nl-admin-spinner"></span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Estadísticas -->
-    <div class="nl-stats" *ngIf="!newsletterLoading">
-      <div class="nl-stat-card">
-        <span class="nl-stat-num">{{ newsletterStats.total }}</span>
-        <span class="nl-stat-label">Total</span>
-      </div>
-      <div class="nl-stat-card nl-stat-card--activos">
-        <span class="nl-stat-num">{{ newsletterStats.activos }}</span>
-        <span class="nl-stat-label">Activos</span>
-      </div>
-      <div class="nl-stat-card nl-stat-card--bajas">
-        <span class="nl-stat-num">{{ newsletterStats.bajas }}</span>
-        <span class="nl-stat-label">Dados de baja</span>
-      </div>
-    </div>
-
-    <!-- Tabla -->
     <div class="table-wrap" *ngIf="suscriptoresFiltrados.length">
       <table>
         <thead>
@@ -1182,12 +1164,12 @@ El email se enviará con el diseño CBM automáticamente."
 
 <!-- Modal confirmación envío newsletter -->
 <div class="modal-overlay" *ngIf="nlShowConfirm" (click)="cancelarEnvioNewsletter()">
-  <section class="modal-card nl-confirm-card" (click)="$event.stopPropagation()">
+  <section class="modal-card" style="max-width: 420px;" (click)="$event.stopPropagation()">
     <h2>¿Enviar newsletter?</h2>
-    <p class="nl-confirm-sub">
+    <p style="margin: 8px 0 4px; font-size: 14px; color: #374151;">
       Se enviará el email a <strong>{{ nlEmailsActivos.length }} suscriptores activos</strong>.
     </p>
-    <p class="nl-confirm-asunto">📧 {{ nlAsunto }}</p>
+    <p class="field-notice">📧 {{ nlAsunto }}</p>
     <div class="modal-actions">
       <button type="button" class="btn-ghost" (click)="cancelarEnvioNewsletter()">Cancelar</button>
       <button type="button" class="btn-primary" (click)="enviarNewsletter()">Sí, enviar</button>
