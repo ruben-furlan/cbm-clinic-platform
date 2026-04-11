@@ -41,6 +41,24 @@ export class NewsletterService {
     if (error) throw error;
   }
 
+  async deleteSuscriptor(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('newsletter_suscriptores')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  }
+
+  async darDeBaja(email: string): Promise<void> {
+    const { error } = await supabase
+      .from('newsletter_suscriptores')
+      .update({ activo: false })
+      .eq('email', email.toLowerCase().trim());
+
+    if (error) throw error;
+  }
+
   getEmailsActivos(suscriptores: NewsletterSuscriptor[]): string[] {
     return suscriptores.filter((s) => s.activo).map((s) => s.email);
   }

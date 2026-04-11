@@ -1,0 +1,83 @@
+.baja-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #fdf2f8 0%, #faf5ff 50%, #f0f9ff 100%);
+}
+
+.baja-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 32px rgba(168, 85, 247, 0.08);
+  border: 1px solid rgba(168, 85, 247, 0.1);
+}
+
+.baja-icon {
+  display: block;
+  font-size: 48px;
+  margin-bottom: 20px;
+  line-height: 1;
+}
+
+.baja-titulo {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f1b2d;
+}
+
+.baja-texto {
+  margin: 0 0 28px;
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.baja-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #f472b6, #a855f7);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.baja-btn:hover {
+  opacity: 0.88;
+}
+
+.baja-loading-text {
+  margin: 16px 0 0;
+  font-size: 15px;
+  color: #6b7280;
+}
+
+/* Spinner */
+.baja-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(168, 85, 247, 0.2);
+  border-top-color: #a855f7;
+  border-radius: 50%;
+  animation: baja-spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes baja-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .baja-card {
+    padding: 36px 24px;
+  }
+}

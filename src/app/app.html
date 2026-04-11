@@ -1,4 +1,4 @@
-<div class="physio-background" aria-hidden="true" [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null">
+<div class="physio-background" aria-hidden="true" [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null">
   <div class="physio-aurora physio-aurora-1"></div>
   <div class="physio-aurora physio-aurora-2"></div>
   <div class="physio-wave"></div>
@@ -11,20 +11,20 @@
 </div>
 
 <div class="app-content" [class.app-content--display]="isDisplayRoute">
-  <app-header [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null"></app-header>
+  <app-header [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-header>
   <main class="app-main">
     <router-outlet></router-outlet>
   </main>
-  <app-floating-whatsapp-button [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null"></app-floating-whatsapp-button>
-  <app-floating-booking-button [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null"></app-floating-booking-button>
-  <app-cookie-consent [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null"></app-cookie-consent>
-  <app-footer [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null"></app-footer>
+  <app-floating-whatsapp-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-floating-whatsapp-button>
+  <app-floating-booking-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-floating-booking-button>
+  <app-cookie-consent [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-cookie-consent>
+  <app-footer [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-footer>
 </div>
 
 <button
   class="back-to-top"
   [class.back-to-top--visible]="showScrollTop"
-  [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null"
+  [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"
   (click)="scrollToTop()"
   aria-label="Volver al inicio"
 >
@@ -33,7 +33,7 @@
   </svg>
 </button>
 
-<div class="social-floating" [style.display]="isDisplayRoute || isCanjearRoute ? 'none' : null">
+<div class="social-floating" [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null">
   <a href="https://instagram.com/cbm.fisioterapia" target="_blank" class="social-btn instagram">
     <img src="/instagram.svg" alt="Instagram">
   </a>

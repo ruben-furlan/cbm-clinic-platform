@@ -18,6 +18,7 @@ import { CanonicalService } from './core/seo/canonical.service';
 export class App implements OnInit, OnDestroy {
   isDisplayRoute = false;
   isCanjearRoute = false;
+  isBajaNewsletterRoute = false;
   showScrollTop = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
@@ -89,8 +90,10 @@ export class App implements OnInit, OnDestroy {
   private updateRouteState(url: string): void {
     const isDisplay = url.startsWith('/display');
     const isCanjear = url.startsWith('/canjear');
+    const isBajaNewsletter = url.startsWith('/baja-newsletter');
 
     this.isCanjearRoute = isCanjear;
+    this.isBajaNewsletterRoute = isBajaNewsletter;
 
     if (this.isDisplayRoute === isDisplay) {
       return;

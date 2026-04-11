@@ -12,6 +12,7 @@ import { AdminLoginComponent } from './admin/admin-login.component';
 import { AdminDashboardComponent } from './admin/admin-dashboard.component';
 import { RegaloComponent } from './features/regalo/regalo.component';
 import { CanjearRegaloComponent } from './canjear/canjear-regalo.component';
+import { BajaNewsletterComponent } from './features/baja-newsletter/baja-newsletter.component';
 
 export const routes: Routes = [
   {
@@ -58,6 +59,10 @@ export const routes: Routes = [
   {
     path: 'canjear',
     component: CanjearRegaloComponent
+  },
+  {
+    path: 'baja-newsletter',
+    component: BajaNewsletterComponent
   },
   {
     path: 'admin',

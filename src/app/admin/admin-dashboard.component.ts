@@ -119,6 +119,8 @@ export class AdminDashboardComponent implements OnInit {
   newsletterError = '';
   filtroNewsletter: FiltroNewsletter = 'todos';
 
+  deletingNlId: string | null = null;
+
   // Editor de envío
   nlAsunto = '';
   nlMensaje = '';
@@ -1667,6 +1669,28 @@ export class AdminDashboardComponent implements OnInit {
     } finally {
       this.newsletterLoading = false;
       this.flushUiState();
+    }
+  }
+
+  async eliminarSuscriptor(suscriptor: NewsletterSuscriptor): Promise<void> {
+    if (this.deletingNlId) return;
+    if (!window.confirm(`¿Eliminar el suscriptor ${suscriptor.email}?`)) return;
+
+    this.deletingNlId = suscriptor.id;
+    const previos = [...this.suscriptores];
+    this.suscriptores = this.suscriptores.filter((s) => s.id !== suscriptor.id);
+    this.flushUiState();
+
+    try {
+      await this.withTimeout(this.newsletterService.deleteSuscriptor(suscriptor.id));
+    } catch {
+      this.suscriptores = previos;
+      this.nlToast = { tipo: 'error', texto: 'No se pudo eliminar el suscriptor.' };
+    } finally {
+      this.zone.run(() => {
+        this.deletingNlId = null;
+        this.flushUiState();
+      });
     }
   }
 

@@ -1,0 +1,29 @@
+<div class="baja-page">
+
+  <!-- Cargando -->
+  <div class="baja-card" *ngIf="estado === 'cargando'">
+    <div class="baja-spinner" aria-label="Procesando..." role="status"></div>
+    <p class="baja-loading-text">Procesando tu solicitud...</p>
+  </div>
+
+  <!-- Éxito -->
+  <div class="baja-card" *ngIf="estado === 'exito'">
+    <span class="baja-icon" aria-hidden="true">💜</span>
+    <h1 class="baja-titulo">Te has dado de baja</h1>
+    <p class="baja-texto">
+      Lamentamos verte ir 💜<br>
+      Tu email ha sido eliminado de nuestra lista.<br>
+      Si cambias de opinión puedes volver a suscribirte cuando quieras.
+    </p>
+    <a class="baja-btn" routerLink="/">← Volver al inicio</a>
+  </div>
+
+  <!-- Error -->
+  <div class="baja-card" *ngIf="estado === 'error'">
+    <span class="baja-icon" aria-hidden="true">🔍</span>
+    <h1 class="baja-titulo">Email no encontrado</h1>
+    <p class="baja-texto">No encontramos ese email en nuestra lista.</p>
+    <a class="baja-btn" routerLink="/">← Volver al inicio</a>
+  </div>
+
+</div>
