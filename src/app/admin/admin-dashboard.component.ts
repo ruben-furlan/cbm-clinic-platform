@@ -18,10 +18,12 @@ import { supabase } from '../core/supabase.client';
 import { BonosRegaloService, BonoEstado, BonoRegalo } from '../core/services/bonos-regalo.service';
 import { ConfiguracionService } from '../core/services/configuracion.service';
 import { ServiciosRegaloService, ServicioRegalo, ServicioRegaloCategoria } from '../core/services/servicios-regalo.service';
+import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsletter.service';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
+type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -111,6 +113,12 @@ export class AdminDashboardComponent implements OnInit {
   updatingRegistrationId: string | null = null;
   registrosMessage = '';
 
+  // ── Newsletter ────────────────────────────────────────────────────────────
+  suscriptores: NewsletterSuscriptor[] = [];
+  newsletterLoading = false;
+  newsletterError = '';
+  filtroNewsletter: FiltroNewsletter = 'todos';
+
   // ── Check-in ──────────────────────────────────────────────────────────────
   checkinCode = '';
   checkinLoading = false;
@@ -189,6 +197,7 @@ export class AdminDashboardComponent implements OnInit {
     private readonly bonosRegaloService: BonosRegaloService,
     private readonly configuracionService: ConfiguracionService,
     private readonly serviciosRegaloService: ServiciosRegaloService,
+    private readonly newsletterService: NewsletterService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -283,7 +292,7 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo()]);
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo(), this.loadNewsletter()]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -1557,5 +1566,63 @@ export class AdminDashboardComponent implements OnInit {
         .replace(/\s+/g, '-');
       this.eventoForm.controls.slug.setValue(slug);
     }
+  }
+
+  // ── Newsletter ────────────────────────────────────────────────────────────
+
+  get suscriptoresFiltrados(): NewsletterSuscriptor[] {
+    if (this.filtroNewsletter === 'activos') return this.suscriptores.filter((s) => s.activo);
+    if (this.filtroNewsletter === 'bajas') return this.suscriptores.filter((s) => !s.activo);
+    return this.suscriptores;
+  }
+
+  get newsletterStats(): { total: number; activos: number; bajas: number } {
+    return {
+      total: this.suscriptores.length,
+      activos: this.suscriptores.filter((s) => s.activo).length,
+      bajas: this.suscriptores.filter((s) => !s.activo).length
+    };
+  }
+
+  async loadNewsletter(): Promise<void> {
+    this.newsletterLoading = true;
+    this.newsletterError = '';
+    try {
+      this.suscriptores = await this.withTimeout(this.newsletterService.getAllSuscriptores());
+    } catch {
+      this.newsletterError = 'No se pudieron cargar los suscriptores.';
+    } finally {
+      this.newsletterLoading = false;
+      this.flushUiState();
+    }
+  }
+
+  async toggleSuscriptorActivo(suscriptor: NewsletterSuscriptor, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    const valor = target.checked;
+    try {
+      await this.withTimeout(this.newsletterService.toggleActivo(suscriptor.id, valor));
+      this.suscriptores = this.suscriptores.map((s) =>
+        s.id === suscriptor.id ? { ...s, activo: valor } : s
+      );
+    } catch {
+      target.checked = suscriptor.activo;
+    } finally {
+      this.flushUiState();
+    }
+  }
+
+  exportarNewsletterCSV(): void {
+    const activos = this.suscriptores.filter((s) => s.activo);
+    const header = 'email,origen,fecha';
+    const rows = activos.map((s) => `${s.email},${s.origen},${s.created_at.substring(0, 10)}`);
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `newsletter_cbm_${new Date().toISOString().substring(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }

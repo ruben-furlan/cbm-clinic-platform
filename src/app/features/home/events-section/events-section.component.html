@@ -69,7 +69,7 @@
     </div>
 
     <!-- Cards grid / horizontal scroll -->
-    <div class="events-track">
+    <div class="events-track" appRevealOnScroll>
       <article
         class="event-card floating-card"
         *ngFor="let event of events; trackBy: trackById; let i = index"
@@ -156,6 +156,16 @@
         </div>
 
       </article>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="events-newsletter" appRevealOnScroll>
+      <app-newsletter-form
+        titulo="¿Quieres enterarte primero? 💜"
+        subtitulo="Suscríbete y accede antes que nadie a nuevas clases, talleres y plazas disponibles."
+        origen="eventos"
+        variante="claro"
+      />
     </div>
 
   </div>

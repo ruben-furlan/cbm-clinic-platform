@@ -3,10 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { CbmEvent, EventsService } from '../../../core/services/events.service';
 import { EventRegistrationModalComponent } from '../../events/event-registration-modal/event-registration-modal.component';
 import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-scroll.directive';
+import { NewsletterFormComponent } from '../../../shared/components/newsletter-form/newsletter-form.component';
+
 @Component({
   selector: 'app-events-section',
   standalone: true,
-  imports: [CommonModule, EventRegistrationModalComponent, RevealOnScrollDirective],
+  imports: [CommonModule, EventRegistrationModalComponent, RevealOnScrollDirective, NewsletterFormComponent],
   templateUrl: './events-section.component.html',
   styleUrl: './events-section.component.css'
 })

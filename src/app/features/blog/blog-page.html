@@ -45,6 +45,15 @@
         <p *ngSwitchCase="'cta'" class="article-cta">{{ bloque.texto }}</p>
       </ng-container>
 
+      <div class="blog-newsletter-wrap">
+        <app-newsletter-form
+          titulo="¿Te ha resultado útil? 💜"
+          subtitulo="Suscríbete y recibe más consejos y novedades de CBM directamente en tu email."
+          origen="blog"
+          variante="claro"
+        />
+      </div>
+
       <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
         <span class="btn-icon" aria-hidden="true">💬</span>
         <span>Solicitar cita</span>
@@ -73,6 +82,15 @@
         <p *ngSwitchCase="'parrafo'" class="article-intro">{{ bloque.texto }}</p>
         <p *ngSwitchCase="'cta'" class="article-cta">{{ bloque.texto }}</p>
       </ng-container>
+
+      <div class="blog-newsletter-wrap">
+        <app-newsletter-form
+          titulo="¿Te ha resultado útil? 💜"
+          subtitulo="Suscríbete y recibe más consejos y novedades de CBM directamente en tu email."
+          origen="blog"
+          variante="claro"
+        />
+      </div>
 
       <a class="btn-secondary" routerLink="/" fragment="reserva">Solicitar cita</a>
     </article>

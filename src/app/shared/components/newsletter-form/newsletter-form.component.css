@@ -1,0 +1,200 @@
+/* ── Contenedor base ─────────────────────────────────────────────────────── */
+.nl-wrap {
+  background: #fff;
+  border-radius: 16px;
+  padding: 28px 28px 24px;
+  border: 1px solid rgba(0,0,0,0.07);
+}
+
+.nl-wrap--oscuro {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* ── Textos ──────────────────────────────────────────────────────────────── */
+.nl-titulo {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.3;
+}
+
+.nl-wrap--oscuro .nl-titulo {
+  color: #fff;
+}
+
+.nl-subtitulo {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.nl-wrap--oscuro .nl-subtitulo {
+  color: rgba(255,255,255,0.72);
+}
+
+/* ── Formulario en línea ─────────────────────────────────────────────────── */
+.nl-form {
+  width: 100%;
+}
+
+.nl-input-row {
+  display: flex;
+  gap: 0;
+  width: 100%;
+}
+
+.nl-input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 18px;
+  font-size: 15px;
+  border: 1.5px solid #e5e7eb;
+  border-right: none;
+  border-radius: 999px 0 0 999px;
+  outline: none;
+  background: #fff;
+  color: #1a1a2e;
+  transition: border-color 0.2s;
+}
+
+.nl-input:focus {
+  border-color: #c084fc;
+}
+
+.nl-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.nl-wrap--oscuro .nl-input {
+  background: rgba(255,255,255,0.95);
+}
+
+.nl-btn {
+  flex-shrink: 0;
+  padding: 12px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #f472b6 0%, #a855f7 100%);
+  border: none;
+  border-radius: 0 999px 999px 0;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 136px;
+}
+
+.nl-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.nl-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────────── */
+.nl-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: nl-spin 0.7s linear infinite;
+}
+
+@keyframes nl-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Estado error ────────────────────────────────────────────────────────── */
+.nl-error-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nl-error-msg {
+  margin: 0;
+  font-size: 13px;
+  color: #ef4444;
+}
+
+.nl-wrap--oscuro .nl-error-msg {
+  color: #fca5a5;
+}
+
+.nl-btn-retry {
+  font-size: 13px;
+  font-weight: 600;
+  color: #a855f7;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.nl-wrap--oscuro .nl-btn-retry {
+  color: #e9d5ff;
+}
+
+/* ── Estado éxito ────────────────────────────────────────────────────────── */
+.nl-exito {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.nl-exito-icono {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.nl-exito-texto {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.6;
+}
+
+.nl-wrap--oscuro .nl-exito-texto {
+  color: rgba(255,255,255,0.9);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 540px) {
+  .nl-wrap {
+    padding: 22px 18px 20px;
+  }
+
+  .nl-input-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .nl-input {
+    border-right: 1.5px solid #e5e7eb;
+    border-radius: 999px;
+  }
+
+  .nl-btn {
+    border-radius: 999px;
+    width: 100%;
+  }
+}

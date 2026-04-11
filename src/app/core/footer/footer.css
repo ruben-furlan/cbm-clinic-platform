@@ -4,6 +4,16 @@
   margin-top:72px;
 }
 
+/* ── Newsletter en footer ────────────────────────────────────────────────── */
+.footer-newsletter {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 48px 0;
+}
+
+.footer-newsletter .container {
+  max-width: 520px;
+}
+
 .footer-content{
   display:grid;
   grid-template-columns:1.4fr 1fr 1fr 1fr;
