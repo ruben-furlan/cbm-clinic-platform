@@ -60,7 +60,7 @@ export class PricingComponent implements OnInit {
         items: groups.pilates.map((tarifa) => this.toPricingItem(tarifa))
       },
       {
-        title: 'Atenciones especiales',
+        title: 'Tarifas especiales',
         items: groups.promocion.map((tarifa) => this.toPricingItem(tarifa)),
         note: 'Promociones y cupones no acumulables'
       }
