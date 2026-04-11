@@ -59,17 +59,17 @@
         </thead>
         <tbody>
           <tr *ngFor="let tarifa of tarifasFiltradas">
-            <td>{{ tarifa.categoria }}</td>
-            <td>{{ tarifa.nombre }}</td>
-            <td>{{ tarifa.descripcion || '—' }}</td>
-            <td>{{ tarifa.precio }}{{ tarifa.unidad }}</td>
-            <td>
+            <td data-label="Categoría">{{ tarifa.categoria }}</td>
+            <td data-label="Nombre">{{ tarifa.nombre }}</td>
+            <td data-label="Descripción">{{ tarifa.descripcion || '—' }}</td>
+            <td data-label="Precio">{{ tarifa.precio }}{{ tarifa.unidad }}</td>
+            <td data-label="Activo">
               <label class="switch">
                 <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="saving || !!deletingId" />
                 <span></span>
               </label>
             </td>
-            <td class="actions">
+            <td class="actions" data-label="Acciones">
               <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="saving || !!deletingId">Editar</button>
               <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="saving || !!deletingId">{{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}</button>
             </td>
@@ -105,15 +105,15 @@
         </thead>
         <tbody>
           <tr *ngFor="let faq of faqs">
-            <td>{{ faq.orden }}</td>
-            <td>{{ faq.pregunta }}</td>
-            <td>
+            <td data-label="Orden">{{ faq.orden }}</td>
+            <td data-label="Pregunta">{{ faq.pregunta }}</td>
+            <td data-label="Activo">
               <label class="switch">
                 <input type="checkbox" [checked]="faq.activo" (change)="toggleFaqActivo(faq, $event)" [disabled]="faqSaving || !!faqDeletingId" />
                 <span></span>
               </label>
             </td>
-            <td class="actions">
+            <td class="actions" data-label="Acciones">
               <button type="button" class="btn-ghost" (click)="openFaqEditModal(faq)" [disabled]="faqSaving || !!faqDeletingId">Editar</button>
               <button type="button" class="btn-danger" (click)="deleteFaq(faq)" [disabled]="faqSaving || !!faqDeletingId">{{ faqDeletingId === faq.id ? 'Eliminando...' : 'Eliminar' }}</button>
             </td>
@@ -151,22 +151,22 @@
         </thead>
         <tbody>
           <tr *ngFor="let post of blogPosts">
-            <td>{{ post.orden }}</td>
-            <td>{{ post.titulo }}</td>
-            <td>{{ post.categoria }}</td>
-            <td>
+            <td data-label="Orden">{{ post.orden }}</td>
+            <td data-label="Título">{{ post.titulo }}</td>
+            <td data-label="Categoría">{{ post.categoria }}</td>
+            <td data-label="Destacado">
               <label class="switch">
                 <input type="checkbox" [checked]="post.destacado" (change)="toggleBlogDestacado(post, $event)" [disabled]="blogSaving || !!blogDeletingId" />
                 <span></span>
               </label>
             </td>
-            <td>
+            <td data-label="Activo">
               <label class="switch">
                 <input type="checkbox" [checked]="post.activo" (change)="toggleBlogActivo(post, $event)" [disabled]="blogSaving || !!blogDeletingId" />
                 <span></span>
               </label>
             </td>
-            <td class="actions">
+            <td class="actions" data-label="Acciones">
               <button type="button" class="btn-ghost" (click)="openBlogEditModal(post)" [disabled]="blogSaving || !!blogDeletingId">Editar</button>
               <button type="button" class="btn-danger" (click)="deleteBlogPost(post)" [disabled]="blogSaving || !!blogDeletingId">{{ blogDeletingId === post.id ? 'Eliminando...' : 'Eliminar' }}</button>
             </td>
@@ -217,37 +217,37 @@
         </thead>
         <tbody>
           <tr *ngFor="let evento of eventosFiltrados">
-            <td><strong>{{ evento.title }}</strong><br><span style="font-size:12px;color:#7a7090">{{ eventoCategoryLabels[evento.category] }}</span></td>
-            <td style="white-space:nowrap;font-size:13px">{{ evento.start_at | date:'dd/MM/yy HH:mm' }}</td>
-            <td>
+            <td data-label="Título"><strong>{{ evento.title }}</strong><br><span style="font-size:12px;color:#7a7090">{{ eventoCategoryLabels[evento.category] }}</span></td>
+            <td data-label="Fecha" style="white-space:nowrap;font-size:13px">{{ evento.start_at | date:'dd/MM/yy HH:mm' }}</td>
+            <td data-label="Tipo">
               <span class="ev-badge" [class.ev-badge--free]="evento.pricing_type === 'free'" [class.ev-badge--paid]="evento.pricing_type === 'paid'">
                 {{ evento.pricing_type === 'free' ? 'Gratis' : 'Pago' }}
               </span>
             </td>
-            <td>{{ evento.pricing_type === 'paid' ? (evento.price + '€') : '—' }}</td>
-            <td style="white-space:nowrap;font-size:13px">
+            <td data-label="Precio">{{ evento.pricing_type === 'paid' ? (evento.price + '€') : '—' }}</td>
+            <td data-label="Plazas" style="white-space:nowrap;font-size:13px">
               {{ evento.reserved_slots }}/{{ evento.total_slots }}
               <span style="color:#9090a0"> ({{ getEventoAvailableSlots(evento) }} libre{{ getEventoAvailableSlots(evento) !== 1 ? 's' : '' }})</span>
             </td>
-            <td>
+            <td data-label="Estado">
               <span class="ev-status" [class.ev-status--active]="evento.status === 'active'" [class.ev-status--full]="evento.status === 'completed'">
                 {{ eventoStatusLabels[evento.status] }}
               </span>
             </td>
-            <td>
+            <td data-label="Home">
               <label class="switch">
                 <input type="checkbox" [checked]="evento.highlight_on_home" [disabled]="eventosSaving || !!eventosDeletingId"
                   (change)="saveEvento_toggleHome(evento, $event)" />
                 <span></span>
               </label>
             </td>
-            <td>
+            <td data-label="Activo">
               <label class="switch">
                 <input type="checkbox" [checked]="evento.is_active" (change)="toggleEventoActivo(evento, $event)" [disabled]="eventosSaving || !!eventosDeletingId" />
                 <span></span>
               </label>
             </td>
-            <td class="actions">
+            <td class="actions" data-label="Acciones">
               <button type="button" class="btn-ghost btn-sm" (click)="openRegistrosModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Inscritos</button>
               <button type="button" class="btn-ghost btn-sm" (click)="openEventoEditModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Editar</button>
               <button type="button" class="btn-ghost btn-sm" (click)="duplicateEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Duplicar</button>
@@ -304,18 +304,18 @@
         </thead>
         <tbody>
           <tr *ngFor="let servicio of serviciosRegalo">
-            <td>{{ servicio.orden }}</td>
-            <td>{{ servicio.nombre_emotivo }}</td>
-            <td>{{ servicio.nombre_servicio }}</td>
-            <td>{{ servicio.precio }}{{ servicio.unidad }}</td>
-            <td>{{ servicio.categoria }}</td>
-            <td>
+            <td data-label="Orden">{{ servicio.orden }}</td>
+            <td data-label="Nombre emotivo">{{ servicio.nombre_emotivo }}</td>
+            <td data-label="Servicio">{{ servicio.nombre_servicio }}</td>
+            <td data-label="Precio">{{ servicio.precio }}{{ servicio.unidad }}</td>
+            <td data-label="Categoría">{{ servicio.categoria }}</td>
+            <td data-label="Activo">
               <label class="switch">
                 <input type="checkbox" [checked]="servicio.activo" (change)="toggleServicioRegaloActivo(servicio, $event)" />
                 <span></span>
               </label>
             </td>
-            <td class="actions">
+            <td class="actions" data-label="Acciones">
               <button type="button" class="btn-ghost" (click)="openEditServicioRegaloModal(servicio)">Editar</button>
               <button type="button" class="btn-danger" (click)="deleteServicioRegalo(servicio)" [disabled]="serviciosRegaloDeletingId === servicio.id">Eliminar</button>
             </td>
@@ -351,19 +351,19 @@
         <thead><tr><th>Código</th><th>Servicio</th><th>Comprador</th><th>Email</th><th>Teléfono</th><th>Método pago</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
         <tbody>
           <tr *ngFor="let bono of bonosFiltrados">
-            <td>{{ bono.codigo }}</td>
-            <td>{{ bono.nombre_servicio }}</td>
-            <td>{{ bono.nombre_comprador }}</td>
-            <td>{{ bono.email_comprador }}</td>
-            <td>{{ bono.telefono }}</td>
-            <td>{{ bono.metodo_pago }}</td>
-            <td>
+            <td data-label="Código">{{ bono.codigo }}</td>
+            <td data-label="Servicio">{{ bono.nombre_servicio }}</td>
+            <td data-label="Comprador">{{ bono.nombre_comprador }}</td>
+            <td data-label="Email">{{ bono.email_comprador }}</td>
+            <td data-label="Teléfono">{{ bono.telefono }}</td>
+            <td data-label="Método pago">{{ bono.metodo_pago }}</td>
+            <td data-label="Estado">
               <select (change)="updateBonoEstado(bono, $event)">
                 <option *ngFor="let estado of bonosEstados" [value]="estado" [selected]="estado === bono.estado">{{ estadoBonoLabel(estado) }}</option>
               </select>
             </td>
-            <td>{{ bono.fecha_compra | date:'dd/MM/yy HH:mm' }}</td>
-            <td class="actions">
+            <td data-label="Fecha">{{ bono.fecha_compra | date:'dd/MM/yy HH:mm' }}</td>
+            <td class="actions" data-label="Acciones">
               <button type="button" class="btn-ghost" (click)="openBonoDetalle(bono)">Ver detalle</button>
               <button type="button" class="btn-danger" (click)="deleteBono(bono)">Eliminar</button>
             </td>
@@ -462,16 +462,16 @@
         </thead>
         <tbody>
           <tr *ngFor="let s of suscriptoresFiltrados">
-            <td>{{ s.email }}</td>
-            <td><span class="nl-origen-badge">{{ s.origen }}</span></td>
-            <td>{{ s.created_at | date:'dd/MM/yyyy' }}</td>
-            <td>
+            <td data-label="Email">{{ s.email }}</td>
+            <td data-label="Origen"><span class="nl-origen-badge">{{ s.origen }}</span></td>
+            <td data-label="Fecha">{{ s.created_at | date:'dd/MM/yyyy' }}</td>
+            <td data-label="Activo">
               <label class="switch">
                 <input type="checkbox" [checked]="s.activo" (change)="toggleSuscriptorActivo(s, $event)" [disabled]="!!deletingNlId" />
                 <span></span>
               </label>
             </td>
-            <td class="actions">
+            <td class="actions" data-label="Acciones">
               <button
                 type="button"
                 class="btn-danger"
@@ -933,19 +933,19 @@
             [class.reg-row--updating]="updatingRegistrationId === reg.id"
           >
             <!-- Nombre + nota -->
-            <td>
+            <td data-label="Persona">
               <span class="reg-name">{{ reg.full_name }}</span>
               <span class="reg-note" *ngIf="reg.notes">{{ reg.notes }}</span>
             </td>
 
             <!-- Email + teléfono -->
-            <td>
+            <td data-label="Contacto">
               <span class="reg-contact">{{ reg.email }}</span>
               <span class="reg-contact reg-contact--muted">{{ reg.phone }}</span>
             </td>
 
             <!-- Badge de estado -->
-            <td>
+            <td data-label="Estado">
               <span
                 class="reg-badge"
                 [class.reg-badge--confirmed]="reg.status === 'confirmed'"
@@ -960,7 +960,7 @@
             </td>
 
             <!-- Código de acceso + check-in -->
-            <td>
+            <td data-label="Código">
               <span class="reg-code" *ngIf="reg.access_code">{{ reg.access_code }}</span>
               <span class="reg-code reg-code--empty" *ngIf="!reg.access_code">—</span>
               <button
@@ -974,10 +974,10 @@
             </td>
 
             <!-- Fecha -->
-            <td class="reg-date">{{ reg.created_at | date:'dd/MM/yy · HH:mm' }}</td>
+            <td class="reg-date" data-label="Fecha">{{ reg.created_at | date:'dd/MM/yy · HH:mm' }}</td>
 
             <!-- Acciones de transición -->
-            <td>
+            <td data-label="Acciones">
               <div class="reg-actions" [class.reg-actions--busy]="updatingRegistrationId === reg.id">
 
                 <!-- confirmed: cancelar -->
