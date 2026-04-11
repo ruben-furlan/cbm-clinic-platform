@@ -33,7 +33,13 @@
   gap: 4px;
   border-bottom: 2px solid rgba(123, 77, 255, 0.15);
   padding-bottom: 0;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
+
+.section-tabs::-webkit-scrollbar { display: none; }
 
 .section-tabs button {
   border: 0;
@@ -46,6 +52,8 @@
   border-bottom: 3px solid transparent;
   margin-bottom: -2px;
   border-radius: 4px 4px 0 0;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .section-tabs button.active {
@@ -68,6 +76,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  min-width: 0;
 }
 
 .tabs button,
@@ -426,6 +435,24 @@ textarea {
   flex-shrink: 0;
 }
 
+
+/* ── Filtros scrollables en pantallas medianas (tablets) ──────────────────── */
+
+@media (max-width: 900px) {
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tabs button {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+}
 
 @media (max-width: 1023px) {
   .modal-overlay--evento {
@@ -1215,21 +1242,13 @@ textarea:disabled {
 
   .admin-user { flex-wrap: wrap; gap: 8px; }
 
-  /* ── Section tabs — scroll horizontal ───────────────── */
+  /* ── Section tabs — reducir espaciado ───────────────── */
   .section-tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
     margin-top: 12px;
     gap: 0;
   }
 
-  .section-tabs::-webkit-scrollbar { display: none; }
-
   .section-tabs button {
-    white-space: nowrap;
-    flex-shrink: 0;
     padding: 10px 13px;
     font-size: 13.5px;
   }
@@ -1251,19 +1270,8 @@ textarea:disabled {
     min-height: 46px;
   }
 
-  /* ── Filter tabs — scroll horizontal ────────────────── */
-  .tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .tabs::-webkit-scrollbar { display: none; }
-
+  /* ── Filter tabs — ajuste táctil ────────────────────── */
   .tabs button {
-    white-space: nowrap;
-    flex-shrink: 0;
     min-height: 40px;
     padding: 8px 13px;
   }
