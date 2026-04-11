@@ -119,6 +119,14 @@ export class AdminDashboardComponent implements OnInit {
   newsletterError = '';
   filtroNewsletter: FiltroNewsletter = 'todos';
 
+  // Editor de envío
+  nlAsunto = '';
+  nlMensaje = '';
+  nlEnviando = false;
+  nlShowConfirm = false;
+  nlToast: { tipo: 'exito' | 'parcial' | 'error'; texto: string } | null = null;
+  private nlToastTimer: ReturnType<typeof setTimeout> | null = null;
+
   // ── Check-in ──────────────────────────────────────────────────────────────
   checkinCode = '';
   checkinLoading = false;
@@ -1554,6 +1562,63 @@ export class AdminDashboardComponent implements OnInit {
     return new Date(d.getTime() - offsetMs).toISOString().substring(0, 16);
   }
 
+  confirmarEnvioNewsletter(): void {
+    if (!this.nlPuedeEnviar) return;
+    this.nlShowConfirm = true;
+  }
+
+  cancelarEnvioNewsletter(): void {
+    this.nlShowConfirm = false;
+  }
+
+  async enviarNewsletter(): Promise<void> {
+    this.nlShowConfirm = false;
+    if (!this.nlPuedeEnviar) return;
+
+    this.nlEnviando = true;
+    this.nlToast = null;
+    this.flushUiState();
+
+    try {
+      const emails = this.nlEmailsActivos;
+      const { enviados, errores } = await this.newsletterService.enviarNewsletter(
+        this.nlAsunto.trim(),
+        this.nlMensaje.trim(),
+        emails
+      );
+
+      this.zone.run(() => {
+        if (errores === 0) {
+          this.nlToast = { tipo: 'exito', texto: `Newsletter enviada a ${enviados} suscriptores` };
+          this.nlAsunto = '';
+          this.nlMensaje = '';
+        } else if (enviados > 0) {
+          this.nlToast = { tipo: 'parcial', texto: `Enviada con algunos errores: ${enviados} enviados, ${errores} fallidos` };
+        } else {
+          this.nlToast = { tipo: 'error', texto: 'Error al enviar la newsletter' };
+        }
+        this.flushUiState();
+      });
+    } catch {
+      this.zone.run(() => {
+        this.nlToast = { tipo: 'error', texto: 'Error al enviar la newsletter' };
+        this.flushUiState();
+      });
+    } finally {
+      this.zone.run(() => {
+        this.nlEnviando = false;
+        this.flushUiState();
+      });
+      if (this.nlToastTimer) clearTimeout(this.nlToastTimer);
+      this.nlToastTimer = setTimeout(() => {
+        this.zone.run(() => {
+          this.nlToast = null;
+          this.flushUiState();
+        });
+      }, 6000);
+    }
+  }
+
   generateEventoSlug(): void {
     const title = this.eventoForm.controls.title.value;
     if (title) {
@@ -1569,6 +1634,14 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // ── Newsletter ────────────────────────────────────────────────────────────
+
+  get nlEmailsActivos(): string[] {
+    return this.newsletterService.getEmailsActivos(this.suscriptores);
+  }
+
+  get nlPuedeEnviar(): boolean {
+    return this.nlAsunto.trim().length > 0 && this.nlMensaje.trim().length > 0 && !this.nlEnviando;
+  }
 
   get suscriptoresFiltrados(): NewsletterSuscriptor[] {
     if (this.filtroNewsletter === 'activos') return this.suscriptores.filter((s) => s.activo);

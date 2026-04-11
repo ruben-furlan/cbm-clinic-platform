@@ -40,4 +40,28 @@ export class NewsletterService {
 
     if (error) throw error;
   }
+
+  getEmailsActivos(suscriptores: NewsletterSuscriptor[]): string[] {
+    return suscriptores.filter((s) => s.activo).map((s) => s.email);
+  }
+
+  async enviarNewsletter(
+    asunto: string,
+    mensaje: string,
+    emails: string[]
+  ): Promise<{ enviados: number; errores: number }> {
+    const response = await fetch('/.netlify/functions/send-newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ asunto, mensaje, emails })
+    });
+
+    const data = await response.json() as { ok?: boolean; enviados?: number; errores?: number; error?: string };
+
+    if (!response.ok) {
+      throw new Error(data.error ?? 'Error al enviar');
+    }
+
+    return { enviados: data.enviados ?? 0, errores: data.errores ?? 0 };
+  }
 }

@@ -1057,6 +1057,72 @@
   <p class="status error" *ngIf="newsletterError">{{ newsletterError }}</p>
   <p class="status" *ngIf="newsletterLoading && !suscriptores.length">Cargando suscriptores...</p>
 
+  <!-- Toast de estado -->
+  <div
+    class="nl-toast"
+    *ngIf="nlToast"
+    [class.nl-toast--exito]="nlToast.tipo === 'exito'"
+    [class.nl-toast--parcial]="nlToast.tipo === 'parcial'"
+    [class.nl-toast--error]="nlToast.tipo === 'error'"
+    role="status"
+    aria-live="polite"
+  >
+    <span *ngIf="nlToast.tipo === 'exito'">✅</span>
+    <span *ngIf="nlToast.tipo === 'parcial'">⚠️</span>
+    <span *ngIf="nlToast.tipo === 'error'">❌</span>
+    {{ nlToast.texto }}
+  </div>
+
+  <!-- Editor de envío -->
+  <div class="nl-editor" *ngIf="!newsletterLoading">
+    <div class="nl-editor-header">
+      <div>
+        <h3 class="nl-editor-title">Enviar newsletter</h3>
+        <p class="nl-editor-sub">Se enviará a todos los suscriptores activos</p>
+      </div>
+      <span class="nl-activos-badge">📧 {{ nlEmailsActivos.length }} suscriptores activos</span>
+    </div>
+
+    <label class="nl-field-label">
+      Asunto del email *
+      <input
+        class="nl-field-input"
+        type="text"
+        [(ngModel)]="nlAsunto"
+        placeholder="Ej: Nuevas clases disponibles en CBM 💜"
+        [disabled]="nlEnviando"
+        maxlength="150"
+      />
+    </label>
+
+    <label class="nl-field-label">
+      Mensaje *
+      <textarea
+        class="nl-field-textarea"
+        [(ngModel)]="nlMensaje"
+        rows="7"
+        placeholder="Escribe aquí el mensaje para tus suscriptores...
+
+Puedes usar saltos de línea para separar párrafos.
+El email se enviará con el diseño CBM automáticamente."
+        [disabled]="nlEnviando"
+      ></textarea>
+      <span class="nl-char-count">{{ nlMensaje.length }} caracteres</span>
+    </label>
+
+    <div class="nl-editor-footer">
+      <button
+        type="button"
+        class="nl-send-btn"
+        [disabled]="!nlPuedeEnviar || nlEmailsActivos.length === 0"
+        (click)="confirmarEnvioNewsletter()"
+      >
+        <span *ngIf="!nlEnviando">Enviar newsletter →</span>
+        <span *ngIf="nlEnviando" class="nl-admin-spinner"></span>
+      </button>
+    </div>
+  </div>
+
   <!-- Estadísticas -->
   <div class="nl-stats" *ngIf="!newsletterLoading">
     <div class="nl-stat-card">
@@ -1104,6 +1170,21 @@
     No hay suscriptores en este filtro.
   </p>
 </ng-container>
+
+<!-- Modal confirmación envío newsletter -->
+<div class="modal-overlay" *ngIf="nlShowConfirm" (click)="cancelarEnvioNewsletter()">
+  <section class="modal-card nl-confirm-card" (click)="$event.stopPropagation()">
+    <h2>¿Enviar newsletter?</h2>
+    <p class="nl-confirm-sub">
+      Se enviará el email a <strong>{{ nlEmailsActivos.length }} suscriptores activos</strong>.
+    </p>
+    <p class="nl-confirm-asunto">📧 {{ nlAsunto }}</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" (click)="cancelarEnvioNewsletter()">Cancelar</button>
+      <button type="button" class="btn-primary" (click)="enviarNewsletter()">Sí, enviar</button>
+    </div>
+  </section>
+</div>
 
 <div class="busy-overlay" *ngIf="showInitialLoader" aria-live="polite" aria-busy="true">
   <div class="busy-content">
