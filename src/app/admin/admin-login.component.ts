@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -19,7 +19,10 @@ export class AdminLoginComponent {
   isLoading = false;
   errorMessage = '';
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   async login(): Promise<void> {
     if (this.isLoading) {
@@ -50,7 +53,7 @@ export class AdminLoginComponent {
       });
 
       if (error) {
-        this.errorMessage = error.message || 'No se pudo iniciar sesión.';
+        this.errorMessage = 'Email o contraseña incorrectos.';
         return;
       }
 
@@ -64,6 +67,7 @@ export class AdminLoginComponent {
       this.errorMessage = 'Error inesperado al iniciar sesión. Inténtalo de nuevo.';
     } finally {
       this.isLoading = false;
+      this.cdr.detectChanges();
     }
   }
 }
