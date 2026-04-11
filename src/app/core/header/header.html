@@ -32,11 +32,6 @@
           </select>
         </div>
       </div>
-
-      <a class="btn-primary btn-booking header-cta" routerLink="/solicitar-cita">
-        <span class="btn-icon" aria-hidden="true">💬</span>
-        <span>Solicitar cita</span>
-      </a>
     </div>
 
     <button
@@ -54,9 +49,7 @@
     <div class="container mobile-menu-links">
       <a routerLink="/" fragment="experiencia" (click)="closeMobileMenu()">Experiencia</a>
       <a routerLink="/" fragment="servicios" (click)="closeMobileMenu()">Tratamientos</a>
-      <a routerLink="/tratamientos/fisioterapia" (click)="closeMobileMenu()">Ver todo</a>
       <a routerLink="/" fragment="tarifas" (click)="closeMobileMenu()">Tarifas</a>
-      <a routerLink="/solicitar-cita" (click)="closeMobileMenu()">Solicitar cita</a>
       <a routerLink="/" fragment="faq" (click)="closeMobileMenu()">FAQ</a>
       <a *ngIf="showBonosRegalo" routerLink="/regalo" (click)="closeMobileMenu()">🎁 Bonos regalo</a>
       <a routerLink="/" fragment="contacto" (click)="closeMobileMenu()">Contáctanos</a>
