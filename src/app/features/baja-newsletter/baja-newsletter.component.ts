@@ -1,5 +1,5 @@
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NewsletterService } from '../../core/services/newsletter.service';
 
@@ -17,22 +17,52 @@ export class BajaNewsletterComponent implements OnInit {
 
   constructor(
     private readonly route: ActivatedRoute,
-    private readonly newsletterService: NewsletterService
+    private readonly newsletterService: NewsletterService,
+    private readonly zone: NgZone,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
-  async ngOnInit(): Promise<void> {
-    const email = this.route.snapshot.queryParamMap.get('email');
+  ngOnInit(): void {
+    // Timeout de seguridad: si en 10s no hay respuesta, mostrar error
+    const safetyTimer = setTimeout(() => {
+      if (this.estado === 'cargando') {
+        this.zone.run(() => {
+          this.estado = 'error';
+          this.cdr.detectChanges();
+        });
+      }
+    }, 10000);
 
-    if (!email) {
-      this.estado = 'error';
-      return;
-    }
+    this.route.queryParams.subscribe(params => {
+      const raw = params['email'];
 
-    try {
-      await this.newsletterService.darDeBaja(email);
-      this.estado = 'exito';
-    } catch {
-      this.estado = 'error';
-    }
+      if (!raw) {
+        clearTimeout(safetyTimer);
+        this.zone.run(() => {
+          this.estado = 'error';
+          this.cdr.detectChanges();
+        });
+        return;
+      }
+
+      this.procesarBaja(decodeURIComponent(raw), safetyTimer);
+    });
+  }
+
+  private procesarBaja(email: string, safetyTimer: ReturnType<typeof setTimeout>): void {
+    this.newsletterService.darDeBaja(email).then(() => {
+      clearTimeout(safetyTimer);
+      this.zone.run(() => {
+        this.estado = 'exito';
+        this.cdr.detectChanges();
+      });
+    }).catch((err: unknown) => {
+      clearTimeout(safetyTimer);
+      console.error('Error baja newsletter:', err);
+      this.zone.run(() => {
+        this.estado = 'error';
+        this.cdr.detectChanges();
+      });
+    });
   }
 }

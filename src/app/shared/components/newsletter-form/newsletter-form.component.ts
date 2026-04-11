@@ -20,15 +20,31 @@ export class NewsletterFormComponent {
 
   email = '';
   estado: Estado = 'inicial';
+  errorValidacion = '';
 
   constructor(private readonly newsletterService: NewsletterService) {}
 
+  private validarEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  }
+
   async suscribir(): Promise<void> {
-    if (!this.email.trim()) return;
+    this.errorValidacion = '';
+
+    if (!this.email?.trim()) {
+      this.errorValidacion = 'Introduce tu email';
+      return;
+    }
+
+    if (!this.validarEmail(this.email)) {
+      this.errorValidacion = 'Introduce un email válido';
+      return;
+    }
+
     this.estado = 'cargando';
     try {
       const result = await this.newsletterService.suscribir(this.email, this.origen);
-      this.estado = result.yaExiste ? 'yaExiste' : 'exito';
+      this.estado = result.caso === 'yaExiste' ? 'yaExiste' : 'exito';
     } catch {
       this.estado = 'error';
     }

@@ -117,6 +117,18 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── Error de validación ─────────────────────────────────────────────────── */
+.nl-validation-error {
+  margin: 6px 0 0;
+  padding-left: 4px;
+  font-size: 13px;
+  color: #ef4444;
+}
+
+.nl-wrap--oscuro .nl-validation-error {
+  color: #fca5a5;
+}
+
 /* ── Estado error ────────────────────────────────────────────────────────── */
 .nl-error-block {
   display: flex;

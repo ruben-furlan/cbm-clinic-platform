@@ -11,19 +11,37 @@ export interface NewsletterSuscriptor {
 
 @Injectable({ providedIn: 'root' })
 export class NewsletterService {
-  async suscribir(email: string, origen: string): Promise<{ ok?: boolean; yaExiste?: boolean }> {
-    const { error } = await supabase
-      .from('newsletter_suscriptores')
-      .insert({ email: email.toLowerCase().trim(), origen });
+  async suscribir(email: string, origen: string): Promise<{ caso: 'nuevo' | 'yaExiste' }> {
+    const emailNorm = email.toLowerCase().trim();
 
-    // Código 23505 = unique constraint violation → email ya registrado
-    if (error && error.code === '23505') {
-      return { yaExiste: true };
+    // Buscar si ya existe (activo o no)
+    const { data: existente } = await supabase
+      .from('newsletter_suscriptores')
+      .select('id, activo')
+      .eq('email', emailNorm)
+      .single();
+
+    // CASO 1: No existe → insertar nuevo
+    if (!existente) {
+      const { error } = await supabase
+        .from('newsletter_suscriptores')
+        .insert({ email: emailNorm, activo: true, origen });
+      if (error) throw error;
+      return { caso: 'nuevo' };
     }
 
-    if (error) throw error;
+    // CASO 2: Existe y está activo → ya registrado
+    if (existente.activo) {
+      return { caso: 'yaExiste' };
+    }
 
-    return { ok: true };
+    // CASO 3: Existe pero inactivo (se dio de baja) → reactivar
+    const { error } = await supabase
+      .from('newsletter_suscriptores')
+      .update({ activo: true, origen })
+      .eq('id', existente.id);
+    if (error) throw error;
+    return { caso: 'nuevo' };
   }
 
   async getAllSuscriptores(): Promise<NewsletterSuscriptor[]> {

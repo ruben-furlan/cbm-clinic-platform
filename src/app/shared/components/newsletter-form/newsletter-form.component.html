@@ -16,6 +16,8 @@
           required
           [disabled]="estado === 'cargando'"
           autocomplete="email"
+          [style.border-color]="errorValidacion ? '#ef4444' : ''"
+          (input)="errorValidacion = ''"
         />
         <button
           class="nl-btn"
@@ -26,6 +28,7 @@
           <span *ngIf="estado === 'cargando'" class="nl-spinner" aria-label="Enviando..."></span>
         </button>
       </div>
+      <p *ngIf="errorValidacion" class="nl-validation-error">{{ errorValidacion }}</p>
     </form>
 
     <div *ngIf="estado === 'error'" class="nl-error-block">
