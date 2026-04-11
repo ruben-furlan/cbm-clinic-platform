@@ -82,7 +82,7 @@ export class BookingFormComponent implements OnInit {
   private readonly categoryLabels: Record<TarifaCategoria, string> = {
     fisioterapia: 'Fisioterapia',
     pilates: 'Clases de pilates',
-    promocion: 'Promociones activas'
+    promocion: 'Atenciones especiales'
   };
 
   get treatmentOptionsByCategory(): { label: string; options: TreatmentOption[] }[] {
