@@ -11,15 +11,19 @@ export interface NewsletterSuscriptor {
 
 @Injectable({ providedIn: 'root' })
 export class NewsletterService {
-  async suscribir(email: string, origen: string): Promise<void> {
+  async suscribir(email: string, origen: string): Promise<{ ok?: boolean; yaExiste?: boolean }> {
     const { error } = await supabase
       .from('newsletter_suscriptores')
       .insert({ email: email.toLowerCase().trim(), origen });
 
-    // Ignorar silenciosamente el error de email duplicado (código 23505)
-    if (error && error.code !== '23505') {
-      throw error;
+    // Código 23505 = unique constraint violation → email ya registrado
+    if (error && error.code === '23505') {
+      return { yaExiste: true };
     }
+
+    if (error) throw error;
+
+    return { ok: true };
   }
 
   async getAllSuscriptores(): Promise<NewsletterSuscriptor[]> {
