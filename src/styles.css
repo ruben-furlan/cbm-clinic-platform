@@ -222,7 +222,6 @@ img{
   .floating-card:hover,
   .service-link:hover,
   .btn-secondary:hover,
-  .social-btn:hover,
   .benefit-item:hover .benefit-icon,
   .service-card:hover .service-icon,
   .testimonial-card:hover .testimonial-avatar{
@@ -253,7 +252,6 @@ img{
   .floating-card:hover,
   .service-link:hover,
   .btn-secondary:hover,
-  .social-btn:hover,
   .benefit-item:hover .benefit-icon,
   .service-card:hover .service-icon,
   .testimonial-card:hover .testimonial-avatar{
@@ -330,66 +328,6 @@ html{
   transition-delay: 0.5s;
 }
 
-.social-floating{
-  position: fixed;
-  right: 20px;
-  bottom: 120px; /* queda encima del botón WhatsApp */
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 999;
-}
-
-.social-btn{
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-  background: white;
-  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.social-btn img{
-  width: 24px;
-  height: 24px;
-}
-
-.social-btn:hover{
-  transform: translateY(-4px);
-  box-shadow: 0 12px 26px rgba(0,0,0,0.2);
-}
-
-.instagram{
-  background: linear-gradient(
-    45deg,
-    #f58529,
-    #dd2a7b,
-    #8134af,
-    #515bd4
-  );
-}
-
-.tiktok{
-  background: #000;
-}
-
-@media (max-width:768px){
-
-  .social-floating{
-    right: 14px;
-    bottom: calc(152px + env(safe-area-inset-bottom));
-    gap: 10px;
-  }
-
-  .social-btn{
-    width: 42px;
-    height: 42px;
-  }
-
-}
 
 body.display-mode {
   overflow: hidden;

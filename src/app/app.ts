@@ -3,7 +3,6 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { Header } from './core/header/header';
 import { FooterComponent } from './core/footer/footer';
-import { FloatingWhatsappButtonComponent } from './core/floating-whatsapp-button/floating-whatsapp-button';
 import { CookieConsentComponent } from './core/cookie-consent/cookie-consent';
 import { FloatingBookingButtonComponent } from './core/floating-booking-button/floating-booking-button';
 import { CanonicalService } from './core/seo/canonical.service';
@@ -11,7 +10,7 @@ import { CanonicalService } from './core/seo/canonical.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, FloatingBookingButtonComponent, CookieConsentComponent],
+  imports: [RouterOutlet, Header, FooterComponent, FloatingBookingButtonComponent, CookieConsentComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

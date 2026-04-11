@@ -15,7 +15,6 @@
   <main class="app-main">
     <router-outlet></router-outlet>
   </main>
-  <app-floating-whatsapp-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-floating-whatsapp-button>
   <app-floating-booking-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-floating-booking-button>
   <app-cookie-consent [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-cookie-consent>
   <app-footer [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null"></app-footer>
@@ -32,13 +31,3 @@
     <path fill="currentColor" d="M12 4l-8 8h5v8h6v-8h5z"/>
   </svg>
 </button>
-
-<div class="social-floating" [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute ? 'none' : null">
-  <a href="https://instagram.com/cbm.fisioterapia" target="_blank" class="social-btn instagram">
-    <img src="/instagram.svg" alt="Instagram">
-  </a>
-
-  <a href="https://tiktok.com/@cbm.fisioterapia" target="_blank" class="social-btn tiktok">
-    <img src="/tiktok.svg" alt="TikTok">
-  </a>
-</div>

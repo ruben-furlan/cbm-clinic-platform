@@ -95,8 +95,9 @@
 .hero-trust{
   margin-top: 18px;
   margin-bottom: 0;
-  cursor: pointer;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 /* ── Google badge ──────────────────────────────────────── */
@@ -109,17 +110,62 @@
   background: #ffffff;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border: 1px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.hero-trust:hover .google-badge{
+.google-badge:hover{
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.13);
   transform: translateY(-1px);
 }
 
-.hero-trust:focus-visible .google-badge{
+.google-badge:focus-visible{
   outline: 2px solid #7b4dff;
   outline-offset: 3px;
+}
+
+/* ── Social icons in trust bar ─────────────────────────── */
+.hero-social-sep{
+  display: block;
+  width: 1px;
+  height: 20px;
+  background: rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+}
+
+.hero-social-link{
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: #ffffff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-social-link:hover{
+  transform: translateY(-2px);
+}
+
+.hero-social-link--ig{
+  background: linear-gradient(45deg, #f58529, #dd2a7b, #8134af, #515bd4);
+  box-shadow: 0 2px 8px rgba(221, 42, 123, 0.28);
+}
+
+.hero-social-link--ig:hover{
+  box-shadow: 0 4px 14px rgba(221, 42, 123, 0.4);
+}
+
+.hero-social-link--tk{
+  background: #000000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+.hero-social-link--tk:hover{
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.32);
 }
 
 .google-badge__logo{

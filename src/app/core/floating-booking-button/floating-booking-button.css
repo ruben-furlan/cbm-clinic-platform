@@ -1,59 +1,74 @@
-.floating-booking-button {
-  position: fixed;
-  right: 16px;
-  bottom: 18px;
-  z-index: 1200;
-
+/* ── Contenedor fijo — solo mobile ─────────────────────── */
+.fbb-bar {
   display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  padding-bottom: env(safe-area-inset-bottom);
+
+  opacity: 0;
+  transform: translateY(100%);
+  pointer-events: none;
+  transition: opacity 300ms ease, transform 300ms ease;
+}
+
+.fbb-bar--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ── Botón interno ──────────────────────────────────────── */
+.floating-booking-button {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 
-  min-height: 56px;
-  padding: 16px 20px;
-  border-radius: 999px;
+  height: 56px;
+  margin: 0 16px;
+  border-radius: 16px 16px 0 0;
 
-  background: linear-gradient(135deg, #ff4fa3, #7b4dff);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 79, 163, 0.96),
+    rgba(123, 77, 255, 0.96)
+  );
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
   color: #ffffff;
   text-decoration: none;
   font-size: 15px;
   font-weight: 700;
-  line-height: 1;
   letter-spacing: 0.01em;
+  line-height: 1;
 
-  box-shadow: 0 14px 30px rgba(123, 77, 255, 0.32);
-  transition: transform 0.22s ease, box-shadow 0.22s ease;
-  animation: bookingButtonIn 0.45s ease-out both;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  transition: background 200ms ease;
 }
 
 .floating-booking-button:hover,
 .floating-booking-button:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 18px 36px rgba(123, 77, 255, 0.38);
+  background: linear-gradient(135deg, #ff4fa3, #7b4dff);
 }
 
-@keyframes bookingButtonIn {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.floating-booking-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: -4px;
 }
 
+/* ── Solo visible en mobile ─────────────────────────────── */
 @media (max-width: 768px) {
-  .floating-booking-button {
-    display: inline-flex;
-    right: 16px;
-    bottom: calc(16px + env(safe-area-inset-bottom));
+  .fbb-bar {
+    display: block;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .floating-booking-button {
-    animation: none;
+  .fbb-bar {
     transition: none;
   }
 }
