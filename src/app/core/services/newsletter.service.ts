@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { supabase } from '../supabase.client';
+import { environment } from '../../../environments/environment';
 
 export interface NewsletterSuscriptor {
   id: string;
@@ -41,7 +42,31 @@ export class NewsletterService {
       .update({ activo: true, origen })
       .eq('id', existente.id);
     if (error) throw error;
+
+    // El webhook de Supabase solo dispara en INSERT, no en UPDATE,
+    // así que enviamos el email de bienvenida manualmente.
+    // Si falla, no bloqueamos la suscripción.
+    try {
+      await this.enviarEmailBienvenida(emailNorm);
+    } catch (err) {
+      console.error('Error enviando bienvenida (reactivación):', err);
+    }
+
     return { caso: 'nuevo' };
+  }
+
+  private async enviarEmailBienvenida(email: string): Promise<void> {
+    await fetch(
+      `${environment.supabaseUrl}/functions/v1/notify-newsletter-bienvenida`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${environment.supabaseKey}`
+        },
+        body: JSON.stringify({ record: { email } })
+      }
+    );
   }
 
   async getAllSuscriptores(): Promise<NewsletterSuscriptor[]> {
@@ -69,7 +94,10 @@ export class NewsletterService {
       .delete()
       .eq('id', id);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error eliminando suscriptor newsletter:', error);
+      throw error;
+    }
   }
 
   async darDeBaja(email: string): Promise<void> {
