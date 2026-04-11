@@ -64,6 +64,8 @@
 @media (max-width: 768px) {
   .fbb-bar {
     display: block;
+    bottom: var(--cookie-banner-height, 0px);
+    transition: opacity 300ms ease, transform 300ms ease, bottom 0.3s ease;
   }
 }
 
