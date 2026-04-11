@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NewsletterService } from '../../../core/services/newsletter.service';
 
-type Estado = 'inicial' | 'cargando' | 'exito' | 'error';
+type Estado = 'inicial' | 'cargando' | 'exito' | 'yaExiste' | 'error';
 
 @Component({
   selector: 'app-newsletter-form',
@@ -27,8 +27,8 @@ export class NewsletterFormComponent {
     if (!this.email.trim()) return;
     this.estado = 'cargando';
     try {
-      await this.newsletterService.suscribir(this.email, this.origen);
-      this.estado = 'exito';
+      const result = await this.newsletterService.suscribir(this.email, this.origen);
+      this.estado = result.yaExiste ? 'yaExiste' : 'exito';
     } catch {
       this.estado = 'error';
     }

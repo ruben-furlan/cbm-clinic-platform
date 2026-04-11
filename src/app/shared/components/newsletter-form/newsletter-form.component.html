@@ -1,7 +1,7 @@
 <div class="nl-wrap" [class.nl-wrap--oscuro]="variante === 'oscuro'">
 
   <!-- Estado inicial / cargando -->
-  <ng-container *ngIf="estado !== 'exito'">
+  <ng-container *ngIf="estado !== 'exito' && estado !== 'yaExiste'">
     <h3 class="nl-titulo">{{ titulo }}</h3>
     <p class="nl-subtitulo">{{ subtitulo }}</p>
 
@@ -40,6 +40,15 @@
     <p class="nl-exito-texto">
       ¡Ya eres parte de la comunidad CBM!<br>
       Serás de las primeras en enterarte 💜
+    </p>
+  </div>
+
+  <!-- Estado ya existe -->
+  <div class="nl-exito" *ngIf="estado === 'yaExiste'" role="status">
+    <span class="nl-exito-icono" aria-hidden="true">💜</span>
+    <p class="nl-exito-texto">
+      ¡Ya eres parte de nosotros! 💜<br>
+      Tu email ya está registrado en la comunidad CBM. ¡Gracias por estar aquí!
     </p>
   </div>
 
