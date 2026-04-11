@@ -77,12 +77,23 @@ export class NewsletterService {
   }
 
   async darDeBaja(email: string): Promise<void> {
-    const { error } = await supabase
+    const emailNorm = email.toLowerCase().trim();
+
+    const { data, error } = await supabase
       .from('newsletter_suscriptores')
       .update({ activo: false })
-      .eq('email', email.toLowerCase().trim());
+      .eq('email', emailNorm)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error baja newsletter:', error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn('Baja newsletter: email no encontrado o RLS bloqueó el update:', emailNorm);
+      throw new Error('Email no encontrado');
+    }
   }
 
   getEmailsActivos(suscriptores: NewsletterSuscriptor[]): string[] {

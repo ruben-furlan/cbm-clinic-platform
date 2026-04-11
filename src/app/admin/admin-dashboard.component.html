@@ -417,16 +417,11 @@
 
         <label>
           Mensaje *
-          <textarea
-            [(ngModel)]="nlMensaje"
-            rows="7"
-            placeholder="Escribe aquí el mensaje para tus suscriptores...
-
-Puedes usar saltos de línea para separar párrafos.
-El email se enviará con el diseño CBM automáticamente."
-            [disabled]="nlEnviando"
-          ></textarea>
-          <span class="field-helper">{{ nlMensaje.length }} caracteres</span>
+          <app-simple-editor
+            #nlEditor
+            placeholder="Escribe aquí el mensaje para tus suscriptores..."
+            (contentChange)="nlMensajeHtml = $event"
+          ></app-simple-editor>
         </label>
       </div>
 

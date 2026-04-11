@@ -26,7 +26,7 @@ function buildHtml(mensaje: string, email: string): string {
       border-top: none; border-radius: 0 0 16px 16px; padding: 32px;">
 
         <div style="font-size: 15px; color: #374151;
-        line-height: 1.8; white-space: pre-line;">
+        line-height: 1.8;">
           ${mensaje}
         </div>
 

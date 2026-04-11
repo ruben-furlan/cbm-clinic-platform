@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
@@ -19,6 +19,7 @@ import { BonosRegaloService, BonoEstado, BonoRegalo } from '../core/services/bon
 import { ConfiguracionService } from '../core/services/configuracion.service';
 import { ServiciosRegaloService, ServicioRegalo, ServicioRegaloCategoria } from '../core/services/servicios-regalo.service';
 import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsletter.service';
+import { SimpleEditorComponent } from '../shared/components/simple-editor/simple-editor.component';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
 type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter';
@@ -28,7 +29,7 @@ type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SimpleEditorComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
@@ -122,8 +123,9 @@ export class AdminDashboardComponent implements OnInit {
   deletingNlId: string | null = null;
 
   // Editor de envío
+  @ViewChild('nlEditor') nlEditor?: import('../shared/components/simple-editor/simple-editor.component').SimpleEditorComponent;
   nlAsunto = '';
-  nlMensaje = '';
+  nlMensajeHtml = '';
   nlEnviando = false;
   nlShowConfirm = false;
   nlToast: { tipo: 'exito' | 'parcial' | 'error'; texto: string } | null = null;
@@ -1585,7 +1587,7 @@ export class AdminDashboardComponent implements OnInit {
       const emails = this.nlEmailsActivos;
       const { enviados, errores } = await this.newsletterService.enviarNewsletter(
         this.nlAsunto.trim(),
-        this.nlMensaje.trim(),
+        this.nlMensajeHtml.trim(),
         emails
       );
 
@@ -1593,7 +1595,7 @@ export class AdminDashboardComponent implements OnInit {
         if (errores === 0) {
           this.nlToast = { tipo: 'exito', texto: `Newsletter enviada a ${enviados} suscriptores` };
           this.nlAsunto = '';
-          this.nlMensaje = '';
+          this.nlMensajeHtml = '';
         } else if (enviados > 0) {
           this.nlToast = { tipo: 'parcial', texto: `Enviada con algunos errores: ${enviados} enviados, ${errores} fallidos` };
         } else {
@@ -1642,7 +1644,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get nlPuedeEnviar(): boolean {
-    return this.nlAsunto.trim().length > 0 && this.nlMensaje.trim().length > 0 && !this.nlEnviando;
+    return this.nlAsunto.trim().length > 0 && this.nlMensajeHtml.trim().length > 0 && !this.nlEnviando;
   }
 
   get suscriptoresFiltrados(): NewsletterSuscriptor[] {
