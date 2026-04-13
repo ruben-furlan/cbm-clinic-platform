@@ -1269,3 +1269,14 @@
     </form>
   </section>
 </div>
+
+<!-- ═══════════════ Modal confirmación eliminar ════════════════ -->
+<div class="modal-overlay confirm-overlay" *ngIf="confirmOpen" (click)="onConfirmCancel()">
+  <section class="modal-card confirm-card" (click)="$event.stopPropagation()" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+    <p id="confirm-title" class="confirm-message">¿Estás seguro de que quieres eliminar esto?</p>
+    <div class="modal-actions confirm-actions">
+      <button type="button" class="btn-ghost" (click)="onConfirmCancel()">Cancelar</button>
+      <button type="button" class="btn-danger confirm-btn-delete" (click)="onConfirmOk()">Eliminar</button>
+    </div>
+  </section>
+</div>

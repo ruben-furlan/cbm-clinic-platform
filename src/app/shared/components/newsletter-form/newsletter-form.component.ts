@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NewsletterService } from '../../../core/services/newsletter.service';
 
@@ -22,7 +22,10 @@ export class NewsletterFormComponent {
   estado: Estado = 'inicial';
   errorValidacion = '';
 
-  constructor(private readonly newsletterService: NewsletterService) {}
+  constructor(
+    private readonly newsletterService: NewsletterService,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
 
   private validarEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
@@ -47,6 +50,8 @@ export class NewsletterFormComponent {
       this.estado = result.caso === 'yaExiste' ? 'yaExiste' : 'exito';
     } catch {
       this.estado = 'error';
+    } finally {
+      this.cdr.detectChanges();
     }
   }
 
