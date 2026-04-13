@@ -14,7 +14,7 @@ type Estado = 'inicial' | 'cargando' | 'exito' | 'yaExiste' | 'error';
 })
 export class NewsletterFormComponent {
   @Input() titulo = 'Únete a la comunidad CBM';
-  @Input() subtitulo = 'Sé la primera en enterarte de nuevas clases, talleres y novedades del centro 💜';
+  @Input() subtitulo = 'Entérate antes que nadie de nuevas clases, talleres y novedades del centro 💜';
   @Input() origen = 'web';
   @Input() variante: 'claro' | 'oscuro' = 'claro';
 
