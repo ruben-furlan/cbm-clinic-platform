@@ -200,6 +200,30 @@ export class AdminDashboardComponent implements OnInit {
 
   private readonly requestTimeoutMs = 12000;
 
+  // ── Diálogo de confirmación ───────────────────────────────────────────────
+  confirmOpen = false;
+  confirmMessage = '';
+  private confirmCallback: (() => void) | null = null;
+
+  openConfirm(message: string, callback: () => void): void {
+    this.confirmMessage = message;
+    this.confirmCallback = callback;
+    this.confirmOpen = true;
+  }
+
+  onConfirmOk(): void {
+    this.confirmOpen = false;
+    if (this.confirmCallback) {
+      this.confirmCallback();
+      this.confirmCallback = null;
+    }
+  }
+
+  onConfirmCancel(): void {
+    this.confirmOpen = false;
+    this.confirmCallback = null;
+  }
+
   constructor(
     private readonly fb: FormBuilder,
     private readonly tarifasService: TarifasService,
