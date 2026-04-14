@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
-
+Disallow: /admin
+Disallow: /admin/
+Disallow: /canjear
+Disallow: /baja-newsletter
 Sitemap: https://cbmfisioterapia.com/sitemap.xml
