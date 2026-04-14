@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener, OnDestroy } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, HostListener, inject, OnDestroy, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 
@@ -21,6 +21,7 @@ interface EspacioImage {
   styleUrls: ['./espacio-cbm-page.css']
 })
 export class EspacioCbmPage implements OnDestroy {
+  private readonly platformId = inject(PLATFORM_ID);
   readonly categories: { id: EspacioCategory; label: string }[] = [
     { id: 'todo', label: 'Todo' },
     { id: 'sala', label: 'Sala' },
@@ -86,6 +87,7 @@ export class EspacioCbmPage implements OnDestroy {
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     this.scrollOffset = Math.min(window.scrollY * 0.08, 28);
   }
 
@@ -144,6 +146,7 @@ export class EspacioCbmPage implements OnDestroy {
   }
 
   private toggleBodyScroll(shouldLock: boolean): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     document.body.style.overflow = shouldLock ? 'hidden' : '';
   }
 }

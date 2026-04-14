@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,6 +13,7 @@ export class FloatingBookingButtonComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly zone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   isVisible = false;
 
@@ -29,6 +31,8 @@ export class FloatingBookingButtonComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     window.addEventListener('scroll', this.onScroll, { passive: true });
 
     const footer = document.querySelector('app-footer');
@@ -48,7 +52,9 @@ export class FloatingBookingButtonComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('scroll', this.onScroll);
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('scroll', this.onScroll);
+    }
     this.footerObserver?.disconnect();
   }
 

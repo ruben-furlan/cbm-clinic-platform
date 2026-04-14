@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, NgZone, OnDestroy, OnInit, PLATFORM_ID, ViewChild, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 
@@ -56,6 +56,7 @@ interface ReviewsCachePayload {
 export class Testimonials implements OnInit, OnDestroy {
   private readonly http = inject(HttpClient);
   private readonly ngZone = inject(NgZone);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly googleFieldMask = 'displayName,rating,userRatingCount,reviews';
   private readonly cacheKey = 'cbm_google_reviews_cache_v1';
   private readonly cacheTtlMs = 1000 * 60 * 60 * 24 * 14; // 14 días
@@ -76,7 +77,7 @@ export class Testimonials implements OnInit, OnDestroy {
   currentIndex = 0;
   nudgeActive = false;
   trackHeight = 0;
-  isMobile = window.innerWidth <= 768;
+  isMobile = false;
   expandedReviews = new Set<string>();
 
   private readonly GAP = 16;
@@ -111,6 +112,10 @@ export class Testimonials implements OnInit, OnDestroy {
   // ────────────────────────────────────────────────────────────────────────────
 
   async ngOnInit(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+
+    this.isMobile = window.innerWidth <= 768;
+
     const usedCache = this.tryLoadFromCache();
 
     if (usedCache) {
@@ -328,7 +333,9 @@ export class Testimonials implements OnInit, OnDestroy {
     if (this.viewportEl) {
       this.viewportEl.removeEventListener('touchmove', this.boundTouchMove);
     }
-    window.removeEventListener('resize', this.boundResize);
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('resize', this.boundResize);
+    }
   }
 
   private mapReview(review: GoogleReview, index: number): TestimonialItem {

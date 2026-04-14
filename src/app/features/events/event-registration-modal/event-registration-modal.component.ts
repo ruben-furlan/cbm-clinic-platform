@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CbmEvent, EventRegistration, EventsService } from '../../../core/services/events.service';
@@ -31,6 +31,8 @@ export class EventRegistrationModalComponent implements OnInit {
   formData = { fullName: '', email: '', phone: '', notes: '' };
   touched = { fullName: false, email: false, phone: false };
 
+  private readonly platformId = inject(PLATFORM_ID);
+
   constructor(
     private readonly eventsService: EventsService,
     private readonly router: Router
@@ -40,7 +42,9 @@ export class EventRegistrationModalComponent implements OnInit {
     if (this.eventsService.isFull(this.event)) {
       this.step = 'full';
     }
-    document.body.style.overflow = 'hidden';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   get availableSlots(): number {
@@ -113,7 +117,9 @@ export class EventRegistrationModalComponent implements OnInit {
   }
 
   close(): void {
-    document.body.style.overflow = '';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
     this.closed.emit();
   }
 
@@ -158,6 +164,7 @@ export class EventRegistrationModalComponent implements OnInit {
   }
 
   openWhatsApp(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     const eventLine = `Clase/evento: ${this.event.title}`;
     const dateLine = `Fecha: ${this.formattedDate} a las ${this.formattedTime}`;
     const nameLine = this.formData.fullName ? `\nNombre: ${this.formData.fullName}` : '';
@@ -166,6 +173,7 @@ export class EventRegistrationModalComponent implements OnInit {
   }
 
   openWhatsAppAlternative(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     const text = 'Hola, me interesa información sobre vuestras clases y tarifas.';
     window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`, '_blank');
   }

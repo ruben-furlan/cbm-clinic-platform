@@ -3,8 +3,11 @@ import {
   Directive,
   ElementRef,
   OnDestroy,
-  Renderer2
+  PLATFORM_ID,
+  Renderer2,
+  inject
 } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Directive({
   selector: '[appRevealOnScroll]',
@@ -12,7 +15,10 @@ import {
 })
 export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
   private observer?: IntersectionObserver;
-  private readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly reducedMotion = isPlatformBrowser(this.platformId)
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false;
 
   constructor(
     private el: ElementRef<HTMLElement>,
@@ -20,6 +26,10 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
   ) {}
 
   ngAfterViewInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     if (this.reducedMotion) {
       this.renderer.addClass(this.el.nativeElement, 'is-visible');
       return;

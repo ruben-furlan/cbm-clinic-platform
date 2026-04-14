@@ -1,5 +1,5 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser, NgIf } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -20,10 +20,13 @@ export class CookieConsentComponent implements OnInit, OnDestroy {
   constructor(
     private readonly router: Router,
     private readonly el: ElementRef,
+    @Inject(PLATFORM_ID) private readonly platformId: object
   ) {}
 
   ngOnInit(): void {
-    this.accepted = !!localStorage.getItem(COOKIE_CONSENT_KEY);
+    if (isPlatformBrowser(this.platformId)) {
+      this.accepted = !!localStorage.getItem(COOKIE_CONSENT_KEY);
+    }
     this.updateVisibility(this.router.url);
 
     this.routerSubscription = this.router.events.subscribe(event => {
@@ -39,10 +42,14 @@ export class CookieConsentComponent implements OnInit, OnDestroy {
   }
 
   acceptCookies(): void {
-    localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem(COOKIE_CONSENT_KEY, 'accepted');
+    }
     this.accepted = true;
     this.isVisible = false;
-    this.clearBannerHeight();
+    if (isPlatformBrowser(this.platformId)) {
+      this.clearBannerHeight();
+    }
   }
 
   private updateVisibility(url: string): void {
@@ -55,6 +62,7 @@ export class CookieConsentComponent implements OnInit, OnDestroy {
 
   /** Espera un tick para que *ngIf renderice el banner y luego mide su altura. */
   private scheduleBannerHeightUpdate(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     if (!this.isVisible) {
       this.clearBannerHeight();
       return;
@@ -74,6 +82,8 @@ export class CookieConsentComponent implements OnInit, OnDestroy {
   }
 
   private clearBannerHeight(): void {
-    document.documentElement.style.setProperty('--cookie-banner-height', '0px');
+    if (isPlatformBrowser(this.platformId)) {
+      document.documentElement.style.setProperty('--cookie-banner-height', '0px');
+    }
   }
 }

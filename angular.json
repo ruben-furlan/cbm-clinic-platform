@@ -18,6 +18,7 @@
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
+            "server": "src/main.server.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [
               {
@@ -31,6 +32,10 @@
           },
           "configurations": {
             "production": {
+              "prerender": {
+                "discoverRoutes": false,
+                "routesFile": "routes.txt"
+              },
               "budgets": [
                 {
                   "type": "initial",

@@ -1,0 +1,16 @@
+/
+/solicitar-cita
+/espacio-cbm
+/blog
+/tratamientos
+/tratamientos/fisioterapia
+/tratamientos/tecnicas
+/tratamientos/pilates
+/fisioterapia-dolor-lumbar-terrassa
+/fisioterapia-cervical-terrassa
+/puncion-seca-terrassa
+/pilates-terapeutico-terrassa
+/fisioterapia-lesiones-deportivas-terrassa
+/fisioterapia-tendinitis-terrassa
+/fisioterapia-recuperacion-postquirurgica-terrassa
+/fisioterapia-dolor-hombro-terrassa

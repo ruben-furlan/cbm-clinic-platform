@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
@@ -26,6 +26,8 @@ interface TreatmentOption {
   styleUrls: ['./booking-form.css']
 })
 export class BookingFormComponent implements OnInit {
+  private readonly platformId = inject(PLATFORM_ID);
+
   constructor(
     private readonly tarifasService: TarifasService,
     private readonly languageService: LanguageService,
@@ -142,6 +144,7 @@ export class BookingFormComponent implements OnInit {
   }
 
   private scrollToForm(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     setTimeout(() => {
       const el = document.querySelector('.form-card');
       if (el) {
@@ -231,7 +234,9 @@ export class BookingFormComponent implements OnInit {
 
     this.whatsAppFeedback = true;
     setTimeout(() => {
-      window.open(url, '_blank');
+      if (isPlatformBrowser(this.platformId)) {
+        window.open(url, '_blank');
+      }
       this.whatsAppFeedback = false;
     }, 1500);
   }

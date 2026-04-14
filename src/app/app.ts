@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { Header } from './core/header/header';
@@ -23,6 +24,7 @@ export class App implements OnInit, OnDestroy {
   showScrollTop = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly platformId = inject(PLATFORM_ID);
   private rafId: number | null = null;
   private routerEventsSubscription: Subscription | null = null;
   private readonly onScroll = (): void => this.scheduleScrollProgressUpdate();
@@ -43,17 +45,19 @@ export class App implements OnInit, OnDestroy {
         this.canonicalService.updateFromUrl(event.urlAfterRedirects);
       });
 
-    if (!this.isDisplayRoute) {
+    if (isPlatformBrowser(this.platformId) && !this.isDisplayRoute) {
       window.addEventListener('scroll', this.onScroll, { passive: true });
       this.updateScrollProgress();
     }
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('scroll', this.onScroll);
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('scroll', this.onScroll);
+    }
     this.routerEventsSubscription?.unsubscribe();
 
-    if (this.rafId !== null) {
+    if (isPlatformBrowser(this.platformId) && this.rafId !== null) {
       window.cancelAnimationFrame(this.rafId);
     }
   }
@@ -103,6 +107,8 @@ export class App implements OnInit, OnDestroy {
     }
 
     this.isDisplayRoute = isDisplay;
+
+    if (!isPlatformBrowser(this.platformId)) return;
 
     if (isDisplay) {
       window.removeEventListener('scroll', this.onScroll);

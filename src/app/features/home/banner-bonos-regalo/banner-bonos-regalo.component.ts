@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { ConfiguracionService } from '../../../core/services/configuracion.service';
 import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-scroll.directive';
@@ -14,6 +14,8 @@ import { RevealOnScrollDirective } from '../../../shared/directives/reveal-on-sc
 export class BannerBonosRegaloComponent implements OnInit, OnDestroy {
   isActivo = false;
   mostrarComoFunciona = false;
+
+  private readonly platformId = inject(PLATFORM_ID);
 
   constructor(
     private readonly configuracionService: ConfiguracionService,
@@ -31,7 +33,9 @@ export class BannerBonosRegaloComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    document.body.style.overflow = '';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
   }
 
   goToRegalo(): void {
@@ -40,12 +44,16 @@ export class BannerBonosRegaloComponent implements OnInit, OnDestroy {
 
   abrirComoFunciona(): void {
     this.mostrarComoFunciona = true;
-    document.body.style.overflow = 'hidden';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = 'hidden';
+    }
   }
 
   cerrarComoFunciona(): void {
     this.mostrarComoFunciona = false;
-    document.body.style.overflow = '';
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+    }
   }
 
   irARegalo(): void {

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 interface LanguageOption {
   code: 'es' | 'en' | 'ca';
@@ -34,12 +35,16 @@ export class LanguageService {
     { code: 'en', label: 'English' }
   ];
 
-  constructor() {
-    this.persistAndApplyLanguage(this.selectedLanguage);
-    this.applyGoogleTranslateCookie(this.selectedLanguage);
+  constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
+    if (isPlatformBrowser(this.platformId)) {
+      this.persistAndApplyLanguage(this.selectedLanguage);
+      this.applyGoogleTranslateCookie(this.selectedLanguage);
+    }
   }
 
   get selectedLanguage(): SupportedLanguage {
+    if (!isPlatformBrowser(this.platformId)) return 'es';
+
     const persistedLanguage = localStorage.getItem('selected-language');
 
     if (persistedLanguage === 'es' || persistedLanguage === 'en' || persistedLanguage === 'ca') {
@@ -52,6 +57,8 @@ export class LanguageService {
   }
 
   initGoogleTranslate(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     const hasContainer = document.getElementById('google_translate_element');
 
     if (!hasContainer) {
@@ -95,6 +102,8 @@ export class LanguageService {
   }
 
   changeLanguage(language: SupportedLanguage): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+
     if (this.selectedLanguage === language) {
       return;
     }

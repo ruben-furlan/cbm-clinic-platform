@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Testimonials } from '../../testimonials/testimonials';
 import { LocationComponent } from '../../location/location';
@@ -18,6 +18,7 @@ import { BannerBonosRegaloComponent } from '../banner-bonos-regalo/banner-bonos-
 })
 export class HomePage implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly heroSlides = ['/cbm-1.jpeg', '/cbm-2.jpeg', '/cbm-3.jpeg', '/cbm-4.jpeg', '/cbm-5.jpeg'].reverse();
   currentHeroSlide = 0;
@@ -26,7 +27,9 @@ export class HomePage implements OnInit, OnDestroy {
   private touchEndX = 0;
 
   ngOnInit(): void {
-    this.startHeroAutoplay();
+    if (isPlatformBrowser(this.platformId)) {
+      this.startHeroAutoplay();
+    }
   }
 
   ngOnDestroy(): void {
@@ -79,6 +82,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   scrollToReviews(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
     const target = document.getElementById('resenas-google');
     if (!target) return;
 
