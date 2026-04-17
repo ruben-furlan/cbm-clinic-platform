@@ -59,7 +59,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let tarifa of tarifasFiltradas">
-            <td data-label="Categoría">{{ tarifa.categoria }}</td>
+            <td data-label="Categoría">{{ getCategoriaLabel(tarifa.categoria) }}</td>
             <td data-label="Nombre">{{ tarifa.nombre }}</td>
             <td data-label="Descripción">{{ tarifa.descripcion || '—' }}</td>
             <td data-label="Precio">{{ tarifa.precio }}{{ tarifa.unidad }}</td>
@@ -502,7 +502,7 @@
         <select formControlName="categoria">
           <option value="fisioterapia">Fisioterapia</option>
           <option value="pilates">Pilates</option>
-          <option value="promocion">Promoción</option>
+          <option value="promocion">Bienestar</option>
         </select>
       </label>
 
@@ -1214,7 +1214,7 @@
         <select formControlName="categoria">
           <option value="fisioterapia">Fisioterapia</option>
           <option value="pilates">Pilates</option>
-          <option value="promocion">Promoción</option>
+          <option value="promocion">Bienestar</option>
         </select>
       </label>
 

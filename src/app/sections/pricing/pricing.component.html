@@ -4,7 +4,7 @@
       <p class="section-tag">Tarifas CBM</p>
       <h2 id="pricing-title" class="heading-highlight">Tarifas y bonos</h2>
       <p class="section-description">
-        Opciones claras para fisioterapia, pilates y promociones activas.
+        Opciones claras para fisioterapia, pilates y bienestar.
       </p>
     </div>
 
@@ -29,6 +29,9 @@
               <span class="concept">{{ item.concept }}</span>
               <strong class="price">{{ item.price }}</strong>
             </div>
+            <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
+              ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
+            </p>
             <small *ngIf="item.microtext" class="microtext">{{ item.microtext }}</small>
             <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
               ⏰ Quedan {{ item.urgencyDays }} días
@@ -43,6 +46,21 @@
       </article>
     </div>
 
+    <!-- Bloque fisioterapia a domicilio -->
+    <div *ngIf="domicilioActivo" class="domicilio-block" appRevealOnScroll>
+      <div class="domicilio-icon-wrap">
+        <div class="domicilio-icon">🏠</div>
+      </div>
+      <div class="domicilio-content">
+        <h3 class="domicilio-titulo">{{ domicilioTitulo }}</h3>
+        <p class="domicilio-mensaje">{{ domicilioMensaje }}</p>
+      </div>
+      <div class="domicilio-cta">
+        <button type="button" class="btn-domicilio" (click)="showDomicilioModal = true">
+          Cuéntanos tu situación →
+        </button>
+      </div>
+    </div>
 
     <div class="pricing-cta" appRevealOnScroll>
       <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
@@ -54,3 +72,8 @@
     </ng-container>
   </div>
 </section>
+
+<app-domicilio-form
+  *ngIf="showDomicilioModal"
+  (cerrar)="showDomicilioModal = false"
+></app-domicilio-form>

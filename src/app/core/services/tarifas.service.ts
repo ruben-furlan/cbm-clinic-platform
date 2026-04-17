@@ -111,4 +111,13 @@ export class TarifasService {
       throw error;
     }
   }
+
+  getCategoriaLabel(categoria: string): string {
+    const labels: { [key: string]: string } = {
+      fisioterapia: 'Fisioterapia',
+      pilates: 'Clases de pilates',
+      promocion: 'Bienestar'
+    };
+    return labels[categoria] ?? categoria;
+  }
 }

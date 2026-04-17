@@ -1,0 +1,61 @@
+<div class="domicilio-overlay" (click)="cerrar.emit()">
+  <div class="domicilio-card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="domicilio-title">
+    <button type="button" class="domicilio-close" (click)="cerrar.emit()" aria-label="Cerrar">✕</button>
+
+    <h2 id="domicilio-title" class="domicilio-heading">Fisioterapia a domicilio 🏠</h2>
+    <p class="domicilio-subheading">
+      Cuéntanos tu situación y te orientamos con mucho cariño 💜
+    </p>
+
+    <div class="domicilio-fields">
+      <div class="domicilio-field">
+        <label class="domicilio-label" for="domicilio-motivo">¿Qué te ocurre? *</label>
+        <textarea
+          id="domicilio-motivo"
+          class="domicilio-textarea"
+          rows="3"
+          placeholder="Ej. Recuperación postparto, dolor lumbar, post-cirugía..."
+          [(ngModel)]="motivo"
+          name="motivo"
+        ></textarea>
+      </div>
+
+      <div class="domicilio-field">
+        <label class="domicilio-label" for="domicilio-zona">Zona o barrio *</label>
+        <input
+          id="domicilio-zona"
+          type="text"
+          class="domicilio-input"
+          placeholder="Ej. Terrassa centro, Sant Pere, Can Parellada..."
+          [(ngModel)]="zona"
+          name="zona"
+        />
+      </div>
+
+      <div class="domicilio-field">
+        <label class="domicilio-label" for="domicilio-disponibilidad">¿Cuándo te viene bien?</label>
+        <input
+          id="domicilio-disponibilidad"
+          type="text"
+          class="domicilio-input"
+          placeholder="Ej. Mañanas entre semana, tardes de jueves..."
+          [(ngModel)]="disponibilidad"
+          name="disponibilidad"
+        />
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="domicilio-btn-whatsapp"
+      [disabled]="!motivo.trim() || !zona.trim()"
+      (click)="enviarWhatsapp()"
+    >
+      💬 Enviar por WhatsApp
+    </button>
+
+    <p class="domicilio-footer">
+      Valoramos cada caso. Te responderemos en menos de 24h 💜
+    </p>
+  </div>
+</div>

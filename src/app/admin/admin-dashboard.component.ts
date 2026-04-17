@@ -54,7 +54,7 @@ export class AdminDashboardComponent implements OnInit {
     { value: 'todas', label: 'Todas' },
     { value: 'fisioterapia', label: 'Fisioterapia' },
     { value: 'pilates', label: 'Pilates' },
-    { value: 'promocion', label: 'Promociones' }
+    { value: 'promocion', label: 'Bienestar' }
   ];
 
   readonly tarifaForm;
@@ -380,6 +380,10 @@ export class AdminDashboardComponent implements OnInit {
         this.flushUiState();
       });
     }, ttl);
+  }
+
+  getCategoriaLabel(categoria: string): string {
+    return this.tarifasService.getCategoriaLabel(categoria);
   }
 
   trackByIndex(index: number): number {

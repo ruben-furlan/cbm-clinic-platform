@@ -3,7 +3,9 @@ import { NgFor, NgIf } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
-import {RouterLink} from '@angular/router';
+import { RouterLink } from '@angular/router';
+import { ConfiguracionService } from '../../core/services/configuracion.service';
+import { DomicilioFormComponent } from '../../shared/components/domicilio-form/domicilio-form.component';
 
 interface PricingItem {
   concept: string;
@@ -11,6 +13,7 @@ interface PricingItem {
   microtext?: string;
   urgencyDays?: number;
   urgencyType?: 'warning' | 'urgent';
+  fechaFinPromo?: string | null;
 }
 
 interface PricingCard {
@@ -22,7 +25,7 @@ interface PricingCard {
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, RouterLink],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, RouterLink, DomicilioFormComponent],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
@@ -30,17 +33,43 @@ export class PricingComponent implements OnInit {
   pricingCards: PricingCard[] = [];
   loading = true;
 
-  constructor(private readonly tarifasService: TarifasService) {}
+  domicilioActivo = false;
+  domicilioTitulo = 'Fisioterapia a domicilio';
+  domicilioMensaje =
+    'Pensado para recuperaciones postparto, post-cirugía o movilidad reducida. Valoramos cada caso con cariño.';
+  showDomicilioModal = false;
+
+  constructor(
+    private readonly tarifasService: TarifasService,
+    private readonly configuracionService: ConfiguracionService
+  ) {}
 
   async ngOnInit(): Promise<void> {
     try {
-      const tarifas = await this.tarifasService.getTarifas();
+      const [tarifas, domActivo, domTitulo, domMensaje] = await Promise.all([
+        this.tarifasService.getTarifas(),
+        this.configuracionService.getConfiguracion('domicilio_activo'),
+        this.configuracionService.getConfiguracion('domicilio_titulo'),
+        this.configuracionService.getConfiguracion('domicilio_mensaje')
+      ]);
       this.pricingCards = this.mapTarifasToCards(tarifas);
+      this.domicilioActivo = domActivo === 'true';
+      if (domTitulo) this.domicilioTitulo = domTitulo;
+      if (domMensaje) this.domicilioMensaje = domMensaje;
     } catch {
       this.pricingCards = this.mapTarifasToCards([]);
     } finally {
       this.loading = false;
     }
+  }
+
+  formatFechaFin(fecha: string): string {
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    const d = new Date(fecha + 'T00:00:00');
+    return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
   }
 
   private mapTarifasToCards(tarifas: Tarifa[]): PricingCard[] {
@@ -52,17 +81,17 @@ export class PricingComponent implements OnInit {
 
     return [
       {
-        title: 'Fisioterapia',
+        title: this.tarifasService.getCategoriaLabel('fisioterapia'),
         items: groups.fisioterapia.map((tarifa) => this.toPricingItem(tarifa))
       },
       {
-        title: 'Clases de pilates',
+        title: this.tarifasService.getCategoriaLabel('pilates'),
         items: groups.pilates.map((tarifa) => this.toPricingItem(tarifa))
       },
       {
-        title: 'Tarifas especiales',
+        title: this.tarifasService.getCategoriaLabel('promocion'),
         items: groups.promocion.map((tarifa) => this.toPricingItem(tarifa)),
-        note: 'Promociones y cupones no acumulables'
+        note: 'Bonos y cupones no acumulables'
       }
     ].filter((card) => card.items.length > 0);
   }
@@ -71,7 +100,8 @@ export class PricingComponent implements OnInit {
     const item: PricingItem = {
       concept: tarifa.nombre,
       price: `${tarifa.precio}${tarifa.unidad}`,
-      microtext: tarifa.descripcion ?? undefined
+      microtext: tarifa.descripcion ?? undefined,
+      fechaFinPromo: tarifa.fecha_fin_promo ?? null
     };
 
     if (tarifa.categoria === 'promocion' && tarifa.fecha_fin_promo) {

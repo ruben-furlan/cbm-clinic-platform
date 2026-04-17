@@ -191,6 +191,82 @@
   line-height: 1.5;
 }
 
+.fecha-fin-indicator {
+  font-style: italic;
+  color: #D4537E;
+  font-size: 13px;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+/* ── Bloque domicilio ──────────────────────────── */
+.domicilio-block {
+  margin-top: 28px;
+  background: linear-gradient(135deg, #F6F1FB, #FBEAF0);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.domicilio-icon-wrap {
+  flex-shrink: 0;
+}
+
+.domicilio-icon {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.domicilio-content {
+  flex: 1;
+  min-width: 200px;
+}
+
+.domicilio-titulo {
+  margin: 0 0 8px;
+  color: #1f1b2d;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.domicilio-mensaje {
+  margin: 0;
+  color: #5f5a6f;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.domicilio-cta {
+  flex-shrink: 0;
+}
+
+.btn-domicilio {
+  background: white;
+  border: 1.5px solid #D4537E;
+  color: #D4537E;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.btn-domicilio:hover {
+  background: #D4537E;
+  color: white;
+}
+
 .pricing-cta{
   margin-top: 28px;
   display: flex;
@@ -247,5 +323,17 @@
 
   .coupon-value{
     font-size: 24px;
+  }
+
+  .domicilio-block {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .btn-domicilio {
+    width: 100%;
+    text-align: center;
   }
 }
