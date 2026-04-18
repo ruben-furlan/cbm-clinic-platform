@@ -75,18 +75,47 @@
   gap: 14px;
 }
 
+.pricing-item-button{
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.pricing-item-button:focus-visible{
+  outline: 2px solid rgba(255, 79, 163, 0.35);
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
 .concept{
-  color: #4e485f;
-  font-size: 15px;
-  line-height: 1.45;
+  color: #332d43;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 700;
 }
 
 .price{
   color: #1f1b2d;
-  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
   font-weight: 800;
   letter-spacing: -0.01em;
   white-space: nowrap;
+}
+
+.item-action{
+  margin-top: 5px;
+  display: inline-flex;
+  font-size: 12px;
+  color: #7b4dff;
+  font-weight: 600;
+}
+
+.pricing-item-button--selected .item-action{
+  color: #ff4fa3;
 }
 
 .microtext{
@@ -95,6 +124,25 @@
   color: #7a748d;
   font-size: 13px;
   line-height: 1.45;
+}
+
+.microtext--expanded{
+  margin-top: 8px;
+}
+
+.details-toggle{
+  margin-top: 4px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #6c4ec5;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.details-toggle:hover{
+  color: #ff4fa3;
 }
 
 /* ── Mejora 3: urgency badges ──────────────────────────── */
@@ -305,6 +353,10 @@
   .pricing-row{
     flex-wrap: wrap;
     row-gap: 4px;
+  }
+
+  .concept{
+    font-size: 15px;
   }
 
   .price{

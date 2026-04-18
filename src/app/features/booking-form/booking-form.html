@@ -145,6 +145,10 @@
           <!-- Paso 2: Tus datos -->
           <div *ngIf="currentStep === 2" [class]="'stepper-pane ' + stepAnimClass">
             <h3 class="step-title">¿Cómo te llamas?</h3>
+            <p *ngIf="preselectedFromPricing" class="selected-treatment-inline">
+              Has elegido: <strong>{{ selectedTreatmentOption?.nombre }}</strong>
+              <span>{{ selectedTreatmentOption?.precio }}</span>
+            </p>
 
             <div class="form-grid">
               <div class="form-group">

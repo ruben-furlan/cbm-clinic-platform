@@ -180,6 +180,19 @@
   margin: 0 0 20px;
 }
 
+.selected-treatment-inline{
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(123, 77, 255, 0.2);
+  background: rgba(123, 77, 255, 0.06);
+  color: #4d4860;
+  font-size: 13px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
 /* ── Treatment cards (paso 1) ──────────────────────────── */
 .treatment-groups{
   display: flex;

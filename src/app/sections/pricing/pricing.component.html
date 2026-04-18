@@ -25,14 +25,34 @@
 
         <ul class="pricing-list" role="list">
           <li *ngFor="let item of card.items">
-            <div class="pricing-row">
-              <span class="concept">{{ item.concept }}</span>
-              <strong class="price">{{ item.price }}</strong>
-            </div>
+            <button
+              type="button"
+              class="pricing-item-button"
+              [class.pricing-item-button--selected]="selectedItemId === item.id"
+              (click)="selectAndBook(item)"
+            >
+              <div class="pricing-row">
+                <span class="concept">{{ item.concept }}</span>
+                <strong class="price">{{ item.price }}</strong>
+              </div>
+              <span class="item-action">Elegir y solicitar cita →</span>
+            </button>
             <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
               ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
             </p>
-            <small *ngIf="item.microtext" class="microtext">{{ item.microtext }}</small>
+            <small *ngIf="item.microtextShort" class="microtext">{{ item.microtextShort }}</small>
+            <button
+              *ngIf="item.hasLongDescription"
+              type="button"
+              class="details-toggle"
+              (click)="toggleDetails(item.id)"
+              [attr.aria-expanded]="isItemExpanded(item.id)"
+            >
+              {{ isItemExpanded(item.id) ? 'Ocultar detalles' : 'Ver detalles' }}
+            </button>
+            <small *ngIf="item.hasLongDescription && isItemExpanded(item.id)" class="microtext microtext--expanded">
+              {{ item.microtext }}
+            </small>
             <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
               ⏰ Quedan {{ item.urgencyDays }} días
             </span>
@@ -65,7 +85,7 @@
     <div class="pricing-cta" appRevealOnScroll>
       <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
         <span class="btn-icon" aria-hidden="true">💬</span>
-        <span>Solicitar cita</span>
+        <span>¿Prefieres decidir después? Solicitar cita</span>
       </a>
     </div>
 
