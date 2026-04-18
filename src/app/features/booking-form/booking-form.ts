@@ -237,7 +237,8 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   get slotFechaLabel(): string {
     if (!this.slotSeleccionado) return '';
-    const d = new Date(this.slotSeleccionado.fecha + 'T00:00:00');
+    const [y, m, day] = this.slotSeleccionado.fecha.split('-').map(Number);
+    const d = new Date(y, m - 1, day);
     return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   }
 

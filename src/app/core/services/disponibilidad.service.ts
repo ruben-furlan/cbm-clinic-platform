@@ -193,7 +193,8 @@ export class DisponibilidadService {
     );
 
     const newSlots = data.map(s => {
-      const fechaOrig = new Date((s.fecha as string) + 'T00:00:00');
+      const [py, pm, pd] = (s.fecha as string).split('-').map(Number);
+      const fechaOrig = new Date(py, pm - 1, pd);
       const fechaDest = new Date(fechaOrig.getTime() + diffDays * 24 * 60 * 60 * 1000);
       return { fisio_id: fisioId, fecha: this.formatDate(fechaDest), hora: s.hora as string };
     });
@@ -206,7 +207,10 @@ export class DisponibilidadService {
   }
 
   formatDate(date: Date): string {
-    return date.toISOString().split('T')[0];
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
   }
 
   getLunes(date: Date): Date {
