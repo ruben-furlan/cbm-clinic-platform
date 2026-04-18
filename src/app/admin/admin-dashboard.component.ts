@@ -20,9 +20,10 @@ import { ConfiguracionService } from '../core/services/configuracion.service';
 import { ServiciosRegaloService, ServicioRegalo, ServicioRegaloCategoria } from '../core/services/servicios-regalo.service';
 import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsletter.service';
 import { SimpleEditorComponent } from '../shared/components/simple-editor/simple-editor.component';
+import { DisponibilidadService, Fisio, SlotAdmin } from '../core/services/disponibilidad.service';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'calendario';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 
@@ -131,6 +132,25 @@ export class AdminDashboardComponent implements OnInit {
   nlToast: { tipo: 'exito' | 'parcial' | 'error'; texto: string } | null = null;
   private nlToastTimer: ReturnType<typeof setTimeout> | null = null;
 
+  // ── Calendario ───────────────────────────────────────────────────────────
+  fisios: Fisio[] = [];
+  fisioSeleccionado = '';
+  semanaAdmin: Date = new Date();
+  slotsAdmin: SlotAdmin[] = [];
+  loadingCalendario = false;
+  calendarioMessage = '';
+  toggling = false;
+
+  readonly HORAS_DIA = [
+    '08:00','09:00','10:00','11:00','12:00','13:00',
+    '14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00'
+  ];
+
+  readonly DIAS_SEMANA_ADMIN = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+  slotsAdminMap = new Map<string, SlotAdmin>();
+  diasSemanaAdmin: { fecha: string; label: string; num: number }[] = [];
+
   // ── Check-in ──────────────────────────────────────────────────────────────
   checkinCode = '';
   checkinLoading = false;
@@ -234,6 +254,7 @@ export class AdminDashboardComponent implements OnInit {
     private readonly configuracionService: ConfiguracionService,
     private readonly serviciosRegaloService: ServiciosRegaloService,
     private readonly newsletterService: NewsletterService,
+    private readonly disponibilidadService: DisponibilidadService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -335,6 +356,9 @@ export class AdminDashboardComponent implements OnInit {
     this.seccion = seccion;
     if (seccion === 'bonos') {
       void this.loadBonos();
+    }
+    if (seccion === 'calendario') {
+      void this.iniciarCalendarioAdmin();
     }
   }
 
@@ -952,6 +976,186 @@ export class AdminDashboardComponent implements OnInit {
   async signOut(): Promise<void> {
     await supabase.auth.signOut();
     await this.router.navigate(['/admin/login']);
+  }
+
+  // ── Calendario ────────────────────────────────────────────────────────────
+
+  async iniciarCalendarioAdmin(): Promise<void> {
+    this.loadingCalendario = true;
+    try {
+      this.fisios = await this.withTimeout(this.disponibilidadService.getFisios());
+      if (this.fisios.length && !this.fisioSeleccionado) {
+        this.fisioSeleccionado = this.fisios[0].id;
+      }
+      await this.cargarSlotsAdmin();
+    } catch {
+      this.calendarioMessage = 'No se pudo cargar el calendario.';
+    } finally {
+      this.loadingCalendario = false;
+      this.flushUiState();
+    }
+  }
+
+  async cargarSlotsAdmin(): Promise<void> {
+    this.loadingCalendario = true;
+    try {
+      this.slotsAdmin = await this.withTimeout(this.disponibilidadService.getSlotsAdmin(this.semanaAdmin));
+      this.actualizarGrillaAdmin();
+    } catch {
+      this.calendarioMessage = 'Error cargando slots.';
+    } finally {
+      this.loadingCalendario = false;
+      this.flushUiState();
+    }
+  }
+
+  private actualizarGrillaAdmin(): void {
+    const lunes = this.disponibilidadService.getLunes(this.semanaAdmin);
+    this.diasSemanaAdmin = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(lunes);
+      d.setDate(lunes.getDate() + i);
+      return {
+        fecha: this.disponibilidadService.formatDate(d),
+        label: this.DIAS_SEMANA_ADMIN[i],
+        num: d.getDate()
+      };
+    });
+
+    this.slotsAdminMap = new Map();
+    for (const slot of this.slotsAdmin) {
+      this.slotsAdminMap.set(`${slot.fisioId}|${slot.fecha}|${slot.hora}`, slot);
+    }
+  }
+
+  get semanaAdminLabel(): string {
+    return this.disponibilidadService.getSemanaLabel(this.semanaAdmin);
+  }
+
+  retrocederSemanaAdmin(): void {
+    const d = new Date(this.semanaAdmin);
+    d.setDate(d.getDate() - 7);
+    this.semanaAdmin = d;
+    void this.cargarSlotsAdmin();
+  }
+
+  avanzarSemanaAdmin(): void {
+    const d = new Date(this.semanaAdmin);
+    d.setDate(d.getDate() + 7);
+    this.semanaAdmin = d;
+    void this.cargarSlotsAdmin();
+  }
+
+  tieneSlotsAdmin(fisioId: string, fecha: string, hora: string): boolean {
+    return this.slotsAdminMap.has(`${fisioId}|${fecha}|${hora}`);
+  }
+
+  getSlotAdmin(fisioId: string, fecha: string, hora: string): SlotAdmin | undefined {
+    return this.slotsAdminMap.get(`${fisioId}|${fecha}|${hora}`);
+  }
+
+  async toggleSlotFisio(fisioId: string, fecha: string, hora: string): Promise<void> {
+    if (this.toggling) return;
+    this.toggling = true;
+    const key = `${fisioId}|${fecha}|${hora}`;
+    const existing = this.slotsAdminMap.get(key);
+
+    try {
+      if (existing) {
+        if (existing.reservas > 0) {
+          this.calendarioMessage = 'No se puede eliminar un slot con reservas activas.';
+          setTimeout(() => { this.calendarioMessage = ''; this.flushUiState(); }, 3000);
+          return;
+        }
+        await this.withTimeout(this.disponibilidadService.eliminarSlot(existing.id));
+        this.slotsAdmin = this.slotsAdmin.filter(s => s.id !== existing.id);
+        this.slotsAdminMap.delete(key);
+      } else {
+        await this.withTimeout(this.disponibilidadService.crearSlot(fisioId, fecha, hora));
+        await this.cargarSlotsAdmin();
+        return;
+      }
+    } catch {
+      this.calendarioMessage = 'Error al actualizar el slot.';
+    } finally {
+      this.toggling = false;
+      this.flushUiState();
+    }
+  }
+
+  async bloquearSlotAdmin(slotId: string, bloqueado: boolean): Promise<void> {
+    if (this.toggling) return;
+    this.toggling = true;
+    try {
+      await this.withTimeout(this.disponibilidadService.bloquearSlot(slotId, bloqueado));
+      this.slotsAdmin = this.slotsAdmin.map(s =>
+        s.id === slotId ? { ...s, bloqueadoManual: bloqueado } : s
+      );
+      this.slotsAdminMap = new Map();
+      for (const slot of this.slotsAdmin) {
+        this.slotsAdminMap.set(`${slot.fisioId}|${slot.fecha}|${slot.hora}`, slot);
+      }
+    } catch {
+      this.calendarioMessage = 'Error al bloquear el slot.';
+    } finally {
+      this.toggling = false;
+      this.flushUiState();
+    }
+  }
+
+  async copiarSemanaAnteriorAdmin(): Promise<void> {
+    if (!this.fisioSeleccionado || this.toggling) return;
+    this.toggling = true;
+    this.calendarioMessage = '';
+
+    const semanaActual = new Date(this.semanaAdmin);
+    const semanaAnterior = new Date(semanaActual);
+    semanaAnterior.setDate(semanaAnterior.getDate() - 7);
+
+    try {
+      await this.withTimeout(this.disponibilidadService.copiarSemana(this.fisioSeleccionado, semanaAnterior, semanaActual));
+      await this.cargarSlotsAdmin();
+      this.calendarioMessage = 'Semana copiada correctamente ✓';
+      setTimeout(() => { this.calendarioMessage = ''; this.flushUiState(); }, 3000);
+    } catch {
+      this.calendarioMessage = 'No se pudo copiar la semana anterior.';
+    } finally {
+      this.toggling = false;
+      this.flushUiState();
+    }
+  }
+
+  async toggleFisioActivo(fisio: Fisio, event: Event): Promise<void> {
+    const target = event.target as HTMLInputElement;
+    try {
+      await this.withTimeout(this.disponibilidadService.toggleFisioActivo(fisio.id, target.checked));
+      this.fisios = this.fisios.map(f => f.id === fisio.id ? { ...f, activo: target.checked } : f);
+    } catch {
+      target.checked = fisio.activo;
+      this.calendarioMessage = 'Error al actualizar el estado de la fisio.';
+    } finally {
+      this.flushUiState();
+    }
+  }
+
+  getSlotsGlobalesGrilla(fecha: string, hora: string): {
+    total: number; reservas: number; disponibles: number; bloqueados: number;
+  } {
+    const slots = this.slotsAdmin.filter(s => s.fecha === fecha && s.hora === hora);
+    const activos = slots.filter(s => !s.bloqueadoManual);
+    const reservas = activos.reduce((sum, s) => sum + s.reservas, 0);
+    const bloqueados = slots.filter(s => s.bloqueadoManual).length;
+    return {
+      total: activos.length,
+      reservas,
+      disponibles: Math.max(0, activos.length - reservas),
+      bloqueados
+    };
+  }
+
+  getHorasConSlots(): string[] {
+    const set = new Set<string>();
+    for (const s of this.slotsAdmin) set.add(s.hora);
+    return Array.from(set).sort();
   }
 
   // ── Clases / Eventos ──────────────────────────────────────────────────────

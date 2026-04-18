@@ -61,6 +61,20 @@ const handler: Handler = async (event) => {
                 ${data.tratamiento}
               </p>
             </div>
+            ${data.fechaSlot ? `
+            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">📅 Día solicitado</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+                ${data.fechaSlot}
+              </p>
+            </div>
+            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
+              <p style="margin: 0; font-size: 12px; color: #6b7280;">🕐 Hora solicitada</p>
+              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
+                ${data.horaSlot}
+              </p>
+            </div>
+            ` : ''}
             <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
               <p style="margin: 0; font-size: 12px; color: #6b7280;">👤 Nombre</p>
               <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
@@ -154,6 +168,20 @@ const handler: Handler = async (event) => {
               ${data.tratamiento}
             </p>
           </div>
+          ${data.fechaSlot ? `
+          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">📅 Día solicitado</p>
+            <p style="margin: 4px 0 0; font-weight: 700; color: #111827; font-size: 15px;">
+              ${data.fechaSlot}
+            </p>
+          </div>
+          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
+            <p style="margin: 0; font-size: 12px; color: #6b7280;">🕐 Hora solicitada</p>
+            <p style="margin: 4px 0 0; font-weight: 700; color: #a855f7; font-size: 16px;">
+              ${data.horaSlot}
+            </p>
+          </div>
+          ` : ''}
           ${data.precio ? `
           <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
             <p style="margin: 0; font-size: 12px; color: #6b7280;">💰 Precio</p>

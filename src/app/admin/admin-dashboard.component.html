@@ -21,6 +21,9 @@
       💌 Newsletter
       <span class="tab-badge" *ngIf="newsletterStats.total > 0">{{ newsletterStats.activos }}</span>
     </button>
+    <button type="button" [class.active]="seccion === 'calendario'" (click)="setSeccion('calendario')">
+      📅 Calendario
+    </button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -1269,6 +1272,169 @@
     </form>
   </section>
 </div>
+
+<!-- ══════════════════════ CALENDARIO ══════════════════════════ -->
+<ng-container *ngIf="seccion === 'calendario'">
+
+  <p class="status message" *ngIf="calendarioMessage">{{ calendarioMessage }}</p>
+
+  <!-- Sección 1: Gestión de fisios -->
+  <div class="cal-section">
+    <h3 class="cal-section-title">Fisioterapeutas</h3>
+    <div *ngIf="loadingCalendario && fisios.length === 0" class="status">Cargando...</div>
+    <div class="fisios-list" *ngIf="fisios.length > 0">
+      <div *ngFor="let fisio of fisios" class="fisio-row">
+        <span class="fisio-nombre">{{ fisio.nombre }}</span>
+        <label class="toggle-label">
+          <input
+            type="checkbox"
+            [checked]="fisio.activo"
+            (change)="toggleFisioActivo(fisio, $event)"
+          />
+          <span class="toggle-text">{{ fisio.activo ? 'Activa' : 'Inactiva' }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 2: Cargar disponibilidad semanal -->
+  <div class="cal-section">
+    <h3 class="cal-section-title">Disponibilidad semanal</h3>
+
+    <div class="cal-controls">
+      <!-- Selector fisio -->
+      <div class="form-group cal-select-group">
+        <label>Fisioterapeuta</label>
+        <select [(ngModel)]="fisioSeleccionado" (change)="cargarSlotsAdmin()">
+          <option *ngFor="let f of fisios" [value]="f.id">{{ f.nombre }}</option>
+        </select>
+      </div>
+
+      <!-- Navegación semana -->
+      <div class="cal-semana-nav">
+        <button type="button" class="btn-ghost" (click)="retrocederSemanaAdmin()">←</button>
+        <span class="cal-semana-label">{{ semanaAdminLabel }}</span>
+        <button type="button" class="btn-ghost" (click)="avanzarSemanaAdmin()">→</button>
+      </div>
+
+      <button
+        type="button"
+        class="btn-ghost cal-copy-btn"
+        [disabled]="toggling"
+        (click)="copiarSemanaAnteriorAdmin()"
+        title="Copia los slots de la semana anterior a esta semana"
+      >
+        Copiar semana anterior
+      </button>
+    </div>
+
+    <div *ngIf="loadingCalendario" class="status">Cargando slots...</div>
+
+    <div *ngIf="!loadingCalendario && fisioSeleccionado" class="table-wrap cal-table-wrap">
+      <table class="cal-grid-table">
+        <thead>
+          <tr>
+            <th class="cal-hora-th"></th>
+            <th *ngFor="let dia of diasSemanaAdmin" class="cal-dia-th">
+              <div class="cal-dia-nombre">{{ dia.label }}</div>
+              <div class="cal-dia-num">{{ dia.num }}</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hora of HORAS_DIA">
+            <td class="cal-hora-td">{{ hora }}</td>
+            <td *ngFor="let dia of diasSemanaAdmin" class="cal-celda-td">
+              <ng-container *ngIf="getSlotAdmin(fisioSeleccionado, dia.fecha, hora) as slot">
+                <div class="cal-slot-active" [class.cal-slot-bloqueado]="slot.bloqueadoManual">
+                  <input
+                    type="checkbox"
+                    [checked]="true"
+                    (change)="toggleSlotFisio(fisioSeleccionado, dia.fecha, hora)"
+                    [disabled]="toggling"
+                    class="cal-slot-check"
+                  />
+                  <span *ngIf="slot.reservas > 0" class="cal-slot-badge">{{ slot.reservas }}</span>
+                  <span *ngIf="slot.bloqueadoManual" class="cal-slot-lock" title="Bloqueado manualmente">🔒</span>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="!getSlotAdmin(fisioSeleccionado, dia.fecha, hora)">
+                <input
+                  type="checkbox"
+                  [checked]="false"
+                  (change)="toggleSlotFisio(fisioSeleccionado, dia.fecha, hora)"
+                  [disabled]="toggling"
+                  class="cal-slot-check"
+                />
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sección 3: Vista global semanal -->
+  <div class="cal-section">
+    <h3 class="cal-section-title">Vista global — {{ semanaAdminLabel }}</h3>
+    <p class="cal-global-hint">Todas las fisioterapeutas combinadas</p>
+
+    <div *ngIf="!loadingCalendario && slotsAdmin.length === 0" class="status">
+      No hay slots cargados para esta semana.
+    </div>
+
+    <div *ngIf="!loadingCalendario && getHorasConSlots().length > 0" class="table-wrap cal-table-wrap">
+      <table class="cal-grid-table">
+        <thead>
+          <tr>
+            <th class="cal-hora-th"></th>
+            <th *ngFor="let dia of diasSemanaAdmin" class="cal-dia-th">
+              <div class="cal-dia-nombre">{{ dia.label }}</div>
+              <div class="cal-dia-num">{{ dia.num }}</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hora of getHorasConSlots()">
+            <td class="cal-hora-td">{{ hora }}</td>
+            <td *ngFor="let dia of diasSemanaAdmin" class="cal-celda-td">
+              <ng-container *ngIf="getSlotsGlobalesGrilla(dia.fecha, hora) as info">
+                <ng-container *ngIf="info.total > 0 || info.bloqueados > 0">
+                  <div
+                    class="cal-global-cell"
+                    [class.cal-global-disponible]="info.disponibles >= 2"
+                    [class.cal-global-ultimo]="info.disponibles === 1"
+                    [class.cal-global-completo]="info.disponibles === 0"
+                  >
+                    <span class="cal-global-disp">{{ info.disponibles }}/{{ info.total }}</span>
+                    <span *ngIf="info.reservas > 0" class="cal-global-reservas">{{ info.reservas }} reserv.</span>
+                    <span *ngIf="info.bloqueados > 0" class="cal-global-lock">🔒 {{ info.bloqueados }}</span>
+                    <div class="cal-global-actions">
+                      <ng-container *ngFor="let slot of slotsAdmin">
+                        <ng-container *ngIf="slot.fecha === dia.fecha && slot.hora === hora">
+                          <button
+                            type="button"
+                            class="cal-bloquear-btn"
+                            [class.cal-bloquear-btn--activo]="slot.bloqueadoManual"
+                            (click)="bloquearSlotAdmin(slot.id, !slot.bloqueadoManual)"
+                            [disabled]="toggling"
+                            [title]="slot.bloqueadoManual ? 'Desbloquear' : 'Bloquear'"
+                          >{{ slot.bloqueadoManual ? '🔓' : '🔒' }}</button>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                </ng-container>
+                <span *ngIf="info.total === 0 && info.bloqueados === 0" class="cal-global-vacio">—</span>
+              </ng-container>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</ng-container>
 
 <!-- ═══════════════ Modal confirmación eliminar ════════════════ -->
 <div class="modal-overlay confirm-overlay" *ngIf="confirmOpen" (click)="onConfirmCancel()">

@@ -65,9 +65,25 @@
           <div
             class="stepper-step-item"
             [class.stepper-step-item--active]="currentStep === 3"
+            [class.stepper-step-item--done]="currentStep > 3"
           >
             <div class="stepper-circle">
-              <span>3</span>
+              <span *ngIf="currentStep <= 3">3</span>
+              <svg *ngIf="currentStep > 3" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              </svg>
+            </div>
+            <span class="stepper-label">Tu momento</span>
+          </div>
+
+          <div class="stepper-line" [class.stepper-line--filled]="currentStep > 3"></div>
+
+          <div
+            class="stepper-step-item"
+            [class.stepper-step-item--active]="currentStep === 4"
+          >
+            <div class="stepper-circle">
+              <span>4</span>
             </div>
             <span class="stepper-label">¡Listo!</span>
           </div>
@@ -259,8 +275,114 @@
             </div>
           </div>
 
-          <!-- Paso 3: ¡Listo! -->
+          <!-- Paso 3: Tu momento -->
           <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
+            <h3 class="step-title">¿Cuándo quieres venir? 💜</h3>
+            <p class="step-subtitle">Elige el día y la hora que mejor te vaya</p>
+
+            <cbm-loader *ngIf="loadingSlots"></cbm-loader>
+
+            <ng-container *ngIf="!loadingSlots">
+
+              <!-- Selector de semana -->
+              <div class="calendario-semana-nav">
+                <button
+                  type="button"
+                  class="semana-nav-btn"
+                  [disabled]="!puedeRetroceder"
+                  (click)="retrocederSemana()"
+                  aria-label="Semana anterior"
+                >←</button>
+                <span class="semana-nav-label">{{ semanaLabel }}</span>
+                <button
+                  type="button"
+                  class="semana-nav-btn"
+                  [disabled]="!puedeAvanzar"
+                  (click)="avanzarSemana()"
+                  aria-label="Semana siguiente"
+                >→</button>
+              </div>
+
+              <!-- Sin disponibilidad -->
+              <div *ngIf="horasUnicas.length === 0 && !errorSlots" class="calendario-vacio">
+                No hay horas disponibles esta semana 💜 Prueba con la siguiente
+              </div>
+
+              <!-- Error carga -->
+              <div *ngIf="errorSlots" class="calendario-vacio">
+                No pudimos cargar la disponibilidad. Inténtalo de nuevo.
+              </div>
+
+              <!-- Grid del calendario -->
+              <div *ngIf="horasUnicas.length > 0" class="calendario-scroll-wrap">
+                <table class="calendario-grid">
+                  <thead>
+                    <tr>
+                      <th class="calendario-hora-col"></th>
+                      <th *ngFor="let dia of diasSemana" class="calendario-dia-th">
+                        <div class="calendario-dia-nombre">{{ dia.label }}</div>
+                        <div class="calendario-dia-num">{{ dia.num }}</div>
+                        <div class="calendario-dia-mes">{{ dia.mes }}</div>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let hora of horasUnicas">
+                      <td class="calendario-hora-label">{{ hora }}</td>
+                      <td *ngFor="let dia of diasSemana" class="calendario-celda">
+                        <ng-container *ngIf="getSlotGrilla(dia.fecha, hora) as slot">
+                          <button
+                            type="button"
+                            [class]="getSlotClase(slot, dia.fecha, hora)"
+                            [disabled]="slot.estado === 'completo'"
+                            (click)="seleccionarSlot(dia.fecha, hora)"
+                            [attr.aria-label]="'Seleccionar ' + hora + ' el ' + dia.label + ' ' + dia.num"
+                          >{{ hora }}</button>
+                        </ng-container>
+                        <span *ngIf="!getSlotGrilla(dia.fecha, hora)" class="calendario-sin-slot">—</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Leyenda -->
+              <div *ngIf="horasUnicas.length > 0" class="calendario-leyenda">
+                <span class="leyenda-item">
+                  <span class="leyenda-dot leyenda-dot--disponible"></span>
+                  Disponible
+                </span>
+                <span class="leyenda-item">
+                  <span class="leyenda-dot leyenda-dot--ultimo"></span>
+                  Última plaza
+                </span>
+                <span class="leyenda-item">
+                  <span class="leyenda-dot leyenda-dot--completo"></span>
+                  Completo
+                </span>
+              </div>
+
+              <!-- Error de slot -->
+              <div *ngIf="errorSlot" class="slot-error-msg">{{ errorSlot }}</div>
+
+            </ng-container>
+
+            <div class="step-actions step-actions--with-back">
+              <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
+              <button
+                type="button"
+                class="btn-primary step-btn-continue"
+                [class.step-btn-continue--disabled]="!canAdvanceStep3"
+                [disabled]="!canAdvanceStep3"
+                (click)="nextStep()"
+              >
+                Continuar →
+              </button>
+            </div>
+          </div>
+
+          <!-- Paso 4: ¡Listo! -->
+          <div *ngIf="currentStep === 4" [class]="'stepper-pane ' + stepAnimClass">
 
             <!-- Estado éxito -->
             <ng-container *ngIf="solicitudEnviada">
@@ -300,6 +422,14 @@
                 <div *ngIf="formData.phone" class="summary-row">
                   <span class="summary-label">Teléfono</span>
                   <span class="summary-value">+34 {{ formData.phone }}</span>
+                </div>
+                <div *ngIf="slotSeleccionado" class="summary-row">
+                  <span class="summary-label">📅 Día</span>
+                  <span class="summary-value">{{ slotFechaLabel }}</span>
+                </div>
+                <div *ngIf="slotSeleccionado" class="summary-row">
+                  <span class="summary-label">🕐 Hora</span>
+                  <span class="summary-value">{{ slotSeleccionado.hora }}</span>
                 </div>
                 <div *ngIf="promoCode" class="summary-row">
                   <span class="summary-label">Código promo</span>
