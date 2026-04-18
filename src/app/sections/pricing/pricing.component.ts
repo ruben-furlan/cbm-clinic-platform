@@ -13,6 +13,7 @@ interface PricingItem {
   price: string;
   microtext?: string;
   microtextShort?: string;
+  microtextMore?: string;
   hasLongDescription?: boolean;
   urgencyDays?: number;
   urgencyType?: 'warning' | 'urgent';
@@ -41,7 +42,7 @@ export class PricingComponent implements OnInit {
   domicilioMensaje =
     'Pensado para recuperaciones postparto, post-cirugía o movilidad reducida. Valoramos cada caso con cariño.';
   showDomicilioModal = false;
-  expandedItems: Record<string, boolean> = {};
+  expandedItemId: string | null = null;
   selectedItemId: string | null = null;
   private readonly maxPreviewLength = 120;
 
@@ -71,11 +72,11 @@ export class PricingComponent implements OnInit {
   }
 
   toggleDetails(itemId: string): void {
-    this.expandedItems[itemId] = !this.expandedItems[itemId];
+    this.expandedItemId = this.expandedItemId === itemId ? null : itemId;
   }
 
   isItemExpanded(itemId: string): boolean {
-    return !!this.expandedItems[itemId];
+    return this.expandedItemId === itemId;
   }
 
   selectAndBook(item: PricingItem): void {
@@ -123,16 +124,16 @@ export class PricingComponent implements OnInit {
 
   private toPricingItem(tarifa: Tarifa): PricingItem {
     const description = tarifa.descripcion?.trim() ?? '';
-    const hasLongDescription = description.length > this.maxPreviewLength;
+    const { short, more } = this.getDescriptionParts(description);
+    const hasLongDescription = !!more;
 
     const item: PricingItem = {
       id: tarifa.id,
       concept: tarifa.nombre,
       price: `${tarifa.precio}${tarifa.unidad}`,
       microtext: description || undefined,
-      microtextShort: hasLongDescription
-        ? `${description.slice(0, this.maxPreviewLength).trimEnd()}…`
-        : description || undefined,
+      microtextShort: short || undefined,
+      microtextMore: more || undefined,
       hasLongDescription,
       fechaFinPromo: tarifa.fecha_fin_promo ?? null
     };
@@ -154,5 +155,31 @@ export class PricingComponent implements OnInit {
     }
 
     return item;
+  }
+
+  private getDescriptionParts(text: string): { short: string; more: string } {
+    if (!text) return { short: '', more: '' };
+    if (text.length <= this.maxPreviewLength) return { short: text, more: '' };
+
+    const minCut = Math.floor(this.maxPreviewLength * 0.6);
+    const punctuation = ['. ', ': ', '; ', '· ', ', '];
+    let cut = -1;
+
+    for (const mark of punctuation) {
+      const idx = text.lastIndexOf(mark, this.maxPreviewLength);
+      if (idx >= minCut) {
+        cut = idx + mark.length;
+        break;
+      }
+    }
+
+    if (cut === -1) {
+      const lastSpace = text.lastIndexOf(' ', this.maxPreviewLength);
+      cut = lastSpace > minCut ? lastSpace : this.maxPreviewLength;
+    }
+
+    const short = `${text.slice(0, cut).trim()}…`;
+    const more = text.slice(cut).trim();
+    return { short, more };
   }
 }

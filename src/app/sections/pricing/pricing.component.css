@@ -131,18 +131,35 @@
 }
 
 .details-toggle{
-  margin-top: 4px;
+  margin-top: 10px;
   border: 0;
   background: transparent;
   padding: 0;
-  color: #6c4ec5;
-  font-size: 12px;
-  font-weight: 600;
+  color: #7b7690;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(123, 118, 144, 0.38);
+  text-underline-offset: 3px;
 }
 
 .details-toggle:hover{
-  color: #ff4fa3;
+  color: #6c4ec5;
+  text-decoration-color: rgba(108, 78, 197, 0.45);
+}
+
+.details-content{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.22s ease;
+}
+
+.details-content.is-open{
+  max-height: 220px;
+  opacity: 1;
 }
 
 /* ── Mejora 3: urgency badges ──────────────────────────── */

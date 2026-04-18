@@ -48,11 +48,11 @@
               (click)="toggleDetails(item.id)"
               [attr.aria-expanded]="isItemExpanded(item.id)"
             >
-              {{ isItemExpanded(item.id) ? 'Ocultar detalles' : 'Ver detalles' }}
+              {{ isItemExpanded(item.id) ? 'Ver menos' : 'Ver más' }}
             </button>
-            <small *ngIf="item.hasLongDescription && isItemExpanded(item.id)" class="microtext microtext--expanded">
-              {{ item.microtext }}
-            </small>
+            <div *ngIf="item.hasLongDescription" class="details-content" [class.is-open]="isItemExpanded(item.id)">
+              <small class="microtext microtext--expanded">{{ item.microtextMore }}</small>
+            </div>
             <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
               ⏰ Quedan {{ item.urgencyDays }} días
             </span>
