@@ -75,26 +75,127 @@
   gap: 14px;
 }
 
+.pricing-item-button{
+  width: 100%;
+  padding: 0;
+  text-align: left;
+  font: inherit;
+}
+
+.pricing-list-item{
+  border-radius: 14px;
+  padding: 10px 10px 12px;
+  margin: -10px -10px 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.pricing-list-item:focus-visible{
+  outline: 2px solid rgba(255, 79, 163, 0.35);
+  outline-offset: 4px;
+  border-radius: 14px;
+}
+
+.pricing-list-item:hover{
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 8px 20px rgba(123, 77, 255, 0.12);
+}
+
+.pricing-list-item:active{
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(123, 77, 255, 0.1);
+}
+
+.pricing-list-item--selected{
+  background: rgba(255, 79, 163, 0.06);
+}
+
 .concept{
-  color: #4e485f;
-  font-size: 15px;
-  line-height: 1.45;
+  color: #332d43;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 700;
 }
 
 .price{
   color: #1f1b2d;
-  font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
   font-weight: 800;
   letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
-.microtext{
+.item-action{
   margin-top: 5px;
+  display: inline-flex;
+  font-size: 12px;
+  color: #7b4dff;
+  font-weight: 600;
+}
+
+.pricing-list-item--selected .item-action{
+  color: #ff4fa3;
+}
+
+.microtext{
+  margin-top: 6px;
   display: block;
   color: #7a748d;
   font-size: 13px;
-  line-height: 1.45;
+  line-height: 1.52;
+}
+
+.microtext--preview{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.microtext--hidden{
+  display: none;
+}
+
+.microtext--expanded{
+  margin-top: 0;
+}
+
+.details-toggle{
+  margin-top: 8px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #756f88;
+  font-size: 11px;
+  font-weight: 550;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(117, 111, 136, 0.32);
+  text-underline-offset: 3px;
+}
+
+.details-toggle:hover{
+  color: #6c4ec5;
+  text-decoration-color: rgba(108, 78, 197, 0.45);
+}
+
+.details-content{
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-left: 0;
+  margin-top: 0;
+  border-left: 1px solid transparent;
+  transition: max-height 0.3s ease, opacity 0.22s ease, margin-top 0.25s ease, padding-left 0.25s ease, border-color 0.25s ease;
+}
+
+.details-content.is-open{
+  max-height: 260px;
+  opacity: 1;
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left-color: rgba(123, 77, 255, 0.2);
 }
 
 /* ── Mejora 3: urgency badges ──────────────────────────── */
@@ -305,6 +406,10 @@
   .pricing-row{
     flex-wrap: wrap;
     row-gap: 4px;
+  }
+
+  .concept{
+    font-size: 15px;
   }
 
   .price{

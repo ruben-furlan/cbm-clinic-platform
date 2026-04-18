@@ -3,14 +3,16 @@ import { NgFor, NgIf } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConfiguracionService } from '../../core/services/configuracion.service';
 import { DomicilioFormComponent } from '../../shared/components/domicilio-form/domicilio-form.component';
 
 interface PricingItem {
+  id: string;
   concept: string;
   price: string;
   microtext?: string;
+  hasLongDescription?: boolean;
   urgencyDays?: number;
   urgencyType?: 'warning' | 'urgent';
   fechaFinPromo?: string | null;
@@ -25,7 +27,7 @@ interface PricingCard {
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, RouterLink, DomicilioFormComponent],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, DomicilioFormComponent],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
@@ -38,10 +40,14 @@ export class PricingComponent implements OnInit {
   domicilioMensaje =
     'Pensado para recuperaciones postparto, post-cirugía o movilidad reducida. Valoramos cada caso con cariño.';
   showDomicilioModal = false;
+  expandedItemId: string | null = null;
+  selectedItemId: string | null = null;
+  private readonly maxPreviewLength = 140;
 
   constructor(
     private readonly tarifasService: TarifasService,
-    private readonly configuracionService: ConfiguracionService
+    private readonly configuracionService: ConfiguracionService,
+    private readonly router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -61,6 +67,34 @@ export class PricingComponent implements OnInit {
     } finally {
       this.loading = false;
     }
+  }
+
+  toggleDetails(itemId: string, event?: Event): void {
+    event?.stopPropagation();
+    this.expandedItemId = this.expandedItemId === itemId ? null : itemId;
+  }
+
+  isItemExpanded(itemId: string): boolean {
+    return this.expandedItemId === itemId;
+  }
+
+  selectAndBook(item: PricingItem): void {
+    this.selectedItemId = item.id;
+    this.router.navigate(['/solicitar-cita'], {
+      queryParams: {
+        tratamiento: item.id,
+        paso: 2
+      }
+    });
+  }
+
+  onCardKeydown(event: KeyboardEvent, item: PricingItem): void {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    event.preventDefault();
+    this.selectAndBook(item);
   }
 
   formatFechaFin(fecha: string): string {
@@ -97,10 +131,15 @@ export class PricingComponent implements OnInit {
   }
 
   private toPricingItem(tarifa: Tarifa): PricingItem {
+    const description = tarifa.descripcion?.trim() ?? '';
+    const hasLongDescription = description.length > this.maxPreviewLength;
+
     const item: PricingItem = {
+      id: tarifa.id,
       concept: tarifa.nombre,
       price: `${tarifa.precio}${tarifa.unidad}`,
-      microtext: tarifa.descripcion ?? undefined,
+      microtext: description || undefined,
+      hasLongDescription,
       fechaFinPromo: tarifa.fecha_fin_promo ?? null
     };
 

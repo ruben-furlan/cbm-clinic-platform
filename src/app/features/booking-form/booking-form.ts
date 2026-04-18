@@ -1,7 +1,7 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
 import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
@@ -31,7 +31,8 @@ export class BookingFormComponent implements OnInit {
   constructor(
     private readonly tarifasService: TarifasService,
     private readonly languageService: LanguageService,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly route: ActivatedRoute
   ) {}
 
   currentStep = 1;
@@ -43,6 +44,7 @@ export class BookingFormComponent implements OnInit {
   whatsAppFeedback = false;
   loadingTarifas = true;
   errorTarifas = false;
+  preselectedFromPricing = false;
   enviando = false;
   errorEnvio = false;
   solicitudEnviada = false;
@@ -67,6 +69,7 @@ export class BookingFormComponent implements OnInit {
     try {
       const tarifas = await this.tarifasService.getTarifas();
       this.treatmentOptions = tarifas.map((tarifa) => this.toTreatmentOption(tarifa));
+      this.applyPreselectionFromQuery();
     } catch {
       this.treatmentOptions = [];
       this.errorTarifas = true;
@@ -79,6 +82,23 @@ export class BookingFormComponent implements OnInit {
   private initAvailability(): void {
     this.availabilityType = 'green';
     this.availabilityText = 'Solo falta un paso para confirmar tu cita';
+  }
+
+  private applyPreselectionFromQuery(): void {
+    const treatmentFromQuery = this.route.snapshot.queryParamMap.get('tratamiento');
+    const stepFromQuery = this.route.snapshot.queryParamMap.get('paso');
+    if (!treatmentFromQuery) return;
+
+    const matched = this.treatmentOptions.find((option) => option.value === treatmentFromQuery);
+    if (!matched) return;
+
+    this.formData.treatment = matched.value;
+    this.preselectedFromPricing = true;
+
+    if (stepFromQuery === '2') {
+      this.currentStep = 2;
+      this.stepAnimClass = 'step-enter-forward';
+    }
   }
 
   private readonly categoryLabels: Record<TarifaCategoria, string> = {

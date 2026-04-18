@@ -24,15 +24,44 @@
         <h3>{{ card.title }}</h3>
 
         <ul class="pricing-list" role="list">
-          <li *ngFor="let item of card.items">
-            <div class="pricing-row">
-              <span class="concept">{{ item.concept }}</span>
-              <strong class="price">{{ item.price }}</strong>
+          <li
+            *ngFor="let item of card.items"
+            class="pricing-list-item"
+            [class.pricing-list-item--selected]="selectedItemId === item.id"
+            role="button"
+            tabindex="0"
+            (click)="selectAndBook(item)"
+            (keydown)="onCardKeydown($event, item)"
+          >
+            <div class="pricing-item-button">
+              <div class="pricing-row">
+                <span class="concept">{{ item.concept }}</span>
+                <strong class="price">{{ item.price }}</strong>
+              </div>
+              <span class="item-action">Reservar esta sesión →</span>
             </div>
             <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
               ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
             </p>
-            <small *ngIf="item.microtext" class="microtext">{{ item.microtext }}</small>
+            <small
+              *ngIf="item.microtext"
+              class="microtext microtext--preview"
+              [class.microtext--hidden]="item.hasLongDescription && isItemExpanded(item.id)"
+            >
+              {{ item.microtext }}
+            </small>
+            <button
+              *ngIf="item.hasLongDescription"
+              type="button"
+              class="details-toggle"
+              (click)="toggleDetails(item.id, $event)"
+              [attr.aria-expanded]="isItemExpanded(item.id)"
+            >
+              {{ isItemExpanded(item.id) ? 'Ocultar información' : 'Más información' }}
+            </button>
+            <div *ngIf="item.hasLongDescription" class="details-content" [class.is-open]="isItemExpanded(item.id)">
+              <small class="microtext microtext--expanded">{{ item.microtext }}</small>
+            </div>
             <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
               ⏰ Quedan {{ item.urgencyDays }} días
             </span>
@@ -60,13 +89,6 @@
           Cuéntanos tu situación →
         </button>
       </div>
-    </div>
-
-    <div class="pricing-cta" appRevealOnScroll>
-      <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
-        <span class="btn-icon" aria-hidden="true">💬</span>
-        <span>Solicitar cita</span>
-      </a>
     </div>
 
     </ng-container>
