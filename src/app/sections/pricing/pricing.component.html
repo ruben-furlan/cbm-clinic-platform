@@ -40,7 +40,13 @@
             <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
               ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
             </p>
-            <small *ngIf="item.microtextShort" class="microtext">{{ item.microtextShort }}</small>
+            <small
+              *ngIf="item.microtext"
+              class="microtext microtext--preview"
+              [class.microtext--hidden]="item.hasLongDescription && isItemExpanded(item.id)"
+            >
+              {{ item.microtext }}
+            </small>
             <button
               *ngIf="item.hasLongDescription"
               type="button"
@@ -48,10 +54,10 @@
               (click)="toggleDetails(item.id)"
               [attr.aria-expanded]="isItemExpanded(item.id)"
             >
-              {{ isItemExpanded(item.id) ? 'Ver menos' : 'Ver más' }}
+              {{ isItemExpanded(item.id) ? 'Ocultar información' : 'Más información' }}
             </button>
             <div *ngIf="item.hasLongDescription" class="details-content" [class.is-open]="isItemExpanded(item.id)">
-              <small class="microtext microtext--expanded">{{ item.microtextMore }}</small>
+              <small class="microtext microtext--expanded">{{ item.microtext }}</small>
             </div>
             <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
               ⏰ Quedan {{ item.urgencyDays }} días
