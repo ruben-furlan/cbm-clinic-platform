@@ -1,18 +1,14 @@
 .filosofia-page {
   position: relative;
-  padding: clamp(36px, 6vw, 78px) 0 clamp(90px, 10vw, 132px);
+  padding: clamp(24px, 4vw, 56px) 0 clamp(92px, 10vw, 136px);
 }
 
 .filosofia-shell {
-  max-width: 860px;
-}
-
-.section {
-  padding: clamp(52px, 8vw, 90px) 0;
+  max-width: 900px;
 }
 
 .filosofia-hero {
-  padding-top: clamp(74px, 9vw, 120px);
+  padding: clamp(86px, 11vw, 134px) 0 clamp(70px, 8vw, 96px);
   text-align: center;
 }
 
@@ -28,30 +24,31 @@
 .filosofia-hero h1 {
   margin: 0 auto;
   max-width: 16ch;
-  font-size: clamp(2.15rem, 6vw, 4rem);
+  font-size: clamp(2.15rem, 6vw, 4.05rem);
   line-height: 1.08;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.032em;
   text-wrap: balance;
 }
 
 .filosofia-subtitle {
-  margin: 24px auto 0;
-  max-width: 40ch;
+  margin: 26px auto 0;
+  max-width: 36ch;
   color: var(--color-muted);
-  font-size: clamp(1.02rem, 2.2vw, 1.26rem);
-  line-height: 1.72;
+  font-size: clamp(1.02rem, 2.2vw, 1.24rem);
+  line-height: 1.74;
 }
 
 .filosofia-block,
 .filosofia-diferencial,
 .filosofia-cierre,
-.filosofia-cta {
-  max-width: 680px;
+.filosofia-cta,
+.filosofia-quote {
+  max-width: 700px;
   margin: 0 auto;
 }
 
 .filosofia-block {
-  border-top: 1px solid rgba(123, 77, 255, 0.14);
+  padding: clamp(12px, 2vw, 22px) 0 clamp(56px, 7vw, 78px);
 }
 
 .filosofia-block p,
@@ -60,36 +57,37 @@
 .filosofia-cta p {
   margin: 0;
   color: var(--color-text);
-  font-size: clamp(1.04rem, 2vw, 1.2rem);
-  line-height: 1.9;
+  font-size: clamp(1.04rem, 2vw, 1.17rem);
+  line-height: 1.88;
   text-wrap: pretty;
 }
 
 .filosofia-block p + p {
-  margin-top: 24px;
+  margin-top: 26px;
 }
 
 .filosofia-diferencial {
-  padding-top: clamp(42px, 7vw, 72px);
+  padding: 0 0 clamp(64px, 8vw, 94px);
 }
 
 .filosofia-diferencial h2,
 .filosofia-cierre h2 {
   margin: 0 0 14px;
-  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
-  line-height: 1.18;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.74rem, 3.6vw, 2.58rem);
+  line-height: 1.17;
+  letter-spacing: -0.022em;
   color: var(--color-dark);
   max-width: 20ch;
+  text-wrap: balance;
 }
 
 .filosofia-pilares {
-  padding-top: clamp(42px, 7vw, 72px);
+  padding: 0 0 clamp(72px, 9vw, 104px);
 }
 
 .filosofia-pilares h2 {
-  margin: 0 0 34px;
-  font-size: clamp(1.52rem, 3vw, 2rem);
+  margin: 0 0 30px;
+  font-size: clamp(1.5rem, 3vw, 1.95rem);
   line-height: 1.22;
   letter-spacing: -0.02em;
   color: var(--color-dark);
@@ -97,35 +95,43 @@
 
 .pilares-grid {
   display: grid;
-  gap: 18px;
+  gap: 14px;
 }
 
 .pilar-item {
-  padding: 18px 0;
-  border-top: 1px solid rgba(123, 77, 255, 0.16);
-}
-
-.pilar-item:last-child {
-  border-bottom: 1px solid rgba(123, 77, 255, 0.16);
+  padding: 16px 0;
 }
 
 .pilar-icon {
-  margin: 0 0 8px;
-  font-size: 1.45rem;
+  width: 34px;
+  height: 34px;
+  margin: 0 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
   line-height: 1;
+  border-radius: 999px;
+  background: linear-gradient(145deg, rgba(123, 77, 255, 0.12), rgba(255, 79, 163, 0.1));
 }
 
 .pilar-item h3 {
   margin: 0;
-  font-size: clamp(1.15rem, 2.2vw, 1.34rem);
+  max-width: 18ch;
+  font-size: clamp(1.14rem, 2.2vw, 1.3rem);
   line-height: 1.3;
   letter-spacing: -0.015em;
 }
 
 .pilar-item p {
   margin: 8px 0 0;
+  max-width: 30ch;
   color: var(--color-muted);
-  line-height: 1.72;
+  line-height: 1.7;
+}
+
+.filosofia-cierre {
+  padding: 0 0 clamp(58px, 8vw, 88px);
 }
 
 .filosofia-cierre h2 {
@@ -133,30 +139,29 @@
 }
 
 .filosofia-quote {
-  max-width: 680px;
-  margin: 0 auto;
-  padding-top: clamp(38px, 6vw, 68px);
+  padding: 0 0 clamp(60px, 7vw, 84px);
 }
 
 .filosofia-quote blockquote {
   margin: 0;
-  padding-left: 20px;
-  border-left: 2px solid rgba(123, 77, 255, 0.34);
-  color: #423c55;
+  max-width: 18ch;
+  padding-left: 24px;
+  border-left: 2px solid rgba(123, 77, 255, 0.42);
+  color: #342f45;
   font-style: italic;
-  font-size: clamp(1.38rem, 3.5vw, 2.18rem);
-  line-height: 1.35;
-  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-size: clamp(1.5rem, 3.7vw, 2.34rem);
+  line-height: 1.28;
+  letter-spacing: -0.014em;
 }
 
 .filosofia-cta {
-  padding-top: clamp(40px, 6vw, 70px);
   text-align: center;
 }
 
 .filosofia-cta p {
   margin: 0 auto 24px;
-  max-width: 44ch;
+  max-width: 40ch;
 }
 
 .filosofia-cta .btn-primary {
@@ -178,19 +183,22 @@
 @media (min-width: 760px) {
   .pilares-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 34px;
+    gap: 38px;
   }
 
-  .pilar-item,
-  .pilar-item:last-child {
-    border-top: none;
-    border-bottom: none;
+  .pilar-item {
+    padding: 0;
   }
 }
 
 @media (max-width: 640px) {
+  .filosofia-page {
+    padding-top: 8px;
+  }
+
   .filosofia-hero {
     text-align: left;
+    padding-bottom: 58px;
   }
 
   .filosofia-hero h1,
@@ -202,11 +210,24 @@
     max-width: 14ch;
   }
 
+  .filosofia-block,
+  .filosofia-diferencial,
+  .filosofia-pilares,
+  .filosofia-cierre,
+  .filosofia-quote {
+    padding-bottom: 52px;
+  }
+
   .filosofia-block p,
   .filosofia-diferencial p,
   .filosofia-cierre p,
   .filosofia-cta p,
   .pilar-item p {
     line-height: 1.82;
+  }
+
+  .filosofia-quote blockquote {
+    padding-left: 18px;
+    max-width: 16ch;
   }
 }
