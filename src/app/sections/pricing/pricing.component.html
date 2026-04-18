@@ -35,7 +35,7 @@
                 <span class="concept">{{ item.concept }}</span>
                 <strong class="price">{{ item.price }}</strong>
               </div>
-              <span class="item-action">Elegir y solicitar cita →</span>
+              <span class="item-action">Reservar esta opción →</span>
             </button>
             <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
               ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
@@ -80,13 +80,6 @@
           Cuéntanos tu situación →
         </button>
       </div>
-    </div>
-
-    <div class="pricing-cta" appRevealOnScroll>
-      <a class="btn-primary btn-booking" routerLink="/solicitar-cita">
-        <span class="btn-icon" aria-hidden="true">💬</span>
-        <span>¿Prefieres decidir después? Solicitar cita</span>
-      </a>
     </div>
 
     </ng-container>

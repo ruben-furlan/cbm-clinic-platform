@@ -3,7 +3,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { ConfiguracionService } from '../../core/services/configuracion.service';
 import { DomicilioFormComponent } from '../../shared/components/domicilio-form/domicilio-form.component';
 
@@ -28,7 +28,7 @@ interface PricingCard {
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, RouterLink, DomicilioFormComponent],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, DomicilioFormComponent],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
