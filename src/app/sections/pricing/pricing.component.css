@@ -78,17 +78,36 @@
 .pricing-item-button{
   width: 100%;
   padding: 0;
-  border: 0;
-  background: transparent;
   text-align: left;
-  cursor: pointer;
   font: inherit;
 }
 
-.pricing-item-button:focus-visible{
+.pricing-list-item{
+  border-radius: 14px;
+  padding: 10px 10px 12px;
+  margin: -10px -10px 0;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.22s ease, transform 0.22s ease;
+}
+
+.pricing-list-item:focus-visible{
   outline: 2px solid rgba(255, 79, 163, 0.35);
   outline-offset: 4px;
-  border-radius: 10px;
+  border-radius: 14px;
+}
+
+.pricing-list-item:hover{
+  background: rgba(255, 255, 255, 0.74);
+  box-shadow: 0 8px 20px rgba(123, 77, 255, 0.12);
+}
+
+.pricing-list-item:active{
+  transform: translateY(1px);
+  box-shadow: 0 4px 12px rgba(123, 77, 255, 0.1);
+}
+
+.pricing-list-item--selected{
+  background: rgba(255, 79, 163, 0.06);
 }
 
 .concept{
@@ -114,7 +133,7 @@
   font-weight: 600;
 }
 
-.pricing-item-button--selected .item-action{
+.pricing-list-item--selected .item-action{
   color: #ff4fa3;
 }
 

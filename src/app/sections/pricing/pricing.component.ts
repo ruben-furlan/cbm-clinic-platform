@@ -69,7 +69,8 @@ export class PricingComponent implements OnInit {
     }
   }
 
-  toggleDetails(itemId: string): void {
+  toggleDetails(itemId: string, event?: Event): void {
+    event?.stopPropagation();
     this.expandedItemId = this.expandedItemId === itemId ? null : itemId;
   }
 
@@ -85,6 +86,15 @@ export class PricingComponent implements OnInit {
         paso: 2
       }
     });
+  }
+
+  onCardKeydown(event: KeyboardEvent, item: PricingItem): void {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    event.preventDefault();
+    this.selectAndBook(item);
   }
 
   formatFechaFin(fecha: string): string {

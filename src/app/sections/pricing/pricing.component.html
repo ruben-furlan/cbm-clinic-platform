@@ -24,19 +24,22 @@
         <h3>{{ card.title }}</h3>
 
         <ul class="pricing-list" role="list">
-          <li *ngFor="let item of card.items">
-            <button
-              type="button"
-              class="pricing-item-button"
-              [class.pricing-item-button--selected]="selectedItemId === item.id"
-              (click)="selectAndBook(item)"
-            >
+          <li
+            *ngFor="let item of card.items"
+            class="pricing-list-item"
+            [class.pricing-list-item--selected]="selectedItemId === item.id"
+            role="button"
+            tabindex="0"
+            (click)="selectAndBook(item)"
+            (keydown)="onCardKeydown($event, item)"
+          >
+            <div class="pricing-item-button">
               <div class="pricing-row">
                 <span class="concept">{{ item.concept }}</span>
                 <strong class="price">{{ item.price }}</strong>
               </div>
-              <span class="item-action">Reservar esta opción →</span>
-            </button>
+              <span class="item-action">Reservar esta sesión →</span>
+            </div>
             <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
               ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
             </p>
@@ -51,7 +54,7 @@
               *ngIf="item.hasLongDescription"
               type="button"
               class="details-toggle"
-              (click)="toggleDetails(item.id)"
+              (click)="toggleDetails(item.id, $event)"
               [attr.aria-expanded]="isItemExpanded(item.id)"
             >
               {{ isItemExpanded(item.id) ? 'Ocultar información' : 'Más información' }}
