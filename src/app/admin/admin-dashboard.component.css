@@ -1594,10 +1594,11 @@ textarea:disabled {
   text-transform: uppercase;
 }
 
-.cal-dia-num {
-  font-size: 15px;
+.cal-dia-fecha {
+  font-size: 13px;
   font-weight: 700;
-  color: #111827;
+  color: #374151;
+  letter-spacing: 0.01em;
 }
 
 .cal-celda-td {

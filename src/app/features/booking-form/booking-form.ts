@@ -67,7 +67,7 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   })();
 
   slotsMap = new Map<string, SlotConEstado>();
-  diasSemana: { fecha: string; label: string; num: number; mes: string }[] = [];
+  diasSemana: { fecha: string; label: string; labelCorto: string; num: number; mes: string; fechaCorta: string }[] = [];
   horasUnicas: string[] = [];
 
   private realtimeChannel: ReturnType<typeof supabase.channel> | null = null;
@@ -238,7 +238,12 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   get slotFechaLabel(): string {
     if (!this.slotSeleccionado) return '';
     const d = new Date(this.slotSeleccionado.fecha + 'T00:00:00');
-    return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+    return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  get slotResumenCompleto(): string {
+    if (!this.slotSeleccionado) return '';
+    return `${this.slotFechaLabel} a las ${this.slotSeleccionado.hora}h`;
   }
 
   retrocederSemana(): void {
@@ -324,14 +329,19 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   private actualizarGrilla(lunes: Date): void {
     const diasNombres = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const diasNombresCortos = ['L', 'M', 'X', 'J', 'V', 'S'];
     this.diasSemana = Array.from({ length: 6 }, (_, i) => {
       const d = new Date(lunes);
       d.setDate(lunes.getDate() + i);
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
       return {
         fecha: this.disponibilidadService.formatDate(d),
         label: diasNombres[i],
+        labelCorto: diasNombresCortos[i],
         num: d.getDate(),
-        mes: d.toLocaleDateString('es-ES', { month: 'short' })
+        mes: d.toLocaleDateString('es-ES', { month: 'short' }),
+        fechaCorta: `${dd}/${mm}`
       };
     });
 

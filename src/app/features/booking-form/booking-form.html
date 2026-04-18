@@ -320,9 +320,11 @@
                     <tr>
                       <th class="calendario-hora-col"></th>
                       <th *ngFor="let dia of diasSemana" class="calendario-dia-th">
-                        <div class="calendario-dia-nombre">{{ dia.label }}</div>
-                        <div class="calendario-dia-num">{{ dia.num }}</div>
-                        <div class="calendario-dia-mes">{{ dia.mes }}</div>
+                        <div class="calendario-dia-nombre">
+                          <span class="dia-label-largo">{{ dia.label }}</span>
+                          <span class="dia-label-corto">{{ dia.labelCorto }}</span>
+                        </div>
+                        <div class="calendario-dia-fecha">{{ dia.fechaCorta }}</div>
                       </th>
                     </tr>
                   </thead>
@@ -336,6 +338,7 @@
                             [class]="getSlotClase(slot, dia.fecha, hora)"
                             [disabled]="slot.estado === 'completo'"
                             (click)="seleccionarSlot(dia.fecha, hora)"
+                            [title]="dia.label + ' ' + dia.fechaCorta + ' · ' + hora"
                             [attr.aria-label]="'Seleccionar ' + hora + ' el ' + dia.label + ' ' + dia.num"
                           >{{ hora }}</button>
                         </ng-container>
@@ -360,6 +363,12 @@
                   <span class="leyenda-dot leyenda-dot--completo"></span>
                   Completo
                 </span>
+              </div>
+
+              <!-- Resumen slot seleccionado -->
+              <div *ngIf="slotSeleccionado" class="slot-resumen">
+                <span class="slot-resumen-check">✅</span>
+                <span>Has elegido: <strong>{{ slotResumenCompleto }}</strong></span>
               </div>
 
               <!-- Error de slot -->
@@ -424,12 +433,8 @@
                   <span class="summary-value">+34 {{ formData.phone }}</span>
                 </div>
                 <div *ngIf="slotSeleccionado" class="summary-row">
-                  <span class="summary-label">📅 Día</span>
-                  <span class="summary-value">{{ slotFechaLabel }}</span>
-                </div>
-                <div *ngIf="slotSeleccionado" class="summary-row">
-                  <span class="summary-label">🕐 Hora</span>
-                  <span class="summary-value">{{ slotSeleccionado.hora }}</span>
+                  <span class="summary-label">📅 Cita</span>
+                  <span class="summary-value summary-cita">{{ slotResumenCompleto }}</span>
                 </div>
                 <div *ngIf="promoCode" class="summary-row">
                   <span class="summary-label">Código promo</span>

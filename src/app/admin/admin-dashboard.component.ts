@@ -149,7 +149,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly DIAS_SEMANA_ADMIN = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 
   slotsAdminMap = new Map<string, SlotAdmin>();
-  diasSemanaAdmin: { fecha: string; label: string; num: number }[] = [];
+  diasSemanaAdmin: { fecha: string; label: string; num: number; fechaCorta: string }[] = [];
 
   // ── Check-in ──────────────────────────────────────────────────────────────
   checkinCode = '';
@@ -1014,10 +1014,13 @@ export class AdminDashboardComponent implements OnInit {
     this.diasSemanaAdmin = Array.from({ length: 7 }, (_, i) => {
       const d = new Date(lunes);
       d.setDate(lunes.getDate() + i);
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
       return {
         fecha: this.disponibilidadService.formatDate(d),
         label: this.DIAS_SEMANA_ADMIN[i],
-        num: d.getDate()
+        num: d.getDate(),
+        fechaCorta: `${dd}/${mm}`
       };
     });
 

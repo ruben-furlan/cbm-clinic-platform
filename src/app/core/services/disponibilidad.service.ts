@@ -223,13 +223,9 @@ export class DisponibilidadService {
     const sabado = new Date(lunes);
     sabado.setDate(lunes.getDate() + 5);
 
-    const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' };
+    const opts: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short', year: 'numeric' };
     const locale = 'es-ES';
-
-    if (lunes.getMonth() === sabado.getMonth()) {
-      return `Semana del ${lunes.getDate()} al ${sabado.toLocaleDateString(locale, opts)}`;
-    }
-    return `Semana del ${lunes.toLocaleDateString(locale, { ...opts })} al ${sabado.toLocaleDateString(locale, opts)}`;
+    return `${lunes.toLocaleDateString(locale, opts)} — ${sabado.toLocaleDateString(locale, opts)}`;
   }
 
   private normalizeHora(hora: string): string {
