@@ -77,7 +77,7 @@ export class NewsletterService {
   }
 
   async darDeBaja(email: string): Promise<void> {
-    const emailNorm = email.toLowerCase().trim().replace(/\s/g, '');
+    const emailNorm = email.toLowerCase().trim().replace(/[\s\n\r]+/g, '');
 
     const { data: existente } = await supabase
       .from('newsletter_suscriptores')

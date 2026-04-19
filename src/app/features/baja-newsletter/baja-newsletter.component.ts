@@ -45,7 +45,8 @@ export class BajaNewsletterComponent implements OnInit {
         return;
       }
 
-      this.procesarBaja(decodeURIComponent(raw), safetyTimer);
+      const email = decodeURIComponent(raw).toLowerCase().trim().replace(/[\s\n\r]+/g, '');
+      this.procesarBaja(email, safetyTimer);
     });
   }
 

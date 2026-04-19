@@ -45,7 +45,9 @@ function buildHtml(mensaje: string, email: string): string {
 
         <div style="text-align: center; margin-top: 24px;">
           <a href="${unsubUrl}"
-             style="color: #9ca3af; font-size: 11px;
+             style="display: inline-block; min-height: 44px;
+             line-height: 44px; padding: 0 16px;
+             color: #9ca3af; font-size: 12px;
              text-decoration: underline;">
             Darme de baja de la newsletter
           </a>
