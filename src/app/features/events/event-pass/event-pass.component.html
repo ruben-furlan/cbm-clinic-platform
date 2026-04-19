@@ -91,6 +91,11 @@
 
       <p class="pass-code-hint">Muéstralo al llegar al centro para validar tu asistencia</p>
 
+      <div class="confirmacion-precio" *ngIf="event.pricing_type === 'paid' && event.price && event.price > 0">
+        <p class="precio-valor">{{ event.price }} €</p>
+        <p class="precio-mensaje">El pago se realiza en efectivo el día del evento en el centro 💜</p>
+      </div>
+
       <p class="pass-copied-msg" *ngIf="copied" role="status">
         Código copiado al portapapeles
       </p>
