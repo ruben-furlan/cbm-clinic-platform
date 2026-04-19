@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { NewsletterService } from '../../core/services/newsletter.service';
 
 type Estado = 'cargando' | 'exito' | 'error' | 'no_encontrado';
@@ -16,7 +16,6 @@ export class BajaNewsletterComponent implements OnInit {
   estado: Estado = 'cargando';
 
   constructor(
-    private readonly route: ActivatedRoute,
     private readonly newsletterService: NewsletterService,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -33,21 +32,24 @@ export class BajaNewsletterComponent implements OnInit {
       }
     }, 10000);
 
-    this.route.queryParams.subscribe(params => {
-      const raw = params['email'];
+    let email: string | null = null;
 
-      if (!raw) {
-        clearTimeout(safetyTimer);
-        this.zone.run(() => {
-          this.estado = 'error';
-          this.cdr.detectChanges();
-        });
-        return;
+    if (typeof window !== 'undefined') {
+      const match = window.location.href.match(/[?&]email=([^&\s]+)/);
+      if (match) {
+        email = decodeURIComponent(match[1]).toLowerCase().trim().replace(/[\s\n\r]+/g, '');
       }
+    }
 
-      const email = decodeURIComponent(raw).toLowerCase().trim().replace(/[\s\n\r]+/g, '');
+    if (email && email.includes('@')) {
       this.procesarBaja(email, safetyTimer);
-    });
+    } else {
+      clearTimeout(safetyTimer);
+      this.zone.run(() => {
+        this.estado = 'error';
+        this.cdr.detectChanges();
+      });
+    }
   }
 
   private procesarBaja(email: string, safetyTimer: ReturnType<typeof setTimeout>): void {
