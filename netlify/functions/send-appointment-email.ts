@@ -15,7 +15,7 @@ const handler: Handler = async (event) => {
     const FROM_EMAIL = process.env['RESEND_DOMAIN_VERIFIED'] === 'true'
       ? 'noreply@cbmfisioterapia.com'
       : 'onboarding@resend.dev'
-    const ADMIN_EMAIL = 'rubenfurlan@gmail.com'
+    const ADMIN_EMAIL = 'reservascbm25@gmail.com'
 
     const htmlCliente = `
       <div style="font-family: sans-serif; max-width: 600px;
