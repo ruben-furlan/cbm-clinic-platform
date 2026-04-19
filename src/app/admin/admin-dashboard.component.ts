@@ -1433,12 +1433,6 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
-  generarCodigoBono(): void {
-    const code = this.bonosRegaloService.generarCodigo();
-    navigator.clipboard?.writeText(code);
-    this.bonosMessage = `Código ${code} generado y copiado al portapapeles.`;
-  }
-
   // ── Servicios de regalo ───────────────────────────────────────────────────
 
   async loadServiciosRegalo(): Promise<void> {

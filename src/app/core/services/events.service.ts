@@ -65,10 +65,10 @@ export interface CreateRegistrationPayload {
   source?: string;
 }
 
-// Columnas necesarias para la home (excluye slug, long_description, image_url,
+// Columnas necesarias para la home (excluye slug, image_url,
 // end_at, duration_minutes, currency, created_at, updated_at).
 const HOME_EVENT_FIELDS = [
-  'id', 'title', 'short_description', 'category',
+  'id', 'title', 'short_description', 'long_description', 'category',
   'pricing_type', 'price', 'start_at',
   'total_slots', 'reserved_slots',
   'location', 'cta_label', 'highlight_on_home',
