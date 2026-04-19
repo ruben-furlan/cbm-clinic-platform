@@ -14,6 +14,7 @@ type Estado = 'cargando' | 'exito' | 'error' | 'no_encontrado';
 })
 export class BajaNewsletterComponent implements OnInit {
   estado: Estado = 'cargando';
+  debugInfo = '';
 
   constructor(
     private readonly newsletterService: NewsletterService,
@@ -53,9 +54,13 @@ export class BajaNewsletterComponent implements OnInit {
   }
 
   private procesarBaja(email: string, safetyTimer: ReturnType<typeof setTimeout>): void {
+    this.debugInfo = 'Email: ' + email;
+    this.cdr.detectChanges();
+
     this.newsletterService.darDeBaja(email).then(() => {
       clearTimeout(safetyTimer);
       this.zone.run(() => {
+        this.debugInfo += ' | OK';
         this.estado = 'exito';
         this.cdr.detectChanges();
       });
@@ -64,6 +69,7 @@ export class BajaNewsletterComponent implements OnInit {
       console.error('Error baja newsletter:', err);
       const esNoEncontrado = err instanceof Error && err.message === 'email_no_encontrado';
       this.zone.run(() => {
+        this.debugInfo += ' | ERROR: ' + (err instanceof Error ? err.message : JSON.stringify(err));
         this.estado = esNoEncontrado ? 'no_encontrado' : 'error';
         this.cdr.detectChanges();
       });
