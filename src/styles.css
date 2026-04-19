@@ -333,6 +333,12 @@ body.display-mode {
   overflow: hidden;
 }
 
+/* Modal abierto: bloquear scroll iOS y ocultar botones flotantes ─────────── */
+body.modal-abierto .floating-whatsapp-button,
+body.modal-abierto .fbb-bar {
+  display: none !important;
+}
+
 /* Fade-in para contenido que aparece tras loading ─────── */
 .cbm-content-loaded {
   animation: cbm-fade-in 400ms ease forwards;

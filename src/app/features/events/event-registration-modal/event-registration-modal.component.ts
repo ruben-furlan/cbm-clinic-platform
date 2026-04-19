@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CbmEvent, EventRegistration, EventsService } from '../../../core/services/events.service';
@@ -16,7 +16,7 @@ const WHATSAPP_PHONE = '34662561672';
   templateUrl: './event-registration-modal.component.html',
   styleUrl: './event-registration-modal.component.css'
 })
-export class EventRegistrationModalComponent implements OnInit {
+export class EventRegistrationModalComponent implements OnInit, OnDestroy {
   @Input({ required: true }) event!: CbmEvent;
   @Output() closed = new EventEmitter<void>();
   @Output() registered = new EventEmitter<string>(); // emite event.id tras inscripción exitosa
@@ -44,6 +44,22 @@ export class EventRegistrationModalComponent implements OnInit {
     }
     if (isPlatformBrowser(this.platformId)) {
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+      document.body.classList.add('modal-abierto');
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.unlockBody();
+  }
+
+  private unlockBody(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+      document.body.classList.remove('modal-abierto');
     }
   }
 
@@ -117,9 +133,7 @@ export class EventRegistrationModalComponent implements OnInit {
   }
 
   close(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      document.body.style.overflow = '';
-    }
+    this.unlockBody();
     this.closed.emit();
   }
 
