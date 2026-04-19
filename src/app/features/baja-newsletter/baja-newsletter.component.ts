@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NewsletterService } from '../../core/services/newsletter.service';
 
-type Estado = 'cargando' | 'exito' | 'error';
+type Estado = 'cargando' | 'exito' | 'error' | 'no_encontrado';
 
 @Component({
   selector: 'app-baja-newsletter',
@@ -59,8 +59,9 @@ export class BajaNewsletterComponent implements OnInit {
     }).catch((err: unknown) => {
       clearTimeout(safetyTimer);
       console.error('Error baja newsletter:', err);
+      const esNoEncontrado = err instanceof Error && err.message === 'email_no_encontrado';
       this.zone.run(() => {
-        this.estado = 'error';
+        this.estado = esNoEncontrado ? 'no_encontrado' : 'error';
         this.cdr.detectChanges();
       });
     });

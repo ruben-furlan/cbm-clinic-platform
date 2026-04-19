@@ -18,11 +18,26 @@
     <a class="baja-btn" routerLink="/">← Volver al inicio</a>
   </div>
 
-  <!-- Error -->
-  <div class="baja-card" *ngIf="estado === 'error'">
+  <!-- No encontrado -->
+  <div class="baja-card" *ngIf="estado === 'no_encontrado'">
     <span class="baja-icon" aria-hidden="true">🔍</span>
     <h1 class="baja-titulo">Email no encontrado</h1>
-    <p class="baja-texto">No encontramos ese email en nuestra lista.</p>
+    <p class="baja-texto">
+      No encontramos ese email en nuestra lista.<br>
+      Es posible que ya estuvieras dado de baja<br>
+      o que el link haya expirado 💜
+    </p>
+    <a class="baja-btn" routerLink="/">← Volver al inicio</a>
+  </div>
+
+  <!-- Error genérico -->
+  <div class="baja-card" *ngIf="estado === 'error'">
+    <span class="baja-icon" aria-hidden="true">⚠️</span>
+    <h1 class="baja-titulo">Algo salió mal</h1>
+    <p class="baja-texto">
+      No hemos podido procesar tu solicitud.<br>
+      Por favor inténtalo de nuevo más tarde.
+    </p>
     <a class="baja-btn" routerLink="/">← Volver al inicio</a>
   </div>
 

@@ -77,22 +77,27 @@ export class NewsletterService {
   }
 
   async darDeBaja(email: string): Promise<void> {
-    const emailNorm = email.toLowerCase().trim();
+    const emailNorm = email.toLowerCase().trim().replace(/\s/g, '');
 
-    const { data, error } = await supabase
+    const { data: existente } = await supabase
+      .from('newsletter_suscriptores')
+      .select('id, activo')
+      .eq('email', emailNorm)
+      .single();
+
+    if (!existente) {
+      console.warn('Baja newsletter: email no encontrado:', emailNorm);
+      throw new Error('email_no_encontrado');
+    }
+
+    const { error } = await supabase
       .from('newsletter_suscriptores')
       .update({ activo: false })
-      .eq('email', emailNorm)
-      .select();
+      .eq('id', existente.id);
 
     if (error) {
       console.error('Error baja newsletter:', error);
       throw error;
-    }
-
-    if (!data || data.length === 0) {
-      console.warn('Baja newsletter: email no encontrado o RLS bloqueó el update:', emailNorm);
-      throw new Error('Email no encontrado');
     }
   }
 
