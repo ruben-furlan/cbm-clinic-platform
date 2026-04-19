@@ -41,4 +41,11 @@
     <a class="baja-btn" routerLink="/">← Volver al inicio</a>
   </div>
 
+
+<div *ngIf="debugInfo"
+     style="position:fixed; bottom:0; left:0; right:0;
+     background:rgba(0,0,0,0.8); color:white;
+     font-size:11px; padding:8px;
+     word-break:break-all; z-index:9999;">
+  {{ debugInfo }}
 </div>
