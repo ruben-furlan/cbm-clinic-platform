@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
@@ -10,7 +10,7 @@ import { DomicilioFormComponent } from '../../shared/components/domicilio-form/d
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink, RevealOnScrollDirective, CbmLoaderComponent, DomicilioFormComponent],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, DomicilioFormComponent],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
@@ -34,7 +34,8 @@ export class PricingComponent implements OnInit {
 
   constructor(
     private readonly tarifasService: TarifasService,
-    private readonly configuracionService: ConfiguracionService
+    private readonly configuracionService: ConfiguracionService,
+    private readonly router: Router
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -58,6 +59,17 @@ export class PricingComponent implements OnInit {
 
   get tarifasFiltradas(): Tarifa[] {
     return this.tarifas.filter(t => t.categoria === this.tabActiva && t.activo);
+  }
+
+  reservarSesion(tarifa: Tarifa): void {
+    this.router.navigate(['/solicitar-cita'], {
+      queryParams: {
+        tarifaId: tarifa.id,
+        nombre: tarifa.nombre,
+        precio: tarifa.precio,
+        unidad: tarifa.unidad
+      }
+    });
   }
 
   toggleDescripcion(id: string): void {

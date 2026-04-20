@@ -85,20 +85,16 @@ export class BookingFormComponent implements OnInit {
   }
 
   private applyPreselectionFromQuery(): void {
-    const treatmentFromQuery = this.route.snapshot.queryParamMap.get('tratamiento');
-    const stepFromQuery = this.route.snapshot.queryParamMap.get('paso');
-    if (!treatmentFromQuery) return;
+    const tarifaId = this.route.snapshot.queryParamMap.get('tarifaId');
+    if (!tarifaId) return;
 
-    const matched = this.treatmentOptions.find((option) => option.value === treatmentFromQuery);
+    const matched = this.treatmentOptions.find((option) => option.value === tarifaId);
     if (!matched) return;
 
     this.formData.treatment = matched.value;
     this.preselectedFromPricing = true;
-
-    if (stepFromQuery === '2') {
-      this.currentStep = 2;
-      this.stepAnimClass = 'step-enter-forward';
-    }
+    this.currentStep = 2;
+    this.stepAnimClass = 'step-enter-forward';
   }
 
   private readonly categoryLabels: Record<TarifaCategoria, string> = {
@@ -176,6 +172,10 @@ export class BookingFormComponent implements OnInit {
   }
 
   prevStep(): void {
+    if (this.currentStep === 2 && this.preselectedFromPricing) {
+      this.preselectedFromPricing = false;
+      this.formData.treatment = '';
+    }
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;
   }

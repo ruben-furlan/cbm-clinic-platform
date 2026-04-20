@@ -37,36 +37,39 @@
                 <div class="tarifa-izquierda">
                   <span class="tarifa-nombre">{{ tarifa.nombre }}</span>
 
-                  <!-- Nota corta (descripción sin fecha) -->
-                  <span class="tarifa-nota"
-                        *ngIf="tarifa.descripcion && !tarifa.fecha_fin_promo">
-                    {{ tarifa.descripcion }}
-                  </span>
-
-                  <!-- Badge temporal -->
+                  <!-- Badge temporal (siempre si hay fecha, independiente de descripción) -->
                   <span class="tarifa-badge"
                         *ngIf="tarifa.fecha_fin_promo">
                     ✨ Disponible hasta {{ formatFechaFin(tarifa.fecha_fin_promo) }}
                   </span>
 
-                  <!-- CTA -->
-                  <a routerLink="/solicitar-cita" class="tarifa-cta">
-                    Reservar esta sesión →
-                  </a>
-
-                  <!-- Más información -->
-                  <button class="tarifa-mas-info"
-                          type="button"
-                          *ngIf="tarifa.descripcion && tarifa.fecha_fin_promo"
-                          (click)="toggleDescripcion(tarifa.id)">
-                    {{ expandidos[tarifa.id] ? 'Ocultar información' : 'Más información' }}
-                  </button>
-
-                  <!-- Descripción expandida -->
-                  <div class="tarifa-descripcion-completa"
-                       *ngIf="expandidos[tarifa.id]">
+                  <!-- CASO 2: Descripción corta (≤100 chars) sin fecha → visible directamente -->
+                  <span class="tarifa-nota"
+                        *ngIf="tarifa.descripcion &&
+                               tarifa.descripcion.length <= 100 &&
+                               !tarifa.fecha_fin_promo">
                     {{ tarifa.descripcion }}
-                  </div>
+                  </span>
+
+                  <!-- CASO 3: Descripción larga (>100 chars) → colapsado -->
+                  <ng-container *ngIf="tarifa.descripcion && tarifa.descripcion.length > 100">
+                    <button class="tarifa-mas-info"
+                            type="button"
+                            (click)="toggleDescripcion(tarifa.id)">
+                      {{ expandidos[tarifa.id] ? 'Ocultar información' : 'Más información' }}
+                    </button>
+                    <div class="tarifa-descripcion-completa"
+                         *ngIf="expandidos[tarifa.id]">
+                      {{ tarifa.descripcion }}
+                    </div>
+                  </ng-container>
+
+                  <!-- CTA -->
+                  <button type="button"
+                          class="tarifa-cta"
+                          (click)="reservarSesion(tarifa)">
+                    Reservar esta sesión →
+                  </button>
                 </div>
 
                 <div class="tarifa-derecha">
