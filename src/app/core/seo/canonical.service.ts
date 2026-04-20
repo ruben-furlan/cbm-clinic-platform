@@ -12,9 +12,9 @@ export class CanonicalService {
     '/': 'CBM Fisioterapia · Fisioterapia y Pilates en Terrassa',
     '/experiencia': 'Nuestra experiencia · CBM Fisioterapia',
     '/tratamientos': 'Tratamientos · CBM Fisioterapia',
-    '/tratamientos/fisioterapia': 'Fisioterapia en Terrassa · CBM Fisioterapia',
-    '/tratamientos/tecnicas': 'Técnicas utilizadas · CBM Fisioterapia',
-    '/tratamientos/pilates': 'Pilates terapéutico en Terrassa · CBM Fisioterapia',
+    '/tratamientos/fisioterapia': 'Fisioterapia en Terrassa | CBM Fisioterapia',
+    '/tratamientos/tecnicas': 'Técnicas utilizadas en Terrassa | CBM Fisioterapia',
+    '/tratamientos/pilates': 'Pilates en Terrassa | CBM Fisioterapia',
     '/tarifas': 'Tarifas y bonos · CBM Fisioterapia',
     '/solicitar-cita': 'Solicitar cita · CBM Fisioterapia',
     '/faq': 'Preguntas frecuentes · CBM Fisioterapia',
@@ -33,16 +33,11 @@ export class CanonicalService {
   ) {}
 
   updateFromUrl(url: string): void {
-    const canonicalHref = this.buildCanonicalHref(url);
+    const cleanPath = this.normalizePath(url);
+    const canonicalHref = this.buildCanonicalHref(cleanPath);
+
     this.ensureSingleCanonicalTag(canonicalHref);
-
     this.meta.updateTag({ property: 'og:url', content: canonicalHref });
-
-    const [pathWithoutQuery] = url.split(/[?#]/);
-    const cleanPath =
-      pathWithoutQuery === '/' || pathWithoutQuery === ''
-        ? '/'
-        : pathWithoutQuery.replace(/\/+$/, '');
 
     this.titleService.setTitle(this.routeTitles[cleanPath] ?? this.defaultTitle);
 
@@ -53,34 +48,31 @@ export class CanonicalService {
     }
   }
 
-  private buildCanonicalHref(url: string): string {
-    const [pathWithoutQuery] = url.split(/[?#]/);
-    const normalizedPath =
-      pathWithoutQuery === '/' || pathWithoutQuery === ''
-        ? '/'
-        : pathWithoutQuery.replace(/\/+$/, '');
+  private normalizePath(url: string): string {
+    const parsedUrl = new URL(url, this.siteUrl);
+    const withoutDuplicateSlashes = parsedUrl.pathname.replace(/\/+/g, '/');
 
-    return normalizedPath === '/'
+    if (withoutDuplicateSlashes === '' || withoutDuplicateSlashes === '/') {
+      return '/';
+    }
+
+    return withoutDuplicateSlashes.replace(/\/+$/, '');
+  }
+
+  private buildCanonicalHref(cleanPath: string): string {
+    return cleanPath === '/'
       ? `${this.siteUrl}/`
-      : `${this.siteUrl}${normalizedPath}`;
+      : `${this.siteUrl}${cleanPath}`;
   }
 
   private ensureSingleCanonicalTag(href: string): void {
-    const canonicalTags = Array.from(
-      this.document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]')
-    );
-    const [firstCanonicalTag, ...duplicateCanonicalTags] = canonicalTags;
+    const canonicalTags = this.document.querySelectorAll<HTMLLinkElement>('link[rel="canonical"]');
 
-    for (const duplicateTag of duplicateCanonicalTags) {
-      duplicateTag.remove();
-    }
+    canonicalTags.forEach((tag) => tag.remove());
 
-    const canonicalTag = firstCanonicalTag ?? this.document.createElement('link');
+    const canonicalTag = this.document.createElement('link');
     canonicalTag.setAttribute('rel', 'canonical');
     canonicalTag.setAttribute('href', href);
-
-    if (!firstCanonicalTag) {
-      this.document.head.appendChild(canonicalTag);
-    }
+    this.document.head.appendChild(canonicalTag);
   }
 }
