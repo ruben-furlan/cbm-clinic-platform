@@ -12,84 +12,96 @@
 
     <ng-container *ngIf="!loading">
 
-    <div class="pricing-grid cbm-content-loaded">
-      <article
-        class="pricing-card glass-panel floating-card"
-        *ngFor="let card of pricingCards; let index = index"
-        [class.reveal-delay-1]="index === 0"
-        [class.reveal-delay-2]="index === 1"
-        [class.reveal-delay-3]="index === 2"
-        appRevealOnScroll
-      >
-        <h3>{{ card.title }}</h3>
+      <div class="tarifas-tabs-container cbm-content-loaded">
 
-        <ul class="pricing-list" role="list">
-          <li
-            *ngFor="let item of card.items"
-            class="pricing-list-item"
-            [class.pricing-list-item--selected]="selectedItemId === item.id"
-            role="button"
-            tabindex="0"
-            (click)="selectAndBook(item)"
-            (keydown)="onCardKeydown($event, item)"
-          >
-            <div class="pricing-item-button">
-              <div class="pricing-row">
-                <span class="concept">{{ item.concept }}</span>
-                <strong class="price">{{ item.price }}</strong>
+        <!-- Tabs navegación -->
+        <div class="tarifas-tabs-nav">
+          <button
+            *ngFor="let tab of tabs"
+            type="button"
+            class="tab-btn"
+            [class.active]="tabActiva === tab.key"
+            (click)="tabActiva = tab.key">
+            {{ tab.label }}
+          </button>
+        </div>
+
+        <!-- Card contenedora por categoría -->
+        <div class="tarifas-card">
+
+          <ng-container *ngFor="let tarifa of tarifasFiltradas; let last = last">
+
+            <div class="tarifa-fila" [class.last]="last">
+
+              <div class="tarifa-cabecera">
+                <div class="tarifa-izquierda">
+                  <span class="tarifa-nombre">{{ tarifa.nombre }}</span>
+
+                  <!-- Nota corta (descripción sin fecha) -->
+                  <span class="tarifa-nota"
+                        *ngIf="tarifa.descripcion && !tarifa.fecha_fin_promo">
+                    {{ tarifa.descripcion }}
+                  </span>
+
+                  <!-- Badge temporal -->
+                  <span class="tarifa-badge"
+                        *ngIf="tarifa.fecha_fin_promo">
+                    ✨ Disponible hasta {{ formatFechaFin(tarifa.fecha_fin_promo) }}
+                  </span>
+
+                  <!-- CTA -->
+                  <a routerLink="/solicitar-cita" class="tarifa-cta">
+                    Reservar esta sesión →
+                  </a>
+
+                  <!-- Más información -->
+                  <button class="tarifa-mas-info"
+                          type="button"
+                          *ngIf="tarifa.descripcion && tarifa.fecha_fin_promo"
+                          (click)="toggleDescripcion(tarifa.id)">
+                    {{ expandidos[tarifa.id] ? 'Ocultar información' : 'Más información' }}
+                  </button>
+
+                  <!-- Descripción expandida -->
+                  <div class="tarifa-descripcion-completa"
+                       *ngIf="expandidos[tarifa.id]">
+                    {{ tarifa.descripcion }}
+                  </div>
+                </div>
+
+                <div class="tarifa-derecha">
+                  <span class="tarifa-precio">{{ tarifa.precio }}{{ tarifa.unidad }}</span>
+                </div>
               </div>
-              <span class="item-action">Reservar esta sesión →</span>
-            </div>
-            <p *ngIf="item.fechaFinPromo" class="fecha-fin-indicator">
-              ✨ Disponible hasta el {{ formatFechaFin(item.fechaFinPromo) }}
-            </p>
-            <small
-              *ngIf="item.microtext"
-              class="microtext microtext--preview"
-              [class.microtext--hidden]="item.hasLongDescription && isItemExpanded(item.id)"
-            >
-              {{ item.microtext }}
-            </small>
-            <button
-              *ngIf="item.hasLongDescription"
-              type="button"
-              class="details-toggle"
-              (click)="toggleDetails(item.id, $event)"
-              [attr.aria-expanded]="isItemExpanded(item.id)"
-            >
-              {{ isItemExpanded(item.id) ? 'Ocultar información' : 'Más información' }}
-            </button>
-            <div *ngIf="item.hasLongDescription" class="details-content" [class.is-open]="isItemExpanded(item.id)">
-              <small class="microtext microtext--expanded">{{ item.microtext }}</small>
-            </div>
-            <span *ngIf="item.urgencyType === 'warning'" class="urgency-badge urgency-badge--warning">
-              ⏰ Quedan {{ item.urgencyDays }} días
-            </span>
-            <span *ngIf="item.urgencyType === 'urgent'" class="urgency-badge urgency-badge--urgent">
-              🔥 Últimos {{ item.urgencyDays }} días
-            </span>
-          </li>
-        </ul>
 
-        <p *ngIf="card.note" class="card-note">{{ card.note }}</p>
-      </article>
-    </div>
+            </div>
 
-    <!-- Bloque fisioterapia a domicilio -->
-    <div *ngIf="domicilioActivo" class="domicilio-block" appRevealOnScroll>
-      <div class="domicilio-icon-wrap">
-        <div class="domicilio-icon">🏠</div>
+          </ng-container>
+
+          <!-- Footer card -->
+          <p class="tarifas-footer" *ngIf="tabActiva === 'promocion'">
+            Bonos y cupones no acumulables
+          </p>
+
+        </div>
+
       </div>
-      <div class="domicilio-content">
-        <h3 class="domicilio-titulo">{{ domicilioTitulo }}</h3>
-        <p class="domicilio-mensaje">{{ domicilioMensaje }}</p>
+
+      <!-- Bloque fisioterapia a domicilio -->
+      <div *ngIf="domicilioActivo" class="domicilio-block" appRevealOnScroll>
+        <div class="domicilio-icon-wrap">
+          <div class="domicilio-icon">🏠</div>
+        </div>
+        <div class="domicilio-content">
+          <h3 class="domicilio-titulo">{{ domicilioTitulo }}</h3>
+          <p class="domicilio-mensaje">{{ domicilioMensaje }}</p>
+        </div>
+        <div class="domicilio-cta">
+          <button type="button" class="btn-domicilio" (click)="showDomicilioModal = true">
+            Cuéntanos tu situación →
+          </button>
+        </div>
       </div>
-      <div class="domicilio-cta">
-        <button type="button" class="btn-domicilio" (click)="showDomicilioModal = true">
-          Cuéntanos tu situación →
-        </button>
-      </div>
-    </div>
 
     </ng-container>
   </div>
