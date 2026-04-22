@@ -69,6 +69,8 @@ export class PricingComponent implements OnInit {
         precio: tarifa.precio,
         unidad: tarifa.unidad
       }
+    }).then(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
     });
   }
 
