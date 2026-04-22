@@ -1,0 +1,300 @@
+.comunidad-page {
+  min-height: 100vh;
+  padding-bottom: 60px;
+}
+
+// HERO
+.comunidad-hero {
+  text-align: center;
+  padding: 60px 24px 40px;
+  max-width: 640px;
+  margin: 0 auto;
+
+  @media (max-width: 768px) {
+    padding: 40px 20px 32px;
+  }
+}
+
+.comunidad-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #c44b8e;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.comunidad-titulo {
+  font-size: 36px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.25;
+  margin: 0 0 16px;
+
+  @media (max-width: 768px) {
+    font-size: 26px;
+  }
+}
+
+.comunidad-subtitulo {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 28px;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+  }
+}
+
+.comunidad-divisor {
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(135deg, #f472b6, #a78bfa);
+  border-radius: 999px;
+  margin: 0 auto;
+}
+
+// PREVIEWS
+.comunidad-previews {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px 48px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px 40px;
+  }
+}
+
+.previews-titulo {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+}
+
+.previews-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.preview-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  p {
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.preview-card--especial {
+  border-color: #f9a8d4;
+  background: linear-gradient(135deg, #fdf2f8, #f5f3ff);
+}
+
+.preview-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #c44b8e;
+  text-transform: uppercase;
+}
+
+.preview-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  background: #f9fafb;
+  border-radius: 999px;
+  padding: 2px 10px;
+  border: 1px solid #e5e7eb;
+  align-self: flex-start;
+}
+
+.preview-tag--especial {
+  color: #c44b8e;
+  background: #fdf2f8;
+  border-color: #f9a8d4;
+}
+
+// FORMULARIO
+.comunidad-form-section {
+  background: linear-gradient(135deg, #fdf2f8, #f5f3ff);
+  padding: 56px 24px;
+
+  @media (max-width: 768px) {
+    padding: 40px 20px;
+  }
+}
+
+.comunidad-form-container {
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 8px;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+  }
+}
+
+.form-subtitulo {
+  font-size: 15px;
+  color: #6b7280;
+  margin: 0 0 28px;
+}
+
+.form-input-group {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+
+  @media (max-width: 520px) {
+    flex-direction: column;
+  }
+}
+
+.form-email-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #111827;
+  background: white;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: #c44b8e;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.form-btn-unirse {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #c44b8e, #a78bfa);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.form-error {
+  font-size: 13px;
+  color: #ef4444;
+  margin: 0 0 12px;
+}
+
+.form-exito {
+  padding: 24px 0;
+
+  .exito-icon {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 8px;
+  }
+
+  .exito-sub {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 400;
+  }
+}
+
+.form-promesas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+  text-align: left;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.promesa-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.promesa-check {
+  color: #c44b8e;
+  font-weight: 700;
+}
+
+// CONTADOR
+.comunidad-contador {
+  text-align: center;
+  padding: 32px 24px;
+
+  p {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+
+    strong {
+      color: #111827;
+      font-weight: 700;
+    }
+  }
+}

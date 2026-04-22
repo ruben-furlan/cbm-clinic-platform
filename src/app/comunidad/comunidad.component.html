@@ -1,0 +1,133 @@
+<div class="comunidad-page">
+
+  <!-- SECCIÓN 1: HEADER -->
+  <section class="comunidad-hero">
+
+    <span class="comunidad-eyebrow">
+      LA COMUNIDAD CBM
+    </span>
+
+    <h1 class="comunidad-titulo">
+      Tu espacio de bienestar,<br>
+      directo a tu bandeja
+    </h1>
+
+    <p class="comunidad-subtitulo">
+      Consejos de tu fisio, ejercicios para casa,
+      novedades del centro y ese empujoncito que
+      a veces necesitas. Sin spam, con mucho cuidado.
+    </p>
+
+    <div class="comunidad-divisor"></div>
+
+  </section>
+
+  <!-- SECCIÓN 2: PREVIEWS -->
+  <section class="comunidad-previews">
+
+    <p class="previews-titulo">
+      Un adelanto de lo que recibirás
+    </p>
+
+    <div class="previews-grid">
+
+      <div class="preview-card">
+        <span class="preview-label">CONSEJO DE LA SEMANA</span>
+        <h3>3 estiramientos para la espalda que puedes hacer en la oficina</h3>
+        <p>Pequeños gestos que marcan la diferencia al final del día.</p>
+        <span class="preview-tag">Ejercicio</span>
+      </div>
+
+      <div class="preview-card">
+        <span class="preview-label">NOVEDAD CBM</span>
+        <h3>Nuevos horarios de pilates por la mañana</h3>
+        <p>Porque sabemos que el tiempo no siempre acompaña por las tardes.</p>
+        <span class="preview-tag">Pilates</span>
+      </div>
+
+      <div class="preview-card">
+        <span class="preview-label">LO QUE NADIE TE CUENTA</span>
+        <h3>Por qué te duele más la espalda los lunes</h3>
+        <p>Tiene más que ver con el fin de semana de lo que crees.</p>
+        <span class="preview-tag">Bienestar</span>
+      </div>
+
+      <div class="preview-card preview-card--especial">
+        <span class="preview-label">SOLO PARA LA COMUNIDAD</span>
+        <h3>Acceso anticipado a talleres y eventos del centro</h3>
+        <p>Tú te enteras antes que nadie y reservas plaza primero.</p>
+        <span class="preview-tag preview-tag--especial">Exclusivo</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- SECCIÓN 3: FORMULARIO -->
+  <section class="comunidad-form-section">
+
+    <div class="comunidad-form-container">
+
+      <h2>Únete a la comunidad CBM</h2>
+      <p class="form-subtitulo">
+        Recibes contenido de valor, nunca spam. Te lo prometemos.
+      </p>
+
+      <div *ngIf="estado === 'inicial' || estado === 'cargando'" class="form-input-group">
+        <input
+          type="email"
+          [(ngModel)]="email"
+          placeholder="tu@email.com"
+          class="form-email-input"
+          [disabled]="estado === 'cargando'"
+          (keydown.enter)="suscribir()"
+        />
+        <button
+          class="form-btn-unirse"
+          (click)="suscribir()"
+          [disabled]="estado === 'cargando'">
+          {{ estado === 'cargando' ? 'Uniéndote...' : 'Unirme 💜' }}
+        </button>
+      </div>
+
+      <p *ngIf="errorValidacion" class="form-error">{{ errorValidacion }}</p>
+
+      <div *ngIf="estado === 'exito'" class="form-exito">
+        <span class="exito-icon">💜</span>
+        <p>¡Bienvenida/o a la comunidad!</p>
+        <p class="exito-sub">Revisa tu bandeja, te hemos enviado algo especial.</p>
+      </div>
+
+      <div *ngIf="estado === 'yaExiste'" class="form-exito">
+        <span class="exito-icon">💜</span>
+        <p>¡Ya formas parte de la comunidad!</p>
+        <p class="exito-sub">Nos alegra tenerte aquí 😊</p>
+      </div>
+
+      <div *ngIf="estado !== 'exito' && estado !== 'yaExiste'" class="form-promesas">
+        <div class="promesa-item">
+          <span class="promesa-check">✓</span>
+          <span>Te escribimos poco, pero bien</span>
+        </div>
+        <div class="promesa-item">
+          <span class="promesa-check">✓</span>
+          <span>Sin publicidad ni spam</span>
+        </div>
+        <div class="promesa-item">
+          <span class="promesa-check">✓</span>
+          <span>Te das de baja cuando quieras</span>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- SECCIÓN 4: CONTADOR SOCIAL -->
+  <section class="comunidad-contador">
+    <p>
+      Ya somos <strong>+{{ totalSuscriptores }}</strong> personas cuidándonos juntas 💜
+    </p>
+  </section>
+
+</div>

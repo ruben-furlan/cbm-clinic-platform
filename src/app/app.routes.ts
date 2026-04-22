@@ -14,6 +14,7 @@ import { RegaloComponent } from './features/regalo/regalo.component';
 import { CanjearRegaloComponent } from './canjear/canjear-regalo.component';
 import { BajaNewsletterComponent } from './features/baja-newsletter/baja-newsletter.component';
 import { FilosofiaCbmPage } from './features/filosofia-cbm/filosofia-cbm-page';
+import { ComunidadComponent } from './comunidad/comunidad.component';
 
 export const routes: Routes = [
   {
@@ -68,6 +69,10 @@ export const routes: Routes = [
   {
     path: 'baja-newsletter',
     component: BajaNewsletterComponent
+  },
+  {
+    path: 'comunidad',
+    component: ComunidadComponent
   },
   {
     path: 'admin',
