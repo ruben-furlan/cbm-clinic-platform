@@ -37,39 +37,42 @@
                 <div class="tarifa-izquierda">
                   <span class="tarifa-nombre">{{ tarifa.nombre }}</span>
 
-                  <!-- Badge temporal (siempre si hay fecha, independiente de descripción) -->
-                  <span class="tarifa-badge"
-                        *ngIf="tarifa.fecha_fin_promo">
-                    ✨ Disponible hasta {{ formatFechaFin(tarifa.fecha_fin_promo) }}
-                  </span>
+                  <!-- CTA inline -->
+                  <a class="tarifa-cta-link"
+                     (click)="reservarSesion(tarifa)"
+                     role="button"
+                     style="cursor: pointer;">
+                    Reservar esta sesión →
+                  </a>
 
-                  <!-- CASO 2: Descripción corta (≤100 chars) sin fecha → visible directamente -->
-                  <span class="tarifa-nota"
-                        *ngIf="tarifa.descripcion &&
-                               tarifa.descripcion.length <= 100 &&
-                               !tarifa.fecha_fin_promo">
+                  <!-- Descripción corta ≤100 chars → visible directamente -->
+                  <p class="tarifa-desc-corta"
+                     *ngIf="tarifa.descripcion && tarifa.descripcion.length <= 100">
                     {{ tarifa.descripcion }}
-                  </span>
+                  </p>
 
-                  <!-- CASO 3: Descripción larga (>100 chars) → colapsado -->
+                  <!-- Descripción larga >100 chars → truncada + expandible -->
                   <ng-container *ngIf="tarifa.descripcion && tarifa.descripcion.length > 100">
+                    <p class="tarifa-desc-truncada"
+                       [class.expandida]="expandidos[tarifa.id]">
+                      {{ tarifa.descripcion }}
+                    </p>
                     <button class="tarifa-mas-info"
                             type="button"
                             (click)="toggleDescripcion(tarifa.id)">
                       {{ expandidos[tarifa.id] ? 'Ocultar información' : 'Más información' }}
                     </button>
-                    <div class="tarifa-descripcion-completa"
+                    <div class="tarifa-desc-completa"
                          *ngIf="expandidos[tarifa.id]">
                       {{ tarifa.descripcion }}
                     </div>
                   </ng-container>
 
-                  <!-- CTA -->
-                  <button type="button"
-                          class="tarifa-cta"
-                          (click)="reservarSesion(tarifa)">
-                    Reservar esta sesión →
-                  </button>
+                  <!-- Badge temporal -->
+                  <span class="tarifa-badge"
+                        *ngIf="tarifa.fecha_fin_promo">
+                    ✨ Disponible hasta {{ formatFechaFin(tarifa.fecha_fin_promo) }}
+                  </span>
                 </div>
 
                 <div class="tarifa-derecha">
