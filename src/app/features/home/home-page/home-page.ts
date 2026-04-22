@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Testimonials } from '../../testimonials/testimonials';
 import { LocationComponent } from '../../location/location';
@@ -30,6 +30,7 @@ export class HomePage implements OnInit, OnDestroy {
     {
       key: 'lumbar',
       chip: 'Dolor lumbar',
+      chipMobile: 'Dolor lumbar',
       titulo: 'Fisioterapia para dolor lumbar en Terrassa',
       descripcion: 'El dolor lumbar es uno de los motivos más frecuentes de consulta. Lo abordamos con terapia manual, ejercicio terapéutico y un plan personalizado para que recuperes movilidad y bienestar.',
       url: '/fisioterapia-dolor-lumbar-terrassa'
@@ -37,6 +38,7 @@ export class HomePage implements OnInit, OnDestroy {
     {
       key: 'cervical',
       chip: 'Dolor cervical',
+      chipMobile: 'Dolor cervical',
       titulo: 'Fisioterapia para dolor cervical en Terrassa',
       descripcion: 'El cuello cargado por el trabajo de oficina o el estrés tiene solución. Combinamos terapia manual y ejercicio adaptado para reducir la tensión y prevenir recaídas.',
       url: '/fisioterapia-dolor-cervical-terrassa'
@@ -44,6 +46,7 @@ export class HomePage implements OnInit, OnDestroy {
     {
       key: 'deportivas',
       chip: 'Lesiones deportivas',
+      chipMobile: 'Lesiones deportivas',
       titulo: 'Tratamiento de lesiones deportivas en Terrassa',
       descripcion: 'Esguinces, contracturas, tendinopatías... Trabajamos para que vuelvas a moverte con seguridad y confianza, con un plan de recuperación adaptado a tu actividad.',
       url: '/fisioterapia-lesiones-deportivas-terrassa'
@@ -51,6 +54,7 @@ export class HomePage implements OnInit, OnDestroy {
     {
       key: 'tendinitis',
       chip: 'Tendinitis',
+      chipMobile: 'Tendinitis',
       titulo: 'Fisioterapia para tendinitis en Terrassa',
       descripcion: 'La tendinitis bien tratada no tiene por qué cronificarse. Te acompañamos con técnicas específicas y ejercicio progresivo para recuperar la función sin dolor.',
       url: '/fisioterapia-tendinitis-terrassa'
@@ -58,6 +62,7 @@ export class HomePage implements OnInit, OnDestroy {
     {
       key: 'postquirurgica',
       chip: 'Recuperación postquirúrgica',
+      chipMobile: 'Post-cirugía',
       titulo: 'Rehabilitación postquirúrgica en Terrassa',
       descripcion: 'Después de una operación el acompañamiento fisioterapéutico es clave. Diseñamos un plan progresivo y seguro para que recuperes movilidad y fuerza cuanto antes.',
       url: '/fisioterapia-recuperacion-postquirurgica-terrassa'
@@ -65,6 +70,7 @@ export class HomePage implements OnInit, OnDestroy {
     {
       key: 'hombro',
       chip: 'Dolor de hombro',
+      chipMobile: 'Dolor de hombro',
       titulo: 'Fisioterapia para dolor de hombro en Terrassa',
       descripcion: 'El hombro es una articulación compleja y delicada. Evaluamos tu caso en detalle y aplicamos el tratamiento más adecuado para recuperar el movimiento sin dolor.',
       url: '/fisioterapia-dolor-hombro-terrassa'
@@ -72,6 +78,12 @@ export class HomePage implements OnInit, OnDestroy {
   ];
   casoActivo = this.casos[0];
   previewId = 0;
+  isMobile = false;
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.isMobile = window.innerWidth < 768;
+  }
 
   seleccionarCaso(caso: (typeof this.casos)[number]): void {
     this.casoActivo = caso;
@@ -81,6 +93,7 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.startHeroAutoplay();
+      this.isMobile = window.innerWidth < 768;
     }
   }
 
