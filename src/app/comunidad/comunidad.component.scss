@@ -1,3 +1,55 @@
+// MINI-HEADER
+.comunidad-header-propio {
+  text-align: center;
+  padding: 28px 24px 0;
+  margin-bottom: 8px;
+}
+
+.comunidad-logo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.comunidad-logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.comunidad-logo-texto {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+// MINI-FOOTER
+.comunidad-footer-propio {
+  text-align: center;
+  padding: 32px 24px 40px;
+
+  p {
+    font-size: 12px;
+    color: #9ca3af;
+    margin: 0 0 6px;
+  }
+}
+
+.footer-visitar {
+  font-size: 12px;
+  color: #c44b8e;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .comunidad-page {
   min-height: 100vh;
   padding-bottom: 60px;

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { NewsletterService } from '../core/services/newsletter.service';
 
 @Component({
   selector: 'app-comunidad',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './comunidad.component.html',
   styleUrls: ['./comunidad.component.scss'],
 })
@@ -15,6 +16,7 @@ export class ComunidadComponent implements OnInit {
   estado: 'inicial' | 'cargando' | 'exito' | 'yaExiste' | 'error' = 'inicial';
   errorValidacion = '';
   totalSuscriptores = 0;
+  anoActual = new Date().getFullYear();
 
   constructor(private newsletterService: NewsletterService) {}
 

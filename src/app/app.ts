@@ -21,6 +21,7 @@ export class App implements OnInit, OnDestroy {
   isCanjearRoute = false;
   isBajaNewsletterRoute = false;
   isAdminRoute = false;
+  isComunidadRoute = false;
   showScrollTop = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
@@ -97,10 +98,12 @@ export class App implements OnInit, OnDestroy {
     const isCanjear = url.startsWith('/canjear');
     const isBajaNewsletter = url.startsWith('/baja-newsletter');
     const isAdmin = url.startsWith('/admin');
+    const isComunidad = url.startsWith('/comunidad');
 
     this.isCanjearRoute = isCanjear;
     this.isBajaNewsletterRoute = isBajaNewsletter;
     this.isAdminRoute = isAdmin;
+    this.isComunidadRoute = isComunidad;
 
     if (this.isDisplayRoute === isDisplay) {
       return;

@@ -1,4 +1,4 @@
-<div class="physio-background" aria-hidden="true" [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null">
+<div class="physio-background" aria-hidden="true" [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null">
   <div class="physio-aurora physio-aurora-1"></div>
   <div class="physio-aurora physio-aurora-2"></div>
   <div class="physio-wave"></div>
@@ -11,20 +11,20 @@
 </div>
 
 <div class="app-content" [class.app-content--display]="isDisplayRoute">
-  <app-header [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null"></app-header>
+  <app-header [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-header>
   <main class="app-main">
     <router-outlet></router-outlet>
   </main>
-  <app-floating-whatsapp-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null"></app-floating-whatsapp-button>
-  <app-floating-booking-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null"></app-floating-booking-button>
-  <app-cookie-consent [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null"></app-cookie-consent>
-  <app-footer [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null"></app-footer>
+  <app-floating-whatsapp-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-floating-whatsapp-button>
+  <app-floating-booking-button [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-floating-booking-button>
+  <app-cookie-consent [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-cookie-consent>
+  <app-footer [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-footer>
 </div>
 
 <button
   class="back-to-top"
   [class.back-to-top--visible]="showScrollTop"
-  [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute ? 'none' : null"
+  [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"
   (click)="scrollToTop()"
   aria-label="Volver al inicio"
 >
