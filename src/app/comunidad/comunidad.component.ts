@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -19,7 +19,11 @@ export class ComunidadComponent implements OnInit {
   totalSuscriptores = 0;
   anoActual = new Date().getFullYear();
 
-  constructor(private newsletterService: NewsletterService) {}
+  constructor(
+    private newsletterService: NewsletterService,
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef,
+  ) {}
 
   async ngOnInit() {
     await this.cargarContador();
@@ -43,28 +47,42 @@ export class ComunidadComponent implements OnInit {
 
     if (!this.email?.trim()) {
       this.errorValidacion = 'Introduce un email válido';
+      this.cdr.detectChanges();
       return;
     }
 
     if (!this.validarEmail(this.email)) {
       this.errorValidacion = 'Introduce un email válido';
+      this.cdr.detectChanges();
       return;
     }
 
-    this.estado = 'cargando';
+    this.ngZone.run(() => {
+      this.estado = 'cargando';
+      this.cdr.detectChanges();
+    });
 
     try {
       const result = await this.newsletterService.suscribir(this.email.trim(), 'comunidad-landing');
 
-      if (result.caso === 'yaExiste') {
-        this.estado = 'yaExiste';
-      } else {
-        this.estado = 'exito';
+      this.ngZone.run(() => {
+        if (result.caso === 'yaExiste') {
+          this.estado = 'yaExiste';
+        } else {
+          this.estado = 'exito';
+        }
+        this.cdr.detectChanges();
+      });
+
+      if (result.caso !== 'yaExiste') {
         await this.cargarContador();
       }
     } catch (err) {
       console.error('Error suscripción:', err);
-      this.estado = 'error';
+      this.ngZone.run(() => {
+        this.estado = 'error';
+        this.cdr.detectChanges();
+      });
     }
   }
 }
