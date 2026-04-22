@@ -145,19 +145,25 @@
       <p class="section-description">
         Explora casos reales que vemos en consulta y descubre cómo los tratamos en nuestra clínica de fisioterapia en Terrassa.
       </p>
-      <p class="section-microcopy">
-        <strong>Selecciona una opción para ver cómo podemos ayudarte.</strong>
-      </p>
     </div>
 
-    <div class="issues-chips" appRevealOnScroll>
-      <a class="issue-chip" routerLink="/fisioterapia-dolor-lumbar-terrassa">Dolor lumbar</a>
-      <a class="issue-chip" routerLink="/fisioterapia-cervical-terrassa">Dolor cervical</a>
-      <a class="issue-chip" routerLink="/fisioterapia-lesiones-deportivas-terrassa">Lesiones deportivas</a>
-      <a class="issue-chip" routerLink="/fisioterapia-tendinitis-terrassa">Tendinitis</a>
-      <a class="issue-chip" routerLink="/fisioterapia-recuperacion-postquirurgica-terrassa">Recuperación postquirúrgica</a>
-      <a class="issue-chip" routerLink="/fisioterapia-dolor-hombro-terrassa">Dolor de hombro</a>
+    <div class="casos-chips" appRevealOnScroll>
+      <button
+        *ngFor="let caso of casos"
+        class="caso-chip"
+        [class.activo]="casoActivo.key === caso.key"
+        (click)="seleccionarCaso(caso)">
+        {{ caso.chip }}
+      </button>
     </div>
+
+    <ng-container *ngFor="let id of [previewId]">
+      <div class="caso-preview">
+        <h3 class="caso-preview-titulo">{{ casoActivo.titulo }}</h3>
+        <p class="caso-preview-desc">{{ casoActivo.descripcion }}</p>
+        <a [routerLink]="casoActivo.url" class="caso-preview-link">Ver cómo lo tratamos →</a>
+      </div>
+    </ng-container>
   </div>
 </section>
 
