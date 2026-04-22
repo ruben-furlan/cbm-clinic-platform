@@ -1,28 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
-import { Tarifa, TarifasService } from '../../core/services/tarifas.service';
-import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { Router } from '@angular/router';
+import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
+import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
+import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { ConfiguracionService } from '../../core/services/configuracion.service';
 import { DomicilioFormComponent } from '../../shared/components/domicilio-form/domicilio-form.component';
-
-interface PricingItem {
-  id: string;
-  concept: string;
-  price: string;
-  microtext?: string;
-  hasLongDescription?: boolean;
-  urgencyDays?: number;
-  urgencyType?: 'warning' | 'urgent';
-  fechaFinPromo?: string | null;
-}
-
-interface PricingCard {
-  title: string;
-  items: PricingItem[];
-  note?: string;
-}
 
 @Component({
   selector: 'app-pricing',
@@ -32,17 +15,22 @@ interface PricingCard {
   styleUrls: ['./pricing.component.css']
 })
 export class PricingComponent implements OnInit {
-  pricingCards: PricingCard[] = [];
+  tarifas: Tarifa[] = [];
   loading = true;
+
+  tabs = [
+    { key: 'fisioterapia' as TarifaCategoria, label: 'Fisioterapia' },
+    { key: 'pilates' as TarifaCategoria, label: 'Pilates' },
+    { key: 'promocion' as TarifaCategoria, label: 'Bienestar' }
+  ];
+  tabActiva: TarifaCategoria = 'fisioterapia';
+  expandidos: { [id: string]: boolean } = {};
 
   domicilioActivo = false;
   domicilioTitulo = 'Fisioterapia a domicilio';
   domicilioMensaje =
     'Pensado para recuperaciones postparto, post-cirugía o movilidad reducida. Valoramos cada caso con cariño.';
   showDomicilioModal = false;
-  expandedItemId: string | null = null;
-  selectedItemId: string | null = null;
-  private readonly maxPreviewLength = 140;
 
   constructor(
     private readonly tarifasService: TarifasService,
@@ -58,43 +46,36 @@ export class PricingComponent implements OnInit {
         this.configuracionService.getConfiguracion('domicilio_titulo'),
         this.configuracionService.getConfiguracion('domicilio_mensaje')
       ]);
-      this.pricingCards = this.mapTarifasToCards(tarifas);
+      this.tarifas = tarifas;
       this.domicilioActivo = domActivo === 'true';
       if (domTitulo) this.domicilioTitulo = domTitulo;
       if (domMensaje) this.domicilioMensaje = domMensaje;
     } catch {
-      this.pricingCards = this.mapTarifasToCards([]);
+      this.tarifas = [];
     } finally {
       this.loading = false;
     }
   }
 
-  toggleDetails(itemId: string, event?: Event): void {
-    event?.stopPropagation();
-    this.expandedItemId = this.expandedItemId === itemId ? null : itemId;
+  get tarifasFiltradas(): Tarifa[] {
+    return this.tarifas.filter(t => t.categoria === this.tabActiva && t.activo);
   }
 
-  isItemExpanded(itemId: string): boolean {
-    return this.expandedItemId === itemId;
-  }
-
-  selectAndBook(item: PricingItem): void {
-    this.selectedItemId = item.id;
+  reservarSesion(tarifa: Tarifa): void {
     this.router.navigate(['/solicitar-cita'], {
       queryParams: {
-        tratamiento: item.id,
-        paso: 2
+        tarifaId: tarifa.id,
+        nombre: tarifa.nombre,
+        precio: tarifa.precio,
+        unidad: tarifa.unidad
       }
+    }).then(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' });
     });
   }
 
-  onCardKeydown(event: KeyboardEvent, item: PricingItem): void {
-    if (event.key !== 'Enter') {
-      return;
-    }
-
-    event.preventDefault();
-    this.selectAndBook(item);
+  toggleDescripcion(id: string): void {
+    this.expandidos[id] = !this.expandidos[id];
   }
 
   formatFechaFin(fecha: string): string {
@@ -104,61 +85,5 @@ export class PricingComponent implements OnInit {
     ];
     const d = new Date(fecha + 'T00:00:00');
     return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
-  }
-
-  private mapTarifasToCards(tarifas: Tarifa[]): PricingCard[] {
-    const groups: Record<'fisioterapia' | 'pilates' | 'promocion', Tarifa[]> = {
-      fisioterapia: tarifas.filter((tarifa) => tarifa.categoria === 'fisioterapia'),
-      pilates: tarifas.filter((tarifa) => tarifa.categoria === 'pilates'),
-      promocion: tarifas.filter((tarifa) => tarifa.categoria === 'promocion')
-    };
-
-    return [
-      {
-        title: this.tarifasService.getCategoriaLabel('fisioterapia'),
-        items: groups.fisioterapia.map((tarifa) => this.toPricingItem(tarifa))
-      },
-      {
-        title: this.tarifasService.getCategoriaLabel('pilates'),
-        items: groups.pilates.map((tarifa) => this.toPricingItem(tarifa))
-      },
-      {
-        title: this.tarifasService.getCategoriaLabel('promocion'),
-        items: groups.promocion.map((tarifa) => this.toPricingItem(tarifa)),
-        note: 'Bonos y cupones no acumulables'
-      }
-    ].filter((card) => card.items.length > 0);
-  }
-
-  private toPricingItem(tarifa: Tarifa): PricingItem {
-    const description = tarifa.descripcion?.trim() ?? '';
-    const hasLongDescription = description.length > this.maxPreviewLength;
-
-    const item: PricingItem = {
-      id: tarifa.id,
-      concept: tarifa.nombre,
-      price: `${tarifa.precio}${tarifa.unidad}`,
-      microtext: description || undefined,
-      hasLongDescription,
-      fechaFinPromo: tarifa.fecha_fin_promo ?? null
-    };
-
-    if (tarifa.categoria === 'promocion' && tarifa.fecha_fin_promo) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const endDate = new Date(tarifa.fecha_fin_promo);
-      endDate.setHours(0, 0, 0, 0);
-      const diffDays = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-
-      if (diffDays >= 1 && diffDays <= 7) {
-        item.urgencyDays = diffDays;
-        item.urgencyType = 'urgent';
-      } else if (diffDays >= 8 && diffDays <= 14) {
-        item.urgencyDays = diffDays;
-        item.urgencyType = 'warning';
-      }
-    }
-
-    return item;
   }
 }
