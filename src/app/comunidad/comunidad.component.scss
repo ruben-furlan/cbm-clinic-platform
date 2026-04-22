@@ -253,10 +253,6 @@
   &:focus {
     border-color: #c44b8e;
   }
-
-  &:disabled {
-    opacity: 0.6;
-  }
 }
 
 .form-btn-unirse {
@@ -281,32 +277,89 @@
   }
 }
 
-.form-error {
-  font-size: 13px;
-  color: #ef4444;
-  margin: 0 0 12px;
+.input-error {
+  border-color: #f472b6 !important;
 }
 
-.form-exito {
-  padding: 24px 0;
+.form-error-msg {
+  font-size: 13px;
+  color: #c44b8e;
+  margin: -8px 0 8px;
+  text-align: left;
+  padding-left: 4px;
+}
 
-  .exito-icon {
-    display: block;
-    font-size: 40px;
-    margin-bottom: 12px;
+.form-error-servidor {
+  font-size: 13px;
+  color: #ef4444;
+  margin: 8px 0;
+  text-align: center;
+  line-height: 1.5;
+
+  a {
+    color: #ef4444;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}
+
+.comunidad-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+  min-height: 200px;
+}
+
+.comunidad-resultado {
+  max-width: 420px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  padding: 40px 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  @media (max-width: 768px) {
+    padding: 32px 20px;
+    margin: 0 16px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
   }
 
   p {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-    margin: 0 0 8px;
-  }
-
-  .exito-sub {
     font-size: 14px;
     color: #6b7280;
-    font-weight: 400;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+.resultado-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
+.resultado-link {
+  font-size: 13px;
+  color: #c44b8e;
+  text-decoration: none;
+  margin-top: 8px;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 

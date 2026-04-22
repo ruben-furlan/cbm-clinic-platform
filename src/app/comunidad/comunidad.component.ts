@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { NewsletterService } from '../core/services/newsletter.service';
+import { CbmLoaderComponent } from '../shared/components/cbm-loader/cbm-loader.component';
 
 @Component({
   selector: 'app-comunidad',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, CbmLoaderComponent],
   templateUrl: './comunidad.component.html',
   styleUrls: ['./comunidad.component.scss'],
 })
@@ -41,7 +42,7 @@ export class ComunidadComponent implements OnInit {
     this.errorValidacion = '';
 
     if (!this.email?.trim()) {
-      this.errorValidacion = 'Introduce tu email';
+      this.errorValidacion = 'Introduce un email válido';
       return;
     }
 
@@ -61,9 +62,9 @@ export class ComunidadComponent implements OnInit {
         this.estado = 'exito';
         await this.cargarContador();
       }
-    } catch {
-      this.errorValidacion = 'Algo salió mal. Inténtalo de nuevo.';
-      this.estado = 'inicial';
+    } catch (err) {
+      console.error('Error suscripción:', err);
+      this.estado = 'error';
     }
   }
 }

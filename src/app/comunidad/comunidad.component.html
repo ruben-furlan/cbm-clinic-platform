@@ -77,45 +77,66 @@
   <!-- SECCIÓN 3: FORMULARIO -->
   <section class="comunidad-form-section">
 
-    <div class="comunidad-form-container">
+    <!-- ESTADO: CARGANDO -->
+    <div *ngIf="estado === 'cargando'" class="comunidad-loading">
+      <cbm-loader></cbm-loader>
+    </div>
+
+    <!-- ESTADO: ÉXITO -->
+    <div *ngIf="estado === 'exito'" class="comunidad-resultado">
+      <img
+        src="/favicon-192x192.png"
+        alt="CBM Fisioterapia"
+        class="resultado-logo"
+      />
+      <h2>¡Bienvenida a la comunidad! 💜</h2>
+      <p>Revisa tu bandeja, te hemos enviado algo especial.</p>
+      <a routerLink="/" class="resultado-link">Visitar la web →</a>
+    </div>
+
+    <!-- ESTADO: YA EXISTE -->
+    <div *ngIf="estado === 'yaExiste'" class="comunidad-resultado">
+      <img
+        src="/favicon-192x192.png"
+        alt="CBM Fisioterapia"
+        class="resultado-logo"
+      />
+      <h2>¡Ya formas parte de la comunidad! 💜</h2>
+      <p>Este email ya está suscrito. Nos alegra tenerte con nosotros.</p>
+      <a routerLink="/" class="resultado-link">Visitar la web →</a>
+    </div>
+
+    <!-- ESTADO: INICIAL O ERROR — formulario visible -->
+    <div *ngIf="estado === 'inicial' || estado === 'error'" class="comunidad-form-container">
 
       <h2>Únete a la comunidad CBM</h2>
       <p class="form-subtitulo">
         Recibes contenido de valor, nunca spam. Te lo prometemos.
       </p>
 
-      <div *ngIf="estado === 'inicial' || estado === 'cargando'" class="form-input-group">
+      <div class="form-input-group">
         <input
           type="email"
           [(ngModel)]="email"
           placeholder="tu@email.com"
           class="form-email-input"
-          [disabled]="estado === 'cargando'"
+          [class.input-error]="errorValidacion"
+          (input)="errorValidacion = ''"
           (keydown.enter)="suscribir()"
         />
-        <button
-          class="form-btn-unirse"
-          (click)="suscribir()"
-          [disabled]="estado === 'cargando'">
-          {{ estado === 'cargando' ? 'Uniéndote...' : 'Unirme 💜' }}
+        <button class="form-btn-unirse" (click)="suscribir()">
+          Unirme 💜
         </button>
       </div>
 
-      <p *ngIf="errorValidacion" class="form-error">{{ errorValidacion }}</p>
+      <p *ngIf="errorValidacion" class="form-error-msg">{{ errorValidacion }}</p>
 
-      <div *ngIf="estado === 'exito'" class="form-exito">
-        <span class="exito-icon">💜</span>
-        <p>¡Bienvenida/o a la comunidad!</p>
-        <p class="exito-sub">Revisa tu bandeja, te hemos enviado algo especial.</p>
-      </div>
+      <p *ngIf="estado === 'error'" class="form-error-servidor">
+        Algo ha fallado. Inténtalo de nuevo o
+        <a href="https://wa.me/34662561672" target="_blank">escríbenos por WhatsApp</a>.
+      </p>
 
-      <div *ngIf="estado === 'yaExiste'" class="form-exito">
-        <span class="exito-icon">💜</span>
-        <p>¡Ya formas parte de la comunidad!</p>
-        <p class="exito-sub">Nos alegra tenerte aquí 😊</p>
-      </div>
-
-      <div *ngIf="estado !== 'exito' && estado !== 'yaExiste'" class="form-promesas">
+      <div class="form-promesas">
         <div class="promesa-item">
           <span class="promesa-check">✓</span>
           <span>Te escribimos poco, pero bien</span>
