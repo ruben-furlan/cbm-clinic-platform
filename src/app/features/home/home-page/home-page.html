@@ -179,77 +179,60 @@
       </p>
     </div>
 
-    <div class="services-grid">
+    <!-- Cards principales: Fisioterapia + Pilates -->
+    <div class="tratamientos-principales" appRevealOnScroll>
 
-      <article class="service-card reveal-delay-1 glass-panel floating-card" appRevealOnScroll>
-        <p class="service-label">Tratamiento</p>
-
-        <div class="service-icon">👐</div>
-
+      <div class="tratamiento-card tratamiento-card--principal">
+        <div class="tratamiento-card-header">
+          <span class="tratamiento-icono">🦴</span>
+          <span class="tratamiento-label">TRATAMIENTO</span>
+        </div>
         <h3>Fisioterapia</h3>
-
-        <p class="service-text">
+        <p class="tratamiento-desc">
           Tratamiento manual y activo para recuperar movilidad y reducir dolor.
         </p>
+        <div class="tratamiento-chips">
+          <span class="chip">Traumatológica</span>
+          <span class="chip">Deportiva</span>
+          <span class="chip">Drenaje Linfático</span>
+          <span class="chip">Espalda y Cervicales</span>
+        </div>
+        <a routerLink="/tratamientos/fisioterapia" class="tratamiento-link">Ver fisioterapia →</a>
+      </div>
 
-        <ul class="service-chips">
-          <li>Traumatológica</li>
-          <li>Deportiva</li>
-          <li>Drenaje Linfático</li>
-          <li>Pre/Post Quirúrgica</li>
-          <li>Adulto mayor</li>
-          <li>Infantil</li>
-          <li>Espalda y Cervicales</li>
-          <li>Articulación temporomandibular (ATM)</li>
-        </ul>
-
-        <a class="service-link" routerLink="/tratamientos/fisioterapia">Ver tratamiento de fisioterapia →</a>
-      </article>
-
-      <article class="service-card reveal-delay-2 glass-panel floating-card" appRevealOnScroll>
-        <p class="service-label">Técnicas</p>
-
-        <div class="service-icon">⚡</div>
-
-        <h3>Técnicas Utilizadas</h3>
-
-        <p class="service-text">
-          Técnicas complementarias para acelerar la recuperación y mejorar resultados.
-        </p>
-
-        <ul class="service-chips">
-          <li>Radiofrecuencia</li>
-          <li>Punción seca</li>
-          <li>Ventosas</li>
-          <li>Kinesiotape</li>
-        </ul>
-
-        <a class="service-link" routerLink="/tratamientos/tecnicas">Ver técnicas utilizas →</a>
-      </article>
-
-      <article class="service-card reveal-delay-3 glass-panel floating-card" appRevealOnScroll>
-        <p class="service-label">Movimiento</p>
-
-        <div class="service-icon">🧘</div>
-
+      <div class="tratamiento-card">
+        <div class="tratamiento-card-header">
+          <span class="tratamiento-icono">🧘</span>
+          <span class="tratamiento-label">MOVIMIENTO</span>
+        </div>
         <h3>Pilates</h3>
-
-        <p class="service-text">
-          Clases guiadas para reforzar postura, control corporal y fuerza funcional.
+        <p class="tratamiento-desc">
+          Clases guiadas para mejorar postura, control corporal y fuerza funcional.
         </p>
+        <div class="tratamiento-chips">
+          <span class="chip">Fortalecimiento del Core</span>
+          <span class="chip">Corrección Postural</span>
+          <span class="chip">Flexibilidad y Agilidad</span>
+        </div>
+        <a routerLink="/tratamientos/pilates" class="tratamiento-link">Ver pilates →</a>
+      </div>
 
-        <ul class="service-chips">
-          <li>Fortalecimiento del Core</li>
-          <li>Corrección Postural</li>
-          <li>Rehabilitación y Prevención</li>
-          <li>Flexibilidad y Agilidad</li>
-          <li>Conexión Mente-Cuerpo</li>
-          <li>Bienestar Integra</li>
-        </ul>
+    </div>
 
-        <a class="service-link" routerLink="/tratamientos/pilates">Ver pilates →</a>
-      </article>
-
+    <!-- Bloque secundario: Técnicas -->
+    <div class="tratamientos-tecnicas" appRevealOnScroll>
+      <p class="tecnicas-intro">
+        Complementamos con técnicas especializadas para acelerar tu recuperación
+      </p>
+      <div class="tecnicas-chips">
+        <span class="chip chip--small">Radiofrecuencia</span>
+        <span class="chip chip--small">Punción seca</span>
+        <span class="chip chip--small">Ventosas</span>
+        <span class="chip chip--small">Kinesiotape</span>
+      </div>
+      <a routerLink="/tratamientos/tecnicas" class="tratamiento-link tratamiento-link--secondary">
+        Ver técnicas utilizadas →
+      </a>
     </div>
 
     <div class="services-footer-cta" appRevealOnScroll>

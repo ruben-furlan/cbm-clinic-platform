@@ -508,6 +508,152 @@
   justify-content: center;
 }
 
+/* ── Tratamientos rediseño ──────────────────────────────── */
+
+.tratamientos-principales {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.tratamiento-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #f3f4f6;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.05);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tratamiento-card--principal {
+  border: 1.5px solid rgba(168, 85, 247, 0.15);
+  box-shadow: 0 4px 20px rgba(168, 85, 247, 0.08);
+}
+
+.tratamiento-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tratamiento-icono {
+  font-size: 24px;
+}
+
+.tratamiento-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  color: #a855f7;
+}
+
+.tratamiento-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.tratamiento-desc {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tratamiento-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.tratamiento-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #c44b8e;
+  text-decoration: none;
+  margin-top: auto;
+}
+
+.tratamiento-link:hover {
+  text-decoration: underline;
+}
+
+.tratamientos-tecnicas {
+  background: #fafafa;
+  border-radius: 14px;
+  border: 1px solid #f3f4f6;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tecnicas-intro {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.tecnicas-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip--small {
+  font-size: 11px;
+  padding: 4px 10px;
+}
+
+.tratamiento-link--secondary {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.tratamiento-link--secondary:hover {
+  color: #c44b8e;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .tratamientos-principales {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .tratamiento-card {
+    padding: 20px 16px;
+  }
+
+  .tratamiento-card h3 {
+    font-size: 18px;
+  }
+
+  .tratamientos-tecnicas {
+    padding: 16px;
+  }
+}
+
 .common-issues{
   padding-top: 20px;
 }
