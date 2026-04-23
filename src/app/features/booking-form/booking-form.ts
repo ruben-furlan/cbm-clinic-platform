@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, HostListener, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, NgZone, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
@@ -32,7 +32,8 @@ export class BookingFormComponent implements OnInit {
     private readonly tarifasService: TarifasService,
     private readonly languageService: LanguageService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly ngZone: NgZone
   ) {}
 
   currentStep = 1;
@@ -161,12 +162,19 @@ export class BookingFormComponent implements OnInit {
   }
 
   seleccionarTratamiento(option: TreatmentOption): void {
-    this.formData.treatment = option.value;
-    if (this.isMobile) {
-      setTimeout(() => {
-        this.irAlPaso2();
-      }, 150);
-    }
+    this.ngZone.run(() => {
+      this.formData.treatment = option.value;
+      this.cdr.detectChanges();
+
+      if (this.isMobile) {
+        setTimeout(() => {
+          this.ngZone.run(() => {
+            this.irAlPaso2();
+            this.cdr.detectChanges();
+          });
+        }, 150);
+      }
+    });
   }
 
   irAlPaso2(): void {
