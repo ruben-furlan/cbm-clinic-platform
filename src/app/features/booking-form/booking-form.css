@@ -231,8 +231,12 @@
   text-align: left;
   cursor: pointer;
   font: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 150ms ease;
   outline: none;
+}
+
+.treatment-card:active{
+  transform: scale(0.98);
 }
 
 .treatment-card:hover{
@@ -245,9 +249,10 @@
 }
 
 .treatment-card--selected{
-  border-color: #ff4fa3;
-  background: rgba(255, 79, 163, 0.04);
-  box-shadow: 0 0 0 1px rgba(255, 79, 163, 0.22), 0 4px 14px rgba(255, 79, 163, 0.1);
+  border: 2px solid transparent;
+  background: linear-gradient(white, white) padding-box,
+              linear-gradient(135deg, #f472b6, #a855f7) border-box;
+  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.15);
 }
 
 .treatment-card-header{

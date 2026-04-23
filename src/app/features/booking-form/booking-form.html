@@ -107,7 +107,7 @@
                       type="button"
                       class="treatment-card"
                       [class.treatment-card--selected]="formData.treatment === option.value"
-                      (click)="selectCard(option.value)"
+                      (click)="seleccionarTratamiento(option)"
                       [attr.aria-pressed]="formData.treatment === option.value"
                     >
                       <div class="treatment-card-header">
@@ -128,13 +128,13 @@
                 </div>
               </div>
 
-              <div class="step-actions">
+              <div class="step-actions" *ngIf="!isMobile">
                 <button
                   type="button"
                   class="btn-primary step-btn-continue"
                   [class.step-btn-continue--disabled]="!canAdvanceStep1"
                   [disabled]="!canAdvanceStep1"
-                  (click)="nextStep()"
+                  (click)="irAlPaso2()"
                 >
                   Continuar →
                 </button>

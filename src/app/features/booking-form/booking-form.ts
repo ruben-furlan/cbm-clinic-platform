@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
@@ -37,6 +37,7 @@ export class BookingFormComponent implements OnInit {
 
   currentStep = 1;
   stepAnimClass = '';
+  isMobile = false;
 
   showPromoCode = false;
   promoCode = '';
@@ -63,7 +64,17 @@ export class BookingFormComponent implements OnInit {
   availabilityType: 'green' | 'amber' = 'green';
   availabilityText = '';
 
+  @HostListener('window:resize')
+  onResize(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isMobile = window.innerWidth < 768;
+    }
+  }
+
   async ngOnInit(): Promise<void> {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isMobile = window.innerWidth < 768;
+    }
     this.initAvailability();
 
     try {
@@ -147,6 +158,21 @@ export class BookingFormComponent implements OnInit {
 
   selectCard(value: string): void {
     this.formData.treatment = value;
+  }
+
+  seleccionarTratamiento(option: TreatmentOption): void {
+    this.formData.treatment = option.value;
+    if (this.isMobile) {
+      setTimeout(() => {
+        this.irAlPaso2();
+      }, 150);
+    }
+  }
+
+  irAlPaso2(): void {
+    this.stepAnimClass = 'step-enter-forward';
+    this.currentStep = 2;
+    this.scrollToForm();
   }
 
   nextStep(): void {
