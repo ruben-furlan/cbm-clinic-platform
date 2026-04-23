@@ -22,6 +22,7 @@ export class App implements OnInit, OnDestroy {
   isBajaNewsletterRoute = false;
   isAdminRoute = false;
   isComunidadRoute = false;
+  isSolicitudCitaRoute = false;
   showScrollTop = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
@@ -99,11 +100,13 @@ export class App implements OnInit, OnDestroy {
     const isBajaNewsletter = url.startsWith('/baja-newsletter');
     const isAdmin = url.startsWith('/admin');
     const isComunidad = url.startsWith('/comunidad');
+    const isSolicitudCita = url.split('?')[0] === '/solicitar-cita';
 
     this.isCanjearRoute = isCanjear;
     this.isBajaNewsletterRoute = isBajaNewsletter;
     this.isAdminRoute = isAdmin;
     this.isComunidadRoute = isComunidad;
+    this.isSolicitudCitaRoute = isSolicitudCita;
 
     if (this.isDisplayRoute === isDisplay) {
       return;
