@@ -21,6 +21,9 @@
       💌 Newsletter
       <span class="tab-badge" *ngIf="newsletterStats.total > 0">{{ newsletterStats.activos }}</span>
     </button>
+    <button type="button" [class.active]="seccion === 'banner'" (click)="setSeccion('banner')">
+      📢 Banner
+    </button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -368,6 +371,135 @@
         </tbody>
       </table>
     </div>
+  </ng-container>
+
+  <!-- ═══════════════════════════ BANNER ANUNCIO ══════════════════════════ -->
+  <ng-container *ngIf="seccion === 'banner'">
+
+    <!-- Preview en tiempo real -->
+    <section class="bonos-config">
+      <h3>Preview</h3>
+      <div class="banner-admin-preview"
+           [style.background]="bannerConfig.colorFondo"
+           [style.color]="bannerConfig.colorTexto">
+        <span *ngIf="bannerConfig.emoji">{{ bannerConfig.emoji }}</span>
+        <span>{{ bannerConfig.texto || 'Texto del banner...' }}</span>
+        <span *ngIf="bannerConfig.enlaceTexto"
+              style="font-weight:600; text-decoration:underline; margin-left:6px">
+          {{ bannerConfig.enlaceTexto }}
+        </span>
+      </div>
+    </section>
+
+    <!-- Formulario -->
+    <section class="bonos-config">
+      <h3>Configuración del banner</h3>
+
+      <p class="status error" *ngIf="bannerError">{{ bannerError }}</p>
+      <p class="status message" *ngIf="bannerMessage">{{ bannerMessage }}</p>
+
+      <div class="modal-form">
+
+        <!-- Activar / desactivar -->
+        <label class="inline-check">
+          <input type="checkbox" [(ngModel)]="bannerConfig.activo" />
+          Banner activo
+        </label>
+
+        <!-- Emoji -->
+        <label>
+          Emoji
+          <input type="text"
+                 [(ngModel)]="bannerConfig.emoji"
+                 maxlength="4"
+                 placeholder="💜"
+                 style="max-width:80px" />
+        </label>
+
+        <!-- Texto principal -->
+        <label>
+          Mensaje
+          <input type="text"
+                 [(ngModel)]="bannerConfig.texto"
+                 placeholder="Día de las Madres — Regala bienestar a quien más cuida de ti" />
+        </label>
+
+        <!-- Texto enlace -->
+        <label>
+          Texto del enlace
+          <input type="text"
+                 [(ngModel)]="bannerConfig.enlaceTexto"
+                 placeholder="Ver bonos regalo →" />
+        </label>
+
+        <!-- URL enlace -->
+        <label>
+          URL del enlace
+          <input type="text"
+                 [(ngModel)]="bannerConfig.enlaceUrl"
+                 placeholder="/regalo" />
+        </label>
+
+        <!-- Color de fondo -->
+        <div>
+          <p style="font-size:13px; font-weight:600; margin-bottom:8px">Color de fondo</p>
+          <div class="banner-color-options">
+            <label *ngFor="let c of bannerColoresPredefinidos" class="banner-color-option">
+              <input type="radio"
+                     [value]="c.valor"
+                     [checked]="!bannerUsaColorCustom && bannerConfig.colorFondo === c.valor"
+                     (change)="setBannerColorFondo(c.valor)" />
+              <span class="banner-color-swatch" [style.background]="c.valor"></span>
+              {{ c.label }}
+            </label>
+            <label class="banner-color-option">
+              <input type="radio"
+                     [checked]="bannerUsaColorCustom"
+                     (change)="setBannerColorFondoCustom()" />
+              Personalizado
+            </label>
+          </div>
+          <input *ngIf="bannerUsaColorCustom"
+                 type="text"
+                 [(ngModel)]="bannerColorFondoCustom"
+                 (input)="setBannerColorFondoCustom()"
+                 placeholder="linear-gradient(135deg, #e879a8, #a78bfa)"
+                 style="margin-top:8px" />
+        </div>
+
+        <!-- Color de texto -->
+        <div>
+          <p style="font-size:13px; font-weight:600; margin-bottom:8px">Color del texto</p>
+          <div class="banner-color-options">
+            <label class="banner-color-option">
+              <input type="radio"
+                     value="#ffffff"
+                     [(ngModel)]="bannerConfig.colorTexto" />
+              <span class="banner-color-swatch" style="background:#555;border:2px solid #ccc"></span>
+              Blanco
+            </label>
+            <label class="banner-color-option">
+              <input type="radio"
+                     value="#111827"
+                     [(ngModel)]="bannerConfig.colorTexto" />
+              <span class="banner-color-swatch" style="background:#111827"></span>
+              Oscuro
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="bonos-code-row" style="margin-top:20px">
+        <button type="button"
+                class="btn-primary"
+                (click)="saveBannerConfig()"
+                [disabled]="bannerSaving">
+          {{ bannerSaving ? 'Guardando...' : 'Guardar banner' }}
+        </button>
+      </div>
+    </section>
+
   </ng-container>
 
   <!-- ══════════════════════════════ NEWSLETTER ════════════════════════════ -->

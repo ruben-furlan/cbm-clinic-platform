@@ -22,7 +22,7 @@ import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsle
 import { SimpleEditorComponent } from '../shared/components/simple-editor/simple-editor.component';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'banner';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 
@@ -151,6 +151,28 @@ export class AdminDashboardComponent implements OnInit {
   bonoDetalle: BonoRegalo | null = null;
 
   readonly bonosEstados: BonoEstado[] = ['pendiente_pago', 'pagado', 'enviado', 'canjeado'];
+
+  // ── Banner de anuncio ─────────────────────────────────────────────────────
+  bannerConfig = {
+    activo: false,
+    emoji: '💜',
+    texto: '',
+    enlaceTexto: '',
+    enlaceUrl: '',
+    colorFondo: 'linear-gradient(135deg, #e879a8, #a78bfa)',
+    colorTexto: '#ffffff'
+  };
+  bannerColorFondoCustom = '';
+  bannerUsaColorCustom = false;
+  bannerSaving = false;
+  bannerMessage = '';
+  bannerError = '';
+
+  readonly bannerColoresPredefinidos = [
+    { label: 'Rosa / Violeta', valor: 'linear-gradient(135deg, #e879a8, #a78bfa)' },
+    { label: 'Rosa sólido',    valor: '#c44b8e' },
+    { label: 'Violeta',        valor: '#7c3aed' }
+  ];
 
   // ── Servicios de regalo ───────────────────────────────────────────────────
   serviciosRegalo: ServicioRegalo[] = [];
@@ -328,7 +350,7 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo(), this.loadNewsletter()]);
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo(), this.loadNewsletter(), this.loadBannerConfig()]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -384,6 +406,56 @@ export class AdminDashboardComponent implements OnInit {
 
   getCategoriaLabel(categoria: string): string {
     return this.tarifasService.getCategoriaLabel(categoria);
+  }
+
+  // ── Banner de anuncio ─────────────────────────────────────────────────────
+
+  private async loadBannerConfig(): Promise<void> {
+    try {
+      this.bannerConfig = await this.configuracionService.getBannerAnuncioConfig();
+      const predefined = this.bannerColoresPredefinidos.map(c => c.valor);
+      if (!predefined.includes(this.bannerConfig.colorFondo)) {
+        this.bannerColorFondoCustom = this.bannerConfig.colorFondo;
+        this.bannerUsaColorCustom = true;
+      }
+    } catch {
+      // ignore — keeps defaults
+    }
+  }
+
+  async saveBannerConfig(): Promise<void> {
+    this.bannerSaving = true;
+    this.bannerMessage = '';
+    this.bannerError = '';
+    try {
+      const claves: Array<[string, string]> = [
+        ['banner_anuncio_activo',       String(this.bannerConfig.activo)],
+        ['banner_anuncio_emoji',        this.bannerConfig.emoji],
+        ['banner_anuncio_texto',        this.bannerConfig.texto],
+        ['banner_anuncio_enlace_texto', this.bannerConfig.enlaceTexto],
+        ['banner_anuncio_enlace_url',   this.bannerConfig.enlaceUrl],
+        ['banner_anuncio_color_fondo',  this.bannerConfig.colorFondo],
+        ['banner_anuncio_color_texto',  this.bannerConfig.colorTexto]
+      ];
+      await Promise.all(claves.map(([clave, valor]) => this.configuracionService.updateConfiguracion(clave, valor)));
+      this.bannerMessage = 'Banner actualizado ✓';
+      setTimeout(() => { this.zone.run(() => { this.bannerMessage = ''; this.flushUiState(); }); }, 4000);
+    } catch {
+      this.bannerError = 'Error al guardar el banner';
+    } finally {
+      this.bannerSaving = false;
+      this.flushUiState();
+    }
+  }
+
+  setBannerColorFondo(color: string): void {
+    this.bannerConfig = { ...this.bannerConfig, colorFondo: color };
+    this.bannerUsaColorCustom = false;
+  }
+
+  setBannerColorFondoCustom(): void {
+    this.bannerUsaColorCustom = true;
+    this.bannerConfig = { ...this.bannerConfig, colorFondo: this.bannerColorFondoCustom };
   }
 
   trackByIndex(index: number): number {

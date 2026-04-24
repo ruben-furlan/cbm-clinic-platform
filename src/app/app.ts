@@ -8,11 +8,12 @@ import { FloatingWhatsappButtonComponent } from './core/floating-whatsapp-button
 import { CookieConsentComponent } from './core/cookie-consent/cookie-consent';
 import { FloatingBookingButtonComponent } from './core/floating-booking-button/floating-booking-button';
 import { CanonicalService } from './core/seo/canonical.service';
+import { BannerAnuncioComponent } from './shared/components/banner-anuncio/banner-anuncio.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, FloatingBookingButtonComponent, CookieConsentComponent],
+  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, FloatingBookingButtonComponent, CookieConsentComponent, BannerAnuncioComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

@@ -12,6 +12,7 @@
 
 <div class="app-content" [class.app-content--display]="isDisplayRoute">
   <app-header [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-header>
+  <app-banner-anuncio [style.display]="isDisplayRoute || isCanjearRoute || isBajaNewsletterRoute || isAdminRoute || isComunidadRoute ? 'none' : null"></app-banner-anuncio>
   <main class="app-main">
     <router-outlet></router-outlet>
   </main>

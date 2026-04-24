@@ -1,0 +1,23 @@
+<div class="banner-anuncio"
+     *ngIf="visible && config.activo"
+     [style.background]="config.colorFondo"
+     [style.color]="config.colorTexto">
+
+  <div class="banner-anuncio__content">
+    <span class="banner-emoji" *ngIf="config.emoji">{{ config.emoji }}</span>
+    <span class="banner-texto">{{ config.texto }}</span>
+    <a *ngIf="config.enlaceTexto && config.enlaceUrl"
+       [routerLink]="config.enlaceUrl"
+       class="banner-enlace"
+       [style.color]="config.colorTexto">
+      {{ config.enlaceTexto }}
+    </a>
+  </div>
+
+  <button class="banner-cerrar"
+          (click)="cerrar()"
+          [style.color]="config.colorTexto"
+          aria-label="Cerrar banner">
+    ✕
+  </button>
+</div>
