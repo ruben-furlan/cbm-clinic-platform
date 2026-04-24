@@ -350,3 +350,31 @@
     transform: none !important;
   }
 }
+
+/* Floating phone button — mobile only */
+.floating-phone-btn {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .floating-phone-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f472b6, #c44b8e);
+    box-shadow: 0 4px 12px rgba(196, 75, 142, 0.4);
+    position: fixed;
+    right: 16px;
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    z-index: 1050;
+    text-decoration: none;
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .floating-phone-btn:active {
+    transform: scale(0.95);
+  }
+}
