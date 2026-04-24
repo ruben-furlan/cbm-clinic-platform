@@ -8,8 +8,6 @@ import { SeoPageComponent } from './features/seo-pages/seo-page.component';
 import { DisplayComponent } from './pages/display/display.component';
 import { EspacioCbmPage } from './features/espacio-cbm/espacio-cbm-page';
 import { adminAuthGuard } from './admin/admin-auth.guard';
-import { AdminLoginComponent } from './admin/admin-login.component';
-import { AdminDashboardComponent } from './admin/admin-dashboard.component';
 import { RegaloComponent } from './features/regalo/regalo.component';
 import { CanjearRegaloComponent } from './canjear/canjear-regalo.component';
 import { BajaNewsletterComponent } from './features/baja-newsletter/baja-newsletter.component';
@@ -76,12 +74,12 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    component: AdminDashboardComponent,
+    loadComponent: () => import('./admin/admin-dashboard.component').then(m => m.AdminDashboardComponent),
     canActivate: [adminAuthGuard]
   },
   {
     path: 'admin/login',
-    component: AdminLoginComponent
+    loadComponent: () => import('./admin/admin-login.component').then(m => m.AdminLoginComponent)
   },
   {
     path: 'admin/dashboard',
