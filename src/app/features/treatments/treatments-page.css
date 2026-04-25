@@ -10,8 +10,10 @@
   }
 }
 
-.tratamientos-page-header {
-  margin-bottom: 28px;
+/* ── Header ── */
+
+.page-header {
+  margin-bottom: 40px;
 }
 
 .volver-link {
@@ -26,7 +28,7 @@
   color: #374151;
 }
 
-.tratamientos-eyebrow {
+.eyebrow {
   display: block;
   font-size: 11px;
   font-weight: 700;
@@ -36,7 +38,7 @@
   margin-bottom: 8px;
 }
 
-.tratamientos-page-header h1 {
+.page-header h1 {
   font-size: 28px;
   font-weight: 700;
   color: #111827;
@@ -44,62 +46,79 @@
 }
 
 @media (max-width: 768px) {
-  .tratamientos-page-header h1 {
+  .page-header h1 {
     font-size: 22px;
   }
 }
 
-.tratamientos-subtitulo {
+.page-subtitulo {
   font-size: 15px;
   color: #6b7280;
   line-height: 1.6;
   margin: 0;
 }
 
-.tratamientos-tabs {
+/* ── Sección de servicio ── */
+
+.servicio-seccion {
+  margin-bottom: 0;
+}
+
+.seccion-header {
   display: flex;
-  gap: 8px;
-  margin-bottom: 24px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  padding-bottom: 2px;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
-.tratamientos-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.tab-btn {
+.seccion-icono {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
   flex-shrink: 0;
-  padding: 8px 20px;
-  border-radius: 999px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 200ms ease;
-  border: 1.5px solid #e5e7eb;
-  background: white;
+}
+
+.icono-bg-rosa {
+  background: rgba(244, 114, 182, 0.12);
+}
+
+.icono-bg-violeta {
+  background: rgba(167, 139, 250, 0.12);
+}
+
+.seccion-header-text h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 2px;
+}
+
+.seccion-subtitulo {
+  font-size: 13px;
   color: #6b7280;
+  margin: 0;
 }
 
-.tab-btn.active {
-  background: linear-gradient(135deg, #f472b6, #a855f7);
-  border-color: transparent;
-  color: white;
-}
+/* ── Grid de cards ── */
 
-.tratamientos-grid {
+.cards-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
 @media (max-width: 768px) {
-  .tratamientos-grid {
+  .cards-grid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
 }
+
+/* ── Card ── */
 
 .tratamiento-card {
   background: white;
@@ -124,13 +143,13 @@
 }
 
 .card-icono {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
   flex-shrink: 0;
 }
 
@@ -150,9 +169,13 @@
 }
 
 .card-subtitulo {
-  font-size: 12px;
+  font-size: 11px;
   color: #c44b8e;
   font-weight: 400;
+}
+
+.card-subtitulo--violeta {
+  color: #7c3aed;
 }
 
 .card-desc {
@@ -174,6 +197,10 @@
   align-self: flex-start;
 }
 
+.card-mas-info--violeta {
+  color: #7c3aed;
+}
+
 .card-desc-completa {
   font-size: 13px;
   color: #6b7280;
@@ -193,6 +220,63 @@
   margin-top: auto;
 }
 
+.card-cta--violeta {
+  color: #7c3aed;
+}
+
 .card-cta:hover {
+  text-decoration: underline;
+}
+
+/* ── Divisor ── */
+
+.divisor {
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e879a8, #a78bfa, transparent);
+  margin: 2rem 0;
+}
+
+/* ── Bloque técnicas ── */
+
+.tecnicas-bloque {
+  background: #fafafa;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tecnicas-intro {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tecnicas-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tecnica-chip {
+  font-size: 13px;
+  color: #374151;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 5px 14px;
+}
+
+.tecnicas-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #c44b8e;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+.tecnicas-link:hover {
   text-decoration: underline;
 }

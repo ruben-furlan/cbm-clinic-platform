@@ -1,58 +1,86 @@
 <div class="tratamientos-page">
 
   <!-- Header -->
-  <div class="tratamientos-page-header">
+  <div class="page-header">
     <a routerLink="/" class="volver-link">← Volver</a>
-    <span class="tratamientos-eyebrow">NUESTROS SERVICIOS</span>
-    <h1>{{ tabConfig[tabActiva].titulo }}</h1>
-    <p class="tratamientos-subtitulo">{{ tabConfig[tabActiva].subtitulo }}</p>
+    <span class="eyebrow">NUESTROS SERVICIOS</span>
+    <h1>Tratamientos especializados</h1>
+    <p class="page-subtitulo">Soluciones claras para aliviar dolor, mejorar movilidad y prevenir recaídas.</p>
   </div>
 
-  <!-- Tabs -->
-  <div class="tratamientos-tabs">
-    <button
-      *ngFor="let tab of tabs"
-      class="tab-btn"
-      [class.active]="tabActiva === tab.key"
-      (click)="tabActiva = tab.key">
-      {{ tab.label }}
-    </button>
-  </div>
-
-  <!-- Grid de cards -->
-  <div class="tratamientos-grid">
-
-    <div class="tratamiento-card" *ngFor="let t of tratamientosActivos; let i = index">
-
-      <!-- Icono + Título -->
-      <div class="card-header">
-        <div class="card-icono" [style.background]="tabConfig[tabActiva].colorIcono">
-          {{ t.icono }}
-        </div>
-        <div class="card-titulos">
-          <h3>{{ t.titulo }}</h3>
-          <span class="card-subtitulo">{{ t.subtitulo }}</span>
-        </div>
+  <!-- Sección: Fisioterapia -->
+  <section class="servicio-seccion">
+    <div class="seccion-header">
+      <div class="seccion-icono icono-bg-rosa">🩺</div>
+      <div class="seccion-header-text">
+        <h2>Fisioterapia</h2>
+        <p class="seccion-subtitulo">Tratamiento manual y activo para tu recuperación</p>
       </div>
-
-      <!-- Descripción corta -->
-      <p class="card-desc">{{ t.descripcionCorta }}</p>
-
-      <!-- Más información expandible -->
-      <ng-container *ngIf="t.descripcionCompleta && t.descripcionCompleta.length > 100">
-        <button class="card-mas-info" (click)="toggleExpandido(i)">
-          {{ isExpandido(i) ? 'Ocultar información' : 'Más información' }}
-        </button>
-        <div class="card-desc-completa" *ngIf="isExpandido(i)">
-          {{ t.descripcionCompleta }}
-        </div>
-      </ng-container>
-
-      <!-- CTA -->
-      <a routerLink="/solicitar-cita" class="card-cta">Solicitar cita →</a>
-
     </div>
 
-  </div>
+    <div class="cards-grid">
+      <div class="tratamiento-card" *ngFor="let t of fisioterapiaItems; let i = index">
+        <div class="card-header">
+          <div class="card-icono icono-bg-rosa">{{ t.icono }}</div>
+          <div class="card-titulos">
+            <h3>{{ t.titulo }}</h3>
+            <span class="card-subtitulo">{{ t.subtitulo }}</span>
+          </div>
+        </div>
+        <p class="card-desc">{{ t.descripcionCorta }}</p>
+        <ng-container *ngIf="t.descripcionCompleta && t.descripcionCompleta.length > 100">
+          <button class="card-mas-info" (click)="toggleExpandido('fisio', i)">
+            {{ isExpandido('fisio', i) ? 'Ocultar información' : 'Más información' }}
+          </button>
+          <div class="card-desc-completa" *ngIf="isExpandido('fisio', i)">{{ t.descripcionCompleta }}</div>
+        </ng-container>
+        <a routerLink="/solicitar-cita" class="card-cta">Solicitar cita →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divisor" aria-hidden="true"></div>
+
+  <!-- Sección: Pilates -->
+  <section class="servicio-seccion">
+    <div class="seccion-header">
+      <div class="seccion-icono icono-bg-violeta">🧘</div>
+      <div class="seccion-header-text">
+        <h2>Pilates</h2>
+        <p class="seccion-subtitulo">Clases guiadas para mejorar postura, fuerza y bienestar</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      <div class="tratamiento-card" *ngFor="let t of pilatesItems; let i = index">
+        <div class="card-header">
+          <div class="card-icono icono-bg-violeta">{{ t.icono }}</div>
+          <div class="card-titulos">
+            <h3>{{ t.titulo }}</h3>
+            <span class="card-subtitulo card-subtitulo--violeta">{{ t.subtitulo }}</span>
+          </div>
+        </div>
+        <p class="card-desc">{{ t.descripcionCorta }}</p>
+        <ng-container *ngIf="t.descripcionCompleta && t.descripcionCompleta.length > 100">
+          <button class="card-mas-info card-mas-info--violeta" (click)="toggleExpandido('pilates', i)">
+            {{ isExpandido('pilates', i) ? 'Ocultar información' : 'Más información' }}
+          </button>
+          <div class="card-desc-completa" *ngIf="isExpandido('pilates', i)">{{ t.descripcionCompleta }}</div>
+        </ng-container>
+        <a routerLink="/solicitar-cita" class="card-cta card-cta--violeta">Solicitar cita →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divisor" aria-hidden="true"></div>
+
+  <!-- Sección: Técnicas -->
+  <section class="tecnicas-bloque">
+    <p class="tecnicas-intro">Complementamos con técnicas especializadas para acelerar tu recuperación</p>
+    <div class="tecnicas-chips">
+      <span class="tecnica-chip" *ngFor="let t of tecnicas">{{ t }}</span>
+    </div>
+    <a routerLink="/solicitar-cita" class="tecnicas-link">Ver técnicas utilizadas →</a>
+  </section>
 
 </div>
