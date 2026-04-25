@@ -1,183 +1,215 @@
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
-
-type TreatmentItem = {
-  title: string;
-  description: string;
-};
-
-type CategorySlug = 'fisioterapia' | 'tecnicas' | 'pilates';
-
-type TreatmentCategory = {
-  title: string;
-  description: string;
-  seoTitle: string;
-  seoDescription: string;
-  seoIntro: string;
-  columns: TreatmentItem[][];
-};
 
 @Component({
   selector: 'app-treatments-page',
   standalone: true,
-  imports: [NgFor, RouterLink],
+  imports: [NgFor, NgIf, RouterLink],
   templateUrl: './treatments-page.html',
   styleUrl: './treatments-page.css'
 })
 export class TreatmentsPage {
-  readonly categories: Record<CategorySlug, TreatmentCategory> = {
+
+  tabs = [
+    { key: 'fisioterapia', label: 'Fisioterapia' },
+    { key: 'tecnicas', label: 'Técnicas' },
+    { key: 'pilates', label: 'Pilates' }
+  ];
+
+  tabActiva = 'fisioterapia';
+
+  tabConfig: { [key: string]: { titulo: string; subtitulo: string; colorIcono: string } } = {
     fisioterapia: {
-      title: 'Fisioterapia en Terrassa',
-      description: 'Tratamientos especializados de fisioterapia con enfoque personalizado para tu recuperación en Terrassa.',
-      seoTitle: 'Fisioterapia en Terrassa | CBM Fisioterapia',
-      seoDescription: 'Fisioterapia en Terrassa con tratamiento personalizado. Alivia el dolor y recupera tu movilidad con CBM Fisioterapia.',
-      seoIntro: 'En CBM Fisioterapia trabajamos la fisioterapia en Terrassa con un enfoque cercano y clínico. Tu fisioterapeuta en Terrassa diseña un tratamiento personalizado para aliviar dolor, recuperar movilidad y mejorar tu bienestar en cada fase de la recuperación.',
-      columns: [
-        [
-          {
-            title: 'Fisioterapia Traumatológica',
-            description: 'La fisioterapia traumatológica es una especialidad que trata lesiones del sistema musculoesquelético (huesos, músculos, ligamentos, tendones) causadas por accidentes, caídas o cirugías. Su objetivo es aliviar el dolor, reducir la inflamación, restaurar la movilidad, fortalecer la zona afectada y acelerar la reincorporación a la vida diaria o deportiva'
-          },
-          {
-            title: 'Fisioterapia Dermatofuncional',
-            description: 'La fisioterapia dermatofuncional es una especialidad clínica que evalúa y trata alteraciones del sistema tegumentario (piel y tejido subcutáneo), combinando salud funcional y estética. Utiliza técnicas manuales y aparatología no invasiva para tratar cicatrices, fibrosis, edemas, celulitis, flacidez y mejorar la recuperación postquirúrgica, optimizando la funcionalidad de los tejidos'
-          },
-          {
-            title: 'Fisioterapia Deportiva',
-            description: 'La fisioterapia deportiva es una especialidad enfocada en prevenir, evaluar y tratar lesiones en deportistas de todos los niveles, utilizando técnicas manuales, ejercicio terapéutico y tecnología avanzada. Su objetivo principal es acelerar la recuperación funcional, aliviar el dolor y readaptar al atleta al gesto deportivo específico de su disciplina para mejorar su rendimiento y evitar futuras recaídas'
-          },
-        ],
-        [
-          {
-            title: 'Drenaje Linfático',
-            description: 'El drenaje linfático es una técnica de masaje terapéutico suave y rítmico que estimula el sistema linfático para reducir la retención de líquidos, edemas y mejorar la circulación. Utiliza movimientos lentos y superficiales para eliminar toxinas, mejorar el sistema inmunológico y aliviar la pesadez, los dreanajes linfaticos tambien ayudan a la mujer durante el emabarazo'
-          },
-          {
-            title: 'Fisioterapia Pre/Post Quirúrgica',
-            description: 'Diseñado para optimizar el estado físico del paciente antes de una cirugía (preREhabilitación) y acelerar su recuperación después de la misma (postoperatoria). El objetivo principal es minimizar complicaciones, reducir el dolor, mejorar la funcionalidad'
-          },
-          {
-            title: 'Fisioterapia para el adulto mayor',
-            description: 'La fisioterapia en el adulto mayor es una especialidad enfocada en prevenir, diagnosticar y tratar patologías y el deterioro funcional en personas mayores de 65 años. Su objetivo principal es mantener la autonomía, aliviar el dolor, mejorar la movilidad y reeducar la marcha, adaptando los ejercicios a las capacidades individuales para mejorar su calidad de vida'
-          },
-        ],
-        [
-          {
-            title: 'Tratamientos en Espalda y Cervicales',
-            description: 'La fisioterapia cervical y lumbar es una especialidad enfocada en evaluar, tratar y prevenir dolores y disfunciones de la columna, utilizando técnicas manuales, ejercicio terapéutico y agentes físicos. Sus objetivos son aliviar el dolor, restaurar la movilidad, corregir la postura, fortalecer la musculatura estabilizadora y prevenir recaídas crónicas en cuello y espalda baja'
-          },
-          {
-            title: 'Fisioterapia Neurológica',
-            description: 'La fisioterapia neurológica es una especialidad dedicada a evaluar y tratar trastornos del sistema nervioso central y periférico, buscando restaurar funciones motoras y sensoriales. Su objetivo es maximizar la independencia funcional, reducir la espasticidad, mejorar el equilibrio y mejorar la calidad de vida del paciente.'
-          },
-          {
-            title: 'Articulación temporomandibular (ATM) ',
-            description: 'La fisioterapia en la Articulación Temporomandibular (ATM) es una especialidad enfocada en tratar el dolor, la disfunción y la limitación de movimiento en la mandíbula. Combina terapia manual, ejercicio terapéutico y reeducación postural para aliviar la tensión en los músculos masticatorios, mejorar la apertura bucal y reducir dolores de cabeza, cuello u oídos relacionado.'
-          },
-          {
-            title: 'Fisioterapia Infantil ',
-            description: 'La fisioterapia infantil (o pediátrica) es la especialidad que evalúa, trata y cuida a bebés, niños y adolescentes (0-18 años) con retrasos en el desarrollo, desórdenes de movimiento o riesgo de padecerlos. Busca mejorar la funcionalidad, fuerza y autonomía mediante terapia manual, ejercicio y juego, abarcando áreas neurológicas, respiratorias y ortopédicas'
-          }
-        ]
-      ]
+      titulo: 'Fisioterapia en Terrassa',
+      subtitulo: 'Tratamiento personalizado para recuperar tu movilidad y reducir el dolor.',
+      colorIcono: 'rgba(244,114,182,0.12)'
     },
     tecnicas: {
-      title: 'Técnicas utilizadas en Terrassa',
-      description: 'Técnicas complementarias para acelerar la recuperación y potenciar resultados terapéuticos.',
-      seoTitle: 'Técnicas utilizadas en Terrassa | CBM Fisioterapia',
-      seoDescription: 'Técnicas utilizadas en Terrassa para acelerar la recuperación y mejorar resultados en CBM Fisioterapia.',
-      seoIntro: 'Aplicamos Técnicas utilizadas en Terrassa para mejorar resultados clínicos en menos tiempo. Combinamos punción seca, radiofrecuencia y terapia manual para reducir molestias, recuperar función y apoyar una recuperación segura y sostenible.',
-      columns: [
-        [
-          {
-            title: 'Radiofrecuencia',
-            description: 'La radiofrecuencia en fisioterapia (diatermia o tecarterapia) es una técnica no invasiva que utiliza ondas electromagnéticas para generar calor profundo en los tejidos. Acelera la recuperación, reduce el dolor y la inflamación (efecto antiedematoso) y favorece la regeneración celular, siendo ideal para lesiones agudas, crónicas y rehabilitación postquirúrgica'
-          },
-          {
-            title: 'Punción seca',
-            description: 'La punción seca es una técnica de fisioterapia invasiva y segura (con evidencia grado A) que utiliza agujas finas para tratar el dolor muscular, especialmente los puntos gatillo miofasciales (contracturas), sin inyectar sustancias. Al insertarse, busca relajar la musculatura, aliviar la rigidez, mejorar la movilidad y reducir el dolor crónico o agudo'
-          }
-        ],
-        [
-          {
-            title: 'Ventosas',
-            description: 'Las ventosas (o cupping) son una técnica terapéutica que utiliza la succión sobre la piel para estimular la circulación sanguínea, liberar la fascia y aliviar la tensión muscular. Sirven principalmente para reducir dolores crónicos, contracturas, mejorar la recuperación muscular, eliminar toxinas y aumentar el aporte de nutrientes y oxígeno a los tejidos'
-          },
-          {
-            title: 'Kinesiotape',
-            description: 'El kinesiotape o vendaje neuromuscular es una cinta elástica de algodón que sirve para aliviar el dolor muscular y articular, reducir la inflamación, mejorar la circulación y estabilizar articulaciones sin limitar el movimiento. Es muy utilizado en fisioterapia y deporte para recuperar lesiones, relajar contracturas y mejorar la propiocepción'
-          }
-        ]
-      ]
+      titulo: 'Técnicas utilizadas en Terrassa',
+      subtitulo: 'Complementamos el tratamiento con técnicas especializadas para acelerar tu recuperación.',
+      colorIcono: 'rgba(167,139,250,0.12)'
     },
     pilates: {
-      title: 'Pilates en Terrassa',
-      description: 'El Pilates sirve principalmente para fortalecer el "centro" o core (abdominales, lumbares, glúteos), mejorar la postura corporal, aumentar la flexibilidad y prevenir lesiones mediante ejercicios conscientes. Combina fuerza y control respiratorio para tonificar los músculos sin hipertrofiarlos, aliviando dolores de espalda y reduciendo el estrés',
-      seoTitle: 'Pilates en Terrassa | CBM Fisioterapia',
-      seoDescription: 'Pilates en Terrassa para mejorar postura, movilidad y fuerza con acompañamiento profesional.',
-      seoIntro: 'Nuestro Pilates en Terrassa está orientado a mejorar postura, movilidad y fortalecimiento de forma progresiva. Es una opción efectiva para personas con dolor recurrente o en procesos de recuperación que buscan moverse con más seguridad.',
-      columns: [
-        [
-          {
-            title: 'Fortalecimiento del Core',
-            description: 'Se enfoca en la "faja abdominal" natural, lo que estabiliza la columna y mejora la fuerza de todo el cuerpo.'
-          },
-          {
-            title: 'Corrección Postural',
-            description: 'Estira los músculos cortos y fortalece los débiles, mejorando la alineación de la espalda, hombros y cuello.'
-          }
-        ],
-        [
-          {
-            title: 'Rehabilitación y Prevención',
-            description: 'es muy utilizado para tratar dolores lumbares, dolores de espalda, y rehabilitar lesiones musculares.\n' +
-              'Conexión Mente-Cuerpo: Mejora la concentración y la respiración, actuando como una forma de meditación activa que disminuye el estrés.\n' +
-              'Bienestar Integral: Mejora el equilibrio, la coordinación y ayuda a combatir la ansiedad'
-          }
-        ],
-        [
-          {
-            title: 'Flexibilidad y Agilidadl',
-            description: 'Aumenta la amplitud de movimiento, lo que permite un cuerpo más flexible y ágil.'
-          },
-          {
-            title: 'Conexión Mente-Cuerpo',
-            description: 'Mejora la concentración y la respiración, actuando como una forma de meditación activa que disminuye el estrés.'
-          },
-          {
-            title: 'Bienestar Integral',
-            description: 'Mejora el equilibrio, la coordinación y ayuda a combatir la ansiedad.'
-          }
-        ]
-      ]
+      titulo: 'Pilates en Terrassa',
+      subtitulo: 'Clases guiadas para mejorar tu postura, fuerza y bienestar.',
+      colorIcono: 'rgba(52,211,153,0.12)'
     }
   };
 
-  readonly menuItems = [
-    { slug: 'fisioterapia', label: 'Fisioterapia' },
-    { slug: 'tecnicas', label: 'Técnicas' },
-    { slug: 'pilates', label: 'Pilates' }
-  ];
+  tratamientos: { [key: string]: any[] } = {
 
-  activeCategory = this.categories.fisioterapia;
-  activeSlug: CategorySlug = 'fisioterapia';
+    fisioterapia: [
+      {
+        icono: '🦴',
+        titulo: 'Fisioterapia traumatológica',
+        subtitulo: 'Lesiones, caídas, accidentes',
+        descripcionCorta: 'Te ayudamos a recuperarte de lesiones en huesos, músculos o tendones para que vuelvas a moverte sin dolor.',
+        descripcionCompleta: 'Tratamos esguinces, fracturas, roturas musculares, tendinitis y cualquier lesión del aparato locomotor. Combinamos terapia manual, ejercicio terapéutico y técnicas específicas para que tu recuperación sea segura y completa.'
+      },
+      {
+        icono: '💧',
+        titulo: 'Drenaje linfático',
+        subtitulo: 'Retención, edemas, embarazo',
+        descripcionCorta: 'Reducimos la retención de líquidos y la sensación de pesadez con técnicas suaves y precisas.',
+        descripcionCompleta: 'El drenaje linfático manual activa el sistema linfático para eliminar toxinas y reducir edemas. Muy indicado en embarazo, post-cirugía, lipoedema y síndrome de piernas cansadas.'
+      },
+      {
+        icono: '🔄',
+        titulo: 'Espalda y cervicales',
+        subtitulo: 'Dolor crónico, postura, tensión',
+        descripcionCorta: 'Aliviamos el dolor de espalda y cuello con un abordaje completo que va más allá del síntoma.',
+        descripcionCompleta: 'Trabajamos la causa del dolor, no solo el síntoma. Combinamos terapia manual, reeducación postural y ejercicio para que el alivio sea duradero y no tengas que volver una y otra vez.'
+      },
+      {
+        icono: '⚡',
+        titulo: 'Fisioterapia deportiva',
+        subtitulo: 'Rendimiento, prevención, lesiones',
+        descripcionCorta: 'Recuperamos lesiones deportivas y trabajamos para que vuelvas a tu nivel con confianza.',
+        descripcionCompleta: 'Tanto si eres deportista profesional como aficionado, te ayudamos a recuperarte de lesiones, mejorar tu rendimiento y prevenir que el problema vuelva a aparecer.'
+      },
+      {
+        icono: '🏥',
+        titulo: 'Pre/post quirúrgica',
+        subtitulo: 'Preparación, recuperación',
+        descripcionCorta: 'Te preparamos antes de la operación y te acompañamos en cada etapa de tu recuperación.',
+        descripcionCompleta: 'La fisioterapia antes de una cirugía mejora los resultados postoperatorios. Después, diseñamos un plan progresivo para que recuperes movilidad y fuerza de forma segura y sin complicaciones.'
+      },
+      {
+        icono: '🌿',
+        titulo: 'Adulto mayor',
+        subtitulo: 'Autonomía, movilidad, equilibrio',
+        descripcionCorta: 'Ayudamos a mantener la autonomía y la calidad de vida con un trato cercano y adaptado.',
+        descripcionCompleta: 'Trabajamos el equilibrio, la fuerza y la coordinación para prevenir caídas y mantener la independencia el mayor tiempo posible. Con mucho cuidado y sin prisa.'
+      },
+      {
+        icono: '✨',
+        titulo: 'Dermatofuncional',
+        subtitulo: 'Cicatrices, edemas, estética',
+        descripcionCorta: 'Tratamos cicatrices y alteraciones de la piel con técnicas especializadas y resultados visibles.',
+        descripcionCompleta: 'Trabajamos cicatrices post-quirúrgicas, queloides, fibrosis y edemas cutáneos. También abordamos alteraciones funcionales del tejido conectivo para mejorar tanto la apariencia como la función.'
+      },
+      {
+        icono: '🧠',
+        titulo: 'Neurológica',
+        subtitulo: 'Sistema nervioso, funcionalidad',
+        descripcionCorta: 'Restauramos funciones motoras y sensoriales para mejorar tu independencia y calidad de vida.',
+        descripcionCompleta: 'Trabajamos con personas que han sufrido ictus, lesiones medulares, Parkinson u otras alteraciones neurológicas. El objetivo es mejorar el movimiento, la coordinación y la autonomía en el día a día.'
+      },
+      {
+        icono: '😮',
+        titulo: 'Articulación temporomandibular',
+        subtitulo: 'Mandíbula, dolor, tensión',
+        descripcionCorta: 'Aliviamos el dolor de mandíbula, los chasquidos y la tensión acumulada en la zona facial.',
+        descripcionCompleta: 'El dolor de mandíbula, el bruxismo o los chasquidos al abrir la boca tienen solución. Tratamos la articulación ATM con técnicas manuales precisas para devolverte la comodidad al masticar, hablar y descansar.'
+      },
+      {
+        icono: '👶',
+        titulo: 'Fisioterapia infantil',
+        subtitulo: 'Bebés, niños, desarrollo',
+        descripcionCorta: 'Acompañamos el desarrollo de los más pequeños con un abordaje suave y adaptado.',
+        descripcionCompleta: 'Tratamos alteraciones posturales, problemas de desarrollo motor, tortícolis congénita y otras condiciones en bebés y niños. Siempre con un enfoque lúdico y respetuoso.'
+      }
+    ],
 
-  constructor(
-    private readonly route: ActivatedRoute,
-    private readonly title: Title,
-    private readonly meta: Meta
-  ) {
-    this.route.paramMap.subscribe((params) => {
-      const slug = (params.get('categoria') ?? 'fisioterapia') as CategorySlug;
-      this.activeSlug = slug in this.categories ? slug : 'fisioterapia';
-      this.activeCategory = this.categories[this.activeSlug];
-      this.title.setTitle(this.activeCategory.seoTitle);
-      this.meta.updateTag({
-        name: 'description',
-        content: this.activeCategory.seoDescription
-      });
+    tecnicas: [
+      {
+        icono: '⚡',
+        titulo: 'Radiofrecuencia',
+        subtitulo: 'Dolor, inflamación, regeneración',
+        descripcionCorta: 'Usamos calor profundo para acelerar la regeneración tisular y reducir el dolor de forma efectiva.',
+        descripcionCompleta: 'La radiofrecuencia emite energía que penetra en los tejidos profundos, aumentando la temperatura de forma controlada. Esto activa la regeneración celular, mejora la circulación y alivia el dolor crónico o agudo.'
+      },
+      {
+        icono: '🎯',
+        titulo: 'Punción seca',
+        subtitulo: 'Contracturas, puntos gatillo',
+        descripcionCorta: 'Liberamos puntos de tensión muscular profunda que no ceden con el masaje convencional.',
+        descripcionCompleta: 'Mediante agujas finas (sin medicamento) tratamos los puntos gatillo miofasciales — esos nudos musculares que generan dolor local y referido. Es una técnica precisa con resultados rápidos para contracturas resistentes.'
+      },
+      {
+        icono: '🔵',
+        titulo: 'Ventosas',
+        subtitulo: 'Circulación, tensión muscular',
+        descripcionCorta: 'Mejoramos la circulación y liberamos la tensión muscular profunda con esta técnica milenaria.',
+        descripcionCompleta: 'La terapia con ventosas crea una succión que eleva el tejido, mejorando el flujo sanguíneo y linfático. Muy eficaz para zonas de tensión crónica, fascitis y recuperación muscular post-esfuerzo.'
+      },
+      {
+        icono: '🩹',
+        titulo: 'Kinesiotape',
+        subtitulo: 'Soporte, estabilidad',
+        descripcionCorta: 'Aplicamos vendaje neuromuscular para dar soporte sin limitar el movimiento.',
+        descripcionCompleta: 'El kinesiotape es un vendaje elástico que facilita el movimiento a la vez que proporciona soporte articular y muscular. Reduce el dolor, mejora la propiocepción y acelera la recuperación.'
+      }
+    ],
+
+    pilates: [
+      {
+        icono: '💪',
+        titulo: 'Fortalecimiento del core',
+        subtitulo: 'Abdomen, estabilidad, fuerza',
+        descripcionCorta: 'Trabajamos la musculatura profunda para darte una base estable que proteja tu espalda.',
+        descripcionCompleta: 'Un core fuerte es la base de todo movimiento saludable. Trabajamos la musculatura abdominal profunda, el suelo pélvico y los estabilizadores de la columna para que te muevas con más seguridad y sin dolor.'
+      },
+      {
+        icono: '📐',
+        titulo: 'Corrección postural',
+        subtitulo: 'Alineación, hombros, cuello',
+        descripcionCorta: 'Mejoramos tu postura de forma progresiva para que el cambio sea real y duradero.',
+        descripcionCompleta: 'No se trata solo de "ponerse recto". Trabajamos los desequilibrios musculares que provocan la mala postura, reeducando el cuerpo para que la alineación correcta sea natural y no un esfuerzo.'
+      },
+      {
+        icono: '🌊',
+        titulo: 'Flexibilidad y agilidad',
+        subtitulo: 'Movimiento, amplitud',
+        descripcionCorta: 'Recuperamos la amplitud de movimiento para que el cuerpo se mueva con libertad.',
+        descripcionCompleta: 'Combinamos estiramientos activos, movilidad articular y control motor para mejorar la flexibilidad de forma funcional. El objetivo es que te muevas mejor en tu vida diaria, no solo en clase.'
+      },
+      {
+        icono: '🧘',
+        titulo: 'Conexión mente-cuerpo',
+        subtitulo: 'Concentración, respiración',
+        descripcionCorta: 'Aprendemos a movernos con consciencia para reducir el estrés y mejorar el bienestar.',
+        descripcionCompleta: 'El pilates terapéutico trabaja la atención plena al movimiento, la respiración consciente y la coordinación. Esto reduce el estrés, mejora el sueño y genera una sensación de bienestar que va más allá de lo físico.'
+      },
+      {
+        icono: '🔄',
+        titulo: 'Rehabilitación y prevención',
+        subtitulo: 'Dolor recurrente, recaídas',
+        descripcionCorta: 'Usamos el pilates como herramienta de rehabilitación para que el dolor no vuelva.',
+        descripcionCompleta: 'Para quien ya ha pasado por fisioterapia y quiere consolidar la recuperación, el pilates terapéutico es el siguiente paso. Fortalecemos las estructuras vulnerables y trabajamos los patrones de movimiento que causaron el problema.'
+      },
+      {
+        icono: '🌱',
+        titulo: 'Bienestar integral',
+        subtitulo: 'Equilibrio, coordinación, ansiedad',
+        descripcionCorta: 'Mejoramos el equilibrio físico y emocional para sentirte mejor en tu día a día.',
+        descripcionCompleta: 'El movimiento consciente tiene un impacto directo en el sistema nervioso. Trabajamos la coordinación, el equilibrio y la regulación del sistema nervioso autónomo para reducir la ansiedad y mejorar la calidad de vida.'
+      }
+    ]
+  };
+
+  get tratamientosActivos() {
+    return this.tratamientos[this.tabActiva] || [];
+  }
+
+  expandidos: { [key: string]: boolean } = {};
+
+  toggleExpandido(index: number) {
+    const key = `${this.tabActiva}-${index}`;
+    this.expandidos[key] = !this.expandidos[key];
+  }
+
+  isExpandido(index: number): boolean {
+    return !!this.expandidos[`${this.tabActiva}-${index}`];
+  }
+
+  constructor(private readonly title: Title, private readonly meta: Meta) {
+    this.title.setTitle('Tratamientos | CBM Fisioterapia Terrassa');
+    this.meta.updateTag({
+      name: 'description',
+      content: 'Fisioterapia, técnicas especializadas y pilates en Terrassa. Tratamiento personalizado para recuperar tu movilidad y reducir el dolor en CBM Fisioterapia.'
     });
   }
 }

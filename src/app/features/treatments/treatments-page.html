@@ -1,36 +1,58 @@
-<section class="treatments-page section">
-  <div class="container">
-    <a class="treatments-back-link" routerLink="/" fragment="servicios">← Volver</a>
-    <div class="section-heading">
-      <p class="section-tag">Nuestros servicios</p>
-      <h1>{{ activeCategory.title }}</h1>
-      <p class="section-description">
-        {{ activeCategory.description }}
-      </p>
-      <p class="section-description">
-        {{ activeCategory.seoIntro }}
-      </p>
+<div class="tratamientos-page">
 
-      <nav class="treatment-category-nav" aria-label="Categorías de tratamientos">
-        <a
-          *ngFor="let item of menuItems"
-          class="treatment-category-link"
-          [class.is-active]="activeSlug === item.slug"
-          [routerLink]="['/tratamientos', item.slug]"
-        >
-          {{ item.label }}
-        </a>
-      </nav>
-    </div>
-
-    <div class="treatments-grid">
-      <article class="treatments-column" *ngFor="let column of activeCategory.columns">
-        <div class="treatment-item" *ngFor="let treatment of column">
-          <h2>{{ treatment.title }}</h2>
-          <p><strong>Descripción:</strong> {{ treatment.description }}</p>
-        </div>
-      </article>
-    </div>
+  <!-- Header -->
+  <div class="tratamientos-page-header">
+    <a routerLink="/" class="volver-link">← Volver</a>
+    <span class="tratamientos-eyebrow">NUESTROS SERVICIOS</span>
+    <h1>{{ tabConfig[tabActiva].titulo }}</h1>
+    <p class="tratamientos-subtitulo">{{ tabConfig[tabActiva].subtitulo }}</p>
   </div>
 
-</section>
+  <!-- Tabs -->
+  <div class="tratamientos-tabs">
+    <button
+      *ngFor="let tab of tabs"
+      class="tab-btn"
+      [class.active]="tabActiva === tab.key"
+      (click)="tabActiva = tab.key">
+      {{ tab.label }}
+    </button>
+  </div>
+
+  <!-- Grid de cards -->
+  <div class="tratamientos-grid">
+
+    <div class="tratamiento-card" *ngFor="let t of tratamientosActivos; let i = index">
+
+      <!-- Icono + Título -->
+      <div class="card-header">
+        <div class="card-icono" [style.background]="tabConfig[tabActiva].colorIcono">
+          {{ t.icono }}
+        </div>
+        <div class="card-titulos">
+          <h3>{{ t.titulo }}</h3>
+          <span class="card-subtitulo">{{ t.subtitulo }}</span>
+        </div>
+      </div>
+
+      <!-- Descripción corta -->
+      <p class="card-desc">{{ t.descripcionCorta }}</p>
+
+      <!-- Más información expandible -->
+      <ng-container *ngIf="t.descripcionCompleta && t.descripcionCompleta.length > 100">
+        <button class="card-mas-info" (click)="toggleExpandido(i)">
+          {{ isExpandido(i) ? 'Ocultar información' : 'Más información' }}
+        </button>
+        <div class="card-desc-completa" *ngIf="isExpandido(i)">
+          {{ t.descripcionCompleta }}
+        </div>
+      </ng-container>
+
+      <!-- CTA -->
+      <a routerLink="/solicitar-cita" class="card-cta">Solicitar cita →</a>
+
+    </div>
+
+  </div>
+
+</div>
