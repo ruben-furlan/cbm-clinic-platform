@@ -1,80 +1,124 @@
 <section class="filosofia-page">
   <div class="container filosofia-shell">
-    <header class="filosofia-hero section">
-      <p class="filosofia-eyebrow reveal-delay-1" appRevealOnScroll>Filosofía CBM</p>
-      <h1 class="reveal-delay-2" appRevealOnScroll>
-        Cuidamos tu cuerpo,<br>
-        pero también entendemos tu proceso.
+
+    <!-- Hero -->
+    <header class="filosofia-hero">
+      <p class="filosofia-eyebrow" #eyebrowEl>FILOSOFÍA CBM</p>
+      <h1
+        class="filosofia-title"
+        aria-label="Cuidamos tu cuerpo, pero también entendemos tu proceso."
+      >
+        <span #typewriterEl class="typewriter"></span>
       </h1>
-      <p class="filosofia-subtitle reveal-delay-3" appRevealOnScroll>
-        Fisioterapia pensada para acompañarte,<br>
-        no solo para resolver una molestia puntual.
-      </p>
+      <div class="hero-post" #heroPostEl>
+        <p class="filosofia-subtitle">
+          Fisioterapia pensada para acompañarte,<br />
+          no solo para resolver una molestia puntual.
+        </p>
+      </div>
     </header>
 
-    <section class="filosofia-block section reveal-delay-1" aria-labelledby="conexion-title" appRevealOnScroll>
-      <h2 id="conexion-title" class="visually-hidden">Cómo trabajamos en CBM</h2>
-      <p>Cada persona llega con una historia.</p>
-      <p>Con un dolor,<br>una preocupación<br>o algo que quiere mejorar.</p>
-      <p>
-        Por eso en CBM no trabajamos con protocolos cerrados,<br>
-        sino con tratamientos que se adaptan a ti.
-      </p>
-    </section>
+    <!-- Content with guide line -->
+    <div class="filosofia-content" #filosofiaContentEl>
 
-    <section class="filosofia-diferencial section reveal-delay-1" aria-labelledby="diferencial-title" appRevealOnScroll>
-      <h2 id="diferencial-title">No buscamos solo aliviar el síntoma.</h2>
-      <p>
-        Buscamos entender el origen,<br>
-        acompañarte en el proceso<br>
-        y ayudarte a mejorar de forma real y duradera.
-      </p>
-    </section>
-
-    <section class="filosofia-pilares section" aria-labelledby="pilares-title">
-      <h2 id="pilares-title" class="reveal-delay-1" appRevealOnScroll>3 pilares de nuestro enfoque</h2>
-      <div class="pilares-grid">
-        <article class="pilar-item reveal-delay-1" appRevealOnScroll>
-          <p class="pilar-icon" aria-hidden="true">🤲</p>
-          <h3>Terapia manual</h3>
-          <p>Para aliviar el dolor y mejorar la movilidad desde el primer momento.</p>
-        </article>
-
-        <article class="pilar-item reveal-delay-2" appRevealOnScroll>
-          <p class="pilar-icon" aria-hidden="true">🧠</p>
-          <h3>Educación sobre el dolor</h3>
-          <p>Para que entiendas qué ocurre en tu cuerpo y ganes seguridad.</p>
-        </article>
-
-        <article class="pilar-item reveal-delay-3" appRevealOnScroll>
-          <p class="pilar-icon" aria-hidden="true">🏃</p>
-          <h3>Ejercicio terapéutico</h3>
-          <p>Para consolidar la mejora y evitar que el problema vuelva.</p>
-        </article>
+      <!-- Guide line -->
+      <div class="guide-line" aria-hidden="true" #guideLineEl>
+        <div class="guide-fill" #guideFillEl></div>
+        <div class="guide-dot"></div>
+        <div class="guide-dot"></div>
+        <div class="guide-dot"></div>
+        <div class="guide-dot"></div>
+        <div class="guide-dot"></div>
       </div>
-    </section>
 
-    <section class="filosofia-cierre section reveal-delay-1" aria-labelledby="cierre-title" appRevealOnScroll>
-      <h2 id="cierre-title">
-        No se trata solo de sentirte mejor hoy.
-      </h2>
-      <p>
-        Se trata de que puedas moverte con confianza,<br>
-        sin miedo<br>
-        y con autonomía.
-      </p>
-    </section>
+      <!-- Bloque 1 -->
+      <section class="filosof-block reveal-block" aria-label="Cada persona llega con una historia">
+        <div class="text-illuminate">
+          <p>
+            <span class="txt-line">Cada persona llega con <em>una historia</em>.</span>
+            <span class="txt-line">Con un dolor,</span>
+            <span class="txt-line"><em>una preocupación</em></span>
+            <span class="txt-line">o algo que quiere <em>mejorar</em>.</span>
+          </p>
+          <p class="mt-block">
+            <span class="txt-line">Por eso en CBM no trabajamos con protocolos cerrados,</span>
+            <span class="txt-line">sino con tratamientos que <em>se adaptan a ti</em>.</span>
+          </p>
+        </div>
+      </section>
 
-    <section class="filosofia-quote section reveal-delay-2" aria-label="Frase final" appRevealOnScroll>
-      <blockquote>
-        Cuidarte no es un momento.<br>
-        Es un proceso.
-      </blockquote>
-    </section>
+      <!-- Bloque 3: Diferencial -->
+      <section class="filosof-statement reveal-block" aria-label="Entender el origen">
+        <h2 class="statement-title">No buscamos solo aliviar el síntoma.</h2>
+        <div class="text-illuminate">
+          <p>
+            <span class="txt-line">Buscamos <em>entender el origen</em>,</span>
+            <span class="txt-line"><em>acompañarte</em> en el proceso</span>
+            <span class="txt-line">y ayudarte a mejorar de forma <em>real y duradera</em>.</span>
+          </p>
+        </div>
+      </section>
 
-    <section class="filosofia-cta section reveal-delay-2" aria-labelledby="cta-title" appRevealOnScroll>
-      <p id="cta-title">Si te has visto reflejado en esta forma de trabajar, podemos ayudarte.</p>
-      <a routerLink="/solicitar-cita" class="btn-primary btn-booking">Solicitar cita</a>
-    </section>
-  </div>
+      <!-- Bloque 4: Pilares -->
+      <section class="filosof-pilares reveal-block" aria-labelledby="pilares-title">
+        <h2 id="pilares-title" class="pilares-title">3 pilares de nuestro enfoque</h2>
+        <div class="pilares-grid">
+          <article class="pilar pilar--pink">
+            <div class="pilar-icon-wrap" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v7"/><path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2L6 19"/>
+              </svg>
+            </div>
+            <h3>Terapia manual</h3>
+            <p>Aliviar el dolor desde el primer momento</p>
+          </article>
+          <article class="pilar pilar--purple">
+            <div class="pilar-icon-wrap" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+              </svg>
+            </div>
+            <h3>Educación sobre el dolor</h3>
+            <p>Que entiendas qué ocurre en tu cuerpo</p>
+          </article>
+          <article class="pilar pilar--green">
+            <div class="pilar-icon-wrap" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <h3>Ejercicio terapéutico</h3>
+            <p>Consolidar la mejora y evitar recaídas</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Bloque 5: Cierre emocional -->
+      <section class="filosof-statement reveal-block" aria-label="Moverse con confianza">
+        <h2 class="statement-title">No se trata solo de sentirte mejor hoy.</h2>
+        <div class="text-illuminate">
+          <p>
+            <span class="txt-line">Se trata de que puedas moverte con <em>confianza</em>,</span>
+            <span class="txt-line">sin <em>miedo</em></span>
+            <span class="txt-line">y con <em>autonomía</em>.</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- Bloque 6: Quote -->
+      <section class="filosof-quote reveal-block reveal-block--slow" aria-label="Frase final">
+        <blockquote>
+          Cuidarte no es un momento.<br />
+          Es un proceso.
+        </blockquote>
+      </section>
+
+      <!-- Bloque 7: CTA -->
+      <section class="filosof-cta reveal-block" aria-label="Solicitar cita">
+        <p>Si te has visto reflejado en esta forma de trabajar, podemos ayudarte.</p>
+        <a routerLink="/solicitar-cita" class="btn-cta">Solicitar cita</a>
+      </section>
+
+    </div><!-- /filosofia-content -->
+  </div><!-- /filosofia-shell -->
 </section>
