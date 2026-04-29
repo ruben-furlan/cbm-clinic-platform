@@ -38,6 +38,30 @@ export class ConfiguracionService {
     }
   }
 
+  async getSenaConfig(): Promise<{
+    activo: boolean;
+    cantidad: number;
+    horasReagendar: number;
+  }> {
+    const { data } = await supabase
+      .from('configuracion')
+      .select('clave, valor')
+      .in('clave', [
+        'sena_reserva_activo',
+        'sena_reserva_cantidad',
+        'sena_reserva_horas_reagendar'
+      ]);
+
+    const cfg: Record<string, string> = {};
+    data?.forEach(item => { cfg[item.clave] = item.valor; });
+
+    return {
+      activo: cfg['sena_reserva_activo'] === 'true',
+      cantidad: parseInt(cfg['sena_reserva_cantidad'] || '10', 10),
+      horasReagendar: parseInt(cfg['sena_reserva_horas_reagendar'] || '24', 10)
+    };
+  }
+
   async isBonosRegaloActivo(): Promise<boolean> {
     const valor = await this.getConfiguracion('bonos_regalo_activo');
     return valor === 'true';

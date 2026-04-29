@@ -712,3 +712,76 @@
     font-size: 13px;
   }
 }
+
+/* ── Seña de reserva ─────────────────────────────────────── */
+.sena-bloque {
+  margin-top: 16px;
+}
+
+.sena-separador {
+  border: none;
+  border-top: 0.5px solid #e5e7eb;
+  margin: 16px 0;
+}
+
+.sena-error {
+  background: rgba(244, 114, 182, 0.08);
+  border: 1px solid rgba(244, 114, 182, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.sena-error p {
+  font-size: 13px;
+  color: #be185d;
+  margin: 0 0 6px;
+}
+
+.sena-error a {
+  font-size: 13px;
+  color: #c44b8e;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sena-linea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.sena-titulo {
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.sena-precio {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.sena-texto {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 10px;
+}
+
+.sena-tarjetas {
+  display: flex;
+  gap: 6px;
+}
+
+.tarjeta-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  padding: 2px 6px;
+  letter-spacing: 0.5px;
+}

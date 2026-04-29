@@ -87,6 +87,17 @@ const handler: Handler = async (event) => {
               </p>
             </div>
             ` : ''}
+            ${data.senaAbonada ? `
+            <div style="border-top: 0.5px solid #e9d5ff; padding-top: 12px; margin-top: 12px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 13px; color: #6b7280;">✅ Seña abonada</span>
+                <span style="font-size: 13px; font-weight: 600; color: #7c3aed;">${data.senaAbonada}€</span>
+              </div>
+              <p style="font-size: 12px; color: #9ca3af; margin: 0;">
+                La seña se descontará del precio de tu sesión el día de la visita.
+              </p>
+            </div>
+            ` : ''}
           </div>
 
           <div style="background: #f0fdf4; border-radius: 12px;
@@ -186,6 +197,18 @@ const handler: Handler = async (event) => {
             <p style="margin: 4px 0 0; font-weight: 600; color: #a855f7; font-size: 15px;">
               ${data.codigoPromo}
             </p>
+          </div>
+          ` : ''}
+          ${data.senaAbonada ? `
+          <div style="background: #f0fdf4; border-radius: 10px; padding: 12px; margin-top: 16px; border: 1px solid #bbf7d0;">
+            <p style="margin: 0; font-size: 13px; color: #166534; font-weight: 600;">
+              💳 Seña cobrada: ${data.senaAbonada}€
+            </p>
+            ${data.stripePaymentId ? `
+            <p style="margin: 4px 0 0; font-size: 11px; color: #6b7280;">
+              Ref: ${data.stripePaymentId}
+            </p>
+            ` : ''}
           </div>
           ` : ''}
 
