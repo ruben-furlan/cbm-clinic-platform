@@ -24,6 +24,9 @@
     <button type="button" [class.active]="seccion === 'banner'" (click)="setSeccion('banner')">
       📢 Banner
     </button>
+    <button type="button" [class.active]="seccion === 'sena'" (click)="setSeccion('sena')">
+      💳 Seña
+    </button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -500,6 +503,54 @@
       </div>
     </section>
 
+  </ng-container>
+
+  <!-- ═══════════════════════════ SEÑA DE RESERVA ════════════════════════ -->
+  <ng-container *ngIf="seccion === 'sena'">
+    <section class="bonos-config">
+      <h3>Seña de reserva</h3>
+      <p>Cuando está activa, el cliente paga una seña online antes de confirmar su cita.</p>
+
+      <p class="status error" *ngIf="senaError">{{ senaError }}</p>
+      <p class="status message" *ngIf="senaMessage">{{ senaMessage }}</p>
+
+      <div class="modal-form">
+
+        <label class="inline-check">
+          <input type="checkbox" [(ngModel)]="senaConfig.activo" />
+          Cobrar seña de reserva
+        </label>
+
+        <div class="grid-two">
+          <label>
+            Cantidad (€)
+            <input type="number" [(ngModel)]="senaConfig.cantidad" min="1" step="1" />
+          </label>
+
+          <label>
+            Horas mínimas para reagendar
+            <input type="number" [(ngModel)]="senaConfig.horasReagendar" min="1" step="1" />
+          </label>
+        </div>
+
+        <div *ngIf="senaConfig.activo" style="background:#fdf4ff; border-radius:12px; padding:16px; border:1px solid #e9d5ff;">
+          <p style="font-size:13px; font-weight:600; color:#7c3aed; margin:0 0 8px;">Preview del mensaje al cliente</p>
+          <p style="font-size:13px; color:#374151; margin:0; line-height:1.6;">
+            🔒 Seña de reserva: <strong>{{ senaConfig.cantidad }}€</strong><br/>
+            La seña se descuenta del precio de tu sesión.
+            Si necesitas cambiar la fecha, solo avísanos con
+            {{ senaConfig.horasReagendar }}h de antelación y la reagendamos sin problema 😊
+          </p>
+        </div>
+
+      </div>
+
+      <div class="bonos-code-row" style="margin-top:20px">
+        <button type="button" class="btn-primary" (click)="saveSenaConfig()" [disabled]="senaSaving">
+          {{ senaSaving ? 'Guardando...' : 'Guardar configuración' }}
+        </button>
+      </div>
+    </section>
   </ng-container>
 
   <!-- ══════════════════════════════ NEWSLETTER ════════════════════════════ -->

@@ -308,11 +308,40 @@
                 </div>
               </div>
 
-              <p class="step3-info">
+              <p class="step3-info" *ngIf="!senaConfig.activo">
                 Te enviaremos un email de confirmación con el resumen de tu solicitud.<br />
                 Nos pondremos en contacto contigo para confirmar disponibilidad y horario.<br />
                 El pago se realiza en el centro el día de la sesión.
               </p>
+
+              <!-- Bloque seña de reserva -->
+              <div *ngIf="senaConfig.activo" class="sena-bloque">
+                <hr class="sena-separador" />
+
+                <div *ngIf="errorPago" class="sena-error">
+                  <p>{{ errorPago }}</p>
+                  <a href="https://wa.me/34662561672" target="_blank" rel="noopener noreferrer">
+                    Contactar por WhatsApp →
+                  </a>
+                </div>
+
+                <div class="sena-linea">
+                  <span class="sena-titulo">🔒 Seña de reserva</span>
+                  <span class="sena-precio">{{ senaConfig.cantidad }}€</span>
+                </div>
+
+                <p class="sena-texto">
+                  La seña se descuenta del precio de tu sesión.
+                  Si necesitas cambiar la fecha, solo avísanos con
+                  {{ senaConfig.horasReagendar }}h de antelación y la reagendamos sin problema 😊
+                </p>
+
+                <div class="sena-tarjetas">
+                  <span class="tarjeta-badge">VISA</span>
+                  <span class="tarjeta-badge">Mastercard</span>
+                  <span class="tarjeta-badge">Amex</span>
+                </div>
+              </div>
 
               <!-- Fallback WhatsApp si falla el envío de email -->
               <div *ngIf="errorEnvio" class="email-error-card">
@@ -331,15 +360,18 @@
               </div>
 
               <div class="step-actions step-actions--with-back">
-                <button type="button" class="step-btn-back" (click)="prevStep()" [disabled]="enviando">← Atrás</button>
+                <button type="button" class="step-btn-back" (click)="prevStep()" [disabled]="enviando || procesandoPago">← Atrás</button>
                 <button
                   type="button"
                   class="btn-primary step-btn-whatsapp"
-                  [class.step-btn-whatsapp--loading]="enviando"
-                  [disabled]="enviando"
+                  [class.step-btn-whatsapp--loading]="enviando || procesandoPago"
+                  [disabled]="enviando || procesandoPago"
                   (click)="confirmarSolicitud()"
                 >
-                  <span *ngIf="!enviando">Confirmar solicitud 💜</span>
+                  <span *ngIf="!enviando && !procesandoPago">
+                    {{ senaConfig.activo ? 'Pagar seña y confirmar 💜' : 'Confirmar solicitud 💜' }}
+                  </span>
+                  <span *ngIf="procesandoPago" class="whatsapp-feedback">Redirigiendo al pago...</span>
                   <span *ngIf="enviando" class="whatsapp-feedback">Enviando tu solicitud...</span>
                 </button>
               </div>

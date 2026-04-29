@@ -22,7 +22,7 @@ import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsle
 import { SimpleEditorComponent } from '../shared/components/simple-editor/simple-editor.component';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'banner';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'banner' | 'sena';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 
@@ -151,6 +151,12 @@ export class AdminDashboardComponent implements OnInit {
   bonoDetalle: BonoRegalo | null = null;
 
   readonly bonosEstados: BonoEstado[] = ['pendiente_pago', 'pagado', 'enviado', 'canjeado'];
+
+  // ── Seña de reserva ───────────────────────────────────────────────────────
+  senaConfig = { activo: false, cantidad: 10, horasReagendar: 24 };
+  senaSaving = false;
+  senaMessage = '';
+  senaError = '';
 
   // ── Banner de anuncio ─────────────────────────────────────────────────────
   bannerConfig = {
@@ -350,7 +356,7 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo(), this.loadNewsletter(), this.loadBannerConfig()]);
+    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo(), this.loadNewsletter(), this.loadBannerConfig(), this.loadSenaConfig()]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -406,6 +412,36 @@ export class AdminDashboardComponent implements OnInit {
 
   getCategoriaLabel(categoria: string): string {
     return this.tarifasService.getCategoriaLabel(categoria);
+  }
+
+  // ── Seña de reserva ───────────────────────────────────────────────────────
+
+  private async loadSenaConfig(): Promise<void> {
+    try {
+      this.senaConfig = await this.configuracionService.getSenaConfig();
+    } catch {
+      // keeps defaults
+    }
+  }
+
+  async saveSenaConfig(): Promise<void> {
+    this.senaSaving = true;
+    this.senaMessage = '';
+    this.senaError = '';
+    try {
+      await Promise.all([
+        this.configuracionService.updateConfiguracion('sena_reserva_activo', String(this.senaConfig.activo)),
+        this.configuracionService.updateConfiguracion('sena_reserva_cantidad', String(this.senaConfig.cantidad)),
+        this.configuracionService.updateConfiguracion('sena_reserva_horas_reagendar', String(this.senaConfig.horasReagendar))
+      ]);
+      this.senaMessage = 'Configuración de seña guardada ✓';
+      setTimeout(() => { this.zone.run(() => { this.senaMessage = ''; this.flushUiState(); }); }, 4000);
+    } catch {
+      this.senaError = 'Error al guardar la configuración';
+    } finally {
+      this.senaSaving = false;
+      this.flushUiState();
+    }
   }
 
   // ── Banner de anuncio ─────────────────────────────────────────────────────

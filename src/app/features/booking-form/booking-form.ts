@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
 import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
+import { ConfiguracionService } from '../../core/services/configuracion.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 
 interface TreatmentOption {
@@ -33,7 +34,8 @@ export class BookingFormComponent implements OnInit {
     private readonly languageService: LanguageService,
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
-    private readonly ngZone: NgZone
+    private readonly ngZone: NgZone,
+    private readonly configuracionService: ConfiguracionService
   ) {}
 
   currentStep = 1;
@@ -50,6 +52,11 @@ export class BookingFormComponent implements OnInit {
   enviando = false;
   errorEnvio = false;
   solicitudEnviada = false;
+
+  senaConfig = { activo: false, cantidad: 10, horasReagendar: 24 };
+  procesandoPago = false;
+  errorPago = '';
+  senaImportePagado: number | null = null;
 
   treatmentOptions: TreatmentOption[] = [];
 
@@ -79,6 +86,12 @@ export class BookingFormComponent implements OnInit {
     this.initAvailability();
 
     try {
+      this.senaConfig = await this.configuracionService.getSenaConfig();
+    } catch {
+      // mantiene defaults
+    }
+
+    try {
       const tarifas = await this.tarifasService.getTarifas();
       this.treatmentOptions = tarifas.map((tarifa) => this.toTreatmentOption(tarifa));
       this.applyPreselectionFromQuery();
@@ -88,6 +101,19 @@ export class BookingFormComponent implements OnInit {
     } finally {
       this.loadingTarifas = false;
       this.cdr.detectChanges();
+    }
+
+    if (isPlatformBrowser(this.platformId)) {
+      this.route.queryParams.subscribe(async (params) => {
+        if (params['pago'] === 'exitoso' && params['session_id']) {
+          await this.procesarPagoExitoso(params['session_id']);
+        } else if (params['pago'] === 'cancelado') {
+          this.errorPago =
+            'No se ha podido completar el pago. Puedes intentarlo de nuevo o contactarnos por WhatsApp.';
+          this.currentStep = 3;
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
@@ -296,8 +322,101 @@ export class BookingFormComponent implements OnInit {
   }
 
   async confirmarSolicitud(): Promise<void> {
+    if (this.senaConfig.activo) {
+      await this.iniciarPagoStripe();
+    } else {
+      await this.enviarSolicitud(null);
+    }
+  }
+
+  async iniciarPagoStripe(): Promise<void> {
+    this.procesandoPago = true;
+    this.errorPago = '';
+    this.cdr.detectChanges();
+
+    try {
+      const res = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cantidad: this.senaConfig.cantidad,
+          tratamiento: this.selectedTreatmentOption?.nombre,
+          email: this.formData.email,
+          nombre: `${this.formData.name} ${this.formData.surname || ''}`.trim(),
+          telefono: '+34' + this.formData.phone.replace(/\s/g, '')
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.url) {
+        sessionStorage.setItem(
+          'cbm_cita_datos',
+          JSON.stringify({
+            treatment: this.formData.treatment,
+            name: this.formData.name,
+            surname: this.formData.surname,
+            email: this.formData.email,
+            phone: this.formData.phone,
+            promoCode: this.promoCode
+          })
+        );
+        window.location.href = data.url;
+      } else {
+        throw new Error('No se recibió URL de pago');
+      }
+    } catch (err) {
+      console.error('Error Stripe:', err);
+      this.errorPago = 'No se ha podido iniciar el pago. Inténtalo de nuevo.';
+      this.procesandoPago = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async procesarPagoExitoso(sessionId: string): Promise<void> {
+    try {
+      const res = await fetch('/.netlify/functions/verify-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId })
+      });
+
+      const data = await res.json();
+
+      if (data.pagado) {
+        const datosSaved = sessionStorage.getItem('cbm_cita_datos');
+        if (datosSaved) {
+          const datos = JSON.parse(datosSaved);
+          this.formData.treatment = datos.treatment;
+          this.formData.name = datos.name;
+          this.formData.surname = datos.surname;
+          this.formData.email = datos.email;
+          this.formData.phone = datos.phone;
+          this.promoCode = datos.promoCode ?? '';
+          sessionStorage.removeItem('cbm_cita_datos');
+        }
+
+        this.senaImportePagado = this.senaConfig.cantidad;
+        this.currentStep = 3;
+        await this.enviarSolicitud(data);
+      } else {
+        this.errorPago =
+          'El pago no pudo verificarse. Contacta con nosotros por WhatsApp.';
+        this.currentStep = 3;
+        this.cdr.detectChanges();
+      }
+    } catch (err) {
+      console.error('Error verificando pago:', err);
+      this.errorPago = 'Error al verificar el pago. Contacta con nosotros.';
+      this.currentStep = 3;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async enviarSolicitud(pagoData: { paymentIntent?: string } | null): Promise<void> {
     this.enviando = true;
     this.errorEnvio = false;
+    this.cdr.detectChanges();
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
@@ -313,7 +432,9 @@ export class BookingFormComponent implements OnInit {
           telefono: '+34' + this.formData.phone.replace(/\s/g, ''),
           tratamiento: this.selectedTreatmentOption?.nombre,
           precio: this.selectedTreatmentOption?.precio,
-          codigoPromo: this.promoCode.trim() || null
+          codigoPromo: this.promoCode.trim() || null,
+          senaAbonada: this.senaImportePagado,
+          stripePaymentId: pagoData?.paymentIntent ?? null
         }),
         signal: controller.signal
       });
@@ -322,22 +443,15 @@ export class BookingFormComponent implements OnInit {
       if (!response.ok) {
         const details = await response.text().catch(() => '');
         console.error(`Error enviando solicitud HTTP ${response.status}:`, details);
-        this.enviando = false;
-        this.errorEnvio = true;
-        this.cdr.detectChanges();
-        return;
       }
-
+    } catch (err) {
+      clearTimeout(timeout);
+      console.error('Error enviando solicitud:', err);
+    } finally {
       this.enviando = false;
       this.solicitudEnviada = true;
       this.cdr.detectChanges();
       this.scrollToForm();
-    } catch (err) {
-      clearTimeout(timeout);
-      console.error('Error enviando solicitud:', err);
-      this.enviando = false;
-      this.errorEnvio = true;
-      this.cdr.detectChanges();
     }
   }
 
