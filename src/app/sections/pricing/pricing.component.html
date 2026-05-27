@@ -68,6 +68,12 @@
                     </div>
                   </ng-container>
 
+                  <!-- Horarios disponibles (SPEC-002) -->
+                  <div class="tarifa-horarios" *ngIf="hasHorarios(tarifa)">
+                    <span class="tarifa-horarios__label">Horarios disponibles</span>
+                    <p class="tarifa-horarios__texto">{{ tarifa.horarios }}</p>
+                  </div>
+
                   <!-- Badge temporal -->
                   <span class="tarifa-badge"
                         *ngIf="tarifa.fecha_fin_promo">

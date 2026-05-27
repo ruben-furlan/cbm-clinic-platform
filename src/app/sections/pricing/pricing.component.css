@@ -349,3 +349,27 @@
     text-align: center;
   }
 }
+
+/* ── Horarios disponibles (SPEC-002) ────────────────────── */
+
+.tarifa-horarios {
+  margin-top: 8px;
+}
+
+.tarifa-horarios__label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary);
+  margin-bottom: 4px;
+}
+
+.tarifa-horarios__texto {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text);
+  white-space: pre-line;
+  line-height: 1.5;
+}

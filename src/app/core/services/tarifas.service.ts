@@ -9,6 +9,7 @@ export interface Tarifa {
   categoria: TarifaCategoria;
   nombre: string;
   descripcion?: string | null;
+  horarios?: string | null; // SPEC-002
   precio: number;
   unidad: TarifaUnidad;
   activo: boolean;

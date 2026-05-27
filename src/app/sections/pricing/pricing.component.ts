@@ -86,4 +86,9 @@ export class PricingComponent implements OnInit {
     const d = new Date(fecha + 'T00:00:00');
     return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
   }
+
+  // SPEC-002: indica si una tarifa tiene horarios con contenido real
+  hasHorarios(tarifa: Tarifa): boolean {
+    return !!(tarifa.horarios?.trim());
+  }
 }

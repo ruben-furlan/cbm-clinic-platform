@@ -268,7 +268,8 @@ export class AdminDashboardComponent implements OnInit {
       unidad: ['€' as '€' | '€/mes', Validators.required],
       orden: [0, Validators.required],
       fecha_fin_promo: [''],
-      activo: [true]
+      activo: [true],
+      horarios: [''] // SPEC-002
     });
 
     this.faqForm = this.fb.nonNullable.group({
@@ -514,6 +515,7 @@ export class AdminDashboardComponent implements OnInit {
       categoria: 'fisioterapia',
       nombre: '',
       descripcion: '',
+      horarios: '', // SPEC-002
       precio: 0,
       unidad: '€',
       orden: 0,
@@ -530,6 +532,7 @@ export class AdminDashboardComponent implements OnInit {
       categoria: tarifa.categoria,
       nombre: tarifa.nombre,
       descripcion: tarifa.descripcion ?? '',
+      horarios: tarifa.horarios ?? '', // SPEC-002
       precio: tarifa.precio,
       unidad: tarifa.unidad,
       orden: tarifa.orden,
@@ -567,6 +570,7 @@ export class AdminDashboardComponent implements OnInit {
     const payload = {
       ...formValue,
       descripcion: formValue.descripcion.trim() ? formValue.descripcion.trim() : null,
+      horarios: formValue.horarios.trim() ? formValue.horarios.trim() : null, // SPEC-002
       fecha_fin_promo: formValue.categoria === 'promocion' && formValue.fecha_fin_promo ? formValue.fecha_fin_promo : null
     };
 
@@ -587,6 +591,7 @@ export class AdminDashboardComponent implements OnInit {
         categoria: 'fisioterapia',
         nombre: '',
         descripcion: '',
+        horarios: '', // SPEC-002
         precio: 0,
         unidad: '€',
         orden: 0,

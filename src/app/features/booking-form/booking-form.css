@@ -284,6 +284,15 @@
   line-height: 1.4;
 }
 
+/* SPEC-002 */
+.treatment-card-horarios{
+  margin: 5px 0 0;
+  color: #7a728a;
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
 .treatment-card-badge{
   display: inline-block;
   margin-top: 7px;

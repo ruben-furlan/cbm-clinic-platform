@@ -15,6 +15,7 @@ interface TreatmentOption {
   nombre: string;
   precio: string;
   descripcion?: string | null;
+  horarios?: string | null; // SPEC-002
   showBadge: boolean;
 }
 
@@ -367,6 +368,7 @@ export class BookingFormComponent implements OnInit {
       nombre: tarifa.nombre,
       precio: `${tarifa.precio}${tarifa.unidad}`,
       descripcion: tarifa.descripcion,
+      horarios: tarifa.horarios, // SPEC-002
       type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session',
       categoria: tarifa.categoria,
       showBadge: isPilates || isBundle
