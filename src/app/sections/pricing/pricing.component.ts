@@ -6,11 +6,12 @@ import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tar
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { ConfiguracionService } from '../../core/services/configuracion.service';
 import { DomicilioFormComponent } from '../../shared/components/domicilio-form/domicilio-form.component';
+import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
 
 @Component({
   selector: 'app-pricing',
   standalone: true,
-  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, DomicilioFormComponent],
+  imports: [NgFor, NgIf, RevealOnScrollDirective, CbmLoaderComponent, DomicilioFormComponent, HorarioChipsComponent],
   templateUrl: './pricing.component.html',
   styleUrls: ['./pricing.component.css']
 })
@@ -86,4 +87,5 @@ export class PricingComponent implements OnInit {
     const d = new Date(fecha + 'T00:00:00');
     return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
   }
+
 }

@@ -1488,3 +1488,103 @@ textarea:disabled {
   border-radius: 4px;
   flex-shrink: 0;
 }
+
+/* ── Horarios editor (tarifa modal) ─────────────────────────────────────── */
+
+.horarios-editor {
+  background: #f4f3f8;
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+
+.horarios-editor__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.horarios-editor__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f1b2d;
+}
+
+.horarios-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.horario-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.horario-item__dias {
+  font-weight: 600;
+  color: #c44b8e;
+  min-width: 60px;
+}
+
+.horario-item__hora {
+  color: #4f4a5f;
+  flex: 1;
+}
+
+.horarios-empty {
+  font-size: 13px;
+  color: #9090a8;
+  margin: 0;
+}
+
+.horario-nueva-franja {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.dias-toggles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dia-toggle {
+  border: 1.5px solid #d0cce0;
+  background: transparent;
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #5f5a6f;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 36px;
+  text-align: center;
+}
+
+.dia-toggle:hover {
+  border-color: #c44b8e;
+  color: #c44b8e;
+}
+
+.dia-toggle--activo {
+  background: #c44b8e;
+  border-color: #c44b8e;
+  color: #fff;
+}
+
+.horario-nueva-franja__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}

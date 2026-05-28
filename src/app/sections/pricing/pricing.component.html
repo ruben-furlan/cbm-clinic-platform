@@ -68,6 +68,9 @@
                     </div>
                   </ng-container>
 
+                  <!-- Horarios disponibles -->
+                  <app-horario-chips [horarios]="tarifa.horarios"></app-horario-chips>
+
                   <!-- Badge temporal -->
                   <span class="tarifa-badge"
                         *ngIf="tarifa.fecha_fin_promo">

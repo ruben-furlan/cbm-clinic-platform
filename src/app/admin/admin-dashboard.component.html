@@ -645,6 +645,57 @@
         <textarea rows="3" formControlName="descripcion"></textarea>
       </label>
 
+      <!-- Horarios (solo Pilates) -->
+      <div class="horarios-editor" *ngIf="isPilatesSelected">
+        <div class="horarios-editor__header">
+          <span class="horarios-editor__label">Horarios</span>
+          <button type="button" class="btn-ghost btn-sm" (click)="adminNuevaFranjaActiva = true"
+                  *ngIf="!adminNuevaFranjaActiva">
+            + Añadir horario
+          </button>
+        </div>
+
+        <div class="horarios-lista" *ngIf="adminHorarios.length">
+          <div class="horario-item" *ngFor="let franja of adminHorarios; let i = index; trackBy: trackByIndex">
+            <span class="horario-item__dias">{{ franja.dias.join(' ') }}</span>
+            <span class="horario-item__hora">{{ franja.inicio }} – {{ franja.fin }}</span>
+            <button type="button" class="btn-danger btn-xs" (click)="eliminarAdminFranja(i)" aria-label="Eliminar franja">×</button>
+          </div>
+        </div>
+
+        <p class="horarios-empty" *ngIf="!adminHorarios.length && !adminNuevaFranjaActiva">Sin horarios añadidos</p>
+
+        <div class="horario-nueva-franja" *ngIf="adminNuevaFranjaActiva">
+          <div class="dias-toggles">
+            <button
+              type="button"
+              class="dia-toggle"
+              *ngFor="let dia of diasSemana"
+              [class.dia-toggle--activo]="adminNuevaFranjaDias.includes(dia)"
+              (click)="toggleAdminDia(dia)">
+              {{ dia }}
+            </button>
+          </div>
+          <div class="grid-two" style="margin-top:10px">
+            <label>
+              Inicio
+              <input type="time" [value]="adminNuevaFranjaInicio" (change)="onNuevaFranjaInicioChange($event)" />
+            </label>
+            <label>
+              Fin
+              <input type="time" [value]="adminNuevaFranjaFin" (change)="onNuevaFranjaFinChange($event)" />
+            </label>
+          </div>
+          <div class="horario-nueva-franja__actions">
+            <button type="button" class="btn-ghost btn-sm" (click)="adminNuevaFranjaActiva = false">Cancelar</button>
+            <button type="button" class="btn-primary btn-sm" (click)="confirmarNuevaFranja()"
+                    [disabled]="!adminNuevaFranjaDias.length || !adminNuevaFranjaInicio || !adminNuevaFranjaFin">
+              Añadir franja
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="grid-two">
         <label>
           Precio
