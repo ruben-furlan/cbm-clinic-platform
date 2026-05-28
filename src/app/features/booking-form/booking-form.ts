@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
-import { Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
+import { HorarioFranja, Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
+import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
 
 interface TreatmentOption {
   value: string;
@@ -15,14 +16,14 @@ interface TreatmentOption {
   nombre: string;
   precio: string;
   descripcion?: string | null;
-  horarios?: string | null; // SPEC-002
+  horarios?: HorarioFranja[] | null;
   showBadge: boolean;
 }
 
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RevealOnScrollDirective, CbmLoaderComponent],
+  imports: [CommonModule, FormsModule, RouterLink, RevealOnScrollDirective, CbmLoaderComponent, HorarioChipsComponent],
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css']
 })

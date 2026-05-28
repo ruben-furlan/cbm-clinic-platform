@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TarifasService, Tarifa, TarifaCategoria } from '../core/services/tarifas.service';
+import { TarifasService, Tarifa, TarifaCategoria, HorarioFranja } from '../core/services/tarifas.service';
 import { FaqsService, Faq } from '../core/services/faqs.service';
 import { BlogService, BlogPost, BlogContentBlock, BlogContentBlockType } from '../core/services/blog.service';
 import {
@@ -49,6 +49,14 @@ export class AdminDashboardComponent implements OnInit {
 
   isModalOpen = false;
   editingTarifa: Tarifa | null = null;
+
+  // ── Horarios editor (admin tarifa modal) ──────────────────────────────────
+  adminHorarios: HorarioFranja[] = [];
+  adminNuevaFranjaActiva = false;
+  adminNuevaFranjaDias: string[] = [];
+  adminNuevaFranjaInicio = '';
+  adminNuevaFranjaFin = '';
+  readonly diasSemana = ['L', 'M', 'X', 'J', 'V', 'S'];
 
   readonly categoriaTabs: { value: FiltroCategoria; label: string }[] = [
     { value: 'todas', label: 'Todas' },
@@ -268,8 +276,7 @@ export class AdminDashboardComponent implements OnInit {
       unidad: ['€' as '€' | '€/mes', Validators.required],
       orden: [0, Validators.required],
       fecha_fin_promo: [''],
-      activo: [true],
-      horarios: [''] // SPEC-002
+      activo: [true]
     });
 
     this.faqForm = this.fb.nonNullable.group({
@@ -338,6 +345,44 @@ export class AdminDashboardComponent implements OnInit {
 
   get isPromoSelected(): boolean {
     return this.tarifaForm.controls.categoria.value === 'promocion';
+  }
+
+  get isPilatesSelected(): boolean {
+    return this.tarifaForm.controls.categoria.value === 'pilates';
+  }
+
+  toggleAdminDia(dia: string): void {
+    if (this.adminNuevaFranjaDias.includes(dia)) {
+      this.adminNuevaFranjaDias = this.adminNuevaFranjaDias.filter((d) => d !== dia);
+    } else {
+      this.adminNuevaFranjaDias = [...this.adminNuevaFranjaDias, dia];
+    }
+  }
+
+  confirmarNuevaFranja(): void {
+    if (!this.adminNuevaFranjaDias.length || !this.adminNuevaFranjaInicio || !this.adminNuevaFranjaFin) {
+      return;
+    }
+    this.adminHorarios = [
+      ...this.adminHorarios,
+      { dias: [...this.adminNuevaFranjaDias], inicio: this.adminNuevaFranjaInicio, fin: this.adminNuevaFranjaFin }
+    ];
+    this.adminNuevaFranjaDias = [];
+    this.adminNuevaFranjaInicio = '';
+    this.adminNuevaFranjaFin = '';
+    this.adminNuevaFranjaActiva = false;
+  }
+
+  eliminarAdminFranja(index: number): void {
+    this.adminHorarios = this.adminHorarios.filter((_, i) => i !== index);
+  }
+
+  onNuevaFranjaInicioChange(event: Event): void {
+    this.adminNuevaFranjaInicio = (event.target as HTMLInputElement).value;
+  }
+
+  onNuevaFranjaFinChange(event: Event): void {
+    this.adminNuevaFranjaFin = (event.target as HTMLInputElement).value;
   }
 
   get showInitialLoader(): boolean {
@@ -515,13 +560,17 @@ export class AdminDashboardComponent implements OnInit {
       categoria: 'fisioterapia',
       nombre: '',
       descripcion: '',
-      horarios: '', // SPEC-002
       precio: 0,
       unidad: '€',
       orden: 0,
       fecha_fin_promo: '',
       activo: true
     });
+    this.adminHorarios = [];
+    this.adminNuevaFranjaActiva = false;
+    this.adminNuevaFranjaDias = [];
+    this.adminNuevaFranjaInicio = '';
+    this.adminNuevaFranjaFin = '';
     this.message = '';
     this.isModalOpen = true;
   }
@@ -532,13 +581,17 @@ export class AdminDashboardComponent implements OnInit {
       categoria: tarifa.categoria,
       nombre: tarifa.nombre,
       descripcion: tarifa.descripcion ?? '',
-      horarios: tarifa.horarios ?? '', // SPEC-002
       precio: tarifa.precio,
       unidad: tarifa.unidad,
       orden: tarifa.orden,
       fecha_fin_promo: tarifa.fecha_fin_promo ?? '',
       activo: tarifa.activo
     });
+    this.adminHorarios = Array.isArray(tarifa.horarios) ? tarifa.horarios.map((f) => ({ ...f, dias: [...f.dias] })) : [];
+    this.adminNuevaFranjaActiva = false;
+    this.adminNuevaFranjaDias = [];
+    this.adminNuevaFranjaInicio = '';
+    this.adminNuevaFranjaFin = '';
     this.message = '';
     this.isModalOpen = true;
   }
@@ -570,7 +623,7 @@ export class AdminDashboardComponent implements OnInit {
     const payload = {
       ...formValue,
       descripcion: formValue.descripcion.trim() ? formValue.descripcion.trim() : null,
-      horarios: formValue.horarios.trim() ? formValue.horarios.trim() : null, // SPEC-002
+      horarios: this.adminHorarios.length > 0 ? this.adminHorarios : null,
       fecha_fin_promo: formValue.categoria === 'promocion' && formValue.fecha_fin_promo ? formValue.fecha_fin_promo : null
     };
 
@@ -587,11 +640,12 @@ export class AdminDashboardComponent implements OnInit {
 
       this.isModalOpen = false;
       this.editingTarifa = null;
+      this.adminHorarios = [];
+      this.adminNuevaFranjaActiva = false;
       this.tarifaForm.reset({
         categoria: 'fisioterapia',
         nombre: '',
         descripcion: '',
-        horarios: '', // SPEC-002
         precio: 0,
         unidad: '€',
         orden: 0,

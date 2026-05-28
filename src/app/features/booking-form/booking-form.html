@@ -115,7 +115,7 @@
                         <strong class="treatment-card-price">{{ option.precio }}</strong>
                       </div>
                       <p *ngIf="option.descripcion" class="treatment-card-desc">{{ option.descripcion }}</p>
-                      <p *ngIf="option.horarios?.trim()" class="treatment-card-horarios">{{ option.horarios }}</p>
+                      <app-horario-chips [horarios]="option.horarios"></app-horario-chips>
                       <span *ngIf="option.showBadge" class="treatment-card-badge">
                         Inicio de plan · Primera sesión
                       </span>

@@ -1,0 +1,14 @@
+<div class="horario-chips-block" *ngIf="hasHorarios">
+  <span class="horario-chips-block__label">
+    <svg class="horario-chips-block__icon" viewBox="0 0 24 24" width="12" height="12" aria-hidden="true">
+      <path fill="currentColor" d="M19 3h-1V1h-2v2H8V1H6v2H5C3.9 3 3 3.9 3 5v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+    </svg>
+    Horarios disponibles
+  </span>
+  <div class="horario-chips-lista">
+    <span class="horario-chip" *ngFor="let franja of horarios">
+      <span class="horario-chip__dias">{{ franja.dias.join(' ') }}</span>
+      <span class="horario-chip__hora">{{ franja.inicio }} - {{ franja.fin }}</span>
+    </span>
+  </div>
+</div>

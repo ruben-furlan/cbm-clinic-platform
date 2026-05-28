@@ -4,12 +4,18 @@ import { supabase } from '../supabase.client';
 export type TarifaCategoria = 'fisioterapia' | 'pilates' | 'promocion';
 export type TarifaUnidad = '€' | '€/mes';
 
+export interface HorarioFranja {
+  dias: string[];
+  inicio: string;
+  fin: string;
+}
+
 export interface Tarifa {
   id: string;
   categoria: TarifaCategoria;
   nombre: string;
   descripcion?: string | null;
-  horarios?: string | null; // SPEC-002
+  horarios?: HorarioFranja[] | null;
   precio: number;
   unidad: TarifaUnidad;
   activo: boolean;
