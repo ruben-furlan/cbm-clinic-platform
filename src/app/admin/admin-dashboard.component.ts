@@ -56,7 +56,7 @@ export class AdminDashboardComponent implements OnInit {
   adminNuevaFranjaDias: string[] = [];
   adminNuevaFranjaInicio = '';
   adminNuevaFranjaFin = '';
-  readonly diasSemana = ['L', 'M', 'X', 'J', 'V', 'S'];
+  readonly diasSemana = ['L', 'M', 'Mi', 'J', 'V', 'S'];
 
   readonly categoriaTabs: { value: FiltroCategoria; label: string }[] = [
     { value: 'todas', label: 'Todas' },
