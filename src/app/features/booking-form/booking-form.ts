@@ -8,7 +8,7 @@ import {
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import {
   HorarioFranja,
@@ -18,7 +18,7 @@ import {
 } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
-import { AppointmentDateTime, Step3CalendlyComponent } from './step3-calendly.component';
+import { Step3CalendlyComponent } from './step3-calendly.component';
 
 interface TreatmentOption {
   value: string;
@@ -37,7 +37,6 @@ interface TreatmentOption {
   standalone: true,
   imports: [
     CommonModule,
-    RouterLink,
     RevealOnScrollDirective,
     CbmLoaderComponent,
     HorarioChipsComponent,
@@ -63,11 +62,6 @@ export class BookingFormComponent implements OnInit {
   loadingTarifas = true;
   errorTarifas = false;
   preselectedFromPricing = false;
-  enviando = false;
-  errorEnvio = false;
-  solicitudEnviada = false;
-
-  appointmentDateTime: AppointmentDateTime | null = null;
 
   treatmentOptions: TreatmentOption[] = [];
   formData = { treatment: '' };
@@ -103,7 +97,7 @@ export class BookingFormComponent implements OnInit {
 
   private initAvailability(): void {
     this.availabilityType = 'green';
-    this.availabilityText = 'Solo falta un paso para confirmar tu cita';
+    this.availabilityText = 'Elige tu tratamiento y reserva tu cita ahora';
   }
 
   private applyPreselectionFromQuery(): void {
@@ -177,19 +171,8 @@ export class BookingFormComponent implements OnInit {
       this.preselectedFromPricing = false;
       this.formData.treatment = '';
     }
-    if (this.currentStep === 3) {
-      this.appointmentDateTime = null;
-    }
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;
-  }
-
-  onCalendlyScheduled(event: AppointmentDateTime): void {
-    this.appointmentDateTime = event;
-    this.stepAnimClass = 'step-enter-forward';
-    this.currentStep = 3;
-    this.cdr.detectChanges();
-    this.scrollToForm();
   }
 
   private scrollToForm(): void {
@@ -202,62 +185,6 @@ export class BookingFormComponent implements OnInit {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }, 100);
-  }
-
-  async confirmarSolicitud(): Promise<void> {
-    this.enviando = true;
-    this.errorEnvio = false;
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-
-    try {
-      const response = await fetch('/.netlify/functions/send-appointment-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: this.appointmentDateTime?.inviteeName ?? '',
-          email: this.appointmentDateTime?.inviteeEmail ?? '',
-          tratamiento: this.selectedTreatmentOption?.nombre,
-          precio: this.selectedTreatmentOption?.precio,
-          fecha: this.appointmentDateTime?.fecha,
-          hora: this.appointmentDateTime?.hora,
-          telefono: '',
-        }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
-
-      if (!response.ok) {
-        const details = await response.text().catch(() => '');
-        console.error(`Error enviando solicitud HTTP ${response.status}:`, details);
-        this.enviando = false;
-        this.errorEnvio = true;
-        this.cdr.detectChanges();
-        return;
-      }
-
-      this.enviando = false;
-      this.solicitudEnviada = true;
-      this.cdr.detectChanges();
-      this.scrollToForm();
-    } catch (err) {
-      clearTimeout(timeout);
-      console.error('Error enviando solicitud:', err);
-      this.enviando = false;
-      this.errorEnvio = true;
-      this.cdr.detectChanges();
-    }
-  }
-
-  get whatsAppFallbackUrl(): string {
-    const phone = '34662561672';
-    const msg =
-      `Hola CBM 😊 Quiero solicitar una cita.\n` +
-      `Tratamiento: ${this.selectedTreatmentOption?.nombre}\n` +
-      `Nombre: ${this.appointmentDateTime?.inviteeName ?? ''}\n` +
-      `Email: ${this.appointmentDateTime?.inviteeEmail ?? ''}`;
-    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
   }
 
   private toTreatmentOption(tarifa: Tarifa): TreatmentOption {

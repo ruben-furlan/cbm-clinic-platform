@@ -5,7 +5,8 @@
         <p class="section-tag">Solicitar cita</p>
         <h2>Elige tu tratamiento y solicita tu cita</h2>
         <p class="section-description">
-          Selecciona tu tratamiento, elige tu fecha y hora, y te confirmamos la cita por email.
+          Selecciona tu tratamiento y elige tu fecha y hora. Recibirás la confirmación
+          automáticamente. 💜
         </p>
       </div>
 
@@ -50,36 +51,11 @@
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 1"></div>
 
-          <div
-            class="stepper-step-item"
-            [class.stepper-step-item--active]="currentStep === 2"
-            [class.stepper-step-item--done]="currentStep > 2"
-          >
+          <div class="stepper-step-item" [class.stepper-step-item--active]="currentStep === 2">
             <div class="stepper-circle">
-              <span *ngIf="currentStep <= 2">2</span>
-              <svg
-                *ngIf="currentStep > 2"
-                viewBox="0 0 24 24"
-                width="14"
-                height="14"
-                aria-hidden="true"
-              >
-                <path
-                  fill="currentColor"
-                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
-                />
-              </svg>
+              <span>2</span>
             </div>
             <span class="stepper-label">Fecha y hora</span>
-          </div>
-
-          <div class="stepper-line" [class.stepper-line--filled]="currentStep > 2"></div>
-
-          <div class="stepper-step-item" [class.stepper-step-item--active]="currentStep === 3">
-            <div class="stepper-circle">
-              <span>3</span>
-            </div>
-            <span class="stepper-label">¡Listo!</span>
           </div>
         </div>
 
@@ -165,104 +141,11 @@
             <h3 class="step-title">Elige tu fecha y hora</h3>
             <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
-            <app-step3-calendly (scheduled)="onCalendlyScheduled($event)"></app-step3-calendly>
+            <app-step3-calendly></app-step3-calendly>
 
             <div class="step-actions step-actions--with-back">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
-              <span class="calendly-hint"
-                >El calendario avanzará automáticamente al seleccionar una fecha</span
-              >
             </div>
-          </div>
-
-          <!-- Paso 3: Resumen + confirmar -->
-          <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
-            <!-- Estado éxito -->
-            <ng-container *ngIf="solicitudEnviada">
-              <div class="success-screen">
-                <div class="success-icon" aria-hidden="true">✅</div>
-                <h3 class="step-title">¡Solicitud enviada! 💜</h3>
-                <p class="success-subtitle">
-                  Te hemos enviado un email de confirmación a
-                  <strong>{{ appointmentDateTime?.inviteeEmail }}</strong
-                  >. Nos pondremos en contacto contigo para confirmar tu cita.
-                </p>
-                <a routerLink="/" class="step-btn-back btn-back-home">← Volver al inicio</a>
-              </div>
-            </ng-container>
-
-            <!-- Estado normal / enviando / error -->
-            <ng-container *ngIf="!solicitudEnviada">
-              <h3 class="step-title">¡Todo listo, {{ appointmentDateTime?.inviteeName }}! 🎉</h3>
-
-              <div class="summary-card">
-                <div class="summary-row">
-                  <span class="summary-label">Tratamiento</span>
-                  <span class="summary-value">
-                    {{ selectedTreatmentOption?.nombre }}
-                    <strong class="summary-price">{{ selectedTreatmentOption?.precio }}</strong>
-                  </span>
-                </div>
-                <div *ngIf="appointmentDateTime" class="summary-row">
-                  <span class="summary-label">Fecha</span>
-                  <span class="summary-value">{{ appointmentDateTime?.fecha }}</span>
-                </div>
-                <div *ngIf="appointmentDateTime" class="summary-row">
-                  <span class="summary-label">Hora</span>
-                  <span class="summary-value">{{ appointmentDateTime?.hora }}</span>
-                </div>
-                <div *ngIf="appointmentDateTime?.inviteeName" class="summary-row">
-                  <span class="summary-label">Nombre</span>
-                  <span class="summary-value">{{ appointmentDateTime?.inviteeName }}</span>
-                </div>
-                <div *ngIf="appointmentDateTime?.inviteeEmail" class="summary-row">
-                  <span class="summary-label">Email</span>
-                  <span class="summary-value">{{ appointmentDateTime?.inviteeEmail }}</span>
-                </div>
-              </div>
-
-              <p class="step3-info">
-                Te enviaremos un email de confirmación con el resumen de tu cita.<br />
-                El pago se realiza en el centro el día de la sesión.
-              </p>
-
-              <!-- Fallback WhatsApp si falla el envío de email -->
-              <div *ngIf="errorEnvio" class="email-error-card">
-                <p class="email-error-text">
-                  No pudimos enviar el email en este momento. Puedes contactarnos directamente por
-                  WhatsApp:
-                </p>
-                <a
-                  [href]="whatsAppFallbackUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="btn-whatsapp-fallback"
-                >
-                  💬 Escríbenos por WhatsApp
-                </a>
-              </div>
-
-              <div class="step-actions step-actions--with-back">
-                <button
-                  type="button"
-                  class="step-btn-back"
-                  (click)="prevStep()"
-                  [disabled]="enviando"
-                >
-                  ← Atrás
-                </button>
-                <button
-                  type="button"
-                  class="btn-primary step-btn-whatsapp"
-                  [class.step-btn-whatsapp--loading]="enviando"
-                  [disabled]="enviando"
-                  (click)="confirmarSolicitud()"
-                >
-                  <span *ngIf="!enviando">Confirmar solicitud 💜</span>
-                  <span *ngIf="enviando" class="whatsapp-feedback">Enviando tu solicitud...</span>
-                </button>
-              </div>
-            </ng-container>
           </div>
         </form>
       </div>
