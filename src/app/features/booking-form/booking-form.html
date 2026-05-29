@@ -5,7 +5,7 @@
         <p class="section-tag">Solicitar cita</p>
         <h2>Elige tu tratamiento y solicita tu cita</h2>
         <p class="section-description">
-          Selecciona tu tratamiento, déjanos tus datos y te confirmamos la cita por email.
+          Selecciona tu tratamiento, elige fecha y hora, y te confirmamos la cita por email.
         </p>
       </div>
 
@@ -70,7 +70,7 @@
                 />
               </svg>
             </div>
-            <span class="stepper-label">Tus datos</span>
+            <span class="stepper-label">Fecha y hora</span>
           </div>
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 2"></div>
@@ -95,7 +95,7 @@
                 />
               </svg>
             </div>
-            <span class="stepper-label">Fecha y hora</span>
+            <span class="stepper-label">Tus datos</span>
           </div>
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 3"></div>
@@ -185,8 +185,23 @@
             </ng-container>
           </div>
 
-          <!-- Paso 2: Tus datos -->
+          <!-- Paso 2: Fecha y hora (Calendly) -->
           <div *ngIf="currentStep === 2" [class]="'stepper-pane ' + stepAnimClass">
+            <h3 class="step-title">Elige tu fecha y hora</h3>
+            <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
+
+            <app-step3-calendly (scheduled)="onCalendlyScheduled($event)"></app-step3-calendly>
+
+            <div class="step-actions step-actions--with-back">
+              <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
+              <span class="calendly-hint"
+                >El calendario avanzará automáticamente al seleccionar una fecha</span
+              >
+            </div>
+          </div>
+
+          <!-- Paso 3: Tus datos -->
+          <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
             <div
               *ngIf="preselectedFromPricing && selectedTreatmentOption"
               class="badge-preseleccionado"
@@ -196,7 +211,7 @@
                 >{{ selectedTreatmentOption.nombre }} · {{ selectedTreatmentOption.precio }}</strong
               >
             </div>
-            <h3 class="step-title">¿Cómo te llamas?</h3>
+            <h3 class="step-title">Confirma tus datos</h3>
 
             <div class="form-grid">
               <div class="form-group">
@@ -208,9 +223,9 @@
                   [(ngModel)]="formData.name"
                   [ngModelOptions]="{ standalone: true }"
                   placeholder="Tu nombre"
-                  [class.input-error]="step2Touched && !formData.name.trim()"
+                  [class.input-error]="step3Touched && !formData.name.trim()"
                 />
-                <span *ngIf="step2Touched && !formData.name.trim()" class="field-error">
+                <span *ngIf="step3Touched && !formData.name.trim()" class="field-error">
                   El nombre es obligatorio.
                 </span>
               </div>
@@ -237,12 +252,12 @@
                 [(ngModel)]="formData.email"
                 [ngModelOptions]="{ standalone: true }"
                 placeholder="tuemail@ejemplo.com"
-                [class.input-error]="step2Touched && (!formData.email || !isEmailValid)"
+                [class.input-error]="step3Touched && (!formData.email || !isEmailValid)"
               />
-              <span *ngIf="step2Touched && !formData.email" class="field-error">
+              <span *ngIf="step3Touched && !formData.email" class="field-error">
                 El correo es obligatorio.
               </span>
-              <span *ngIf="step2Touched && formData.email && !isEmailValid" class="field-error">
+              <span *ngIf="step3Touched && formData.email && !isEmailValid" class="field-error">
                 Introduce un correo válido.
               </span>
             </div>
@@ -251,7 +266,7 @@
               <label for="phone">Teléfono *</label>
               <div
                 class="phone-input-group"
-                [class.phone-input-group--error]="step2Touched && !isPhoneValid"
+                [class.phone-input-group--error]="step3Touched && !isPhoneValid"
               >
                 <span class="phone-prefix">+34</span>
                 <input
@@ -265,7 +280,7 @@
                   autocomplete="tel-national"
                 />
               </div>
-              <span *ngIf="step2Touched && !isPhoneValid" class="field-error">
+              <span *ngIf="step3Touched && !isPhoneValid" class="field-error">
                 Introduce un teléfono válido.
               </span>
             </div>
@@ -292,8 +307,8 @@
                 autocomplete="off"
               />
               <p class="promo-help">
-                Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al
-                revisar tu solicitud.
+                Si tienes un código promocional, escríbelo aquí y lo confirmaremos al revisar tu
+                solicitud.
               </p>
             </div>
 
@@ -302,30 +317,11 @@
               <button
                 type="button"
                 class="btn-primary step-btn-continue"
-                [class.step-btn-continue--disabled]="step2Touched && !canAdvanceStep2"
+                [class.step-btn-continue--disabled]="step3Touched && !canAdvanceStep3"
                 (click)="nextStep()"
               >
                 Continuar →
               </button>
-            </div>
-          </div>
-
-          <!-- Paso 3: Fecha y hora (Calendly) -->
-          <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
-            <h3 class="step-title">Elige tu fecha y hora</h3>
-            <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
-
-            <app-step3-calendly
-              [name]="formData.name"
-              [email]="formData.email"
-              (scheduled)="onCalendlyScheduled($event)"
-            ></app-step3-calendly>
-
-            <div class="step-actions step-actions--with-back">
-              <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
-              <span class="calendly-hint"
-                >El calendario avanzará automáticamente al seleccionar una fecha</span
-              >
             </div>
           </div>
 

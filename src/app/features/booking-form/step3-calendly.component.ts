@@ -1,12 +1,4 @@
-import {
-  Component,
-  AfterViewInit,
-  OnDestroy,
-  Input,
-  Output,
-  EventEmitter,
-  NgZone,
-} from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, Output, EventEmitter, NgZone } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { inject, PLATFORM_ID } from '@angular/core';
 
@@ -16,6 +8,8 @@ export interface AppointmentDateTime {
   fecha: string; // dd/MM/yyyy
   hora: string; // HH:mm
   isoString: string;
+  inviteeName: string;
+  inviteeEmail: string;
 }
 
 const CALENDLY_URL =
@@ -27,8 +21,6 @@ const CALENDLY_URL =
   template: ` <div id="calendly-inline-widget" style="min-width:320px;height:630px;"></div> `,
 })
 export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
-  @Input() name = '';
-  @Input() email = '';
   @Output() scheduled = new EventEmitter<AppointmentDateTime>();
 
   private readonly platformId = inject(PLATFORM_ID);
@@ -68,7 +60,7 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     Calendly.initInlineWidget({
       url: CALENDLY_URL,
       parentElement: container,
-      prefill: { name: this.name, email: this.email },
+      prefill: {},
       utm: {},
     });
   }
@@ -78,13 +70,21 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
       if (typeof e.data !== 'object' || !e.data) return;
       if (e.data.event !== 'calendly.event_scheduled') return;
       const isoString: string | undefined = e.data.payload?.event?.start_time;
+      const inviteeName: string = e.data.payload?.invitee?.name ?? '';
+      const inviteeEmail: string = e.data.payload?.invitee?.email ?? '';
       if (!isoString) return;
-      this.ngZone.run(() => this.scheduled.emit(this.parseDateTime(isoString)));
+      this.ngZone.run(() =>
+        this.scheduled.emit(this.buildEvent(isoString, inviteeName, inviteeEmail)),
+      );
     };
     window.addEventListener('message', this.messageHandler);
   }
 
-  private parseDateTime(isoString: string): AppointmentDateTime {
+  private buildEvent(
+    isoString: string,
+    inviteeName: string,
+    inviteeEmail: string,
+  ): AppointmentDateTime {
     const date = new Date(isoString);
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -95,6 +95,8 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
       fecha: `${day}/${month}/${year}`,
       hora: `${hours}:${minutes}`,
       isoString,
+      inviteeName,
+      inviteeEmail,
     };
   }
 

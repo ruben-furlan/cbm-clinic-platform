@@ -66,7 +66,7 @@ export class BookingFormComponent implements OnInit {
 
   showPromoCode = false;
   promoCode = '';
-  step2Touched = false;
+  step3Touched = false;
   whatsAppFeedback = false;
   loadingTarifas = true;
   errorTarifas = false;
@@ -175,7 +175,7 @@ export class BookingFormComponent implements OnInit {
     return !!this.formData.treatment;
   }
 
-  get canAdvanceStep2(): boolean {
+  get canAdvanceStep3(): boolean {
     return (
       !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid && this.isPhoneValid
     );
@@ -214,9 +214,9 @@ export class BookingFormComponent implements OnInit {
   }
 
   nextStep(): void {
-    if (this.currentStep === 2) {
-      this.step2Touched = true;
-      if (!this.canAdvanceStep2) return;
+    if (this.currentStep === 3) {
+      this.step3Touched = true;
+      if (!this.canAdvanceStep3) return;
     }
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep++;
@@ -228,17 +228,20 @@ export class BookingFormComponent implements OnInit {
       this.preselectedFromPricing = false;
       this.formData.treatment = '';
     }
-    if (this.currentStep === 4) {
+    if (this.currentStep === 3) {
+      // Volviendo a Calendly: limpiar la cita para que el usuario repique
       this.appointmentDateTime = null;
     }
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;
   }
 
-  onCalendlyScheduled(dt: AppointmentDateTime): void {
-    this.appointmentDateTime = dt;
+  onCalendlyScheduled(event: AppointmentDateTime): void {
+    this.appointmentDateTime = event;
+    this.formData.name = event.inviteeName;
+    this.formData.email = event.inviteeEmail;
     this.stepAnimClass = 'step-enter-forward';
-    this.currentStep = 4;
+    this.currentStep = 3;
     this.scrollToForm();
   }
 
