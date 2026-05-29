@@ -49,7 +49,7 @@ interface TreatmentOption {
 export class BookingFormComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
 
-   constructor(
+  constructor(
     private readonly tarifasService: TarifasService,
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
@@ -149,7 +149,11 @@ export class BookingFormComponent implements OnInit {
   }
 
   get canAdvanceStep1(): boolean {
-    return !!this.formData.treatment;
+    return !!this.selectedTreatmentOption;
+  }
+
+  get canAdvancePayment(): boolean {
+    return !!this.selectedTreatmentOption;
   }
 
   seleccionarTratamiento(option: TreatmentOption): void {
@@ -175,7 +179,7 @@ export class BookingFormComponent implements OnInit {
   }
 
   irAlPaso2(): void {
-    // Validación: si no hay tratamiento, no permitir avanzar
+    // Validación: si no hay tratamiento, no permitir avanzar al pago
     if (!this.canAdvanceStep1) {
       return;
     }
@@ -184,14 +188,21 @@ export class BookingFormComponent implements OnInit {
     this.scrollToForm();
   }
 
-  prevStep(): void {
-    if (this.currentStep === 2) {
-      this.bookingTreatmentService.clearSelectedTreatment();
-      if (this.preselectedFromPricing) {
-        this.preselectedFromPricing = false;
-        this.formData.treatment = '';
-      }
+  irAlPaso3(): void {
+    // Validación: si no hay tratamiento, no permitir mostrar Calendly
+    if (!this.canAdvancePayment) {
+      return;
     }
+    this.stepAnimClass = 'step-enter-forward';
+    this.currentStep = 3;
+    this.scrollToForm();
+  }
+
+  prevStep(): void {
+    if (this.currentStep <= 1) {
+      return;
+    }
+
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;
   }

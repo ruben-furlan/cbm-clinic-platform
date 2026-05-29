@@ -333,6 +333,139 @@
   display: flex;
 }
 
+/* ── Payment confirmation (paso 2) ─────────────────────── */
+.payment-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.payment-summary-card,
+.payment-method-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(241, 216, 230, 0.9);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 24px rgba(31, 27, 45, 0.06);
+}
+
+.payment-summary-card::before,
+.payment-method-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 79, 163, 0.09), rgba(168, 85, 247, 0.07));
+}
+
+.payment-summary-card {
+  padding: 22px;
+}
+
+.payment-method-card {
+  padding: 20px;
+}
+
+.payment-card-kicker {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 12px;
+  color: #9a92a8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.payment-summary-main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.payment-summary-main h4,
+.payment-method-option h4 {
+  margin: 0;
+  color: #1f1b2d;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.payment-summary-description {
+  margin: 8px 0 0;
+  color: #6e6780;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.payment-summary-price {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  min-width: 76px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  color: #7b2cbf;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(168, 85, 247, 0.16);
+  box-shadow: 0 8px 18px rgba(168, 85, 247, 0.1);
+  font-size: 17px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.payment-method-option {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)) padding-box,
+    linear-gradient(135deg, rgba(244, 114, 182, 0.75), rgba(168, 85, 247, 0.7)) border-box;
+}
+
+.payment-method-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+  background: var(--gradient-brand);
+  box-shadow: 0 8px 18px rgba(123, 77, 255, 0.24);
+}
+
+.payment-method-option p {
+  margin: 6px 0 0;
+  color: #6e6780;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.payment-support-text {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #6e3050;
+  background: rgba(255, 79, 163, 0.07);
+  border: 1px solid rgba(255, 79, 163, 0.13);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 /* ── Step actions ──────────────────────────────────────── */
 .tarifas-error {
   display: flex;
@@ -423,7 +556,7 @@
   border-color: #e05c7b !important;
 }
 
-/* ── Form fields (paso 2) ──────────────────────────────── */
+/* ── Form fields legacy ───────────────────────────────── */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -515,7 +648,7 @@
   line-height: 1.45;
 }
 
-/* ── Summary card (paso 3) ─────────────────────────────── */
+/* ── Summary card legacy ──────────────────────────────── */
 .summary-card {
   background: rgba(255, 247, 251, 0.8);
   border: 1px solid rgba(241, 216, 230, 0.9);
@@ -714,7 +847,7 @@
   color: #047857;
 }
 
-/* ── Calendly widget (paso 2) ──────────────────────────── */
+/* ── Calendly widget (paso 3) ──────────────────────────── */
 .calendly-wrapper {
   margin-bottom: 16px;
 }
@@ -809,6 +942,25 @@
     grid-template-columns: 1fr;
   }
 
+  .payment-layout {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .payment-summary-card,
+  .payment-method-card {
+    padding: 16px;
+  }
+
+  .payment-summary-main {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .payment-summary-price {
+    align-self: flex-start;
+  }
+
   .form-grid {
     grid-template-columns: 1fr;
     gap: 0;
@@ -825,8 +977,13 @@
   }
 
   .step-actions--with-back {
-    flex-direction: row;
-    justify-content: space-between;
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .step-actions--with-back .step-btn-back {
+    align-self: center;
+    padding: 8px 0;
   }
 
   .promo-toggle {
