@@ -29,6 +29,7 @@
 
 html{
   scroll-behavior:smooth;
+  overflow-x: hidden; /* fallback: Safari < 16 no soporta overflow-x: clip */
 }
 
 body{

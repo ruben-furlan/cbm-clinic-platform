@@ -899,6 +899,11 @@
     gap: 34px;
   }
 
+  .hero-image-card{
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
   .hero-text h1{
     font-size: clamp(2rem, 8vw, 2.9rem);
   }
@@ -1098,5 +1103,59 @@
   .how-step:hover{
     transform: none;
     box-shadow: 0 8px 20px rgba(31, 27, 45, 0.06);
+  }
+}
+
+/* ── Landscape en móvil ────────────────────────────────────────────────────
+   iPhone SE landscape: 667×375 px  |  iPhone 14 landscape: 844×390 px
+   max-height:500px excluye tablets en landscape (≥600px de alto)
+   ─────────────────────────────────────────────────────────────────────── */
+@media (orientation: landscape) and (max-height: 500px){
+  .hero{
+    padding: 70px 0 32px;
+  }
+
+  /* Restaura layout 2 columnas — más útil en landscape que columna única */
+  .hero-grid{
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+    align-items: center;
+  }
+
+  /* Imagen compacta y en su posición natural (derecha) */
+  .hero-image{
+    order: 0;
+  }
+
+  .hero-image-card{
+    height: 220px;
+    aspect-ratio: unset;
+  }
+
+  .hero-text h1{
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    margin-bottom: 10px;
+  }
+
+  .hero-description{
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  /* Ocultar bullet points para ganar espacio vertical */
+  .hero-points{
+    display: none;
+  }
+
+  /* Botones en fila horizontal */
+  .hero-buttons{
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .hero-buttons .btn-primary,
+  .hero-buttons .btn-secondary{
+    width: auto;
   }
 }

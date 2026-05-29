@@ -355,3 +355,23 @@
     height: 42px;
   }
 }
+
+/* Landscape en móvil (iPhone SE landscape: 667×375, iPhone 14 landscape: 844×390) */
+@media (orientation: landscape) and (max-height: 500px){
+  .nav{
+    height: 56px;
+  }
+
+  .logo img{
+    height: 36px;
+  }
+
+  .header-cta{
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+  .mobile-menu.is-open{
+    max-height: calc(100dvh - 56px);
+  }
+}
