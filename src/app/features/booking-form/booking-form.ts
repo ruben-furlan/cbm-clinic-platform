@@ -5,7 +5,6 @@ import {
   HostListener,
   inject,
   NgZone,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
 } from '@angular/core';
@@ -47,7 +46,7 @@ interface TreatmentOption {
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css'],
 })
-export class BookingFormComponent implements OnInit, OnDestroy {
+export class BookingFormComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
 
   constructor(
@@ -67,10 +66,8 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   enviando = false;
   errorEnvio = false;
   solicitudEnviada = false;
-  calendlyConfirmed = false;
 
   appointmentDateTime: AppointmentDateTime | null = null;
-  private advanceTimer: ReturnType<typeof setTimeout> | null = null;
 
   treatmentOptions: TreatmentOption[] = [];
   formData = { treatment: '' };
@@ -101,12 +98,6 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     } finally {
       this.loadingTarifas = false;
       this.cdr.detectChanges();
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.advanceTimer !== null) {
-      clearTimeout(this.advanceTimer);
     }
   }
 
@@ -182,16 +173,9 @@ export class BookingFormComponent implements OnInit, OnDestroy {
   }
 
   prevStep(): void {
-    if (this.currentStep === 2) {
-      if (this.preselectedFromPricing) {
-        this.preselectedFromPricing = false;
-        this.formData.treatment = '';
-      }
-      if (this.advanceTimer !== null) {
-        clearTimeout(this.advanceTimer);
-        this.advanceTimer = null;
-      }
-      this.calendlyConfirmed = false;
+    if (this.currentStep === 2 && this.preselectedFromPricing) {
+      this.preselectedFromPricing = false;
+      this.formData.treatment = '';
     }
     if (this.currentStep === 3) {
       this.appointmentDateTime = null;
@@ -202,19 +186,10 @@ export class BookingFormComponent implements OnInit, OnDestroy {
 
   onCalendlyScheduled(event: AppointmentDateTime): void {
     this.appointmentDateTime = event;
-    this.calendlyConfirmed = true;
+    this.stepAnimClass = 'step-enter-forward';
+    this.currentStep = 3;
     this.cdr.detectChanges();
-
-    this.advanceTimer = setTimeout(() => {
-      this.ngZone.run(() => {
-        this.calendlyConfirmed = false;
-        this.stepAnimClass = 'step-enter-forward';
-        this.currentStep = 3;
-        this.advanceTimer = null;
-        this.cdr.detectChanges();
-        this.scrollToForm();
-      });
-    }, 2000);
+    this.scrollToForm();
   }
 
   private scrollToForm(): void {

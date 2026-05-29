@@ -27,12 +27,43 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
 
   private scriptLoaded = false;
-  private messageHandler: ((e: MessageEvent) => void) | null = null;
+  private emitTimer: ReturnType<typeof setTimeout> | null = null;
+
+  // Arrow function como propiedad de clase para garantizar referencia estable
+  // y preservar el contexto this en addEventListener/removeEventListener
+  private readonly handleCalendlyEvent = (e: MessageEvent): void => {
+    if (!e.data || !e.data.event) return;
+    if (e.data.event !== 'calendly.event_scheduled') return;
+
+    const startTime: string = e.data?.payload?.event?.start_time ?? '';
+    const name: string = e.data?.payload?.invitee?.name ?? '';
+    const email: string = e.data?.payload?.invitee?.email ?? '';
+
+    if (!startTime) return;
+
+    const event = this.buildEvent(startTime, name, email);
+
+    // 2000ms para que el usuario vea la confirmación de Calendly antes de avanzar
+    this.emitTimer = setTimeout(() => {
+      this.ngZone.run(() => this.scheduled.emit(event));
+      this.emitTimer = null;
+    }, 2000);
+  };
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
+    window.addEventListener('message', this.handleCalendlyEvent);
     this.loadCalendly();
-    this.listenForScheduled();
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('message', this.handleCalendlyEvent);
+    if (this.emitTimer !== null) {
+      clearTimeout(this.emitTimer);
+      this.emitTimer = null;
+    }
+    const container = document.getElementById('calendly-inline-widget');
+    if (container) container.innerHTML = '';
   }
 
   private loadCalendly(): void {
@@ -65,21 +96,6 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private listenForScheduled(): void {
-    this.messageHandler = (e: MessageEvent) => {
-      if (typeof e.data !== 'object' || !e.data) return;
-      if (e.data.event !== 'calendly.event_scheduled') return;
-      const isoString: string | undefined = e.data.payload?.event?.start_time;
-      const inviteeName: string = e.data.payload?.invitee?.name ?? '';
-      const inviteeEmail: string = e.data.payload?.invitee?.email ?? '';
-      if (!isoString) return;
-      this.ngZone.run(() =>
-        this.scheduled.emit(this.buildEvent(isoString, inviteeName, inviteeEmail)),
-      );
-    };
-    window.addEventListener('message', this.messageHandler);
-  }
-
   private buildEvent(
     isoString: string,
     inviteeName: string,
@@ -98,14 +114,5 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
       inviteeName,
       inviteeEmail,
     };
-  }
-
-  ngOnDestroy(): void {
-    if (this.messageHandler) {
-      window.removeEventListener('message', this.messageHandler);
-      this.messageHandler = null;
-    }
-    const container = document.getElementById('calendly-inline-widget');
-    if (container) container.innerHTML = '';
   }
 }

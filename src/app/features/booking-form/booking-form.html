@@ -165,21 +165,9 @@
             <h3 class="step-title">Elige tu fecha y hora</h3>
             <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
-            <!-- Feedback tras confirmar en Calendly -->
-            <div *ngIf="calendlyConfirmed" class="calendly-confirmed-banner">
-              <span class="calendly-confirmed-icon" aria-hidden="true">✅</span>
-              <div>
-                <p class="calendly-confirmed-title">¡Reserva confirmada!</p>
-                <p class="calendly-confirmed-sub">Preparando tu resumen...</p>
-              </div>
-            </div>
+            <app-step3-calendly (scheduled)="onCalendlyScheduled($event)"></app-step3-calendly>
 
-            <app-step3-calendly
-              *ngIf="!calendlyConfirmed"
-              (scheduled)="onCalendlyScheduled($event)"
-            ></app-step3-calendly>
-
-            <div class="step-actions step-actions--with-back" *ngIf="!calendlyConfirmed">
+            <div class="step-actions step-actions--with-back">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
               <span class="calendly-hint"
                 >El calendario avanzará automáticamente al seleccionar una fecha</span
