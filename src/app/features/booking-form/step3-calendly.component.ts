@@ -16,22 +16,10 @@ const CALENDLY_URL =
   imports: [CommonModule],
   template: `
     <div class="step3-calendar-wrapper">
-      <!-- Card resumen del tratamiento seleccionado -->
-      <div *ngIf="selectedTreatment" class="treatment-summary-card">
-        <h4 class="treatment-summary-title">Tratamiento seleccionado</h4>
-        <div class="treatment-summary-content">
-          <div class="treatment-summary-item">
-            <span class="treatment-summary-label">Servicio</span>
-            <span class="treatment-summary-value">{{ selectedTreatment.nombre }}</span>
-          </div>
-          <div class="treatment-summary-item">
-            <span class="treatment-summary-label">Precio</span>
-            <span class="treatment-summary-price">{{ selectedTreatment.precio }}</span>
-          </div>
-        </div>
-        <p class="treatment-summary-note">
-          ℹ️ Este dato se enviará junto con la confirmación de tu cita.
-        </p>
+      <!-- Card resumen del tratamiento seleccionado (compacto) -->
+      <div *ngIf="selectedTreatment" class="treatment-summary-card-compact">
+        <span class="treatment-summary-compact-label">Tratamiento:</span>
+        <span class="treatment-summary-compact-value">{{ selectedTreatment.nombre }} - {{ selectedTreatment.precio }}</span>
       </div>
 
       <!-- Calendly embed -->
@@ -45,86 +33,44 @@ const CALENDLY_URL =
       gap: 16px;
     }
 
-    .treatment-summary-card {
-      background: linear-gradient(135deg, rgba(255, 79, 163, 0.04), rgba(168, 85, 247, 0.04));
-      border: 1px solid rgba(241, 216, 230, 0.8);
-      border-radius: 14px;
-      padding: 16px 18px;
-      backdrop-filter: blur(4px);
-    }
-
-    .treatment-summary-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: #1f1b2d;
-      margin: 0 0 12px;
-      letter-spacing: -0.01em;
-    }
-
-    .treatment-summary-content {
+    .treatment-summary-card-compact {
+      background: linear-gradient(135deg, rgba(255, 79, 163, 0.06), rgba(168, 85, 247, 0.06));
+      border: 1px solid rgba(241, 216, 230, 0.7);
+      border-radius: 10px;
+      padding: 10px 14px;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .treatment-summary-item {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(231, 205, 221, 0.5);
+      gap: 8px;
     }
 
-    .treatment-summary-item:last-of-type {
-      border-bottom: none;
-    }
-
-    .treatment-summary-label {
-      font-size: 12px;
-      font-weight: 600;
+    .treatment-summary-compact-label {
+      font-size: 11px;
+      font-weight: 700;
       color: #9a92a8;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    .treatment-summary-value {
-      font-size: 14px;
-      color: #332d43;
-      font-weight: 500;
-      text-align: right;
-      max-width: 55%;
-    }
-
-    .treatment-summary-price {
-      font-size: 16px;
-      font-weight: 800;
+    .treatment-summary-compact-value {
+      font-size: 13px;
+      font-weight: 600;
       color: #1f1b2d;
     }
 
-    .treatment-summary-note {
-      font-size: 12px;
-      color: #7a728a;
-      margin: 0;
-      line-height: 1.5;
-      font-style: italic;
-    }
-
     @media (max-width: 768px) {
-      .treatment-summary-card {
-        padding: 14px 16px;
+      .treatment-summary-card-compact {
+        padding: 9px 12px;
+        font-size: 12px;
       }
 
-      .treatment-summary-title {
-        font-size: 13px;
+      .treatment-summary-compact-label {
+        font-size: 10px;
       }
 
-      .treatment-summary-value {
-        font-size: 13px;
-      }
-
-      .treatment-summary-price {
-        font-size: 15px;
+      .treatment-summary-compact-value {
+        font-size: 12px;
       }
     }
   `],
@@ -182,15 +128,17 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     // Obtener el tratamiento seleccionado
     const treatment = this.selectedTreatment;
 
-    // Construir el customAnswer con el formato requerido
+    // Construir el prefill - el campo "tratamiento" es una pregunta personalizada
+    // Basado en la posición en Calendly (verificar cuál es el índice correcto)
     const prefill: any = {};
     const utm: any = {};
 
     if (treatment) {
-      // a1 es para la primera pregunta personalizada
-      // Si en Calendly la pregunta "Tratamiento seleccionado" está en otra posición, ajusta aquí
+      // IMPORTANTE: Verificar en Calendly cuál es el índice exacto del campo "tratamiento"
+      // En Calendly: Settings → Questions → fíjate el orden de preguntas personalizadas
+      // Primera personalizada = a1, Segunda = a2, Tercera = a3, etc.
       prefill.customAnswers = {
-        a1: `${treatment.nombre} - ${treatment.precio}`,
+        a2: `${treatment.nombre} - ${treatment.precio}`, // ← Cambiar a2 al índice correcto si es necesario
       };
     }
 
