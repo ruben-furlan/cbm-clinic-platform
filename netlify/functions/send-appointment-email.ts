@@ -18,6 +18,10 @@ const handler: Handler = async (event) => {
         : 'onboarding@resend.dev';
     const ADMIN_EMAIL = 'reservascbm25@gmail.com';
 
+    const summaryRowStyle = 'border-bottom: 1px solid #e9d5ff; padding: 10px 0;';
+    const labelStyle = 'margin: 0; font-size: 12px; color: #6b7280;';
+    const valueStyle = 'margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;';
+
     const htmlCliente = `
       <div style="font-family: sans-serif; max-width: 600px;
       margin: 0 auto; padding: 32px;">
@@ -32,7 +36,7 @@ const handler: Handler = async (event) => {
             display: block; margin-left: auto; margin-right: auto;"
           />
           <h1 style="color: white; margin: 0; font-size: 24px;">
-            💜 Tu cita en CBM está en camino
+            💜 Tu cita en CBM está confirmada
           </h1>
           <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0;">
             CBM Fisioterapia
@@ -45,86 +49,62 @@ const handler: Handler = async (event) => {
             Hola ${data.nombre} 😊
           </p>
           <p style="color: #374151; font-size: 15px; line-height: 1.6;">
-            Nos alegra que hayas dado el primer paso 💜<br>
-            Hemos recibido tu solicitud y nos pondremos en contacto
-            contigo para encontrar el mejor momento para ti.
+            ¡Tu cita está confirmada! 💜<br>
+            Hemos recibido tu solicitud. Te escribiremos a
+            <strong>${data.email}</strong> para confirmar los detalles.
+            Suele ser durante el mismo día 😊
           </p>
 
           <div style="background: #fdf4ff; border-radius: 16px;
           padding: 24px; margin: 24px 0; border: 1px solid #e9d5ff;">
             <p style="margin: 0 0 16px; font-size: 13px; font-weight: 700;
             color: #7c3aed; letter-spacing: 1px; text-transform: uppercase;">
-              Resumen de tu solicitud
+              Resumen de tu cita
             </p>
-            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">🏥 Tratamiento</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-                ${data.tratamiento}
-              </p>
-            </div>
-            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">👤 Nombre</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-                ${data.nombre} ${data.apellido || ''}
-              </p>
-            </div>
-            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">📧 Email</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px; word-break: break-all;">
-                ${data.email}
-              </p>
-            </div>
-            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">📱 Teléfono</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-                ${data.telefono}
-              </p>
+            <div style="${summaryRowStyle}">
+              <p style="${labelStyle}">🏥 Tratamiento</p>
+              <p style="${valueStyle}">${data.tratamiento}</p>
             </div>
             ${
+              data.precio
+                ? `<div style="${summaryRowStyle}">
+              <p style="${labelStyle}">💰 Precio</p>
+              <p style="${valueStyle}">${data.precio}</p>
+            </div>`
+                : ''
+            }
+            ${
               data.fecha
-                ? `
-            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">📅 Fecha</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-                ${data.fecha}
-              </p>
-            </div>
-            `
+                ? `<div style="${summaryRowStyle}">
+              <p style="${labelStyle}">📅 Fecha</p>
+              <p style="${valueStyle}">${data.fecha}</p>
+            </div>`
                 : ''
             }
             ${
               data.hora
-                ? `
-            <div style="border-bottom: 1px solid #e9d5ff; padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">🕐 Hora</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-                ${data.hora}
-              </p>
-            </div>
-            `
+                ? `<div style="${summaryRowStyle}">
+              <p style="${labelStyle}">🕐 Hora</p>
+              <p style="${valueStyle}">${data.hora}</p>
+            </div>`
                 : ''
             }
+            <div style="${summaryRowStyle}">
+              <p style="${labelStyle}">👤 Nombre</p>
+              <p style="${valueStyle}">${data.nombre}</p>
+            </div>
+            <div style="${data.telefono ? summaryRowStyle : 'padding: 10px 0;'}">
+              <p style="${labelStyle}">📧 Email</p>
+              <p style="${valueStyle} word-break: break-all;">${data.email}</p>
+            </div>
             ${
-              data.codigoPromo
-                ? `
-            <div style="padding: 10px 0;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280;">🎟️ Código promocional</p>
-              <p style="margin: 4px 0 0; font-weight: 600; color: #a855f7; font-size: 15px;">
-                ${data.codigoPromo}
-              </p>
-            </div>
-            `
+              data.telefono
+                ? `<div style="padding: 10px 0;">
+              <p style="${labelStyle}">📱 Teléfono</p>
+              <p style="${valueStyle}">${data.telefono}</p>
+            </div>`
                 : ''
             }
-          </div>
-
-          <div style="background: #f0fdf4; border-radius: 12px;
-          padding: 16px; margin-bottom: 24px; border: 1px solid #bbf7d0;">
-            <p style="margin: 0; font-size: 14px; color: #166534;">
-              Te escribiremos a <strong>${data.email}</strong> o al
-              <strong>${data.telefono}</strong> para confirmar tu cita.
-              Suele ser durante el mismo día 😊
-            </p>
           </div>
 
           <div style="background: #f9fafb; border-radius: 12px;
@@ -155,6 +135,10 @@ const handler: Handler = async (event) => {
       </div>
     `;
 
+    const adminRowStyle = 'border-bottom: 1px solid #f3f4f6; padding: 10px 0;';
+    const adminLabelStyle = 'margin: 0; font-size: 12px; color: #6b7280;';
+    const adminValueStyle = 'margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;';
+
     const htmlAdmin = `
       <div style="font-family: sans-serif; max-width: 600px;
       margin: 0 auto; padding: 32px;">
@@ -177,76 +161,48 @@ const handler: Handler = async (event) => {
         </div>
         <div style="background: white; border: 1px solid #e5e7eb;
         border-top: none; border-radius: 0 0 16px 16px; padding: 32px;">
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">🏥 Tratamiento</p>
-            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-              ${data.tratamiento}
-            </p>
+          <div style="${adminRowStyle}">
+            <p style="${adminLabelStyle}">🏥 Tratamiento</p>
+            <p style="${adminValueStyle}">${data.tratamiento}</p>
           </div>
           ${
             data.precio
-              ? `
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">💰 Precio</p>
-            <p style="margin: 4px 0 0; font-weight: 700; color: #111827; font-size: 15px;">
-              ${data.precio}
-            </p>
-          </div>
-          `
+              ? `<div style="${adminRowStyle}">
+            <p style="${adminLabelStyle}">💰 Precio</p>
+            <p style="${adminValueStyle} font-weight: 700;">${data.precio}</p>
+          </div>`
               : ''
           }
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">👤 Nombre</p>
-            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-              ${data.nombre} ${data.apellido || ''}
-            </p>
-          </div>
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">📧 Email</p>
-            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px; word-break: break-all;">
-              ${data.email}
-            </p>
-          </div>
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">📱 Teléfono</p>
-            <p style="margin: 4px 0 0; font-weight: 600; color: #111827; font-size: 15px;">
-              ${data.telefono}
-            </p>
-          </div>
           ${
             data.fecha
-              ? `
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">📅 Fecha</p>
-            <p style="margin: 4px 0 0; font-weight: 700; color: #111827; font-size: 15px;">
-              ${data.fecha}
-            </p>
-          </div>
-          `
+              ? `<div style="${adminRowStyle}">
+            <p style="${adminLabelStyle}">📅 Fecha</p>
+            <p style="${adminValueStyle} font-weight: 700;">${data.fecha}</p>
+          </div>`
               : ''
           }
           ${
             data.hora
-              ? `
-          <div style="border-bottom: 1px solid #f3f4f6; padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">🕐 Hora</p>
-            <p style="margin: 4px 0 0; font-weight: 700; color: #111827; font-size: 15px;">
-              ${data.hora}
-            </p>
-          </div>
-          `
+              ? `<div style="${adminRowStyle}">
+            <p style="${adminLabelStyle}">🕐 Hora</p>
+            <p style="${adminValueStyle} font-weight: 700;">${data.hora}</p>
+          </div>`
               : ''
           }
-          ${
-            data.codigoPromo
-              ? `
-          <div style="padding: 10px 0;">
-            <p style="margin: 0; font-size: 12px; color: #6b7280;">🎟️ Código promo</p>
-            <p style="margin: 4px 0 0; font-weight: 600; color: #a855f7; font-size: 15px;">
-              ${data.codigoPromo}
-            </p>
+          <div style="${adminRowStyle}">
+            <p style="${adminLabelStyle}">👤 Nombre</p>
+            <p style="${adminValueStyle}">${data.nombre}</p>
           </div>
-          `
+          <div style="${data.telefono ? adminRowStyle : 'padding: 10px 0;'}">
+            <p style="${adminLabelStyle}">📧 Email</p>
+            <p style="${adminValueStyle} word-break: break-all;">${data.email}</p>
+          </div>
+          ${
+            data.telefono
+              ? `<div style="padding: 10px 0;">
+            <p style="${adminLabelStyle}">📱 Teléfono</p>
+            <p style="${adminValueStyle}">${data.telefono}</p>
+          </div>`
               : ''
           }
 
@@ -276,7 +232,7 @@ const handler: Handler = async (event) => {
         body: JSON.stringify({
           from: `CBM Fisioterapia <${FROM_EMAIL}>`,
           to: [data.email],
-          subject: `💜 Tu cita en CBM está en camino`,
+          subject: `💜 Tu cita en CBM está confirmada`,
           html: htmlCliente,
         }),
       }),
@@ -291,9 +247,6 @@ const handler: Handler = async (event) => {
         }),
       }),
     ]);
-
-    console.log('Cliente settled:', resCliente.status);
-    console.log('Admin settled:', resAdmin.status);
 
     if (resCliente.status === 'rejected') {
       console.error('Error cliente (network):', resCliente.reason);

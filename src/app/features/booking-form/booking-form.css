@@ -683,7 +683,38 @@
   opacity: 0.88;
 }
 
-/* ── Calendly widget (paso 3) ──────────────────────────── */
+/* ── Calendly confirmed banner ─────────────────────────── */
+.calendly-confirmed-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 20px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.calendly-confirmed-icon {
+  font-size: 36px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.calendly-confirmed-title {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #065f46;
+}
+
+.calendly-confirmed-sub {
+  margin: 0;
+  font-size: 13px;
+  color: #047857;
+}
+
+/* ── Calendly widget (paso 2) ──────────────────────────── */
 .calendly-wrapper {
   margin-bottom: 16px;
 }

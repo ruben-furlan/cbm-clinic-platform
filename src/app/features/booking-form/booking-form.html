@@ -5,7 +5,7 @@
         <p class="section-tag">Solicitar cita</p>
         <h2>Elige tu tratamiento y solicita tu cita</h2>
         <p class="section-description">
-          Selecciona tu tratamiento, elige fecha y hora, y te confirmamos la cita por email.
+          Selecciona tu tratamiento, elige tu fecha y hora, y te confirmamos la cita por email.
         </p>
       </div>
 
@@ -75,34 +75,9 @@
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 2"></div>
 
-          <div
-            class="stepper-step-item"
-            [class.stepper-step-item--active]="currentStep === 3"
-            [class.stepper-step-item--done]="currentStep > 3"
-          >
+          <div class="stepper-step-item" [class.stepper-step-item--active]="currentStep === 3">
             <div class="stepper-circle">
-              <span *ngIf="currentStep <= 3">3</span>
-              <svg
-                *ngIf="currentStep > 3"
-                viewBox="0 0 24 24"
-                width="14"
-                height="14"
-                aria-hidden="true"
-              >
-                <path
-                  fill="currentColor"
-                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
-                />
-              </svg>
-            </div>
-            <span class="stepper-label">Tus datos</span>
-          </div>
-
-          <div class="stepper-line" [class.stepper-line--filled]="currentStep > 3"></div>
-
-          <div class="stepper-step-item" [class.stepper-step-item--active]="currentStep === 4">
-            <div class="stepper-circle">
-              <span>4</span>
+              <span>3</span>
             </div>
             <span class="stepper-label">¡Listo!</span>
           </div>
@@ -190,9 +165,21 @@
             <h3 class="step-title">Elige tu fecha y hora</h3>
             <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
-            <app-step3-calendly (scheduled)="onCalendlyScheduled($event)"></app-step3-calendly>
+            <!-- Feedback tras confirmar en Calendly -->
+            <div *ngIf="calendlyConfirmed" class="calendly-confirmed-banner">
+              <span class="calendly-confirmed-icon" aria-hidden="true">✅</span>
+              <div>
+                <p class="calendly-confirmed-title">¡Reserva confirmada!</p>
+                <p class="calendly-confirmed-sub">Preparando tu resumen...</p>
+              </div>
+            </div>
 
-            <div class="step-actions step-actions--with-back">
+            <app-step3-calendly
+              *ngIf="!calendlyConfirmed"
+              (scheduled)="onCalendlyScheduled($event)"
+            ></app-step3-calendly>
+
+            <div class="step-actions step-actions--with-back" *ngIf="!calendlyConfirmed">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
               <span class="calendly-hint"
                 >El calendario avanzará automáticamente al seleccionar una fecha</span
@@ -200,140 +187,16 @@
             </div>
           </div>
 
-          <!-- Paso 3: Tus datos -->
+          <!-- Paso 3: Resumen + confirmar -->
           <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
-            <div
-              *ngIf="preselectedFromPricing && selectedTreatmentOption"
-              class="badge-preseleccionado"
-            >
-              <span>✓ Tratamiento seleccionado:</span>
-              <strong
-                >{{ selectedTreatmentOption.nombre }} · {{ selectedTreatmentOption.precio }}</strong
-              >
-            </div>
-            <h3 class="step-title">Confirma tus datos</h3>
-
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="name">Nombre</label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  [(ngModel)]="formData.name"
-                  [ngModelOptions]="{ standalone: true }"
-                  placeholder="Tu nombre"
-                  [class.input-error]="step3Touched && !formData.name.trim()"
-                />
-                <span *ngIf="step3Touched && !formData.name.trim()" class="field-error">
-                  El nombre es obligatorio.
-                </span>
-              </div>
-
-              <div class="form-group">
-                <label for="surname">Apellido</label>
-                <input
-                  id="surname"
-                  name="surname"
-                  type="text"
-                  [(ngModel)]="formData.surname"
-                  [ngModelOptions]="{ standalone: true }"
-                  placeholder="Opcional"
-                />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="email">Correo electrónico</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                [(ngModel)]="formData.email"
-                [ngModelOptions]="{ standalone: true }"
-                placeholder="tuemail@ejemplo.com"
-                [class.input-error]="step3Touched && (!formData.email || !isEmailValid)"
-              />
-              <span *ngIf="step3Touched && !formData.email" class="field-error">
-                El correo es obligatorio.
-              </span>
-              <span *ngIf="step3Touched && formData.email && !isEmailValid" class="field-error">
-                Introduce un correo válido.
-              </span>
-            </div>
-
-            <div class="form-group">
-              <label for="phone">Teléfono *</label>
-              <div
-                class="phone-input-group"
-                [class.phone-input-group--error]="step3Touched && !isPhoneValid"
-              >
-                <span class="phone-prefix">+34</span>
-                <input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  [(ngModel)]="formData.phone"
-                  [ngModelOptions]="{ standalone: true }"
-                  placeholder="612 345 678"
-                  (input)="onPhoneInput($event)"
-                  autocomplete="tel-national"
-                />
-              </div>
-              <span *ngIf="step3Touched && !isPhoneValid" class="field-error">
-                Introduce un teléfono válido.
-              </span>
-            </div>
-
-            <button
-              type="button"
-              class="promo-toggle"
-              (click)="togglePromoCode()"
-              [attr.aria-expanded]="showPromoCode"
-              aria-controls="promoCodeGroup"
-            >
-              ¿Tienes un código promocional?
-            </button>
-
-            <div class="form-group promo-group" id="promoCodeGroup" *ngIf="showPromoCode">
-              <label for="promoCode">Código promocional</label>
-              <input
-                id="promoCode"
-                name="promoCode"
-                type="text"
-                [(ngModel)]="promoCode"
-                [ngModelOptions]="{ standalone: true }"
-                placeholder="Ej. BIENVENIDA10"
-                autocomplete="off"
-              />
-              <p class="promo-help">
-                Si tienes un código promocional, escríbelo aquí y lo confirmaremos al revisar tu
-                solicitud.
-              </p>
-            </div>
-
-            <div class="step-actions step-actions--with-back">
-              <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
-              <button
-                type="button"
-                class="btn-primary step-btn-continue"
-                [class.step-btn-continue--disabled]="step3Touched && !canAdvanceStep3"
-                (click)="nextStep()"
-              >
-                Continuar →
-              </button>
-            </div>
-          </div>
-
-          <!-- Paso 4: Resumen + confirmar -->
-          <div *ngIf="currentStep === 4" [class]="'stepper-pane ' + stepAnimClass">
             <!-- Estado éxito -->
             <ng-container *ngIf="solicitudEnviada">
               <div class="success-screen">
                 <div class="success-icon" aria-hidden="true">✅</div>
                 <h3 class="step-title">¡Solicitud enviada! 💜</h3>
                 <p class="success-subtitle">
-                  Te hemos enviado un email de confirmación a <strong>{{ formData.email }}</strong
+                  Te hemos enviado un email de confirmación a
+                  <strong>{{ appointmentDateTime?.inviteeEmail }}</strong
                   >. Nos pondremos en contacto contigo para confirmar tu cita.
                 </p>
                 <a routerLink="/" class="step-btn-back btn-back-home">← Volver al inicio</a>
@@ -342,7 +205,7 @@
 
             <!-- Estado normal / enviando / error -->
             <ng-container *ngIf="!solicitudEnviada">
-              <h3 class="step-title">¡Todo listo, {{ formData.name }}! 🎉</h3>
+              <h3 class="step-title">¡Todo listo, {{ appointmentDateTime?.inviteeName }}! 🎉</h3>
 
               <div class="summary-card">
                 <div class="summary-row">
@@ -354,29 +217,19 @@
                 </div>
                 <div *ngIf="appointmentDateTime" class="summary-row">
                   <span class="summary-label">Fecha</span>
-                  <span class="summary-value">{{ appointmentDateTime.fecha }}</span>
+                  <span class="summary-value">{{ appointmentDateTime?.fecha }}</span>
                 </div>
                 <div *ngIf="appointmentDateTime" class="summary-row">
                   <span class="summary-label">Hora</span>
-                  <span class="summary-value">{{ appointmentDateTime.hora }}</span>
+                  <span class="summary-value">{{ appointmentDateTime?.hora }}</span>
                 </div>
-                <div class="summary-row">
+                <div *ngIf="appointmentDateTime?.inviteeName" class="summary-row">
                   <span class="summary-label">Nombre</span>
-                  <span class="summary-value">
-                    {{ formData.name }}{{ formData.surname ? ' ' + formData.surname : '' }}
-                  </span>
+                  <span class="summary-value">{{ appointmentDateTime?.inviteeName }}</span>
                 </div>
-                <div *ngIf="formData.email" class="summary-row">
+                <div *ngIf="appointmentDateTime?.inviteeEmail" class="summary-row">
                   <span class="summary-label">Email</span>
-                  <span class="summary-value">{{ formData.email }}</span>
-                </div>
-                <div *ngIf="formData.phone" class="summary-row">
-                  <span class="summary-label">Teléfono</span>
-                  <span class="summary-value">+34 {{ formData.phone }}</span>
-                </div>
-                <div *ngIf="promoCode" class="summary-row">
-                  <span class="summary-label">Código promo</span>
-                  <span class="summary-value summary-promo">{{ promoCode }}</span>
+                  <span class="summary-value">{{ appointmentDateTime?.inviteeEmail }}</span>
                 </div>
               </div>
 
