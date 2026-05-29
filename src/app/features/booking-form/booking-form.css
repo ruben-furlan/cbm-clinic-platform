@@ -735,6 +735,39 @@
   flex: 1;
 }
 
+/* ── No treatment warning ──────────────────────────────── */
+.no-treatment-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.no-treatment-warning p {
+  color: #92400e;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.no-treatment-warning .step-btn-back {
+  background: rgba(245, 158, 11, 0.15);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #92400e;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.no-treatment-warning .step-btn-back:hover {
+  background: rgba(245, 158, 11, 0.25);
+  color: #78340c;
+}
+
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
   .booking-form {

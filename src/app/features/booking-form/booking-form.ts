@@ -19,6 +19,7 @@ import {
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
 import { Step3CalendlyComponent } from './step3-calendly.component';
+import { BookingTreatmentService } from './booking-treatment.service';
 
 interface TreatmentOption {
   value: string;
@@ -48,11 +49,12 @@ interface TreatmentOption {
 export class BookingFormComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
 
-  constructor(
+   constructor(
     private readonly tarifasService: TarifasService,
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
     private readonly ngZone: NgZone,
+    private readonly bookingTreatmentService: BookingTreatmentService,
   ) {}
 
   currentStep = 1;
@@ -108,6 +110,12 @@ export class BookingFormComponent implements OnInit {
     if (!matched) return;
 
     this.formData.treatment = matched.value;
+    // Guardar en el servicio (preselección desde página de tarifas)
+    this.bookingTreatmentService.setSelectedTreatment({
+      id: matched.value,
+      nombre: matched.nombre,
+      precio: matched.precio,
+    });
     this.preselectedFromPricing = true;
     this.currentStep = 2;
     this.stepAnimClass = 'step-enter-forward';
@@ -147,6 +155,12 @@ export class BookingFormComponent implements OnInit {
   seleccionarTratamiento(option: TreatmentOption): void {
     this.ngZone.run(() => {
       this.formData.treatment = option.value;
+      // Guardar en el servicio
+      this.bookingTreatmentService.setSelectedTreatment({
+        id: option.value,
+        nombre: option.nombre,
+        precio: option.precio,
+      });
       this.cdr.detectChanges();
 
       if (this.isMobile) {
@@ -161,15 +175,22 @@ export class BookingFormComponent implements OnInit {
   }
 
   irAlPaso2(): void {
+    // Validación: si no hay tratamiento, no permitir avanzar
+    if (!this.canAdvanceStep1) {
+      return;
+    }
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep = 2;
     this.scrollToForm();
   }
 
   prevStep(): void {
-    if (this.currentStep === 2 && this.preselectedFromPricing) {
-      this.preselectedFromPricing = false;
-      this.formData.treatment = '';
+    if (this.currentStep === 2) {
+      this.bookingTreatmentService.clearSelectedTreatment();
+      if (this.preselectedFromPricing) {
+        this.preselectedFromPricing = false;
+        this.formData.treatment = '';
+      }
     }
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;

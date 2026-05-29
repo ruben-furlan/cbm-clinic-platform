@@ -141,7 +141,13 @@
             <h3 class="step-title">Elige tu fecha y hora</h3>
             <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
-            <app-step3-calendly></app-step3-calendly>
+            <!-- Validación: mostrar si no hay tratamiento (por si acaso) -->
+            <div *ngIf="!selectedTreatmentOption" class="no-treatment-warning">
+              <p>📋 Por favor, selecciona un tratamiento para continuar.</p>
+              <button type="button" class="step-btn-back" (click)="prevStep()">← Volver a seleccionar</button>
+            </div>
+
+            <app-step3-calendly *ngIf="selectedTreatmentOption"></app-step3-calendly>
 
             <div class="step-actions step-actions--with-back">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
