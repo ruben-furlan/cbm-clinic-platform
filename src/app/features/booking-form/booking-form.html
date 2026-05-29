@@ -1,7 +1,6 @@
 <section id="reserva" class="booking-form section">
   <div class="container">
     <div class="booking-wrapper">
-
       <div class="section-heading" appRevealOnScroll>
         <p class="section-tag">Solicitar cita</p>
         <h2>Elige tu tratamiento y solicita tu cita</h2>
@@ -10,7 +9,6 @@
         </p>
       </div>
 
-      <!-- Mejora 2: badge de disponibilidad -->
       <div class="availability-badge-wrapper" appRevealOnScroll>
         <div
           class="availability-badge"
@@ -24,12 +22,9 @@
         </div>
       </div>
 
-      <!-- Mejora 1: stepper -->
       <div class="form-card reveal-delay-2" appRevealOnScroll>
-
         <!-- Indicador de pasos -->
         <div class="stepper-indicator" aria-label="Progreso del formulario">
-
           <div
             class="stepper-step-item"
             [class.stepper-step-item--active]="currentStep === 1"
@@ -37,8 +32,17 @@
           >
             <div class="stepper-circle">
               <span *ngIf="currentStep <= 1">1</span>
-              <svg *ngIf="currentStep > 1" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              <svg
+                *ngIf="currentStep > 1"
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                />
               </svg>
             </div>
             <span class="stepper-label">Tu tratamiento</span>
@@ -53,8 +57,17 @@
           >
             <div class="stepper-circle">
               <span *ngIf="currentStep <= 2">2</span>
-              <svg *ngIf="currentStep > 2" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+              <svg
+                *ngIf="currentStep > 2"
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                />
               </svg>
             </div>
             <span class="stepper-label">Tus datos</span>
@@ -65,17 +78,37 @@
           <div
             class="stepper-step-item"
             [class.stepper-step-item--active]="currentStep === 3"
+            [class.stepper-step-item--done]="currentStep > 3"
           >
             <div class="stepper-circle">
-              <span>3</span>
+              <span *ngIf="currentStep <= 3">3</span>
+              <svg
+                *ngIf="currentStep > 3"
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                />
+              </svg>
+            </div>
+            <span class="stepper-label">Fecha y hora</span>
+          </div>
+
+          <div class="stepper-line" [class.stepper-line--filled]="currentStep > 3"></div>
+
+          <div class="stepper-step-item" [class.stepper-step-item--active]="currentStep === 4">
+            <div class="stepper-circle">
+              <span>4</span>
             </div>
             <span class="stepper-label">¡Listo!</span>
           </div>
-
         </div>
 
         <form novalidate>
-
           <!-- Paso 1: Tu tratamiento -->
           <div *ngIf="currentStep === 1" [class]="'stepper-pane ' + stepAnimClass">
             <h3 class="step-title">¿Qué tratamiento buscas?</h3>
@@ -114,14 +147,23 @@
                         <span class="treatment-card-name">{{ option.nombre }}</span>
                         <strong class="treatment-card-price">{{ option.precio }}</strong>
                       </div>
-                      <p *ngIf="option.descripcion" class="treatment-card-desc">{{ option.descripcion }}</p>
+                      <p *ngIf="option.descripcion" class="treatment-card-desc">
+                        {{ option.descripcion }}
+                      </p>
                       <app-horario-chips [horarios]="option.horarios"></app-horario-chips>
                       <span *ngIf="option.showBadge" class="treatment-card-badge">
                         Inicio de plan · Primera sesión
                       </span>
-                      <span *ngIf="formData.treatment === option.value" class="treatment-card-check" aria-hidden="true">
+                      <span
+                        *ngIf="formData.treatment === option.value"
+                        class="treatment-card-check"
+                        aria-hidden="true"
+                      >
                         <svg viewBox="0 0 24 24" width="16" height="16">
-                          <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                          <path
+                            fill="currentColor"
+                            d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                          />
                         </svg>
                       </span>
                     </button>
@@ -145,10 +187,14 @@
 
           <!-- Paso 2: Tus datos -->
           <div *ngIf="currentStep === 2" [class]="'stepper-pane ' + stepAnimClass">
-            <div *ngIf="preselectedFromPricing && selectedTreatmentOption"
-                 class="badge-preseleccionado">
+            <div
+              *ngIf="preselectedFromPricing && selectedTreatmentOption"
+              class="badge-preseleccionado"
+            >
               <span>✓ Tratamiento seleccionado:</span>
-              <strong>{{ selectedTreatmentOption.nombre }} · {{ selectedTreatmentOption.precio }}</strong>
+              <strong
+                >{{ selectedTreatmentOption.nombre }} · {{ selectedTreatmentOption.precio }}</strong
+              >
             </div>
             <h3 class="step-title">¿Cómo te llamas?</h3>
 
@@ -172,7 +218,7 @@
               <div class="form-group">
                 <label for="surname">Apellido</label>
                 <input
-                  id="surname"s
+                  id="surname"
                   name="surname"
                   type="text"
                   [(ngModel)]="formData.surname"
@@ -203,7 +249,10 @@
 
             <div class="form-group">
               <label for="phone">Teléfono *</label>
-              <div class="phone-input-group" [class.phone-input-group--error]="step2Touched && !isPhoneValid">
+              <div
+                class="phone-input-group"
+                [class.phone-input-group--error]="step2Touched && !isPhoneValid"
+              >
                 <span class="phone-prefix">+34</span>
                 <input
                   id="phone"
@@ -243,8 +292,8 @@
                 autocomplete="off"
               />
               <p class="promo-help">
-                Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al revisar tu
-                solicitud.
+                Si tienes un código promocional, escríbelo aquí y lo confirmaremos por WhatsApp al
+                revisar tu solicitud.
               </p>
             </div>
 
@@ -261,17 +310,33 @@
             </div>
           </div>
 
-          <!-- Paso 3: ¡Listo! -->
+          <!-- Paso 3: Fecha y hora (Calendly) -->
           <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
+            <h3 class="step-title">Elige tu fecha y hora</h3>
+            <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
+            <div class="calendly-wrapper">
+              <div id="calendly-container" class="calendly-container"></div>
+            </div>
+
+            <div class="step-actions step-actions--with-back">
+              <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
+              <span class="calendly-hint"
+                >El calendario avanzará automáticamente al seleccionar una fecha</span
+              >
+            </div>
+          </div>
+
+          <!-- Paso 4: Resumen + confirmar -->
+          <div *ngIf="currentStep === 4" [class]="'stepper-pane ' + stepAnimClass">
             <!-- Estado éxito -->
             <ng-container *ngIf="solicitudEnviada">
               <div class="success-screen">
                 <div class="success-icon" aria-hidden="true">✅</div>
                 <h3 class="step-title">¡Solicitud enviada! 💜</h3>
                 <p class="success-subtitle">
-                  Te hemos enviado un email de confirmación a <strong>{{ formData.email }}</strong>.
-                  Nos pondremos en contacto contigo para confirmar tu cita.
+                  Te hemos enviado un email de confirmación a <strong>{{ formData.email }}</strong
+                  >. Nos pondremos en contacto contigo para confirmar tu cita.
                 </p>
                 <a routerLink="/" class="step-btn-back btn-back-home">← Volver al inicio</a>
               </div>
@@ -288,6 +353,14 @@
                     {{ selectedTreatmentOption?.nombre }}
                     <strong class="summary-price">{{ selectedTreatmentOption?.precio }}</strong>
                   </span>
+                </div>
+                <div *ngIf="appointmentDateTime" class="summary-row">
+                  <span class="summary-label">Fecha</span>
+                  <span class="summary-value">{{ appointmentDateTime.fecha }}</span>
+                </div>
+                <div *ngIf="appointmentDateTime" class="summary-row">
+                  <span class="summary-label">Hora</span>
+                  <span class="summary-value">{{ appointmentDateTime.hora }}</span>
                 </div>
                 <div class="summary-row">
                   <span class="summary-label">Nombre</span>
@@ -310,16 +383,15 @@
               </div>
 
               <p class="step3-info">
-                Te enviaremos un email de confirmación con el resumen de tu solicitud.<br />
-                Nos pondremos en contacto contigo para confirmar disponibilidad y horario.<br />
+                Te enviaremos un email de confirmación con el resumen de tu cita.<br />
                 El pago se realiza en el centro el día de la sesión.
               </p>
 
               <!-- Fallback WhatsApp si falla el envío de email -->
               <div *ngIf="errorEnvio" class="email-error-card">
                 <p class="email-error-text">
-                  No pudimos enviar el email en este momento.
-                  Puedes contactarnos directamente por WhatsApp:
+                  No pudimos enviar el email en este momento. Puedes contactarnos directamente por
+                  WhatsApp:
                 </p>
                 <a
                   [href]="whatsAppFallbackUrl"
@@ -332,7 +404,14 @@
               </div>
 
               <div class="step-actions step-actions--with-back">
-                <button type="button" class="step-btn-back" (click)="prevStep()" [disabled]="enviando">← Atrás</button>
+                <button
+                  type="button"
+                  class="step-btn-back"
+                  (click)="prevStep()"
+                  [disabled]="enviando"
+                >
+                  ← Atrás
+                </button>
                 <button
                   type="button"
                   class="btn-primary step-btn-whatsapp"
@@ -345,12 +424,9 @@
                 </button>
               </div>
             </ng-container>
-
           </div>
-
         </form>
       </div>
-
     </div>
   </div>
 </section>

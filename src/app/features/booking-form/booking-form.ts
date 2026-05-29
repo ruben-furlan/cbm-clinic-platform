@@ -1,12 +1,27 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, HostListener, inject, NgZone, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  inject,
+  NgZone,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 import { LanguageService } from '../../core/language/language.service';
-import { HorarioFranja, Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
+import {
+  HorarioFranja,
+  Tarifa,
+  TarifaCategoria,
+  TarifasService,
+} from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
+import { AppointmentDateTime, CalendlyService } from '../../services/calendly.service';
 
 interface TreatmentOption {
   value: string;
@@ -23,11 +38,18 @@ interface TreatmentOption {
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RevealOnScrollDirective, CbmLoaderComponent, HorarioChipsComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    RevealOnScrollDirective,
+    CbmLoaderComponent,
+    HorarioChipsComponent,
+  ],
   templateUrl: './booking-form.html',
-  styleUrls: ['./booking-form.css']
+  styleUrls: ['./booking-form.css'],
 })
-export class BookingFormComponent implements OnInit {
+export class BookingFormComponent implements OnInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
 
   constructor(
@@ -35,7 +57,8 @@ export class BookingFormComponent implements OnInit {
     private readonly languageService: LanguageService,
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
-    private readonly ngZone: NgZone
+    private readonly ngZone: NgZone,
+    private readonly calendlyService: CalendlyService,
   ) {}
 
   currentStep = 1;
@@ -53,6 +76,8 @@ export class BookingFormComponent implements OnInit {
   errorEnvio = false;
   solicitudEnviada = false;
 
+  appointmentDateTime: AppointmentDateTime | null = null;
+
   treatmentOptions: TreatmentOption[] = [];
 
   formData = {
@@ -61,7 +86,7 @@ export class BookingFormComponent implements OnInit {
     email: '',
     phone: '',
     treatment: '',
-    message: ''
+    message: '',
   };
 
   availabilityType: 'green' | 'amber' = 'green';
@@ -93,6 +118,10 @@ export class BookingFormComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.calendlyService.destroyWidget();
+  }
+
   private initAvailability(): void {
     this.availabilityType = 'green';
     this.availabilityText = 'Solo falta un paso para confirmar tu cita';
@@ -114,7 +143,7 @@ export class BookingFormComponent implements OnInit {
   private readonly categoryLabels: Record<TarifaCategoria, string> = {
     fisioterapia: 'Fisioterapia',
     pilates: 'Clases de pilates',
-    promocion: 'Bienestar ✨'
+    promocion: 'Bienestar ✨',
   };
 
   get treatmentOptionsByCategory(): { label: string; options: TreatmentOption[] }[] {
@@ -122,13 +151,15 @@ export class BookingFormComponent implements OnInit {
     return order
       .map((cat) => ({
         label: this.categoryLabels[cat],
-        options: this.treatmentOptions.filter((o) => o.categoria === cat)
+        options: this.treatmentOptions.filter((o) => o.categoria === cat),
       }))
       .filter((group) => group.options.length > 0);
   }
 
   get selectedTreatmentLabel(): string {
-    const selected = this.treatmentOptions.find((option) => option.value === this.formData.treatment);
+    const selected = this.treatmentOptions.find(
+      (option) => option.value === this.formData.treatment,
+    );
     return selected?.label ?? '';
   }
 
@@ -150,7 +181,9 @@ export class BookingFormComponent implements OnInit {
   }
 
   get canAdvanceStep2(): boolean {
-    return !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid && this.isPhoneValid;
+    return (
+      !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid && this.isPhoneValid
+    );
   }
 
   onPhoneInput(event: Event): void {
@@ -193,6 +226,58 @@ export class BookingFormComponent implements OnInit {
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep++;
     this.scrollToForm();
+    if (this.currentStep === 3) {
+      this.initCalendly();
+    }
+  }
+
+  prevStep(): void {
+    if (this.currentStep === 2 && this.preselectedFromPricing) {
+      this.preselectedFromPricing = false;
+      this.formData.treatment = '';
+    }
+    if (this.currentStep === 4) {
+      this.appointmentDateTime = null;
+    }
+    if (this.currentStep === 3) {
+      this.calendlyService.destroyWidget();
+    }
+    this.stepAnimClass = 'step-enter-back';
+    this.currentStep--;
+    if (this.currentStep === 3) {
+      this.initCalendly();
+    }
+  }
+
+  private async initCalendly(): Promise<void> {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try {
+      await this.calendlyService.loadScript();
+    } catch {
+      return;
+    }
+    setTimeout(() => {
+      this.ngZone.run(() => {
+        this.calendlyService.initWidget(
+          'calendly-container',
+          this.formData.name,
+          this.formData.email,
+        );
+        this.calendlyService.listenEvents((dt) => {
+          this.ngZone.run(() => {
+            this.appointmentDateTime = dt;
+            this.avanzarAlPaso4();
+            this.cdr.detectChanges();
+          });
+        });
+      });
+    }, 300);
+  }
+
+  private avanzarAlPaso4(): void {
+    this.stepAnimClass = 'step-enter-forward';
+    this.currentStep = 4;
+    this.scrollToForm();
   }
 
   private scrollToForm(): void {
@@ -205,15 +290,6 @@ export class BookingFormComponent implements OnInit {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }, 100);
-  }
-
-  prevStep(): void {
-    if (this.currentStep === 2 && this.preselectedFromPricing) {
-      this.preselectedFromPricing = false;
-      this.formData.treatment = '';
-    }
-    this.stepAnimClass = 'step-enter-back';
-    this.currentStep--;
   }
 
   sendWhatsApp(): void {
@@ -241,7 +317,7 @@ export class BookingFormComponent implements OnInit {
         treatmentLabel: 'Tratamiento',
         descriptionLabel: 'Descripción',
         promoLabel: 'Código promocional',
-        closing: 'Quedo pendiente de confirmación.'
+        closing: 'Quedo pendiente de confirmación.',
       },
       en: {
         greeting: 'Hi, I would like to request information or reserve this option:',
@@ -251,7 +327,7 @@ export class BookingFormComponent implements OnInit {
         treatmentLabel: 'Treatment',
         descriptionLabel: 'Description',
         promoLabel: 'Promo code',
-        closing: 'I remain pending confirmation.'
+        closing: 'I remain pending confirmation.',
       },
       ca: {
         greeting: 'Hola, vull sol·licitar informació o reservar aquesta opció:',
@@ -261,8 +337,8 @@ export class BookingFormComponent implements OnInit {
         treatmentLabel: 'Tractament',
         descriptionLabel: 'Descripció',
         promoLabel: 'Codi promocional',
-        closing: 'Quedo pendent de confirmació.'
-      }
+        closing: 'Quedo pendent de confirmació.',
+      },
     };
 
     const t = textByLanguage[selectedLanguage];
@@ -315,9 +391,11 @@ export class BookingFormComponent implements OnInit {
           telefono: '+34' + this.formData.phone.replace(/\s/g, ''),
           tratamiento: this.selectedTreatmentOption?.nombre,
           precio: this.selectedTreatmentOption?.precio,
-          codigoPromo: this.promoCode.trim() || null
+          codigoPromo: this.promoCode.trim() || null,
+          fecha: this.appointmentDateTime?.fecha,
+          hora: this.appointmentDateTime?.hora,
         }),
-        signal: controller.signal
+        signal: controller.signal,
       });
       clearTimeout(timeout);
 
@@ -369,10 +447,10 @@ export class BookingFormComponent implements OnInit {
       nombre: tarifa.nombre,
       precio: `${tarifa.precio}${tarifa.unidad}`,
       descripcion: tarifa.descripcion,
-      horarios: tarifa.horarios, // SPEC-002
+      horarios: tarifa.horarios,
       type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session',
       categoria: tarifa.categoria,
-      showBadge: isPilates || isBundle
+      showBadge: isPilates || isBundle,
     };
   }
 }
