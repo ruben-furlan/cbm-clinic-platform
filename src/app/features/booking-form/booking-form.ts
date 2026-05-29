@@ -1,13 +1,16 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
+  AfterViewChecked,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   HostListener,
   inject,
   NgZone,
   OnDestroy,
   OnInit,
   PLATFORM_ID,
+  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -49,8 +52,11 @@ interface TreatmentOption {
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css'],
 })
-export class BookingFormComponent implements OnInit, OnDestroy {
+export class BookingFormComponent implements OnInit, AfterViewChecked, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
+
+  @ViewChild('calendlyContainer') calendlyContainer?: ElementRef<HTMLElement>;
+  private calendlyInitPending = false;
 
   constructor(
     private readonly tarifasService: TarifasService,
@@ -116,6 +122,12 @@ export class BookingFormComponent implements OnInit, OnDestroy {
       this.loadingTarifas = false;
       this.cdr.detectChanges();
     }
+  }
+
+  ngAfterViewChecked(): void {
+    if (!this.calendlyInitPending || !this.calendlyContainer) return;
+    this.calendlyInitPending = false;
+    this.doInitWidget();
   }
 
   ngOnDestroy(): void {
@@ -256,22 +268,23 @@ export class BookingFormComponent implements OnInit, OnDestroy {
     } catch {
       return;
     }
-    setTimeout(() => {
+    if (this.currentStep !== 3) return;
+    this.calendlyInitPending = true;
+    // Zone.js detecta la resolución del Promise y dispara un ciclo de CD,
+    // que ejecuta ngAfterViewChecked cuando el div ya está en el DOM.
+  }
+
+  private doInitWidget(): void {
+    const el = this.calendlyContainer?.nativeElement;
+    if (!el) return;
+    this.calendlyService.initWidget(el, this.formData.name, this.formData.email);
+    this.calendlyService.listenEvents((dt) => {
       this.ngZone.run(() => {
-        this.calendlyService.initWidget(
-          'calendly-container',
-          this.formData.name,
-          this.formData.email,
-        );
-        this.calendlyService.listenEvents((dt) => {
-          this.ngZone.run(() => {
-            this.appointmentDateTime = dt;
-            this.avanzarAlPaso4();
-            this.cdr.detectChanges();
-          });
-        });
+        this.appointmentDateTime = dt;
+        this.avanzarAlPaso4();
+        this.cdr.detectChanges();
       });
-    }, 300);
+    });
   }
 
   private avanzarAlPaso4(): void {

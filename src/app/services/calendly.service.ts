@@ -54,14 +54,12 @@ export class CalendlyService {
     });
   }
 
-  initWidget(containerId: string, name: string, email: string): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    const container = document.getElementById(containerId);
-    if (!container || !window.Calendly) return;
+  initWidget(element: Element, name: string, email: string): void {
+    if (!isPlatformBrowser(this.platformId) || !window.Calendly) return;
 
     window.Calendly.initInlineWidget({
       url: EVENT_URL,
-      parentElement: container,
+      parentElement: element,
       prefill: { name, email },
     });
   }
@@ -96,9 +94,6 @@ export class CalendlyService {
 
   destroyWidget(): void {
     this.destroyListeners();
-    if (!isPlatformBrowser(this.platformId)) return;
-    const container = document.getElementById('calendly-container');
-    if (container) container.innerHTML = '';
   }
 
   private destroyListeners(): void {
