@@ -43,7 +43,7 @@ export class LanguageService {
   }
 
   get selectedLanguage(): SupportedLanguage {
-    if (!isPlatformBrowser(this.platformId)) return 'es';
+    if (!isPlatformBrowser(this.platformId)) return 'ca';
 
     const persistedLanguage = localStorage.getItem('selected-language');
 
@@ -53,7 +53,7 @@ export class LanguageService {
 
     const cookieLanguage = this.getLanguageFromGoogleCookie();
 
-    return cookieLanguage ?? 'es';
+    return cookieLanguage ?? 'ca';
   }
 
   initGoogleTranslate(): void {
