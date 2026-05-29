@@ -1,12 +1,25 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectorRef, Component, HostListener, inject, NgZone, OnInit, PLATFORM_ID } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  inject,
+  NgZone,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
-import { LanguageService } from '../../core/language/language.service';
-import { HorarioFranja, Tarifa, TarifaCategoria, TarifasService } from '../../core/services/tarifas.service';
+import {
+  HorarioFranja,
+  Tarifa,
+  TarifaCategoria,
+  TarifasService,
+} from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
+import { Step3CalendlyComponent } from './step3-calendly.component';
+import { BookingTreatmentService } from './booking-treatment.service';
 
 interface TreatmentOption {
   value: string;
@@ -23,46 +36,37 @@ interface TreatmentOption {
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RevealOnScrollDirective, CbmLoaderComponent, HorarioChipsComponent],
+  imports: [
+    CommonModule,
+    RevealOnScrollDirective,
+    CbmLoaderComponent,
+    HorarioChipsComponent,
+    Step3CalendlyComponent,
+  ],
   templateUrl: './booking-form.html',
-  styleUrls: ['./booking-form.css']
+  styleUrls: ['./booking-form.css'],
 })
 export class BookingFormComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
 
-  constructor(
+   constructor(
     private readonly tarifasService: TarifasService,
-    private readonly languageService: LanguageService,
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
-    private readonly ngZone: NgZone
+    private readonly ngZone: NgZone,
+    private readonly bookingTreatmentService: BookingTreatmentService,
   ) {}
 
   currentStep = 1;
   stepAnimClass = '';
   isMobile = false;
 
-  showPromoCode = false;
-  promoCode = '';
-  step2Touched = false;
-  whatsAppFeedback = false;
   loadingTarifas = true;
   errorTarifas = false;
   preselectedFromPricing = false;
-  enviando = false;
-  errorEnvio = false;
-  solicitudEnviada = false;
 
   treatmentOptions: TreatmentOption[] = [];
-
-  formData = {
-    name: '',
-    surname: '',
-    email: '',
-    phone: '',
-    treatment: '',
-    message: ''
-  };
+  formData = { treatment: '' };
 
   availabilityType: 'green' | 'amber' = 'green';
   availabilityText = '';
@@ -95,7 +99,7 @@ export class BookingFormComponent implements OnInit {
 
   private initAvailability(): void {
     this.availabilityType = 'green';
-    this.availabilityText = 'Solo falta un paso para confirmar tu cita';
+    this.availabilityText = 'Elige tu tratamiento y reserva tu cita ahora';
   }
 
   private applyPreselectionFromQuery(): void {
@@ -106,6 +110,12 @@ export class BookingFormComponent implements OnInit {
     if (!matched) return;
 
     this.formData.treatment = matched.value;
+    // Guardar en el servicio (preselección desde página de tarifas)
+    this.bookingTreatmentService.setSelectedTreatment({
+      id: matched.value,
+      nombre: matched.nombre,
+      precio: matched.precio,
+    });
     this.preselectedFromPricing = true;
     this.currentStep = 2;
     this.stepAnimClass = 'step-enter-forward';
@@ -114,7 +124,7 @@ export class BookingFormComponent implements OnInit {
   private readonly categoryLabels: Record<TarifaCategoria, string> = {
     fisioterapia: 'Fisioterapia',
     pilates: 'Clases de pilates',
-    promocion: 'Bienestar ✨'
+    promocion: 'Bienestar ✨',
   };
 
   get treatmentOptionsByCategory(): { label: string; options: TreatmentOption[] }[] {
@@ -122,13 +132,15 @@ export class BookingFormComponent implements OnInit {
     return order
       .map((cat) => ({
         label: this.categoryLabels[cat],
-        options: this.treatmentOptions.filter((o) => o.categoria === cat)
+        options: this.treatmentOptions.filter((o) => o.categoria === cat),
       }))
       .filter((group) => group.options.length > 0);
   }
 
   get selectedTreatmentLabel(): string {
-    const selected = this.treatmentOptions.find((option) => option.value === this.formData.treatment);
+    const selected = this.treatmentOptions.find(
+      (option) => option.value === this.formData.treatment,
+    );
     return selected?.label ?? '';
   }
 
@@ -136,36 +148,19 @@ export class BookingFormComponent implements OnInit {
     return this.treatmentOptions.find((option) => option.value === this.formData.treatment);
   }
 
-  get isEmailValid(): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(this.formData.email);
-  }
-
-  get isPhoneValid(): boolean {
-    return /^\d{9,}$/.test(this.formData.phone.replace(/\s/g, ''));
-  }
-
   get canAdvanceStep1(): boolean {
     return !!this.formData.treatment;
-  }
-
-  get canAdvanceStep2(): boolean {
-    return !!this.formData.name.trim() && !!this.formData.email && this.isEmailValid && this.isPhoneValid;
-  }
-
-  onPhoneInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/[^\d\s]/g, '');
-    this.formData.phone = input.value;
-  }
-
-  selectCard(value: string): void {
-    this.formData.treatment = value;
   }
 
   seleccionarTratamiento(option: TreatmentOption): void {
     this.ngZone.run(() => {
       this.formData.treatment = option.value;
+      // Guardar en el servicio
+      this.bookingTreatmentService.setSelectedTreatment({
+        id: option.value,
+        nombre: option.nombre,
+        precio: option.precio,
+      });
       this.cdr.detectChanges();
 
       if (this.isMobile) {
@@ -180,19 +175,25 @@ export class BookingFormComponent implements OnInit {
   }
 
   irAlPaso2(): void {
+    // Validación: si no hay tratamiento, no permitir avanzar
+    if (!this.canAdvanceStep1) {
+      return;
+    }
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep = 2;
     this.scrollToForm();
   }
 
-  nextStep(): void {
+  prevStep(): void {
     if (this.currentStep === 2) {
-      this.step2Touched = true;
-      if (!this.canAdvanceStep2) return;
+      this.bookingTreatmentService.clearSelectedTreatment();
+      if (this.preselectedFromPricing) {
+        this.preselectedFromPricing = false;
+        this.formData.treatment = '';
+      }
     }
-    this.stepAnimClass = 'step-enter-forward';
-    this.currentStep++;
-    this.scrollToForm();
+    this.stepAnimClass = 'step-enter-back';
+    this.currentStep--;
   }
 
   private scrollToForm(): void {
@@ -207,158 +208,6 @@ export class BookingFormComponent implements OnInit {
     }, 100);
   }
 
-  prevStep(): void {
-    if (this.currentStep === 2 && this.preselectedFromPricing) {
-      this.preselectedFromPricing = false;
-      this.formData.treatment = '';
-    }
-    this.stepAnimClass = 'step-enter-back';
-    this.currentStep--;
-  }
-
-  sendWhatsApp(): void {
-    const phoneNumber = '34662561672';
-    const selectedLanguage = this.languageService.selectedLanguage;
-
-    const textByLanguage: Record<
-      'es' | 'en' | 'ca',
-      {
-        greeting: string;
-        nameLabel: string;
-        surnameLabel: string;
-        emailLabel: string;
-        treatmentLabel: string;
-        descriptionLabel: string;
-        promoLabel: string;
-        closing: string;
-      }
-    > = {
-      es: {
-        greeting: 'Hola, quiero solicitar información o reservar esta opción:',
-        nameLabel: 'Nombre',
-        surnameLabel: 'Apellido',
-        emailLabel: 'Correo electrónico',
-        treatmentLabel: 'Tratamiento',
-        descriptionLabel: 'Descripción',
-        promoLabel: 'Código promocional',
-        closing: 'Quedo pendiente de confirmación.'
-      },
-      en: {
-        greeting: 'Hi, I would like to request information or reserve this option:',
-        nameLabel: 'Name',
-        surnameLabel: 'Surname',
-        emailLabel: 'Email',
-        treatmentLabel: 'Treatment',
-        descriptionLabel: 'Description',
-        promoLabel: 'Promo code',
-        closing: 'I remain pending confirmation.'
-      },
-      ca: {
-        greeting: 'Hola, vull sol·licitar informació o reservar aquesta opció:',
-        nameLabel: 'Nom',
-        surnameLabel: 'Cognom',
-        emailLabel: 'Correu electrònic',
-        treatmentLabel: 'Tractament',
-        descriptionLabel: 'Descripció',
-        promoLabel: 'Codi promocional',
-        closing: 'Quedo pendent de confirmació.'
-      }
-    };
-
-    const t = textByLanguage[selectedLanguage];
-
-    const surnameLine = this.formData.surname.trim()
-      ? `
-    ${t.surnameLabel}: ${this.formData.surname}`
-      : '';
-
-    const promoCodeLine = this.promoCode.trim()
-      ? `
-    ${t.promoLabel}: ${this.promoCode}`
-      : '';
-
-    const rawMessage = `${t.greeting}
-
-    ${t.nameLabel}: ${this.formData.name}${surnameLine}
-    ${t.emailLabel}: ${this.formData.email}
-    ${t.treatmentLabel}: ${this.selectedTreatmentLabel}
-    ${t.descriptionLabel}: ${this.formData.message}${promoCodeLine}
-
-    ${t.closing}`;
-    const encodedMessage = encodeURIComponent(rawMessage);
-    const url = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-    this.whatsAppFeedback = true;
-    setTimeout(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        window.open(url, '_blank');
-      }
-      this.whatsAppFeedback = false;
-    }, 1500);
-  }
-
-  async confirmarSolicitud(): Promise<void> {
-    this.enviando = true;
-    this.errorEnvio = false;
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-
-    try {
-      const response = await fetch('/.netlify/functions/send-appointment-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nombre: this.formData.name,
-          apellido: this.formData.surname,
-          email: this.formData.email,
-          telefono: '+34' + this.formData.phone.replace(/\s/g, ''),
-          tratamiento: this.selectedTreatmentOption?.nombre,
-          precio: this.selectedTreatmentOption?.precio,
-          codigoPromo: this.promoCode.trim() || null
-        }),
-        signal: controller.signal
-      });
-      clearTimeout(timeout);
-
-      if (!response.ok) {
-        const details = await response.text().catch(() => '');
-        console.error(`Error enviando solicitud HTTP ${response.status}:`, details);
-        this.enviando = false;
-        this.errorEnvio = true;
-        this.cdr.detectChanges();
-        return;
-      }
-
-      this.enviando = false;
-      this.solicitudEnviada = true;
-      this.cdr.detectChanges();
-      this.scrollToForm();
-    } catch (err) {
-      clearTimeout(timeout);
-      console.error('Error enviando solicitud:', err);
-      this.enviando = false;
-      this.errorEnvio = true;
-      this.cdr.detectChanges();
-    }
-  }
-
-  get whatsAppFallbackUrl(): string {
-    const phone = '34662561672';
-    const promo = this.promoCode.trim() ? `\nCódigo: ${this.promoCode}` : '';
-    const apellido = this.formData.surname.trim() ? ` ${this.formData.surname}` : '';
-    const msg =
-      `Hola CBM 😊 Quiero solicitar una cita.\n` +
-      `Tratamiento: ${this.selectedTreatmentOption?.nombre}\n` +
-      `Nombre: ${this.formData.name}${apellido}\n` +
-      `Email: ${this.formData.email}${promo}`;
-    return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-  }
-
-  togglePromoCode(): void {
-    this.showPromoCode = !this.showPromoCode;
-  }
-
   private toTreatmentOption(tarifa: Tarifa): TreatmentOption {
     const isBundle = tarifa.nombre.toLowerCase().includes('bono');
     const isPilates = tarifa.categoria === 'pilates';
@@ -369,10 +218,10 @@ export class BookingFormComponent implements OnInit {
       nombre: tarifa.nombre,
       precio: `${tarifa.precio}${tarifa.unidad}`,
       descripcion: tarifa.descripcion,
-      horarios: tarifa.horarios, // SPEC-002
+      horarios: tarifa.horarios,
       type: isPilates ? 'pilates' : isBundle ? 'bundle' : 'session',
       categoria: tarifa.categoria,
-      showBadge: isPilates || isBundle
+      showBadge: isPilates || isBundle,
     };
   }
 }

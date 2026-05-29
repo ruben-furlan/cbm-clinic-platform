@@ -1,21 +1,21 @@
-.booking-form{
+.booking-form {
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 247, 251, 0.62) 100%);
   padding: 96px 0;
 }
 
-.booking-wrapper{
-  max-width:1100px;
-  margin:0 auto;
+.booking-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 /* ── Availability badge ────────────────────────────────── */
-.availability-badge-wrapper{
+.availability-badge-wrapper {
   max-width: 860px;
   margin: 18px auto 0;
   display: flex;
 }
 
-.availability-badge{
+.availability-badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -28,13 +28,13 @@
   font-weight: 600;
 }
 
-.availability-badge--amber{
+.availability-badge--amber {
   background: rgba(245, 158, 11, 0.1);
   border-color: rgba(245, 158, 11, 0.28);
   color: #92400e;
 }
 
-.availability-dot{
+.availability-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -43,49 +43,59 @@
   animation: pulseGreen 2s ease-in-out infinite;
 }
 
-.availability-dot--amber{
+.availability-dot--amber {
   background: #f59e0b;
   animation: pulseAmber 2s ease-in-out infinite;
 }
 
-@keyframes pulseGreen{
-  0%, 100%{ opacity: 1; }
-  50%{ opacity: 0.45; }
+@keyframes pulseGreen {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
 }
 
-@keyframes pulseAmber{
-  0%, 100%{ opacity: 1; }
-  50%{ opacity: 0.45; }
+@keyframes pulseAmber {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
 }
 
 /* ── Form card ─────────────────────────────────────────── */
-.form-card{
-  max-width:860px;
-  margin:18px auto 0;
+.form-card {
+  max-width: 860px;
+  margin: 18px auto 0;
   background: rgba(255, 255, 255, 0.78);
-  border:1px solid rgba(241, 216, 230, 0.9);
-  border-radius:var(--radius-card);
-  padding:34px;
-  box-shadow:0 12px 28px rgba(31, 27, 45, 0.08);
+  border: 1px solid rgba(241, 216, 230, 0.9);
+  border-radius: var(--radius-card);
+  padding: 34px;
+  box-shadow: 0 12px 28px rgba(31, 27, 45, 0.08);
   backdrop-filter: blur(5px);
 }
 
 /* ── Stepper indicator ─────────────────────────────────── */
-.stepper-indicator{
+.stepper-indicator {
   display: flex;
   align-items: flex-start;
   justify-content: center;
   margin-bottom: 28px;
 }
 
-.stepper-step-item{
+.stepper-step-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
 }
 
-.stepper-circle{
+.stepper-circle {
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -96,22 +106,25 @@
   font-weight: 700;
   background: #e8e4f0;
   color: #9a92a8;
-  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
   flex-shrink: 0;
 }
 
-.stepper-step-item--active .stepper-circle{
+.stepper-step-item--active .stepper-circle {
   background: var(--gradient-brand);
   color: white;
   box-shadow: 0 4px 14px rgba(123, 77, 255, 0.32);
 }
 
-.stepper-step-item--done .stepper-circle{
+.stepper-step-item--done .stepper-circle {
   background: linear-gradient(135deg, rgba(255, 79, 163, 0.65), rgba(123, 77, 255, 0.6));
   color: white;
 }
 
-.stepper-label{
+.stepper-label {
   font-size: 11px;
   color: #9a92a8;
   text-align: center;
@@ -119,16 +132,16 @@
   font-weight: 500;
 }
 
-.stepper-step-item--active .stepper-label{
+.stepper-step-item--active .stepper-label {
   color: #4a4259;
   font-weight: 700;
 }
 
-.stepper-step-item--done .stepper-label{
+.stepper-step-item--done .stepper-label {
   color: #7d6e8e;
 }
 
-.stepper-line{
+.stepper-line {
   flex: 1;
   height: 2px;
   background: #e8e4f0;
@@ -138,35 +151,47 @@
   min-width: 24px;
 }
 
-.stepper-line--filled{
+.stepper-line--filled {
   background: var(--gradient-brand);
 }
 
 /* ── Step pane animations ──────────────────────────────── */
-.stepper-pane{
+.stepper-pane {
   animation-fill-mode: both;
 }
 
-.step-enter-forward{
+.step-enter-forward {
   animation: stepSlideInRight 0.3s ease;
 }
 
-.step-enter-back{
+.step-enter-back {
   animation: stepSlideInLeft 0.3s ease;
 }
 
-@keyframes stepSlideInRight{
-  from{ opacity: 0; transform: translateX(22px); }
-  to{ opacity: 1; transform: translateX(0); }
+@keyframes stepSlideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-@keyframes stepSlideInLeft{
-  from{ opacity: 0; transform: translateX(-22px); }
-  to{ opacity: 1; transform: translateX(0); }
+@keyframes stepSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* ── Step titles ───────────────────────────────────────── */
-.step-title{
+.step-title {
   font-size: 20px;
   font-weight: 800;
   color: #1f1b2d;
@@ -174,13 +199,13 @@
   letter-spacing: -0.01em;
 }
 
-.step-subtitle{
+.step-subtitle {
   color: #7a728a;
   font-size: 13px;
   margin: 0 0 20px;
 }
 
-.badge-preseleccionado{
+.badge-preseleccionado {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -194,20 +219,20 @@
   color: #374151;
 }
 
-.badge-preseleccionado strong{
+.badge-preseleccionado strong {
   color: #7c3aed;
   font-weight: 600;
 }
 
 /* ── Treatment cards (paso 1) ──────────────────────────── */
-.treatment-groups{
+.treatment-groups {
   display: flex;
   flex-direction: column;
   gap: 18px;
   margin-bottom: 20px;
 }
 
-.treatment-group-label{
+.treatment-group-label {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -216,13 +241,13 @@
   margin: 0 0 8px;
 }
 
-.treatment-cards{
+.treatment-cards {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 }
 
-.treatment-card{
+.treatment-card {
   position: relative;
   background: white;
   border: 1.5px solid rgba(231, 205, 221, 0.9);
@@ -231,45 +256,50 @@
   text-align: left;
   cursor: pointer;
   font: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 150ms ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    transform 150ms ease;
   outline: none;
 }
 
-.treatment-card:active{
+.treatment-card:active {
   transform: scale(0.98);
 }
 
-.treatment-card:hover{
+.treatment-card:hover {
   box-shadow: 0 6px 18px rgba(31, 27, 45, 0.1);
 }
 
-.treatment-card:focus-visible{
+.treatment-card:focus-visible {
   outline: 2px solid rgba(255, 79, 163, 0.4);
   outline-offset: 2px;
 }
 
-.treatment-card--selected{
+.treatment-card--selected {
   border: 2px solid transparent;
-  background: linear-gradient(white, white) padding-box,
-              linear-gradient(135deg, #f472b6, #a855f7) border-box;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(135deg, #f472b6, #a855f7) border-box;
   box-shadow: 0 4px 16px rgba(168, 85, 247, 0.15);
 }
 
-.treatment-card-header{
+.treatment-card-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 8px;
 }
 
-.treatment-card-name{
+.treatment-card-name {
   font-weight: 600;
   color: #332d43;
   font-size: 14px;
   line-height: 1.35;
 }
 
-.treatment-card-price{
+.treatment-card-price {
   color: #1f1b2d;
   font-size: 15px;
   font-weight: 800;
@@ -277,15 +307,14 @@
   letter-spacing: -0.01em;
 }
 
-.treatment-card-desc{
+.treatment-card-desc {
   margin: 5px 0 0;
   color: #7a728a;
   font-size: 12px;
   line-height: 1.4;
 }
 
-
-.treatment-card-badge{
+.treatment-card-badge {
   display: inline-block;
   margin-top: 7px;
   padding: 2px 8px;
@@ -296,7 +325,7 @@
   font-weight: 600;
 }
 
-.treatment-card-check{
+.treatment-card-check {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -305,7 +334,7 @@
 }
 
 /* ── Step actions ──────────────────────────────────────── */
-.tarifas-error{
+.tarifas-error {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -315,33 +344,33 @@
   color: #666;
   font-size: 15px;
 }
-.tarifas-error .btn-primary{
+.tarifas-error .btn-primary {
   margin-top: 8px;
 }
 
-.step-actions{
+.step-actions {
   display: flex;
   justify-content: flex-end;
   margin-top: 16px;
 }
 
-.step-actions--with-back{
+.step-actions--with-back {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
 }
 
-.step-btn-continue{
+.step-btn-continue {
   min-width: 160px;
   font-size: 15px;
 }
 
-.step-btn-continue--disabled{
+.step-btn-continue--disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-.step-btn-back{
+.step-btn-back {
   background: none;
   border: none;
   color: #7d6e8e;
@@ -354,17 +383,17 @@
   white-space: nowrap;
 }
 
-.step-btn-back:hover{
+.step-btn-back:hover {
   color: #4a4259;
 }
 
 /* ── Phone input ───────────────────────────────────────── */
-.phone-input-group{
+.phone-input-group {
   display: flex;
   align-items: stretch;
 }
 
-.phone-prefix{
+.phone-prefix {
   display: flex;
   align-items: center;
   padding: 0 14px;
@@ -380,70 +409,72 @@
   user-select: none;
 }
 
-.phone-input-group input{
+.phone-input-group input {
   border-radius: 0 12px 12px 0 !important;
   flex: 1;
   min-width: 0;
 }
 
-.phone-input-group--error .phone-prefix{
+.phone-input-group--error .phone-prefix {
   border-color: #e05c7b;
 }
 
-.phone-input-group--error input{
+.phone-input-group--error input {
   border-color: #e05c7b !important;
 }
 
 /* ── Form fields (paso 2) ──────────────────────────────── */
-.form-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
-.form-group{
-  display:flex;
-  flex-direction:column;
-  margin-bottom:16px;
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
 }
 
-.form-group label{
-  margin-bottom:7px;
-  font-weight:600;
-  color:#332d43;
+.form-group label {
+  margin-bottom: 7px;
+  font-weight: 600;
+  color: #332d43;
   font-size: 14px;
 }
 
 .form-group input,
-.form-group textarea{
-  border:1px solid rgba(231, 205, 221, 0.9);
-  border-radius:12px;
-  padding:14px 16px;
-  font-size:16px;
-  font-family:inherit;
-  outline:none;
+.form-group textarea {
+  border: 1px solid rgba(231, 205, 221, 0.9);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
   background: rgba(255, 255, 255, 0.95);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .form-group input:focus,
-.form-group textarea:focus{
-  border-color:#ff4fa3;
+.form-group textarea:focus {
+  border-color: #ff4fa3;
   box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.13);
 }
 
-.input-error{
+.input-error {
   border-color: #e05c7b !important;
 }
 
-.field-error{
+.field-error {
   margin: 5px 2px 0;
   color: #e05c7b;
   font-size: 12px;
   font-weight: 600;
 }
 
-.promo-toggle{
+.promo-toggle {
   margin: 0 0 12px;
   padding: 0;
   border: 0;
@@ -456,26 +487,28 @@
   text-align: left;
   cursor: pointer;
   align-self: flex-start;
-  transition: color 0.2s ease, opacity 0.2s ease;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .promo-toggle:hover,
-.promo-toggle:focus-visible{
+.promo-toggle:focus-visible {
   color: #5f4f74;
   opacity: 0.92;
 }
 
-.promo-toggle:focus-visible{
+.promo-toggle:focus-visible {
   outline: 2px solid rgba(255, 79, 163, 0.3);
   outline-offset: 4px;
   border-radius: 8px;
 }
 
-.promo-group{
+.promo-group {
   margin-top: -2px;
 }
 
-.promo-help{
+.promo-help {
   margin: 8px 2px 0;
   color: #7a728a;
   font-size: 12px;
@@ -483,7 +516,7 @@
 }
 
 /* ── Summary card (paso 3) ─────────────────────────────── */
-.summary-card{
+.summary-card {
   background: rgba(255, 247, 251, 0.8);
   border: 1px solid rgba(241, 216, 230, 0.9);
   border-radius: 14px;
@@ -491,7 +524,7 @@
   margin-bottom: 18px;
 }
 
-.summary-row{
+.summary-row {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -500,16 +533,16 @@
   border-bottom: 1px solid rgba(231, 205, 221, 0.5);
 }
 
-.summary-row:first-child{
+.summary-row:first-child {
   padding-top: 2px;
 }
 
-.summary-row:last-child{
+.summary-row:last-child {
   border-bottom: none;
   padding-bottom: 2px;
 }
 
-.summary-label{
+.summary-label {
   font-size: 11px;
   color: #9a92a8;
   font-weight: 700;
@@ -519,53 +552,53 @@
   flex-shrink: 0;
 }
 
-.summary-value{
+.summary-value {
   color: #332d43;
   font-size: 14px;
   font-weight: 500;
   text-align: right;
 }
 
-.summary-price{
+.summary-price {
   margin-left: 7px;
   color: #1f1b2d;
   font-weight: 800;
 }
 
-.summary-promo{
+.summary-promo {
   color: #7b4dff;
   font-weight: 700;
 }
 
-.step3-info{
+.step3-info {
   color: #6e6780;
   font-size: 13px;
   line-height: 1.7;
   margin: 0 0 20px;
 }
 
-.step-btn-whatsapp{
+.step-btn-whatsapp {
   min-width: 230px;
   font-size: 15px;
   padding: 15px 26px;
 }
 
-.step-btn-whatsapp--sent{
+.step-btn-whatsapp--sent {
   background: linear-gradient(135deg, #10b981, #059669) !important;
   box-shadow: 0 12px 24px rgba(16, 185, 129, 0.28) !important;
 }
 
-.step-btn-whatsapp--loading{
+.step-btn-whatsapp--loading {
   opacity: 0.75;
   cursor: wait;
 }
 
-.whatsapp-feedback{
+.whatsapp-feedback {
   font-weight: 700;
 }
 
 /* ── Success screen (paso 3 enviado) ───────────────────── */
-.success-screen{
+.success-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -574,18 +607,24 @@
   gap: 12px;
 }
 
-.success-icon{
+.success-icon {
   font-size: 52px;
   line-height: 1;
   animation: successPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-@keyframes successPop{
-  from{ transform: scale(0.5); opacity: 0; }
-  to{ transform: scale(1); opacity: 1; }
+@keyframes successPop {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.success-subtitle{
+.success-subtitle {
   color: #6e6780;
   font-size: 15px;
   line-height: 1.65;
@@ -593,7 +632,7 @@
   max-width: 420px;
 }
 
-.btn-back-home{
+.btn-back-home {
   margin-top: 8px;
   font-size: 14px;
   font-weight: 600;
@@ -602,12 +641,12 @@
   transition: color 0.2s ease;
 }
 
-.btn-back-home:hover{
+.btn-back-home:hover {
   color: #4a4259;
 }
 
 /* ── Email error fallback ──────────────────────────────── */
-.email-error-card{
+.email-error-card {
   background: #fff1f5;
   border: 1px solid #fbc5d8;
   border-radius: 12px;
@@ -618,19 +657,19 @@
   gap: 12px;
 }
 
-.email-error-text{
+.email-error-text {
   margin: 0;
   color: #6e3050;
   font-size: 14px;
   line-height: 1.55;
 }
 
-.btn-whatsapp-fallback{
+.btn-whatsapp-fallback {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 10px 20px;
-  background: #25D366;
+  background: #25d366;
   color: white;
   text-decoration: none;
   border-radius: 999px;
@@ -640,76 +679,161 @@
   transition: opacity 0.2s ease;
 }
 
-.btn-whatsapp-fallback:hover{
+.btn-whatsapp-fallback:hover {
   opacity: 0.88;
 }
 
+/* ── Calendly confirmed banner ─────────────────────────── */
+.calendly-confirmed-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 20px;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 16px;
+  margin-bottom: 16px;
+}
+
+.calendly-confirmed-icon {
+  font-size: 36px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.calendly-confirmed-title {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #065f46;
+}
+
+.calendly-confirmed-sub {
+  margin: 0;
+  font-size: 13px;
+  color: #047857;
+}
+
+/* ── Calendly widget (paso 2) ──────────────────────────── */
+.calendly-wrapper {
+  margin-bottom: 16px;
+}
+
+.calendly-container {
+  min-height: 630px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid rgba(231, 205, 221, 0.6);
+}
+
+.calendly-hint {
+  font-size: 12px;
+  color: #9a92a8;
+  font-style: italic;
+  text-align: right;
+  flex: 1;
+}
+
+/* ── No treatment warning ──────────────────────────────── */
+.no-treatment-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.no-treatment-warning p {
+  color: #92400e;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.no-treatment-warning .step-btn-back {
+  background: rgba(245, 158, 11, 0.15);
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #92400e;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.no-treatment-warning .step-btn-back:hover {
+  background: rgba(245, 158, 11, 0.25);
+  color: #78340c;
+}
+
 /* ── Responsive ────────────────────────────────────────── */
-@media (max-width: 768px){
-  .booking-form{
+@media (max-width: 768px) {
+  .booking-form {
     padding: 66px 0 76px;
   }
 
-  .booking-wrapper{
+  .booking-wrapper {
     max-width: 100%;
   }
 
-  .availability-badge-wrapper{
+  .availability-badge-wrapper {
     max-width: 100%;
     justify-content: center;
     margin-top: 14px;
   }
 
-  .form-card{
+  .form-card {
     max-width: 100%;
     margin: 14px auto 0;
     padding: 22px 16px;
   }
 
-  .stepper-circle{
+  .stepper-circle {
     width: 30px;
     height: 30px;
     font-size: 12px;
   }
 
-  .stepper-label{
+  .stepper-label {
     font-size: 10px;
   }
 
-  .stepper-line{
+  .stepper-line {
     margin-top: 14px;
     min-width: 16px;
   }
 
-  .treatment-cards{
+  .treatment-cards {
     grid-template-columns: 1fr;
   }
 
-  .form-grid{
+  .form-grid {
     grid-template-columns: 1fr;
     gap: 0;
   }
 
-  .step-actions{
+  .step-actions {
     justify-content: flex-end;
   }
 
   .step-btn-continue,
-  .step-btn-whatsapp{
+  .step-btn-whatsapp {
     width: 100%;
     min-width: 0;
   }
 
-  .step-actions--with-back{
+  .step-actions--with-back {
     flex-direction: row;
     justify-content: space-between;
   }
 
-  .promo-toggle{
+  .promo-toggle {
     min-height: 40px;
   }
 
-  .summary-value{
+  .summary-value {
     font-size: 13px;
   }
 }
