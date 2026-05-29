@@ -315,9 +315,11 @@
             <h3 class="step-title">Elige tu fecha y hora</h3>
             <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
-            <div class="calendly-wrapper">
-              <div id="calendly-container" class="calendly-container"></div>
-            </div>
+            <app-step3-calendly
+              [name]="formData.name"
+              [email]="formData.email"
+              (scheduled)="onCalendlyScheduled($event)"
+            ></app-step3-calendly>
 
             <div class="step-actions step-actions--with-back">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>

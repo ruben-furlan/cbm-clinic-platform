@@ -1,16 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import {
-  AfterViewChecked,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   HostListener,
   inject,
   NgZone,
-  OnDestroy,
   OnInit,
   PLATFORM_ID,
-  ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -24,7 +20,7 @@ import {
 } from '../../core/services/tarifas.service';
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
-import { AppointmentDateTime, CalendlyService } from '../../services/calendly.service';
+import { AppointmentDateTime, Step3CalendlyComponent } from './step3-calendly.component';
 
 interface TreatmentOption {
   value: string;
@@ -48,15 +44,13 @@ interface TreatmentOption {
     RevealOnScrollDirective,
     CbmLoaderComponent,
     HorarioChipsComponent,
+    Step3CalendlyComponent,
   ],
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css'],
 })
-export class BookingFormComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class BookingFormComponent implements OnInit {
   private readonly platformId = inject(PLATFORM_ID);
-
-  @ViewChild('calendlyContainer') calendlyContainer?: ElementRef<HTMLElement>;
-  private calendlyInitPending = false;
 
   constructor(
     private readonly tarifasService: TarifasService,
@@ -64,7 +58,6 @@ export class BookingFormComponent implements OnInit, AfterViewChecked, OnDestroy
     private readonly cdr: ChangeDetectorRef,
     private readonly route: ActivatedRoute,
     private readonly ngZone: NgZone,
-    private readonly calendlyService: CalendlyService,
   ) {}
 
   currentStep = 1;
@@ -122,16 +115,6 @@ export class BookingFormComponent implements OnInit, AfterViewChecked, OnDestroy
       this.loadingTarifas = false;
       this.cdr.detectChanges();
     }
-  }
-
-  ngAfterViewChecked(): void {
-    if (!this.calendlyInitPending || !this.calendlyContainer) return;
-    this.calendlyInitPending = false;
-    this.doInitWidget();
-  }
-
-  ngOnDestroy(): void {
-    this.calendlyService.destroyWidget();
   }
 
   private initAvailability(): void {
@@ -238,9 +221,6 @@ export class BookingFormComponent implements OnInit, AfterViewChecked, OnDestroy
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep++;
     this.scrollToForm();
-    if (this.currentStep === 3) {
-      this.initCalendly();
-    }
   }
 
   prevStep(): void {
@@ -251,43 +231,12 @@ export class BookingFormComponent implements OnInit, AfterViewChecked, OnDestroy
     if (this.currentStep === 4) {
       this.appointmentDateTime = null;
     }
-    if (this.currentStep === 3) {
-      this.calendlyService.destroyWidget();
-    }
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;
-    if (this.currentStep === 3) {
-      this.initCalendly();
-    }
   }
 
-  private async initCalendly(): Promise<void> {
-    if (!isPlatformBrowser(this.platformId)) return;
-    try {
-      await this.calendlyService.loadScript();
-    } catch {
-      return;
-    }
-    if (this.currentStep !== 3) return;
-    this.calendlyInitPending = true;
-    // Zone.js detecta la resolución del Promise y dispara un ciclo de CD,
-    // que ejecuta ngAfterViewChecked cuando el div ya está en el DOM.
-  }
-
-  private doInitWidget(): void {
-    const el = this.calendlyContainer?.nativeElement;
-    if (!el) return;
-    this.calendlyService.initWidget(el, this.formData.name, this.formData.email);
-    this.calendlyService.listenEvents((dt) => {
-      this.ngZone.run(() => {
-        this.appointmentDateTime = dt;
-        this.avanzarAlPaso4();
-        this.cdr.detectChanges();
-      });
-    });
-  }
-
-  private avanzarAlPaso4(): void {
+  onCalendlyScheduled(dt: AppointmentDateTime): void {
+    this.appointmentDateTime = dt;
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep = 4;
     this.scrollToForm();
