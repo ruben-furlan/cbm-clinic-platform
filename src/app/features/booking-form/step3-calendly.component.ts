@@ -27,6 +27,23 @@ const CALENDLY_URL =
         >
       </div>
 
+      <div class="calendly-steps-guide" aria-label="Pasos dentro del formulario de cita">
+        <div class="csg-step">
+          <span class="csg-circle">1</span>
+          <span class="csg-text">Elige tu fecha y hora</span>
+        </div>
+        <span class="csg-sep" aria-hidden="true">→</span>
+        <div class="csg-step">
+          <span class="csg-circle">2</span>
+          <span class="csg-text">Introduce tus datos</span>
+        </div>
+        <span class="csg-sep" aria-hidden="true">→</span>
+        <div class="csg-step">
+          <span class="csg-circle">3</span>
+          <span class="csg-text">Confirma el pago de 10€ 💜</span>
+        </div>
+      </div>
+
       <div id="calendly-inline-widget" style="min-width:320px;height:630px;"></div>
     </div>
 
@@ -78,6 +95,52 @@ const CALENDLY_URL =
         color: #1f1b2d;
       }
 
+      .calendly-steps-guide {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 12px rgba(168, 85, 247, 0.08);
+        padding: 16px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: nowrap;
+      }
+
+      .csg-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+      }
+
+      .csg-circle {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e879b0, #9b59b6);
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .csg-text {
+        font-size: 12px;
+        font-weight: 500;
+        color: #4b4560;
+        line-height: 1.3;
+      }
+
+      .csg-sep {
+        font-size: 13px;
+        color: #d4c7e8;
+        flex-shrink: 0;
+      }
+
       .scroll-hint {
         display: none;
         position: fixed;
@@ -124,6 +187,21 @@ const CALENDLY_URL =
       }
 
       @media (max-width: 768px) {
+        .calendly-steps-guide {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 14px 16px;
+        }
+
+        .csg-sep {
+          display: none;
+        }
+
+        .csg-text {
+          font-size: 13px;
+        }
+
         .step3-mobile-guide {
           display: block;
           text-align: center;
