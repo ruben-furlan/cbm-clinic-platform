@@ -16,10 +16,6 @@ const CALENDLY_URL =
   imports: [CommonModule],
   template: `
     <div class="step3-calendar-wrapper">
-      <p class="step3-mobile-guide">
-        Selecciona tu fecha y completa el formulario para apartar tu cita 💜
-      </p>
-
       <div *ngIf="selectedTreatment" class="treatment-summary-card-compact">
         <span class="treatment-summary-compact-label">Tratamiento:</span>
         <span class="treatment-summary-compact-value"
@@ -40,7 +36,7 @@ const CALENDLY_URL =
         <span class="csg-sep" aria-hidden="true">→</span>
         <div class="csg-step">
           <span class="csg-circle">3</span>
-          <span class="csg-text">Confirma el pago de 10€ 💜</span>
+          <span class="csg-text">Aparta tu cita con una señal de 10€ 💜</span>
         </div>
       </div>
 
@@ -63,10 +59,6 @@ const CALENDLY_URL =
         display: flex;
         flex-direction: column;
         gap: 16px;
-      }
-
-      .step3-mobile-guide {
-        display: none;
       }
 
       .treatment-summary-card-compact {
@@ -200,14 +192,6 @@ const CALENDLY_URL =
 
         .csg-text {
           font-size: 13px;
-        }
-
-        .step3-mobile-guide {
-          display: block;
-          text-align: center;
-          font-size: 13px;
-          color: #a855f7;
-          margin: 0;
         }
 
         .scroll-hint {
