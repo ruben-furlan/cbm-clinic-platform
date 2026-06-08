@@ -19,6 +19,7 @@ import {
 import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loader.component';
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
 import { Step3CalendlyComponent } from './step3-calendly.component';
+import { Step3PaymentComponent } from './step3-payment.component';
 import { BookingTreatmentService } from './booking-treatment.service';
 
 interface TreatmentOption {
@@ -42,6 +43,7 @@ interface TreatmentOption {
     CbmLoaderComponent,
     HorarioChipsComponent,
     Step3CalendlyComponent,
+    Step3PaymentComponent,
   ],
   templateUrl: './booking-form.html',
   styleUrls: ['./booking-form.css'],
@@ -110,7 +112,6 @@ export class BookingFormComponent implements OnInit {
     if (!matched) return;
 
     this.formData.treatment = matched.value;
-    // Guardar en el servicio (preselección desde página de tarifas)
     this.bookingTreatmentService.setSelectedTreatment({
       id: matched.value,
       nombre: matched.nombre,
@@ -137,13 +138,6 @@ export class BookingFormComponent implements OnInit {
       .filter((group) => group.options.length > 0);
   }
 
-  get selectedTreatmentLabel(): string {
-    const selected = this.treatmentOptions.find(
-      (option) => option.value === this.formData.treatment,
-    );
-    return selected?.label ?? '';
-  }
-
   get selectedTreatmentOption(): TreatmentOption | undefined {
     return this.treatmentOptions.find((option) => option.value === this.formData.treatment);
   }
@@ -152,14 +146,9 @@ export class BookingFormComponent implements OnInit {
     return !!this.selectedTreatmentOption;
   }
 
-  get canAdvancePayment(): boolean {
-    return !!this.selectedTreatmentOption;
-  }
-
   seleccionarTratamiento(option: TreatmentOption): void {
     this.ngZone.run(() => {
       this.formData.treatment = option.value;
-      // Guardar en el servicio
       this.bookingTreatmentService.setSelectedTreatment({
         id: option.value,
         nombre: option.nombre,
@@ -179,30 +168,26 @@ export class BookingFormComponent implements OnInit {
   }
 
   irAlPaso2(): void {
-    // Validación: si no hay tratamiento, no permitir avanzar al pago
-    if (!this.canAdvanceStep1) {
-      return;
-    }
+    if (!this.canAdvanceStep1) return;
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep = 2;
     this.scrollToForm();
   }
 
   irAlPaso3(): void {
-    // Validación: si no hay tratamiento, no permitir mostrar Calendly
-    if (!this.canAdvancePayment) {
-      return;
-    }
     this.stepAnimClass = 'step-enter-forward';
     this.currentStep = 3;
     this.scrollToForm();
   }
 
-  prevStep(): void {
-    if (this.currentStep <= 1) {
-      return;
-    }
+  irAlPaso4(): void {
+    this.stepAnimClass = 'step-enter-forward';
+    this.currentStep = 4;
+    this.scrollToForm();
+  }
 
+  prevStep(): void {
+    if (this.currentStep <= 1) return;
     this.stepAnimClass = 'step-enter-back';
     this.currentStep--;
   }

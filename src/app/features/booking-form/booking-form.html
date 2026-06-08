@@ -5,8 +5,8 @@
         <p class="section-tag">Solicitar cita</p>
         <h2>Elige tu tratamiento y solicita tu cita</h2>
         <p class="section-description">
-          Selecciona tu tratamiento, confirma el pago en el local y elige tu fecha y hora. Recibirás
-          la confirmación automáticamente. 💜
+          Selecciona tu tratamiento, elige fecha y hora, y confirma con una señal de 10€. El resto
+          lo pagas en el centro. 💜
         </p>
       </div>
 
@@ -24,8 +24,9 @@
       </div>
 
       <div class="form-card reveal-delay-2" appRevealOnScroll>
-        <!-- Indicador de pasos -->
+        <!-- Indicador de pasos (4 pasos) -->
         <div class="stepper-indicator" aria-label="Progreso del formulario">
+          <!-- Paso 1 -->
           <div
             class="stepper-step-item"
             [class.stepper-step-item--active]="currentStep === 1"
@@ -46,11 +47,12 @@
                 />
               </svg>
             </div>
-            <span class="stepper-label">Tu tratamiento</span>
+            <span class="stepper-label">Tratamiento</span>
           </div>
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 1"></div>
 
+          <!-- Paso 2 -->
           <div
             class="stepper-step-item"
             [class.stepper-step-item--active]="currentStep === 2"
@@ -71,21 +73,64 @@
                 />
               </svg>
             </div>
-            <span class="stepper-label">Pago</span>
+            <span class="stepper-label">Fecha y hora</span>
           </div>
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 2"></div>
 
-          <div class="stepper-step-item" [class.stepper-step-item--active]="currentStep === 3">
+          <!-- Paso 3 -->
+          <div
+            class="stepper-step-item"
+            [class.stepper-step-item--active]="currentStep === 3"
+            [class.stepper-step-item--done]="currentStep > 3"
+          >
             <div class="stepper-circle">
-              <span>3</span>
+              <span *ngIf="currentStep <= 3">3</span>
+              <svg
+                *ngIf="currentStep > 3"
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                />
+              </svg>
             </div>
-            <span class="stepper-label">Fecha y hora</span>
+            <span class="stepper-label">Pago señal</span>
+          </div>
+
+          <div class="stepper-line" [class.stepper-line--filled]="currentStep > 3"></div>
+
+          <!-- Paso 4 -->
+          <div
+            class="stepper-step-item"
+            [class.stepper-step-item--active]="currentStep === 4"
+            [class.stepper-step-item--done]="currentStep > 4"
+          >
+            <div class="stepper-circle">
+              <span *ngIf="currentStep <= 4">4</span>
+              <svg
+                *ngIf="currentStep > 4"
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                aria-hidden="true"
+              >
+                <path
+                  fill="currentColor"
+                  d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                />
+              </svg>
+            </div>
+            <span class="stepper-label">Confirmado</span>
           </div>
         </div>
 
         <form novalidate>
-          <!-- Paso 1: Tu tratamiento -->
+          <!-- ── Paso 1: Tu tratamiento ───────────────────────────── -->
           <div *ngIf="currentStep === 1" [class]="'stepper-pane ' + stepAnimClass">
             <h3 class="step-title">¿Qué tratamiento buscas?</h3>
             <p class="step-subtitle">Selecciona una opción para continuar</p>
@@ -161,76 +206,11 @@
             </ng-container>
           </div>
 
-          <!-- Paso 2: Pago -->
+          <!-- ── Paso 2: Fecha y hora (Calendly) ─────────────────── -->
           <div *ngIf="currentStep === 2" [class]="'stepper-pane ' + stepAnimClass">
-            <h3 class="step-title">Confirma tu tratamiento</h3>
-            <p class="step-subtitle">
-              Revisa el tratamiento seleccionado antes de elegir la fecha y hora.
-            </p>
-
-            <ng-container *ngIf="selectedTreatmentOption as selected; else noPaymentTreatment">
-              <div class="payment-layout">
-                <section class="payment-summary-card" aria-label="Tratamiento seleccionado">
-                  <p class="payment-card-kicker">Tratamiento seleccionado</p>
-                  <div class="payment-summary-main">
-                    <div>
-                      <h4>{{ selected.nombre }}</h4>
-                      <p *ngIf="selected.descripcion" class="payment-summary-description">
-                        {{ selected.descripcion }}
-                      </p>
-                      <app-horario-chips [horarios]="selected.horarios"></app-horario-chips>
-                    </div>
-                    <strong class="payment-summary-price">{{ selected.precio }}</strong>
-                  </div>
-                </section>
-
-                <section class="payment-method-card" aria-label="Forma de pago">
-                  <p class="payment-card-kicker">Forma de pago</p>
-                  <div class="payment-method-option" aria-current="true">
-                    <span class="payment-method-check" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path
-                          fill="currentColor"
-                          d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
-                        />
-                      </svg>
-                    </span>
-                    <div>
-                      <h4>Pago en el local</h4>
-                      <p>El pago se realizará directamente en el centro el día de la cita.</p>
-                    </div>
-                  </div>
-                </section>
-              </div>
-
-              <p class="payment-support-text">
-                Recibirás la confirmación de tu cita por correo electrónico al finalizar la reserva.
-              </p>
-
-              <div class="step-actions step-actions--with-back">
-                <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
-                <button type="button" class="btn-primary step-btn-continue" (click)="irAlPaso3()">
-                  Continuar a fecha y hora →
-                </button>
-              </div>
-            </ng-container>
-
-            <ng-template #noPaymentTreatment>
-              <div class="no-treatment-warning">
-                <p>📋 Por favor, selecciona un tratamiento para continuar.</p>
-                <button type="button" class="step-btn-back" (click)="currentStep = 1">
-                  ← Volver a seleccionar
-                </button>
-              </div>
-            </ng-template>
-          </div>
-
-          <!-- Paso 3: Fecha y hora (Calendly) -->
-          <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
             <h3 class="step-title">Elige tu fecha y hora</h3>
             <p class="step-subtitle">Selecciona el momento que mejor te venga</p>
 
-            <!-- Validación: mostrar si no hay tratamiento (por si acaso) -->
             <div *ngIf="!selectedTreatmentOption" class="no-treatment-warning">
               <p>📋 Por favor, selecciona un tratamiento para continuar.</p>
               <button type="button" class="step-btn-back" (click)="currentStep = 1">
@@ -238,10 +218,38 @@
               </button>
             </div>
 
-            <app-step3-calendly *ngIf="selectedTreatmentOption"></app-step3-calendly>
+            <app-step3-calendly
+              *ngIf="selectedTreatmentOption"
+              (appointmentScheduled)="irAlPaso3()"
+            ></app-step3-calendly>
 
-            <div class="step-actions step-actions--with-back">
+            <div class="step-actions step-actions--with-back" *ngIf="selectedTreatmentOption">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
+            </div>
+          </div>
+
+          <!-- ── Paso 3: Pago señal con Stripe ───────────────────── -->
+          <div *ngIf="currentStep === 3" [class]="'stepper-pane ' + stepAnimClass">
+            <h3 class="step-title">Confirma el pago de señal</h3>
+            <p class="step-subtitle">Reserva tu plaza con 10€ · El resto lo pagas en el centro</p>
+
+            <app-step3-payment
+              (paymentSuccess)="irAlPaso4()"
+              (goBack)="prevStep()"
+            ></app-step3-payment>
+          </div>
+
+          <!-- ── Paso 4: Confirmación ────────────────────────────── -->
+          <div *ngIf="currentStep === 4" [class]="'stepper-pane ' + stepAnimClass">
+            <div class="success-screen">
+              <div class="success-icon">🎉</div>
+              <h3 class="step-title">¡Reserva confirmada!</h3>
+              <p class="success-subtitle">
+                Tu señal de 10€ ha sido procesada con éxito y tu cita ha quedado registrada.
+                Recibirás la confirmación por correo electrónico. El resto del importe se abona
+                directamente en el centro el día de la visita.
+              </p>
+              <a href="/" class="btn-back-home">← Volver al inicio</a>
             </div>
           </div>
         </form>
