@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { BookingTreatmentService, SelectedTreatment } from './booking-treatment.service';
@@ -16,77 +16,157 @@ const CALENDLY_URL =
   imports: [CommonModule],
   template: `
     <div class="step3-calendar-wrapper">
-      <!-- Card resumen del tratamiento seleccionado (compacto) -->
+      <p class="step3-mobile-guide">
+        Selecciona tu fecha y completa el formulario para apartar tu cita 💜
+      </p>
+
       <div *ngIf="selectedTreatment" class="treatment-summary-card-compact">
         <span class="treatment-summary-compact-label">Tratamiento:</span>
-        <span class="treatment-summary-compact-value">{{ selectedTreatment.nombre }} - {{ selectedTreatment.precio }}</span>
+        <span class="treatment-summary-compact-value"
+          >{{ selectedTreatment.nombre }} - {{ selectedTreatment.precio }}</span
+        >
       </div>
 
-      <!-- Calendly embed -->
       <div id="calendly-inline-widget" style="min-width:320px;height:630px;"></div>
     </div>
+
+    <div
+      *ngIf="showScrollIndicator"
+      class="scroll-hint"
+      [class.scroll-hint--fading]="isFadingOut"
+      aria-hidden="true"
+    >
+      <span class="scroll-hint-arrow">↓</span>
+      <span class="scroll-hint-text">Desliza para continuar</span>
+    </div>
   `,
-  styles: [`
-    .step3-calendar-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+  styles: [
+    `
+      .step3-calendar-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
 
-    .treatment-summary-card-compact {
-      background: linear-gradient(135deg, rgba(255, 79, 163, 0.06), rgba(168, 85, 247, 0.06));
-      border: 1px solid rgba(241, 216, 230, 0.7);
-      border-radius: 10px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+      .step3-mobile-guide {
+        display: none;
+      }
 
-    .treatment-summary-compact-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #9a92a8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .treatment-summary-compact-value {
-      font-size: 13px;
-      font-weight: 600;
-      color: #1f1b2d;
-    }
-
-    @media (max-width: 768px) {
       .treatment-summary-card-compact {
-        padding: 9px 12px;
-        font-size: 12px;
+        background: linear-gradient(135deg, rgba(255, 79, 163, 0.06), rgba(168, 85, 247, 0.06));
+        border: 1px solid rgba(241, 216, 230, 0.7);
+        border-radius: 10px;
+        padding: 10px 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
 
       .treatment-summary-compact-label {
-        font-size: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #9a92a8;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
 
       .treatment-summary-compact-value {
-        font-size: 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #1f1b2d;
       }
-    }
-  `],
+
+      .scroll-hint {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(135deg, rgba(196, 75, 142, 0.88), rgba(168, 85, 247, 0.88));
+        backdrop-filter: blur(6px);
+        border-radius: 999px;
+        padding: 10px 22px;
+        align-items: center;
+        gap: 8px;
+        z-index: 1000;
+        pointer-events: none;
+        opacity: 1;
+        transition: opacity 0.4s ease;
+      }
+
+      .scroll-hint--fading {
+        opacity: 0;
+      }
+
+      .scroll-hint-arrow {
+        font-size: 15px;
+        color: #fff;
+        animation: bounceArrow 1.4s ease-in-out infinite;
+      }
+
+      .scroll-hint-text {
+        font-size: 13px;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+      }
+
+      @keyframes bounceArrow {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(4px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .step3-mobile-guide {
+          display: block;
+          text-align: center;
+          font-size: 13px;
+          color: #a855f7;
+          margin: 0;
+        }
+
+        .scroll-hint {
+          display: flex;
+        }
+
+        .treatment-summary-card-compact {
+          padding: 9px 12px;
+        }
+
+        .treatment-summary-compact-label {
+          font-size: 10px;
+        }
+
+        .treatment-summary-compact-value {
+          font-size: 12px;
+        }
+      }
+    `,
+  ],
 })
 export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly bookingTreatmentService = inject(BookingTreatmentService);
+  private readonly ngZone = inject(NgZone);
   private scriptLoaded = false;
   private destroy$ = new Subject<void>();
+  private initialScrollY = 0;
+  private scrollListener?: () => void;
 
   selectedTreatment: SelectedTreatment | null = null;
+  showScrollIndicator = false;
+  isFadingOut = false;
 
   ngAfterViewInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
 
-    // Suscribirse al tratamiento seleccionado
     this.bookingTreatmentService.selectedTreatment$
       .pipe(takeUntil(this.destroy$))
       .subscribe((treatment) => {
@@ -94,6 +174,7 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
       });
 
     this.loadCalendly();
+    this.initScrollIndicator();
   }
 
   ngOnDestroy(): void {
@@ -101,6 +182,32 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     if (container) container.innerHTML = '';
     this.destroy$.next();
     this.destroy$.complete();
+    if (this.scrollListener) {
+      window.removeEventListener('scroll', this.scrollListener);
+    }
+  }
+
+  private initScrollIndicator(): void {
+    if (window.innerWidth > 768) return;
+
+    this.showScrollIndicator = true;
+    this.initialScrollY = window.scrollY;
+
+    this.scrollListener = () => {
+      if (window.scrollY - this.initialScrollY > 100) {
+        window.removeEventListener('scroll', this.scrollListener!);
+        this.ngZone.run(() => {
+          this.isFadingOut = true;
+          setTimeout(() => {
+            this.showScrollIndicator = false;
+          }, 400);
+        });
+      }
+    };
+
+    this.ngZone.runOutsideAngular(() => {
+      window.addEventListener('scroll', this.scrollListener!, { passive: true });
+    });
   }
 
   private loadCalendly(): void {
@@ -125,20 +232,13 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     const container = document.getElementById('calendly-inline-widget');
     if (!container) return;
 
-    // Obtener el tratamiento seleccionado
     const treatment = this.selectedTreatment;
-
-    // Construir el prefill - el campo "tratamiento" es una pregunta personalizada
-    // Basado en la posición en Calendly (verificar cuál es el índice correcto)
     const prefill: any = {};
     const utm: any = {};
 
     if (treatment) {
-      // IMPORTANTE: Verificar en Calendly cuál es el índice exacto del campo "tratamiento"
-      // En Calendly: Settings → Questions → fíjate el orden de preguntas personalizadas
-      // Primera personalizada = a1, Segunda = a2, Tercera = a3, etc.
       prefill.customAnswers = {
-        a2: `${treatment.nombre} - ${treatment.precio}`, // ← Cambiar a2 al índice correcto si es necesario
+        a2: `${treatment.nombre} - ${treatment.precio}`,
       };
     }
 
@@ -150,5 +250,3 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     });
   }
 }
-
-
