@@ -368,6 +368,33 @@
   padding: 20px;
 }
 
+.payment-signal-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(241, 216, 230, 0.9);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 24px rgba(31, 27, 45, 0.06);
+  padding: 20px;
+}
+
+.payment-signal-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 79, 163, 0.09), rgba(168, 85, 247, 0.07));
+}
+
+.payment-signal-card p {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  color: #3d3553;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
 .payment-card-kicker {
   position: relative;
   z-index: 1;
@@ -948,7 +975,8 @@
   }
 
   .payment-summary-card,
-  .payment-method-card {
+  .payment-method-card,
+  .payment-signal-card {
     padding: 16px;
   }
 
