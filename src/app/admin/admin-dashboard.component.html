@@ -14,7 +14,7 @@
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
     <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
     <button type="button" [class.active]="seccion === 'bonos'" (click)="setSeccion('bonos')">
-      🎁 Bonos regalo
+      🎁 Regala bienestar
       <span class="tab-badge" *ngIf="bonosStats.pendientes > 0">{{ bonosStats.pendientes }}</span>
     </button>
     <button type="button" [class.active]="seccion === 'newsletter'" (click)="setSeccion('newsletter')">
@@ -271,7 +271,7 @@
   <ng-container *ngIf="seccion === 'bonos'">
     <!-- Configuración global -->
     <section class="bonos-config">
-      <h3>Bonos regalo activos en la web</h3>
+      <h3>Regala bienestar activos en la web</h3>
       <p>Activa esto para mostrar el banner en la home y permitir el acceso a /regalo.</p>
       <label class="switch switch-lg">
         <input type="checkbox" [checked]="bonosActivosWeb" (change)="toggleBonosActivos($event)" />

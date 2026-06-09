@@ -195,7 +195,7 @@ export class CanjearRegaloComponent implements OnDestroy {
   coordinarWhatsApp(): void {
     if (!this.bono) return;
     const text = [
-      `Hola CBM! 😊 Tengo un bono regalo con código ${this.bono.codigo} — ${this.nombreEmotivo}`,
+      `Hola CBM! 😊 Tengo un regalo de bienestar con código ${this.bono.codigo} — ${this.nombreEmotivo}`,
       'Me gustaría coordinar mi sesión 💜',
       '¿Cuándo tendríais disponibilidad?'
     ].join('\n');

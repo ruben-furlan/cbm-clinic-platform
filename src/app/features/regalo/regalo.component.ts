@@ -189,7 +189,7 @@ export class RegaloComponent implements OnInit {
     if (!this.servicioSeleccionado) return `https://wa.me/${WHATSAPP_PHONE}`;
     const v = this.form.getRawValue();
     const lines = [
-      'Hola CBM 😊 Quiero reservar un bono regalo.',
+      'Hola CBM 😊 Quiero información sobre Regala bienestar.',
       `Servicio: ${this.servicioSeleccionado.nombre_servicio}`,
       `Mi nombre: ${v.nombre_comprador}`,
       `Mi email: ${v.email_comprador}`,
@@ -202,7 +202,7 @@ export class RegaloComponent implements OnInit {
     if (!this.datosConfirmacion) return `https://wa.me/${WHATSAPP_PHONE}`;
     const d = this.datosConfirmacion;
     const lines = [
-      `Hola CBM 😊 Acabo de reservar un bono regalo para ${d.nombre_servicio}.`,
+      `Hola CBM 😊 Acabo de hacer un pedido de Regala bienestar para ${d.nombre_servicio}.`,
       `Mi nombre es ${d.nombre_comprador} y mi email es ${d.email_comprador}.`,
       'Os escribo para coordinar todo cuando podáis 💜'
     ];
