@@ -36,7 +36,7 @@ const CALENDLY_URL =
         <span class="csg-sep" aria-hidden="true">→</span>
         <div class="csg-step">
           <span class="csg-circle">3</span>
-          <span class="csg-text">Aparta tu cita con una seña de 10€ 💜</span>
+          <span class="csg-text">Reserva tu cita con una paga y seña de 10€ 💜</span>
         </div>
       </div>
 
