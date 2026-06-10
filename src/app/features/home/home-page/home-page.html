@@ -1,3 +1,57 @@
+<!-- Selector de idioma minimalista, justo debajo del header -->
+<div class="lang-strip notranslate" role="group" aria-label="Seleccionar idioma">
+  <button
+    type="button"
+    class="lang-strip__btn"
+    [class.lang-strip__btn--active]="selectedLanguage === 'ca'"
+    [attr.aria-pressed]="selectedLanguage === 'ca'"
+    (click)="changeLanguage('ca')"
+    aria-label="Català"
+    title="Català"
+  >
+    <svg class="lang-strip__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
+      <rect width="24" height="16" fill="#FCDD09"/>
+      <rect y="1.78" width="24" height="1.78" fill="#DA121A"/>
+      <rect y="5.33" width="24" height="1.78" fill="#DA121A"/>
+      <rect y="8.89" width="24" height="1.78" fill="#DA121A"/>
+      <rect y="12.44" width="24" height="1.78" fill="#DA121A"/>
+    </svg>
+  </button>
+
+  <button
+    type="button"
+    class="lang-strip__btn"
+    [class.lang-strip__btn--active]="selectedLanguage === 'es'"
+    [attr.aria-pressed]="selectedLanguage === 'es'"
+    (click)="changeLanguage('es')"
+    aria-label="Español"
+    title="Español"
+  >
+    <svg class="lang-strip__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
+      <rect width="24" height="16" fill="#AA151B"/>
+      <rect y="4" width="24" height="8" fill="#F1BF00"/>
+    </svg>
+  </button>
+
+  <button
+    type="button"
+    class="lang-strip__btn"
+    [class.lang-strip__btn--active]="selectedLanguage === 'en'"
+    [attr.aria-pressed]="selectedLanguage === 'en'"
+    (click)="changeLanguage('en')"
+    aria-label="English"
+    title="English"
+  >
+    <svg class="lang-strip__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
+      <rect width="24" height="16" fill="#012169"/>
+      <path d="M0 0 L24 16 M24 0 L0 16" stroke="#FFFFFF" stroke-width="3.2"/>
+      <path d="M0 0 L24 16 M24 0 L0 16" stroke="#C8102E" stroke-width="1.4"/>
+      <path d="M12 0 V16 M0 8 H24" stroke="#FFFFFF" stroke-width="5.4"/>
+      <path d="M12 0 V16 M0 8 H24" stroke="#C8102E" stroke-width="3.2"/>
+    </svg>
+  </button>
+</div>
+
 <!-- ① Hero ──────────────────────────────────────────────── -->
 <section class="hero">
   <div class="hero-decoration hero-decoration-left"></div>
@@ -76,62 +130,6 @@
             <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.72a8.28 8.28 0 004.84 1.54V6.79a4.85 4.85 0 01-1.07-.1z"/>
           </svg>
         </a>
-      </div>
-
-      <div class="hero-lang notranslate" role="group" aria-label="Seleccionar idioma">
-        <button
-          type="button"
-          class="hero-lang__btn"
-          [class.hero-lang__btn--active]="selectedLanguage === 'ca'"
-          [attr.aria-pressed]="selectedLanguage === 'ca'"
-          (click)="changeLanguage('ca')"
-          aria-label="Català"
-          title="Català"
-        >
-          <svg class="hero-lang__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
-            <rect width="24" height="16" fill="#FCDD09"/>
-            <rect y="1.78" width="24" height="1.78" fill="#DA121A"/>
-            <rect y="5.33" width="24" height="1.78" fill="#DA121A"/>
-            <rect y="8.89" width="24" height="1.78" fill="#DA121A"/>
-            <rect y="12.44" width="24" height="1.78" fill="#DA121A"/>
-          </svg>
-          <span class="hero-lang__code">CA</span>
-        </button>
-
-        <button
-          type="button"
-          class="hero-lang__btn"
-          [class.hero-lang__btn--active]="selectedLanguage === 'es'"
-          [attr.aria-pressed]="selectedLanguage === 'es'"
-          (click)="changeLanguage('es')"
-          aria-label="Español"
-          title="Español"
-        >
-          <svg class="hero-lang__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
-            <rect width="24" height="16" fill="#AA151B"/>
-            <rect y="4" width="24" height="8" fill="#F1BF00"/>
-          </svg>
-          <span class="hero-lang__code">ES</span>
-        </button>
-
-        <button
-          type="button"
-          class="hero-lang__btn"
-          [class.hero-lang__btn--active]="selectedLanguage === 'en'"
-          [attr.aria-pressed]="selectedLanguage === 'en'"
-          (click)="changeLanguage('en')"
-          aria-label="English"
-          title="English"
-        >
-          <svg class="hero-lang__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
-            <rect width="24" height="16" fill="#012169"/>
-            <path d="M0 0 L24 16 M24 0 L0 16" stroke="#FFFFFF" stroke-width="3.2"/>
-            <path d="M0 0 L24 16 M24 0 L0 16" stroke="#C8102E" stroke-width="1.4"/>
-            <path d="M12 0 V16 M0 8 H24" stroke="#FFFFFF" stroke-width="5.4"/>
-            <path d="M12 0 V16 M0 8 H24" stroke="#C8102E" stroke-width="3.2"/>
-          </svg>
-          <span class="hero-lang__code">EN</span>
-        </button>
       </div>
     </div>
 
