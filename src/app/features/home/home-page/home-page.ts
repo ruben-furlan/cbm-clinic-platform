@@ -8,6 +8,7 @@ import { FaqComponent } from '../../faq/faq';
 import { PricingComponent } from '../../../sections/pricing/pricing.component';
 import { EventsSectionComponent } from '../events-section/events-section.component';
 import { BannerBonosRegaloComponent } from '../banner-bonos-regalo/banner-bonos-regalo.component';
+import { GoogleReviewsService } from '../../../core/services/google-reviews.service';
 
 @Component({
   selector: 'app-home-page',
@@ -19,6 +20,10 @@ import { BannerBonosRegaloComponent } from '../banner-bonos-regalo/banner-bonos-
 export class HomePage implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly googleReviews = inject(GoogleReviewsService);
+
+  googleRatingLabel = '5,0';
+  googleTotalRatings = 13;
 
   readonly heroSlides = ['/cbm-1.jpeg', '/cbm-2.jpeg', '/cbm-3.jpeg', '/cbm-4.jpeg', '/cbm-5.jpeg'].reverse();
   currentHeroSlide = 0;
@@ -94,7 +99,16 @@ export class HomePage implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       this.startHeroAutoplay();
       this.isMobile = window.innerWidth < 768;
+      this.loadGoogleBadge();
     }
+  }
+
+  private loadGoogleBadge(): void {
+    this.googleReviews.load().then((data) => {
+      this.googleRatingLabel = data.averageRating.toFixed(1).replace('.', ',');
+      this.googleTotalRatings = data.totalRatings;
+      this.cdr.markForCheck();
+    });
   }
 
   ngOnDestroy(): void {
