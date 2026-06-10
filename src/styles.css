@@ -349,3 +349,33 @@ body.modal-abierto .fbb-bar {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Google Translate: ocultar toda su UI (banner, tooltip, spinner, resaltado).
+   La traducción sigue funcionando vía cookie googtrans; solo se suprime lo visual.
+   Cubre las clases clásicas (goog-te-*) y las nuevas ofuscadas (VIpgJd-*). ─────── */
+iframe.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+.goog-te-spinner-pos,
+#goog-gt-tt,
+.goog-tooltip,
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO,
+.VIpgJd-ZVi9od-xl07Ob-OEVmcd {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Google Translate empuja el body con top:40px inline al mostrar el banner.
+   No tocar position: el modal de eventos usa body { position: fixed } para iOS. */
+body {
+  top: 0 !important;
+}
+
+/* Quitar el resaltado azul/sombra sobre el texto traducido */
+.goog-text-highlight,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
+  background: transparent !important;
+  box-shadow: none !important;
+}
