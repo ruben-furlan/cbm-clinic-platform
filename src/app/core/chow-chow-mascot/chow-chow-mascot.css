@@ -1,0 +1,297 @@
+.chow-wrap {
+  position: fixed;
+  z-index: 1080;
+  pointer-events: none;
+}
+
+/* ── Puntos donde asoma (lado derecho inferior está ocupado por los botones flotantes) ── */
+
+.chow-wrap[data-spot='bottom-left'] {
+  left: 16px;
+  bottom: -6px;
+}
+
+.chow-wrap[data-spot='bottom-left'] .chow-btn {
+  animation: chowPeekUp 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.chow-wrap[data-spot='left-mid'] {
+  left: -22px;
+  top: 55%;
+}
+
+.chow-wrap[data-spot='left-mid'] .chow-btn {
+  transform: rotate(14deg);
+  animation: chowPeekLeft 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.chow-wrap[data-spot='right-top'] {
+  right: -22px;
+  top: 26%;
+}
+
+.chow-wrap[data-spot='right-top'] .chow-btn {
+  transform: rotate(-14deg);
+  animation: chowPeekRight 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* ── El perrito ── */
+
+.chow-btn {
+  pointer-events: auto;
+  display: block;
+  width: 88px;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.25s ease;
+}
+
+.chow-btn:hover {
+  transform: scale(1.08);
+}
+
+.chow-btn:focus-visible {
+  outline: 3px solid #f2a65a;
+  outline-offset: 4px;
+  border-radius: 50%;
+}
+
+.chow-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 12px rgba(122, 74, 33, 0.32));
+  animation: chowBob 3.2s ease-in-out infinite;
+}
+
+/* boca: cerrada por defecto, abierta al ladrar */
+.chow-mouth-open {
+  opacity: 0;
+}
+
+.chow-svg--bark .chow-mouth-open {
+  opacity: 1;
+}
+
+.chow-svg--bark .chow-mouth-closed {
+  opacity: 0;
+}
+
+.chow-wrap--barking .chow-svg {
+  animation: chowBark 0.35s ease-in-out 4;
+}
+
+/* ── Bocadillo estilo caricatura ── */
+
+.chow-bubble {
+  position: absolute;
+  bottom: 88%;
+  left: 75%;
+  width: max-content;
+  max-width: 200px;
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 3px solid #2b2b2b;
+  border-radius: 18px 18px 18px 4px;
+  box-shadow: 4px 4px 0 rgba(43, 43, 43, 0.18);
+  pointer-events: none;
+}
+
+.chow-wrap--barking .chow-bubble {
+  display: flex;
+  animation: chowBubblePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.chow-wrap[data-spot='right-top'] .chow-bubble {
+  left: auto;
+  right: 75%;
+  border-radius: 18px 18px 4px 18px;
+}
+
+.chow-bubble-bark {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #d2772b;
+  white-space: nowrap;
+}
+
+.chow-bubble-msg {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: #2b2b2b;
+}
+
+/* ── Lluvia de perritos al tocar ── */
+
+.chow-mini {
+  position: absolute;
+  top: 20%;
+  left: 25%;
+  width: 40px;
+  pointer-events: none;
+  opacity: 0;
+  animation: chowMiniPop 2.6s ease-out var(--delay, 0s) both;
+}
+
+.chow-mini .chow-svg {
+  filter: drop-shadow(0 4px 6px rgba(122, 74, 33, 0.3));
+  animation: none;
+}
+
+/* ── Animaciones ── */
+
+@keyframes chowPeekUp {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes chowPeekLeft {
+  from {
+    transform: translateX(-110%) rotate(14deg);
+  }
+  to {
+    transform: translateX(0) rotate(14deg);
+  }
+}
+
+@keyframes chowPeekRight {
+  from {
+    transform: translateX(110%) rotate(-14deg);
+  }
+  to {
+    transform: translateX(0) rotate(-14deg);
+  }
+}
+
+@keyframes chowBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes chowBark {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg) translateY(-2px);
+  }
+  75% {
+    transform: rotate(5deg) translateY(-2px);
+  }
+}
+
+@keyframes chowBubblePop {
+  from {
+    opacity: 0;
+    transform: scale(0.6) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes chowMiniPop {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx, 60px), var(--ty, -60px)) scale(var(--scale, 0.4))
+      rotate(var(--rot, 20deg));
+  }
+}
+
+/* ── Móvil: más pequeño y sin tapar contenido ── */
+
+@media (max-width: 768px) {
+  .chow-btn {
+    width: 68px;
+  }
+
+  .chow-wrap[data-spot='bottom-left'] {
+    left: 10px;
+    bottom: calc(-4px + env(safe-area-inset-bottom));
+  }
+
+  .chow-wrap[data-spot='left-mid'] {
+    left: -18px;
+    top: 60%;
+  }
+
+  .chow-wrap[data-spot='right-top'] {
+    right: -18px;
+    top: 22%;
+  }
+
+  .chow-bubble {
+    max-width: 160px;
+  }
+
+  .chow-bubble-bark {
+    font-size: 15px;
+  }
+
+  .chow-bubble-msg {
+    font-size: 12px;
+  }
+}
+
+/* ── Respeta prefers-reduced-motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  .chow-btn,
+  .chow-svg,
+  .chow-wrap--barking .chow-svg {
+    animation: none;
+  }
+
+  .chow-wrap--barking .chow-bubble {
+    animation: none;
+  }
+
+  .chow-mini {
+    animation: chowMiniFade 2.6s ease-out var(--delay, 0s) both;
+    transform: translate(var(--tx, 60px), var(--ty, -60px)) scale(var(--scale, 0.4));
+  }
+
+  @keyframes chowMiniFade {
+    0% {
+      opacity: 0;
+    }
+    20%,
+    70% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
