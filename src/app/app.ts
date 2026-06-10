@@ -9,11 +9,12 @@ import { CookieConsentComponent } from './core/cookie-consent/cookie-consent';
 import { FloatingBookingButtonComponent } from './core/floating-booking-button/floating-booking-button';
 import { CanonicalService } from './core/seo/canonical.service';
 import { BannerAnuncioComponent } from './shared/components/banner-anuncio/banner-anuncio.component';
+import { ChowChowMascotComponent } from './core/chow-chow-mascot/chow-chow-mascot';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, FloatingBookingButtonComponent, CookieConsentComponent, BannerAnuncioComponent],
+  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, FloatingBookingButtonComponent, CookieConsentComponent, BannerAnuncioComponent, ChowChowMascotComponent],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })
