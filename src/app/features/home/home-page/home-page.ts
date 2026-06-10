@@ -9,6 +9,7 @@ import { PricingComponent } from '../../../sections/pricing/pricing.component';
 import { EventsSectionComponent } from '../events-section/events-section.component';
 import { BannerBonosRegaloComponent } from '../banner-bonos-regalo/banner-bonos-regalo.component';
 import { GoogleReviewsService } from '../../../core/services/google-reviews.service';
+import { LanguageService } from '../../../core/language/language.service';
 
 @Component({
   selector: 'app-home-page',
@@ -21,9 +22,18 @@ export class HomePage implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly googleReviews = inject(GoogleReviewsService);
+  private readonly languageService = inject(LanguageService);
 
   googleRatingLabel = '5,0';
   googleTotalRatings = 13;
+
+  get selectedLanguage(): 'es' | 'ca' | 'en' {
+    return this.languageService.selectedLanguage;
+  }
+
+  changeLanguage(code: 'es' | 'ca' | 'en'): void {
+    this.languageService.changeLanguage(code);
+  }
 
   readonly heroSlides = ['/cbm-1.jpeg', '/cbm-2.jpeg', '/cbm-3.jpeg', '/cbm-4.jpeg', '/cbm-5.jpeg'].reverse();
   currentHeroSlide = 0;

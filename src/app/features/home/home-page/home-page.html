@@ -77,6 +77,62 @@
           </svg>
         </a>
       </div>
+
+      <div class="hero-lang notranslate" role="group" aria-label="Seleccionar idioma">
+        <button
+          type="button"
+          class="hero-lang__btn"
+          [class.hero-lang__btn--active]="selectedLanguage === 'ca'"
+          [attr.aria-pressed]="selectedLanguage === 'ca'"
+          (click)="changeLanguage('ca')"
+          aria-label="Català"
+          title="Català"
+        >
+          <svg class="hero-lang__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
+            <rect width="24" height="16" fill="#FCDD09"/>
+            <rect y="1.78" width="24" height="1.78" fill="#DA121A"/>
+            <rect y="5.33" width="24" height="1.78" fill="#DA121A"/>
+            <rect y="8.89" width="24" height="1.78" fill="#DA121A"/>
+            <rect y="12.44" width="24" height="1.78" fill="#DA121A"/>
+          </svg>
+          <span class="hero-lang__code">CA</span>
+        </button>
+
+        <button
+          type="button"
+          class="hero-lang__btn"
+          [class.hero-lang__btn--active]="selectedLanguage === 'es'"
+          [attr.aria-pressed]="selectedLanguage === 'es'"
+          (click)="changeLanguage('es')"
+          aria-label="Español"
+          title="Español"
+        >
+          <svg class="hero-lang__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
+            <rect width="24" height="16" fill="#AA151B"/>
+            <rect y="4" width="24" height="8" fill="#F1BF00"/>
+          </svg>
+          <span class="hero-lang__code">ES</span>
+        </button>
+
+        <button
+          type="button"
+          class="hero-lang__btn"
+          [class.hero-lang__btn--active]="selectedLanguage === 'en'"
+          [attr.aria-pressed]="selectedLanguage === 'en'"
+          (click)="changeLanguage('en')"
+          aria-label="English"
+          title="English"
+        >
+          <svg class="hero-lang__flag" viewBox="0 0 24 16" aria-hidden="true" focusable="false">
+            <rect width="24" height="16" fill="#012169"/>
+            <path d="M0 0 L24 16 M24 0 L0 16" stroke="#FFFFFF" stroke-width="3.2"/>
+            <path d="M0 0 L24 16 M24 0 L0 16" stroke="#C8102E" stroke-width="1.4"/>
+            <path d="M12 0 V16 M0 8 H24" stroke="#FFFFFF" stroke-width="5.4"/>
+            <path d="M12 0 V16 M0 8 H24" stroke="#C8102E" stroke-width="3.2"/>
+          </svg>
+          <span class="hero-lang__code">EN</span>
+        </button>
+      </div>
     </div>
 
     <div class="hero-image reveal-delay-2" appRevealOnScroll>

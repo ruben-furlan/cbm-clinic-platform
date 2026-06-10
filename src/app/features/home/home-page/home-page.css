@@ -124,6 +124,73 @@
   outline-offset: 3px;
 }
 
+/* ── Selector de idioma con banderitas ─────────────────── */
+.hero-lang{
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hero-lang__btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hero-lang__btn:hover{
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+}
+
+.hero-lang__btn:focus-visible{
+  outline: 2px solid #7b4dff;
+  outline-offset: 3px;
+}
+
+/* Borde degradado CBM para el idioma seleccionado */
+.hero-lang__btn--active{
+  border-color: transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(135deg, #ff4fa3, #7b4dff) border-box;
+  box-shadow: 0 4px 16px rgba(123, 77, 255, 0.22);
+}
+
+.hero-lang__flag{
+  width: 21px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.hero-lang__code{
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: #4a4a68;
+  letter-spacing: 0.04em;
+}
+
+.hero-lang__btn--active .hero-lang__code{
+  background: linear-gradient(135deg, #ff4fa3, #7b4dff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
 /* ── Social icons in trust bar ─────────────────────────── */
 .hero-social-sep{
   display: block;
@@ -1004,6 +1071,17 @@
   .hero-trust{
     margin-top: 14px;
     font-size: 12px;
+  }
+
+  .hero-lang{
+    display: flex;
+    width: 100%;
+  }
+
+  .hero-lang__btn{
+    flex: 1;
+    justify-content: center;
+    padding: 9px 12px;
   }
 
   .hero-buttons .btn-primary,
