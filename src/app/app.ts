@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, Location } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { Header } from './core/header/header';
@@ -30,6 +30,7 @@ export class App implements OnInit, OnDestroy {
 
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly location = inject(Location);
   private rafId: number | null = null;
   private scrollTopHintTimer: ReturnType<typeof setTimeout> | null = null;
   private routerEventsSubscription: Subscription | null = null;
@@ -41,8 +42,12 @@ export class App implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.updateRouteState(this.router.url);
-    this.canonicalService.updateFromUrl(this.router.url);
+    // Antes de que termine la navegación inicial, router.url siempre es '/';
+    // usamos la URL real del navegador para no declarar la canonical de la home
+    // en páginas internas (causaba "Página alternativa con etiqueta canónica adecuada" en GSC).
+    const initialUrl = this.location.path() || '/';
+    this.updateRouteState(initialUrl);
+    this.canonicalService.updateFromUrl(initialUrl);
 
     this.routerEventsSubscription = this.router.events
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))

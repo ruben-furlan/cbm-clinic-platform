@@ -20,8 +20,19 @@ export class CanonicalService {
     '/faq': 'Preguntas frecuentes · CBM Fisioterapia',
     '/contactanos': 'Contáctanos · CBM Fisioterapia',
     '/espacio-cbm': 'Espacio CBM · Fisioterapia en Terrassa',
+    '/filosofia-cbm': 'Filosofía CBM · Fisioterapia en Terrassa',
     '/blog': 'Blog · Consejos de fisioterapia en Terrassa',
     '/regalo': 'Bonos regalo · CBM Fisioterapia',
+    '/cookies': 'Política de cookies · CBM Fisioterapia',
+    '/comunidad': 'Comunidad CBM · CBM Fisioterapia',
+    '/fisioterapia-dolor-lumbar-terrassa': 'Fisioterapia para dolor lumbar en Terrassa | CBM Fisioterapia',
+    '/fisioterapia-cervical-terrassa': 'Fisioterapia cervical en Terrassa | CBM Fisioterapia',
+    '/puncion-seca-terrassa': 'Punción seca en Terrassa | CBM Fisioterapia',
+    '/pilates-terapeutico-terrassa': 'Pilates terapéutico en Terrassa | CBM Fisioterapia',
+    '/fisioterapia-lesiones-deportivas-terrassa': 'Fisioterapia para lesiones deportivas en Terrassa | CBM Fisioterapia',
+    '/fisioterapia-tendinitis-terrassa': 'Fisioterapia para tendinitis en Terrassa | CBM Fisioterapia',
+    '/fisioterapia-recuperacion-postquirurgica-terrassa': 'Rehabilitación postquirúrgica en Terrassa | CBM Fisioterapia',
+    '/fisioterapia-dolor-hombro-terrassa': 'Fisioterapia para dolor de hombro en Terrassa | CBM Fisioterapia',
   };
 
   private readonly defaultTitle = 'CBM Fisioterapia · Fisioterapia y Pilates en Terrassa';
