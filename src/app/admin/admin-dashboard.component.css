@@ -1588,3 +1588,30 @@ textarea:disabled {
   justify-content: flex-end;
   margin-top: 12px;
 }
+
+/* ── Nueva reserva (sin pago) ─────────────────────────────────────────────── */
+
+.reserva-admin {
+  display: grid;
+  gap: 18px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(38, 25, 84, 0.08);
+}
+
+.reserva-admin-hint {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(123, 77, 255, 0.18);
+  background: #f7f4ff;
+  color: #4e4466;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.reserva-admin-selector {
+  max-width: 480px;
+}

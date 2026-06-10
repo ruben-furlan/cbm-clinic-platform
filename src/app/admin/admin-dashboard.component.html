@@ -24,6 +24,9 @@
     <button type="button" [class.active]="seccion === 'banner'" (click)="setSeccion('banner')">
       📢 Banner
     </button>
+    <button type="button" [class.active]="seccion === 'reservas'" (click)="setSeccion('reservas')">
+      📅 Nueva reserva
+    </button>
   </div>
 
   <!-- ═══════════════════════════════ TARIFAS ═══════════════════════════════ -->
@@ -371,6 +374,39 @@
         </tbody>
       </table>
     </div>
+  </ng-container>
+
+  <!-- ═══════════════════════ NUEVA RESERVA (SIN PAGO) ════════════════════ -->
+  <ng-container *ngIf="seccion === 'reservas'">
+    <section class="reserva-admin">
+      <p class="reserva-admin-hint">
+        Reserva una cita directamente en el calendario, sin paso de pago. La seña, si hace falta,
+        se gestiona con el cliente fuera de la web 💜
+      </p>
+
+      <label class="reserva-admin-selector" for="reservaTratamiento">
+        Tratamiento
+        <select
+          id="reservaTratamiento"
+          [(ngModel)]="reservaTratamientoId"
+          (ngModelChange)="onReservaTratamientoChange()"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <option value="">— Selecciona un tratamiento —</option>
+          <optgroup *ngFor="let grupo of tarifasReservaGrupos" [label]="grupo.label">
+            <option *ngFor="let tarifa of grupo.tarifas" [value]="tarifa.id">
+              {{ tarifa.nombre }} — {{ tarifa.precio }}{{ tarifa.unidad }}
+            </option>
+          </optgroup>
+        </select>
+      </label>
+
+      <app-step3-calendly
+        *ngIf="reservaCalendlyVisible"
+        [calendlyUrl]="reservaCalendlyUrl"
+        [showGuide]="false"
+      ></app-step3-calendly>
+    </section>
   </ng-container>
 
   <!-- ═══════════════════════════ BANNER ANUNCIO ══════════════════════════ -->

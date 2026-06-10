@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, AfterViewInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { BookingTreatmentService, SelectedTreatment } from './booking-treatment.service';
@@ -23,7 +23,11 @@ const CALENDLY_URL =
         >
       </div>
 
-      <div class="calendly-steps-guide" aria-label="Pasos dentro del formulario de cita">
+      <div
+        *ngIf="showGuide"
+        class="calendly-steps-guide"
+        aria-label="Pasos dentro del formulario de cita"
+      >
         <div class="csg-step">
           <span class="csg-circle">1</span>
           <span class="csg-text">Elige tu fecha y hora</span>
@@ -214,6 +218,9 @@ const CALENDLY_URL =
   ],
 })
 export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
+  @Input() calendlyUrl = CALENDLY_URL;
+  @Input() showGuide = true;
+
   private readonly platformId = inject(PLATFORM_ID);
   private readonly bookingTreatmentService = inject(BookingTreatmentService);
   private readonly ngZone = inject(NgZone);
@@ -305,7 +312,7 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     }
 
     Calendly.initInlineWidget({
-      url: CALENDLY_URL,
+      url: this.calendlyUrl,
       parentElement: container,
       prefill,
       utm,

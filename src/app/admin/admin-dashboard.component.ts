@@ -20,16 +20,18 @@ import { ConfiguracionService } from '../core/services/configuracion.service';
 import { ServiciosRegaloService, ServicioRegalo, ServicioRegaloCategoria } from '../core/services/servicios-regalo.service';
 import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsletter.service';
 import { SimpleEditorComponent } from '../shared/components/simple-editor/simple-editor.component';
+import { Step3CalendlyComponent } from '../features/booking-form/step3-calendly.component';
+import { BookingTreatmentService } from '../features/booking-form/booking-treatment.service';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'banner';
+type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'banner' | 'reservas';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SimpleEditorComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SimpleEditorComponent, Step3CalendlyComponent],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.css'
 })
@@ -182,6 +184,12 @@ export class AdminDashboardComponent implements OnInit {
     { label: 'Violeta',        valor: '#7c3aed' }
   ];
 
+  // ── Reservas sin pago (admin) ─────────────────────────────────────────────
+  readonly reservaCalendlyUrl =
+    'https://calendly.com/reservascbm25/cbm-fisioterapia-clone?primary_color=c44b8e&hide_gdpr_banner=1&hide_landing_page_details=1&hide_event_type_details=1';
+  reservaTratamientoId = '';
+  reservaCalendlyVisible = false;
+
   // ── Servicios de regalo ───────────────────────────────────────────────────
   serviciosRegalo: ServicioRegalo[] = [];
   serviciosRegaloLoading = false;
@@ -264,6 +272,7 @@ export class AdminDashboardComponent implements OnInit {
     private readonly configuracionService: ConfiguracionService,
     private readonly serviciosRegaloService: ServiciosRegaloService,
     private readonly newsletterService: NewsletterService,
+    private readonly bookingTreatmentService: BookingTreatmentService,
     private readonly router: Router,
     private readonly zone: NgZone,
     private readonly cdr: ChangeDetectorRef
@@ -404,6 +413,49 @@ export class AdminDashboardComponent implements OnInit {
     if (seccion === 'bonos') {
       void this.loadBonos();
     }
+    if (seccion === 'reservas') {
+      this.reservaTratamientoId = '';
+      this.reservaCalendlyVisible = false;
+      this.bookingTreatmentService.clearSelectedTreatment();
+    }
+  }
+
+  // ── Reservas sin pago (admin) ─────────────────────────────────────────────
+
+  get tarifasReservaGrupos(): { label: string; tarifas: Tarifa[] }[] {
+    const order: TarifaCategoria[] = ['fisioterapia', 'pilates', 'promocion'];
+    return order
+      .map((categoria) => ({
+        label: this.getCategoriaLabel(categoria),
+        tarifas: this.tarifas.filter((t) => t.categoria === categoria && t.activo)
+      }))
+      .filter((grupo) => grupo.tarifas.length > 0);
+  }
+
+  onReservaTratamientoChange(): void {
+    // Ocultar el widget para forzar su recreación con el nuevo prefill
+    this.reservaCalendlyVisible = false;
+
+    const tarifa = this.tarifas.find((t) => t.id === this.reservaTratamientoId);
+    if (!tarifa) {
+      this.bookingTreatmentService.clearSelectedTreatment();
+      this.flushUiState();
+      return;
+    }
+
+    this.bookingTreatmentService.setSelectedTreatment({
+      id: tarifa.id,
+      nombre: tarifa.nombre,
+      precio: `${tarifa.precio}${tarifa.unidad}`
+    });
+    this.flushUiState();
+
+    setTimeout(() => {
+      this.zone.run(() => {
+        this.reservaCalendlyVisible = true;
+        this.cdr.detectChanges();
+      });
+    });
   }
 
   // ── Utilities ─────────────────────────────────────────────────────────────
