@@ -38,6 +38,7 @@
   (click)="scrollToTop()"
   aria-label="Volver al inicio"
 >
+  <span class="back-to-top__hint" [class.back-to-top__hint--visible]="showScrollTopHint" aria-hidden="true">arriba</span>
   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
     <path fill="currentColor" d="M12 4l-8 8h5v8h6v-8h5z"/>
   </svg>

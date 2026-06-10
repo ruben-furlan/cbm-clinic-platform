@@ -47,14 +47,19 @@
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   box-shadow: 0 14px 30px rgba(37, 211, 102, 0.28);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.floating-whatsapp-button:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 18px 36px rgba(37, 211, 102, 0.34);
+/* Hover solo en dispositivos con puntero real (en táctiles se queda pegado al primer toque) */
+@media (hover: hover) and (pointer: fine) {
+  .floating-whatsapp-button:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px rgba(37, 211, 102, 0.34);
+  }
 }
 
 .whatsapp-icon{

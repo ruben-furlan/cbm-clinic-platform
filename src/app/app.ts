@@ -26,10 +26,12 @@ export class App implements OnInit, OnDestroy {
   isComunidadRoute = false;
   isSolicitudCitaRoute = false;
   showScrollTop = false;
+  showScrollTopHint = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly platformId = inject(PLATFORM_ID);
   private rafId: number | null = null;
+  private scrollTopHintTimer: ReturnType<typeof setTimeout> | null = null;
   private routerEventsSubscription: Subscription | null = null;
   private readonly onScroll = (): void => this.scheduleScrollProgressUpdate();
 
@@ -64,6 +66,10 @@ export class App implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId) && this.rafId !== null) {
       window.cancelAnimationFrame(this.rafId);
     }
+
+    if (this.scrollTopHintTimer !== null) {
+      clearTimeout(this.scrollTopHintTimer);
+    }
   }
 
   private scheduleScrollProgressUpdate(): void {
@@ -88,7 +94,25 @@ export class App implements OnInit, OnDestroy {
     const shouldShow = scrollTop > 600;
     if (this.showScrollTop !== shouldShow) {
       this.showScrollTop = shouldShow;
+      this.updateScrollTopHint(shouldShow);
       this.cdr.markForCheck();
+    }
+  }
+
+  private updateScrollTopHint(buttonVisible: boolean): void {
+    if (this.scrollTopHintTimer !== null) {
+      clearTimeout(this.scrollTopHintTimer);
+      this.scrollTopHintTimer = null;
+    }
+
+    this.showScrollTopHint = buttonVisible;
+
+    if (buttonVisible) {
+      this.scrollTopHintTimer = setTimeout(() => {
+        this.scrollTopHintTimer = null;
+        this.showScrollTopHint = false;
+        this.cdr.markForCheck();
+      }, 2200);
     }
   }
 

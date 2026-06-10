@@ -312,6 +312,8 @@
   border-radius: 50%;
   border: none;
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 
   background: linear-gradient(135deg, #ff4fa3, #7b4dff);
   color: #ffffff;
@@ -329,7 +331,15 @@
   pointer-events: auto;
 }
 
-.back-to-top:hover,
+/* Hover solo en dispositivos con puntero real: en táctiles el primer toque
+   activaba el hover y hacía falta un segundo toque para el click. */
+@media (hover: hover) and (pointer: fine) {
+  .back-to-top:hover {
+    box-shadow: 0 10px 28px rgba(123, 77, 255, 0.42);
+    transform: translateY(-2px);
+  }
+}
+
 .back-to-top:focus-visible {
   box-shadow: 0 10px 28px rgba(123, 77, 255, 0.42);
   transform: translateY(-2px);
@@ -344,10 +354,41 @@
   }
 }
 
+/* Etiqueta "arriba": aparece junto al botón y se desvanece sola */
+.back-to-top__hint {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #1a1a2e;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.back-to-top__hint--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .back-to-top {
     transition: opacity 0.1s;
     transform: none !important;
+  }
+
+  .back-to-top__hint {
+    transition: opacity 0.1s;
+    transform: translateX(-50%) !important;
   }
 }
 
