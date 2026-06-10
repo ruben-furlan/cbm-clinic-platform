@@ -57,3 +57,13 @@ Routes are lazy-loaded. The `/display/:orientation` route renders a kiosk view (
 ## SEO & metadata
 
 Structured data (JSON-LD for `LocalBusiness`/`MedicalBusiness`/`Physiotherapy`) lives in `src/index.html`. Canonical tags are managed dynamically by `CanonicalService`.
+
+### Static prerendering (SSG)
+
+The build uses `@angular/ssr` with `outputMode: "static"`. Public routes listed in `src/app/app.routes.server.ts` (`RenderMode.Prerender`) are rendered to static HTML at build time — each gets its own `index.html` with correct canonical/title baked in. Private/interactive routes (admin, display, canjear, booking…) use `RenderMode.Client` and are served the CSR shell (`index.csr.html`) via the Netlify fallback in `public/_redirects`.
+
+Consequences for new code:
+- Component code on prerendered routes runs in Node at build time: guard `window`/`document`/`localStorage` access with `isPlatformBrowser` or move it to browser-only lifecycle (`afterNextRender`).
+- Supabase calls during prerender fail gracefully (no network assumptions at build time) — always catch and fall back; data loads client-side at runtime.
+- When adding a new public route, register it in `app.routes.ts`, `app.routes.server.ts`, `CanonicalService.routeTitles`, and `public/sitemap.xml`.
+- There is no hydration (`provideClientHydration` is intentionally not used): the client re-renders over the prerendered HTML, which keeps Google Translate's DOM mutations safe.

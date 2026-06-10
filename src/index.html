@@ -54,6 +54,26 @@
   >
   <meta name="twitter:image" content="https://cbmfisioterapia.com/hero-fisio.jpg">
 
+  <!--
+    Canonical inicial: en páginas prerenderizadas ya viene en el HTML; en rutas
+    client-side se crea de forma síncrona a partir de la URL real ANTES de que
+    arranque Angular, para que el rastreador nunca vea una canonical incorrecta.
+    CanonicalService la mantiene actualizada en cada navegación.
+  -->
+  <script>
+    (function () {
+      if (document.querySelector('link[rel="canonical"]')) return;
+      var path = location.pathname.replace(/\/+/g, '/').replace(/\/+$/, '') || '/';
+      var href = 'https://cbmfisioterapia.com' + (path === '/' ? '/' : path);
+      var link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      link.setAttribute('href', href);
+      document.head.appendChild(link);
+      var ogUrl = document.querySelector('meta[property="og:url"]');
+      if (ogUrl) ogUrl.setAttribute('content', href);
+    })();
+  </script>
+
   <!-- Structured Data SEO -->
   <script type="application/ld+json">
     {

@@ -1,1 +1,13 @@
-/* /index.html 200
+https://www.cbmfisioterapia.com/* https://cbmfisioterapia.com/:splat 301!
+http://www.cbmfisioterapia.com/* https://cbmfisioterapia.com/:splat 301!
+
+# Secciones de la home que estaban publicadas como URLs propias en el sitemap:
+# redirigen a la home (con su ancla) para que Google consolide la señal en "/"
+/faq /#faq 301
+/experiencia /#experiencia 301
+/tarifas /#tarifas 301
+/contactanos /#contacto 301
+
+# Fallback SPA: las rutas prerenderizadas se sirven como archivos estáticos
+# (Netlify prioriza el archivo existente); el resto carga el shell client-side
+/* /index.csr.html 200

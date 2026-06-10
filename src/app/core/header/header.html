@@ -16,25 +16,6 @@
       <a routerLink="/blog">Blog</a>
     </nav>
 
-    <div class="nav-actions">
-      <div class="language-selector-desktop">
-        <label class="sr-only" for="language-select">Language selector</label>
-        <div class="language-select-wrap">
-          <span class="language-prefix" aria-hidden="true">🌐 {{ selectedLanguageShort }}</span>
-          <select
-            id="language-select"
-            aria-label="Language selector"
-            [ngModel]="selectedLanguage"
-            (ngModelChange)="changeLanguage($event)"
-          >
-            @for (language of languages; track language.code) {
-              <option [value]="language.code">{{ language.label }}</option>
-            }
-          </select>
-        </div>
-      </div>
-    </div>
-
     <button
       type="button"
       class="mobile-menu-toggle"
@@ -57,20 +38,6 @@
       <a routerLink="/espacio-cbm" (click)="closeMobileMenu()">Espacio CBM</a>
       <a routerLink="/filosofia-cbm" (click)="closeMobileMenu()">Filosofía CBM</a>
       <a routerLink="/blog" (click)="closeMobileMenu()">Blog</a>
-
-      <div class="mobile-language-group" role="group" aria-label="Language selector">
-        <p class="mobile-language-title">Language</p>
-        @for (language of languages; track language.code) {
-          <button
-            type="button"
-            class="mobile-language-option"
-            [class.is-active]="selectedLanguage === language.code"
-            (click)="changeLanguage(language.code)"
-          >
-            {{ language.label }}
-          </button>
-        }
-      </div>
     </div>
   </div>
 </header>
