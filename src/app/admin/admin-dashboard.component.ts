@@ -420,6 +420,11 @@ export class AdminDashboardComponent implements OnInit {
     }
   }
 
+  goToNuevaReserva(): void {
+    this.setSeccion('reservas');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   // ── Reservas sin pago (admin) ─────────────────────────────────────────────
 
   get tarifasReservaGrupos(): { label: string; tarifas: Tarifa[] }[] {

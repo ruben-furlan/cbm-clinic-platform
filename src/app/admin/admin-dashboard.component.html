@@ -9,6 +9,9 @@
 
   <!-- Tabs de sección principal -->
   <div class="section-tabs">
+    <button type="button" [class.active]="seccion === 'reservas'" (click)="setSeccion('reservas')">
+      📅 Nueva reserva
+    </button>
     <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">Tarifas</button>
     <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
     <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
@@ -23,9 +26,6 @@
     </button>
     <button type="button" [class.active]="seccion === 'banner'" (click)="setSeccion('banner')">
       📢 Banner
-    </button>
-    <button type="button" [class.active]="seccion === 'reservas'" (click)="setSeccion('reservas')">
-      📅 Nueva reserva
     </button>
   </div>
 
@@ -1485,6 +1485,18 @@
     </form>
   </section>
 </div>
+
+<!-- ═══════════════ FAB Nueva reserva (solo mobile) ════════════════ -->
+<button
+  type="button"
+  class="fab-reserva"
+  *ngIf="seccion !== 'reservas'"
+  (click)="goToNuevaReserva()"
+  aria-label="Crear nueva reserva"
+>
+  <span class="fab-reserva__icon" aria-hidden="true">📅</span>
+  <span class="fab-reserva__label">Nueva reserva</span>
+</button>
 
 <!-- ═══════════════ Modal confirmación eliminar ════════════════ -->
 <div class="modal-overlay confirm-overlay" *ngIf="confirmOpen" (click)="onConfirmCancel()">

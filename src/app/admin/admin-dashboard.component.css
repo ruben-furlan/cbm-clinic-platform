@@ -1615,3 +1615,84 @@ textarea:disabled {
 .reserva-admin-selector {
   max-width: 480px;
 }
+
+.reserva-admin-selector select {
+  width: 100%;
+}
+
+/* ── FAB Nueva reserva (solo mobile) ─────────────────────────────────────── */
+
+.fab-reserva {
+  display: none;
+  position: fixed;
+  right: 16px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  z-index: 30;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 14px 20px;
+  min-height: 52px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ff4fa3, #7b4dff);
+  box-shadow: 0 6px 22px rgba(123, 77, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.fab-reserva:active {
+  transform: scale(0.96);
+}
+
+.fab-reserva__icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@media (max-width: 768px) {
+  .fab-reserva {
+    display: inline-flex;
+  }
+
+  /* Que el FAB no tape el final del contenido */
+  .admin-dashboard {
+    padding-bottom: 96px;
+  }
+}
+
+/* ── Nueva reserva — ajustes mobile ──────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .reserva-admin {
+    padding: 14px;
+    gap: 14px;
+    border-radius: 14px;
+    margin: 0 -2px;
+  }
+
+  .reserva-admin-hint {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .reserva-admin-selector {
+    max-width: 100%;
+  }
+
+  /* Select cómodo al tacto; 16px evita el zoom automático en iOS */
+  .reserva-admin-selector select {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  /* El widget de Calendly necesita más alto en mobile para no
+     quedar con doble scroll interno */
+  .reserva-admin ::ng-deep #calendly-inline-widget {
+    height: 900px !important;
+    min-width: 0 !important;
+  }
+}
