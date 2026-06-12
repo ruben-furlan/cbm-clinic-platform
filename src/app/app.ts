@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -14,9 +21,18 @@ import { ChowChowMascotComponent } from './core/chow-chow-mascot/chow-chow-masco
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Header, FooterComponent, FloatingWhatsappButtonComponent, FloatingBookingButtonComponent, CookieConsentComponent, BannerAnuncioComponent, ChowChowMascotComponent],
+  imports: [
+    RouterOutlet,
+    Header,
+    FooterComponent,
+    FloatingWhatsappButtonComponent,
+    FloatingBookingButtonComponent,
+    CookieConsentComponent,
+    BannerAnuncioComponent,
+    ChowChowMascotComponent,
+  ],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrls: ['./app.css'],
 })
 export class App implements OnInit, OnDestroy {
   isDisplayRoute = false;
@@ -37,7 +53,7 @@ export class App implements OnInit, OnDestroy {
 
   constructor(
     private readonly router: Router,
-    private readonly canonicalService: CanonicalService
+    private readonly canonicalService: CanonicalService,
   ) {}
 
   ngOnInit(): void {
