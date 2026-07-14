@@ -1,4 +1,3 @@
-
 <section
   class="display-shell"
   [class.display-shell--vertical]="orientation === 'vertical'"
@@ -6,12 +5,36 @@
   aria-live="polite"
   aria-atomic="true"
 >
+  <!-- ═══════════════ CARTEL DE VENTANA (horizontal) ═══════════════ -->
+  <div *ngIf="orientation === 'horizontal'" class="cartel-stage" [attr.data-tema]="cartel.tema">
+    <div class="cartel-background" aria-hidden="true"></div>
+    <div class="cartel-orb cartel-orb--a" aria-hidden="true"></div>
+    <div class="cartel-orb cartel-orb--b" aria-hidden="true"></div>
+
+    <div class="cartel-content">
+      <!-- Logo de CBM asomando sobre el cartel -->
+      <div class="cartel-emblem" aria-hidden="true">
+        <span class="cartel-emblem__aura"></span>
+        <img src="/favicon-192x192-witout-fondo.png" alt="" class="cartel-emblem__logo" />
+      </div>
+
+      <!-- El cartel propiamente dicho -->
+      <div class="cartel-board" role="status" aria-live="polite">
+        <span class="cartel-emoji" aria-hidden="true">{{ cartel.emoji }}</span>
+        <h1 class="cartel-title">{{ cartel.titulo }}</h1>
+        <p class="cartel-message">{{ cartel.mensaje }}</p>
+        <span class="cartel-brand__name">CBM Fisioterapia · Terrassa</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SLIDER PROMOCIONAL (vertical) ═══════════════ -->
   <div
-    class="display-stage"
-    [class.display-stage--vertical]="orientation === 'vertical'"
-    [class.vertical-large]="orientation === 'vertical' && verticalSize === 'large'"
-    [class.vertical-medium]="orientation === 'vertical' && verticalSize === 'medium'"
-    [class.vertical-small]="orientation === 'vertical' && verticalSize === 'small'"
+    *ngIf="orientation !== 'horizontal'"
+    class="display-stage display-stage--vertical"
+    [class.vertical-large]="verticalSize === 'large'"
+    [class.vertical-medium]="verticalSize === 'medium'"
+    [class.vertical-small]="verticalSize === 'small'"
     [style.--vertical-scale]="verticalScale"
   >
     <div class="display-background" aria-hidden="true"></div>
@@ -36,7 +59,9 @@
           </div>
           <h1>Tu recuperación comienza aquí</h1>
           <p class="lead">Fisioterapia, pilates y bienestar en Terrassa</p>
-          <p class="support">Atención cercana · Tratamiento personalizado · Especialistas en terapia manual</p>
+          <p class="support">
+            Atención cercana · Tratamiento personalizado · Especialistas en terapia manual
+          </p>
         </div>
 
         <div *ngSwitchCase="'acompanamiento'" class="slide-card">
@@ -95,7 +120,11 @@
 
     <aside class="persistent-cta" aria-label="Acceso web de CBM Fisioterapia">
       <figure class="qr-panel">
-        <img src="/qr-cbm-display.png" alt="QR para entrar en la web de CBM Fisioterapia" class="qr-image" />
+        <img
+          src="/qr-cbm-display.png"
+          alt="QR para entrar en la web de CBM Fisioterapia"
+          class="qr-image"
+        />
       </figure>
       <div class="persistent-cta__copy">
         <p class="persistent-cta__title">ESCANEA Y DESCUBRE MÁS</p>
@@ -105,7 +134,10 @@
     </aside>
 
     <div class="progress-dots" aria-hidden="true">
-      <span *ngFor="let slide of slides; let index = index" [class.active]="activeSlideIndex === index"></span>
+      <span
+        *ngFor="let slide of slides; let index = index"
+        [class.active]="activeSlideIndex === index"
+      ></span>
     </div>
   </div>
 </section>

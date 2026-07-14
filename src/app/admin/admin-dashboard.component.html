@@ -12,20 +12,35 @@
     <button type="button" [class.active]="seccion === 'reservas'" (click)="setSeccion('reservas')">
       📅 Nueva reserva
     </button>
-    <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">Tarifas</button>
-    <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">Preguntas frecuentes</button>
-    <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">Blog</button>
-    <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">Clases</button>
+    <button type="button" [class.active]="seccion === 'tarifas'" (click)="setSeccion('tarifas')">
+      Tarifas
+    </button>
+    <button type="button" [class.active]="seccion === 'faqs'" (click)="setSeccion('faqs')">
+      Preguntas frecuentes
+    </button>
+    <button type="button" [class.active]="seccion === 'blog'" (click)="setSeccion('blog')">
+      Blog
+    </button>
+    <button type="button" [class.active]="seccion === 'clases'" (click)="setSeccion('clases')">
+      Clases
+    </button>
     <button type="button" [class.active]="seccion === 'bonos'" (click)="setSeccion('bonos')">
       🎁 Regala bienestar
       <span class="tab-badge" *ngIf="bonosStats.pendientes > 0">{{ bonosStats.pendientes }}</span>
     </button>
-    <button type="button" [class.active]="seccion === 'newsletter'" (click)="setSeccion('newsletter')">
+    <button
+      type="button"
+      [class.active]="seccion === 'newsletter'"
+      (click)="setSeccion('newsletter')"
+    >
       💌 Newsletter
       <span class="tab-badge" *ngIf="newsletterStats.total > 0">{{ newsletterStats.activos }}</span>
     </button>
     <button type="button" [class.active]="seccion === 'banner'" (click)="setSeccion('banner')">
       📢 Banner
+    </button>
+    <button type="button" [class.active]="seccion === 'cartel'" (click)="setSeccion('cartel')">
+      🪟 Cartel ventana
     </button>
   </div>
 
@@ -43,7 +58,14 @@
         </button>
       </div>
 
-      <button type="button" class="btn-primary" (click)="openCreateModal()" [disabled]="saving || !!deletingId">Nueva tarifa</button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="openCreateModal()"
+        [disabled]="saving || !!deletingId"
+      >
+        Nueva tarifa
+      </button>
     </div>
 
     <p class="status error" *ngIf="error">{{ error }}</p>
@@ -71,27 +93,55 @@
             <td data-label="Precio">{{ tarifa.precio }}{{ tarifa.unidad }}</td>
             <td data-label="Activo">
               <label class="switch">
-                <input type="checkbox" [checked]="tarifa.activo" (change)="toggleActivo(tarifa, $event)" [disabled]="saving || !!deletingId" />
+                <input
+                  type="checkbox"
+                  [checked]="tarifa.activo"
+                  (change)="toggleActivo(tarifa, $event)"
+                  [disabled]="saving || !!deletingId"
+                />
                 <span></span>
               </label>
             </td>
             <td class="actions" data-label="Acciones">
-              <button type="button" class="btn-ghost" (click)="openEditModal(tarifa)" [disabled]="saving || !!deletingId">Editar</button>
-              <button type="button" class="btn-danger" (click)="deleteTarifa(tarifa)" [disabled]="saving || !!deletingId">{{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}</button>
+              <button
+                type="button"
+                class="btn-ghost"
+                (click)="openEditModal(tarifa)"
+                [disabled]="saving || !!deletingId"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn-danger"
+                (click)="deleteTarifa(tarifa)"
+                [disabled]="saving || !!deletingId"
+              >
+                {{ deletingId === tarifa.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p class="status" *ngIf="!loading && !tarifasFiltradas.length && !error">No hay tarifas para esta categoría.</p>
+    <p class="status" *ngIf="!loading && !tarifasFiltradas.length && !error">
+      No hay tarifas para esta categoría.
+    </p>
   </ng-container>
 
   <!-- ═══════════════════════════════ FAQs ══════════════════════════════════ -->
   <ng-container *ngIf="seccion === 'faqs'">
     <div class="toolbar">
       <span></span>
-      <button type="button" class="btn-primary" (click)="openFaqCreateModal()" [disabled]="faqSaving || !!faqDeletingId">Nueva pregunta</button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="openFaqCreateModal()"
+        [disabled]="faqSaving || !!faqDeletingId"
+      >
+        Nueva pregunta
+      </button>
     </div>
 
     <p class="status error" *ngIf="faqError">{{ faqError }}</p>
@@ -115,27 +165,55 @@
             <td data-label="Pregunta">{{ faq.pregunta }}</td>
             <td data-label="Activo">
               <label class="switch">
-                <input type="checkbox" [checked]="faq.activo" (change)="toggleFaqActivo(faq, $event)" [disabled]="faqSaving || !!faqDeletingId" />
+                <input
+                  type="checkbox"
+                  [checked]="faq.activo"
+                  (change)="toggleFaqActivo(faq, $event)"
+                  [disabled]="faqSaving || !!faqDeletingId"
+                />
                 <span></span>
               </label>
             </td>
             <td class="actions" data-label="Acciones">
-              <button type="button" class="btn-ghost" (click)="openFaqEditModal(faq)" [disabled]="faqSaving || !!faqDeletingId">Editar</button>
-              <button type="button" class="btn-danger" (click)="deleteFaq(faq)" [disabled]="faqSaving || !!faqDeletingId">{{ faqDeletingId === faq.id ? 'Eliminando...' : 'Eliminar' }}</button>
+              <button
+                type="button"
+                class="btn-ghost"
+                (click)="openFaqEditModal(faq)"
+                [disabled]="faqSaving || !!faqDeletingId"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn-danger"
+                (click)="deleteFaq(faq)"
+                [disabled]="faqSaving || !!faqDeletingId"
+              >
+                {{ faqDeletingId === faq.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p class="status" *ngIf="!faqLoading && !faqs.length && !faqError">No hay preguntas frecuentes todavía.</p>
+    <p class="status" *ngIf="!faqLoading && !faqs.length && !faqError">
+      No hay preguntas frecuentes todavía.
+    </p>
   </ng-container>
 
   <!-- ═══════════════════════════════ BLOG ══════════════════════════════════ -->
   <ng-container *ngIf="seccion === 'blog'">
     <div class="toolbar">
       <span></span>
-      <button type="button" class="btn-primary" (click)="openBlogCreateModal()" [disabled]="blogSaving || !!blogDeletingId">Nuevo post</button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="openBlogCreateModal()"
+        [disabled]="blogSaving || !!blogDeletingId"
+      >
+        Nuevo post
+      </button>
     </div>
 
     <p class="status error" *ngIf="blogError">{{ blogError }}</p>
@@ -162,26 +240,52 @@
             <td data-label="Categoría">{{ post.categoria }}</td>
             <td data-label="Destacado">
               <label class="switch">
-                <input type="checkbox" [checked]="post.destacado" (change)="toggleBlogDestacado(post, $event)" [disabled]="blogSaving || !!blogDeletingId" />
+                <input
+                  type="checkbox"
+                  [checked]="post.destacado"
+                  (change)="toggleBlogDestacado(post, $event)"
+                  [disabled]="blogSaving || !!blogDeletingId"
+                />
                 <span></span>
               </label>
             </td>
             <td data-label="Activo">
               <label class="switch">
-                <input type="checkbox" [checked]="post.activo" (change)="toggleBlogActivo(post, $event)" [disabled]="blogSaving || !!blogDeletingId" />
+                <input
+                  type="checkbox"
+                  [checked]="post.activo"
+                  (change)="toggleBlogActivo(post, $event)"
+                  [disabled]="blogSaving || !!blogDeletingId"
+                />
                 <span></span>
               </label>
             </td>
             <td class="actions" data-label="Acciones">
-              <button type="button" class="btn-ghost" (click)="openBlogEditModal(post)" [disabled]="blogSaving || !!blogDeletingId">Editar</button>
-              <button type="button" class="btn-danger" (click)="deleteBlogPost(post)" [disabled]="blogSaving || !!blogDeletingId">{{ blogDeletingId === post.id ? 'Eliminando...' : 'Eliminar' }}</button>
+              <button
+                type="button"
+                class="btn-ghost"
+                (click)="openBlogEditModal(post)"
+                [disabled]="blogSaving || !!blogDeletingId"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn-danger"
+                (click)="deleteBlogPost(post)"
+                [disabled]="blogSaving || !!blogDeletingId"
+              >
+                {{ blogDeletingId === post.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p class="status" *ngIf="!blogLoading && !blogPosts.length && !blogError">No hay posts todavía.</p>
+    <p class="status" *ngIf="!blogLoading && !blogPosts.length && !blogError">
+      No hay posts todavía.
+    </p>
   </ng-container>
 
   <!-- ══════════════════════════════ CLASES ════════════════════════════════ -->
@@ -197,7 +301,12 @@
           {{ tab.label }}
         </button>
       </div>
-      <button type="button" class="btn-primary" (click)="openEventoCreateModal()" [disabled]="eventosSaving || !!eventosDeletingId">
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="openEventoCreateModal()"
+        [disabled]="eventosSaving || !!eventosDeletingId"
+      >
         Nuevo evento
       </button>
     </div>
@@ -223,41 +332,97 @@
         </thead>
         <tbody>
           <tr *ngFor="let evento of eventosFiltrados">
-            <td data-label="Título"><strong>{{ evento.title }}</strong><br><span style="font-size:12px;color:#7a7090">{{ eventoCategoryLabels[evento.category] }}</span></td>
-            <td data-label="Fecha" style="white-space:nowrap;font-size:13px">{{ evento.start_at | date:'dd/MM/yy HH:mm' }}</td>
+            <td data-label="Título">
+              <strong>{{ evento.title }}</strong
+              ><br /><span style="font-size: 12px; color: #7a7090">{{
+                eventoCategoryLabels[evento.category]
+              }}</span>
+            </td>
+            <td data-label="Fecha" style="white-space: nowrap; font-size: 13px">
+              {{ evento.start_at | date: 'dd/MM/yy HH:mm' }}
+            </td>
             <td data-label="Tipo">
-              <span class="ev-badge" [class.ev-badge--free]="evento.pricing_type === 'free'" [class.ev-badge--paid]="evento.pricing_type === 'paid'">
+              <span
+                class="ev-badge"
+                [class.ev-badge--free]="evento.pricing_type === 'free'"
+                [class.ev-badge--paid]="evento.pricing_type === 'paid'"
+              >
                 {{ evento.pricing_type === 'free' ? 'Gratis' : 'Pago' }}
               </span>
             </td>
-            <td data-label="Precio">{{ evento.pricing_type === 'paid' ? (evento.price + '€') : '—' }}</td>
-            <td data-label="Plazas" style="white-space:nowrap;font-size:13px">
+            <td data-label="Precio">
+              {{ evento.pricing_type === 'paid' ? evento.price + '€' : '—' }}
+            </td>
+            <td data-label="Plazas" style="white-space: nowrap; font-size: 13px">
               {{ evento.reserved_slots }}/{{ evento.total_slots }}
-              <span style="color:#9090a0"> ({{ getEventoAvailableSlots(evento) }} libre{{ getEventoAvailableSlots(evento) !== 1 ? 's' : '' }})</span>
+              <span style="color: #9090a0">
+                ({{ getEventoAvailableSlots(evento) }} libre{{
+                  getEventoAvailableSlots(evento) !== 1 ? 's' : ''
+                }})</span
+              >
             </td>
             <td data-label="Estado">
-              <span class="ev-status" [class.ev-status--active]="evento.status === 'active'" [class.ev-status--full]="evento.status === 'completed'">
+              <span
+                class="ev-status"
+                [class.ev-status--active]="evento.status === 'active'"
+                [class.ev-status--full]="evento.status === 'completed'"
+              >
                 {{ eventoStatusLabels[evento.status] }}
               </span>
             </td>
             <td data-label="Home">
               <label class="switch">
-                <input type="checkbox" [checked]="evento.highlight_on_home" [disabled]="eventosSaving || !!eventosDeletingId"
-                  (change)="saveEvento_toggleHome(evento, $event)" />
+                <input
+                  type="checkbox"
+                  [checked]="evento.highlight_on_home"
+                  [disabled]="eventosSaving || !!eventosDeletingId"
+                  (change)="saveEvento_toggleHome(evento, $event)"
+                />
                 <span></span>
               </label>
             </td>
             <td data-label="Activo">
               <label class="switch">
-                <input type="checkbox" [checked]="evento.is_active" (change)="toggleEventoActivo(evento, $event)" [disabled]="eventosSaving || !!eventosDeletingId" />
+                <input
+                  type="checkbox"
+                  [checked]="evento.is_active"
+                  (change)="toggleEventoActivo(evento, $event)"
+                  [disabled]="eventosSaving || !!eventosDeletingId"
+                />
                 <span></span>
               </label>
             </td>
             <td class="actions" data-label="Acciones">
-              <button type="button" class="btn-ghost btn-sm" (click)="openRegistrosModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Inscritos</button>
-              <button type="button" class="btn-ghost btn-sm" (click)="openEventoEditModal(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Editar</button>
-              <button type="button" class="btn-ghost btn-sm" (click)="duplicateEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">Duplicar</button>
-              <button type="button" class="btn-danger btn-sm" (click)="deleteEvento(evento)" [disabled]="eventosSaving || !!eventosDeletingId">
+              <button
+                type="button"
+                class="btn-ghost btn-sm"
+                (click)="openRegistrosModal(evento)"
+                [disabled]="eventosSaving || !!eventosDeletingId"
+              >
+                Inscritos
+              </button>
+              <button
+                type="button"
+                class="btn-ghost btn-sm"
+                (click)="openEventoEditModal(evento)"
+                [disabled]="eventosSaving || !!eventosDeletingId"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn-ghost btn-sm"
+                (click)="duplicateEvento(evento)"
+                [disabled]="eventosSaving || !!eventosDeletingId"
+              >
+                Duplicar
+              </button>
+              <button
+                type="button"
+                class="btn-danger btn-sm"
+                (click)="deleteEvento(evento)"
+                [disabled]="eventosSaving || !!eventosDeletingId"
+              >
                 {{ eventosDeletingId === evento.id ? 'Eliminando...' : 'Eliminar' }}
               </button>
             </td>
@@ -266,9 +431,10 @@
       </table>
     </div>
 
-    <p class="status" *ngIf="!eventosLoading && !eventosFiltrados.length && !eventosError">No hay eventos para este filtro.</p>
+    <p class="status" *ngIf="!eventosLoading && !eventosFiltrados.length && !eventosError">
+      No hay eventos para este filtro.
+    </p>
   </ng-container>
-
 
   <!-- ═════════════════════════════ BONOS REGALO ═══════════════════════════ -->
   <ng-container *ngIf="seccion === 'bonos'">
@@ -285,12 +451,21 @@
     <!-- Servicios disponibles para regalo -->
     <div class="toolbar">
       <h3 class="section-subtitle">Servicios disponibles para regalo</h3>
-      <button type="button" class="btn-primary" (click)="openCreateServicioRegaloModal()" [disabled]="serviciosRegaloSaving">Nuevo servicio regalo</button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="openCreateServicioRegaloModal()"
+        [disabled]="serviciosRegaloSaving"
+      >
+        Nuevo servicio regalo
+      </button>
     </div>
 
     <p class="status error" *ngIf="serviciosRegaloError">{{ serviciosRegaloError }}</p>
     <p class="status message" *ngIf="serviciosRegaloMessage">{{ serviciosRegaloMessage }}</p>
-    <p class="status" *ngIf="serviciosRegaloLoading && !serviciosRegalo.length">Cargando servicios...</p>
+    <p class="status" *ngIf="serviciosRegaloLoading && !serviciosRegalo.length">
+      Cargando servicios...
+    </p>
 
     <div class="table-wrap" *ngIf="serviciosRegalo.length">
       <table>
@@ -314,13 +489,30 @@
             <td data-label="Categoría">{{ servicio.categoria }}</td>
             <td data-label="Activo">
               <label class="switch">
-                <input type="checkbox" [checked]="servicio.activo" (change)="toggleServicioRegaloActivo(servicio, $event)" />
+                <input
+                  type="checkbox"
+                  [checked]="servicio.activo"
+                  (change)="toggleServicioRegaloActivo(servicio, $event)"
+                />
                 <span></span>
               </label>
             </td>
             <td class="actions" data-label="Acciones">
-              <button type="button" class="btn-ghost" (click)="openEditServicioRegaloModal(servicio)">Editar</button>
-              <button type="button" class="btn-danger" (click)="deleteServicioRegalo(servicio)" [disabled]="serviciosRegaloDeletingId === servicio.id">Eliminar</button>
+              <button
+                type="button"
+                class="btn-ghost"
+                (click)="openEditServicioRegaloModal(servicio)"
+              >
+                Editar
+              </button>
+              <button
+                type="button"
+                class="btn-danger"
+                (click)="deleteServicioRegalo(servicio)"
+                [disabled]="serviciosRegaloDeletingId === servicio.id"
+              >
+                Eliminar
+              </button>
             </td>
           </tr>
         </tbody>
@@ -329,21 +521,65 @@
 
     <!-- Estadísticas de bonos -->
     <div class="stats-grid" *ngIf="bonos.length" style="margin-top: 32px">
-      <article class="stat-card"><p>Total bonos</p><strong>{{ bonosStats.total }}</strong></article>
-      <article class="stat-card"><p>Pendientes pago</p><strong>{{ bonosStats.pendientes }}</strong></article>
-      <article class="stat-card"><p>Pagados</p><strong>{{ bonosStats.pagados }}</strong></article>
-      <article class="stat-card"><p>Canjeados</p><strong>{{ bonosStats.canjeados }}</strong></article>
+      <article class="stat-card">
+        <p>Total bonos</p>
+        <strong>{{ bonosStats.total }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Pendientes pago</p>
+        <strong>{{ bonosStats.pendientes }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Pagados</p>
+        <strong>{{ bonosStats.pagados }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Canjeados</p>
+        <strong>{{ bonosStats.canjeados }}</strong>
+      </article>
     </div>
 
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Filtro bonos">
-        <button type="button" [class.active]="filtroBonos==='todos'" (click)="filtroBonos='todos'">Todos</button>
-        <button type="button" [class.active]="filtroBonos==='pendiente_pago'" (click)="filtroBonos='pendiente_pago'">Pendiente pago</button>
-        <button type="button" [class.active]="filtroBonos==='pagado'" (click)="filtroBonos='pagado'">Pagado</button>
-        <button type="button" [class.active]="filtroBonos==='enviado'" (click)="filtroBonos='enviado'">Enviado</button>
-        <button type="button" [class.active]="filtroBonos==='canjeado'" (click)="filtroBonos='canjeado'">Canjeado</button>
+        <button
+          type="button"
+          [class.active]="filtroBonos === 'todos'"
+          (click)="filtroBonos = 'todos'"
+        >
+          Todos
+        </button>
+        <button
+          type="button"
+          [class.active]="filtroBonos === 'pendiente_pago'"
+          (click)="filtroBonos = 'pendiente_pago'"
+        >
+          Pendiente pago
+        </button>
+        <button
+          type="button"
+          [class.active]="filtroBonos === 'pagado'"
+          (click)="filtroBonos = 'pagado'"
+        >
+          Pagado
+        </button>
+        <button
+          type="button"
+          [class.active]="filtroBonos === 'enviado'"
+          (click)="filtroBonos = 'enviado'"
+        >
+          Enviado
+        </button>
+        <button
+          type="button"
+          [class.active]="filtroBonos === 'canjeado'"
+          (click)="filtroBonos = 'canjeado'"
+        >
+          Canjeado
+        </button>
       </div>
-      <button type="button" class="btn-primary" (click)="copiarLinkCanjear()">Copiar link /canjear</button>
+      <button type="button" class="btn-primary" (click)="copiarLinkCanjear()">
+        Copiar link /canjear
+      </button>
     </div>
 
     <p class="status error" *ngIf="bonosError">{{ bonosError }}</p>
@@ -351,7 +587,19 @@
 
     <div class="table-wrap" *ngIf="bonosFiltrados.length">
       <table>
-        <thead><tr><th>Código</th><th>Servicio</th><th>Comprador</th><th>Email</th><th>Teléfono</th><th>Método pago</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Servicio</th>
+            <th>Comprador</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Método pago</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
         <tbody>
           <tr *ngFor="let bono of bonosFiltrados">
             <td data-label="Código">{{ bono.codigo }}</td>
@@ -362,12 +610,20 @@
             <td data-label="Método pago">{{ bono.metodo_pago }}</td>
             <td data-label="Estado">
               <select (change)="updateBonoEstado(bono, $event)">
-                <option *ngFor="let estado of bonosEstados" [value]="estado" [selected]="estado === bono.estado">{{ estadoBonoLabel(estado) }}</option>
+                <option
+                  *ngFor="let estado of bonosEstados"
+                  [value]="estado"
+                  [selected]="estado === bono.estado"
+                >
+                  {{ estadoBonoLabel(estado) }}
+                </option>
               </select>
             </td>
-            <td data-label="Fecha">{{ bono.fecha_compra | date:'dd/MM/yy HH:mm' }}</td>
+            <td data-label="Fecha">{{ bono.fecha_compra | date: 'dd/MM/yy HH:mm' }}</td>
             <td class="actions" data-label="Acciones">
-              <button type="button" class="btn-ghost" (click)="openBonoDetalle(bono)">Ver detalle</button>
+              <button type="button" class="btn-ghost" (click)="openBonoDetalle(bono)">
+                Ver detalle
+              </button>
               <button type="button" class="btn-danger" (click)="deleteBono(bono)">Eliminar</button>
             </td>
           </tr>
@@ -380,8 +636,8 @@
   <ng-container *ngIf="seccion === 'reservas'">
     <section class="reserva-admin">
       <p class="reserva-admin-hint">
-        Reserva una cita directamente en el calendario, sin paso de pago. La seña, si hace falta,
-        se gestiona con el cliente fuera de la web 💜
+        Reserva una cita directamente en el calendario, sin paso de pago. La seña, si hace falta, se
+        gestiona con el cliente fuera de la web 💜
       </p>
 
       <label class="reserva-admin-selector" for="reservaTratamiento">
@@ -411,17 +667,20 @@
 
   <!-- ═══════════════════════════ BANNER ANUNCIO ══════════════════════════ -->
   <ng-container *ngIf="seccion === 'banner'">
-
     <!-- Preview en tiempo real -->
     <section class="bonos-config">
       <h3>Preview</h3>
-      <div class="banner-admin-preview"
-           [style.background]="bannerConfig.colorFondo"
-           [style.color]="bannerConfig.colorTexto">
+      <div
+        class="banner-admin-preview"
+        [style.background]="bannerConfig.colorFondo"
+        [style.color]="bannerConfig.colorTexto"
+      >
         <span *ngIf="bannerConfig.emoji">{{ bannerConfig.emoji }}</span>
         <span>{{ bannerConfig.texto || 'Texto del banner...' }}</span>
-        <span *ngIf="bannerConfig.enlaceTexto"
-              style="font-weight:600; text-decoration:underline; margin-left:6px">
+        <span
+          *ngIf="bannerConfig.enlaceTexto"
+          style="font-weight: 600; text-decoration: underline; margin-left: 6px"
+        >
           {{ bannerConfig.enlaceTexto }}
         </span>
       </div>
@@ -435,7 +694,6 @@
       <p class="status message" *ngIf="bannerMessage">{{ bannerMessage }}</p>
 
       <div class="modal-form">
-
         <!-- Activar / desactivar -->
         <label class="inline-check">
           <input type="checkbox" [(ngModel)]="bannerConfig.activo" />
@@ -445,125 +703,253 @@
         <!-- Emoji -->
         <label>
           Emoji
-          <input type="text"
-                 [(ngModel)]="bannerConfig.emoji"
-                 maxlength="4"
-                 placeholder="💜"
-                 style="max-width:80px" />
+          <input
+            type="text"
+            [(ngModel)]="bannerConfig.emoji"
+            maxlength="4"
+            placeholder="💜"
+            style="max-width: 80px"
+          />
         </label>
 
         <!-- Texto principal -->
         <label>
           Mensaje
-          <input type="text"
-                 [(ngModel)]="bannerConfig.texto"
-                 placeholder="Día de las Madres — Regala bienestar a quien más cuida de ti" />
+          <input
+            type="text"
+            [(ngModel)]="bannerConfig.texto"
+            placeholder="Día de las Madres — Regala bienestar a quien más cuida de ti"
+          />
         </label>
 
         <!-- Texto enlace -->
         <label>
           Texto del enlace
-          <input type="text"
-                 [(ngModel)]="bannerConfig.enlaceTexto"
-                 placeholder="Ver bonos regalo →" />
+          <input
+            type="text"
+            [(ngModel)]="bannerConfig.enlaceTexto"
+            placeholder="Ver bonos regalo →"
+          />
         </label>
 
         <!-- URL enlace -->
         <label>
           URL del enlace
-          <input type="text"
-                 [(ngModel)]="bannerConfig.enlaceUrl"
-                 placeholder="/regalo" />
+          <input type="text" [(ngModel)]="bannerConfig.enlaceUrl" placeholder="/regalo" />
         </label>
 
         <!-- Color de fondo -->
         <div>
-          <p style="font-size:13px; font-weight:600; margin-bottom:8px">Color de fondo</p>
+          <p style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Color de fondo</p>
           <div class="banner-color-options">
             <label *ngFor="let c of bannerColoresPredefinidos" class="banner-color-option">
-              <input type="radio"
-                     [value]="c.valor"
-                     [checked]="!bannerUsaColorCustom && bannerConfig.colorFondo === c.valor"
-                     (change)="setBannerColorFondo(c.valor)" />
+              <input
+                type="radio"
+                [value]="c.valor"
+                [checked]="!bannerUsaColorCustom && bannerConfig.colorFondo === c.valor"
+                (change)="setBannerColorFondo(c.valor)"
+              />
               <span class="banner-color-swatch" [style.background]="c.valor"></span>
               {{ c.label }}
             </label>
             <label class="banner-color-option">
-              <input type="radio"
-                     [checked]="bannerUsaColorCustom"
-                     (change)="setBannerColorFondoCustom()" />
+              <input
+                type="radio"
+                [checked]="bannerUsaColorCustom"
+                (change)="setBannerColorFondoCustom()"
+              />
               Personalizado
             </label>
           </div>
-          <input *ngIf="bannerUsaColorCustom"
-                 type="text"
-                 [(ngModel)]="bannerColorFondoCustom"
-                 (input)="setBannerColorFondoCustom()"
-                 placeholder="linear-gradient(135deg, #e879a8, #a78bfa)"
-                 style="margin-top:8px" />
+          <input
+            *ngIf="bannerUsaColorCustom"
+            type="text"
+            [(ngModel)]="bannerColorFondoCustom"
+            (input)="setBannerColorFondoCustom()"
+            placeholder="linear-gradient(135deg, #e879a8, #a78bfa)"
+            style="margin-top: 8px"
+          />
         </div>
 
         <!-- Color de texto -->
         <div>
-          <p style="font-size:13px; font-weight:600; margin-bottom:8px">Color del texto</p>
+          <p style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Color del texto</p>
           <div class="banner-color-options">
             <label class="banner-color-option">
-              <input type="radio"
-                     value="#ffffff"
-                     [(ngModel)]="bannerConfig.colorTexto" />
-              <span class="banner-color-swatch" style="background:#555;border:2px solid #ccc"></span>
+              <input type="radio" value="#ffffff" [(ngModel)]="bannerConfig.colorTexto" />
+              <span
+                class="banner-color-swatch"
+                style="background: #555; border: 2px solid #ccc"
+              ></span>
               Blanco
             </label>
             <label class="banner-color-option">
-              <input type="radio"
-                     value="#111827"
-                     [(ngModel)]="bannerConfig.colorTexto" />
-              <span class="banner-color-swatch" style="background:#111827"></span>
+              <input type="radio" value="#111827" [(ngModel)]="bannerConfig.colorTexto" />
+              <span class="banner-color-swatch" style="background: #111827"></span>
               Oscuro
             </label>
           </div>
         </div>
-
       </div>
 
-      <div class="bonos-code-row" style="margin-top:20px">
-        <button type="button"
-                class="btn-primary"
-                (click)="saveBannerConfig()"
-                [disabled]="bannerSaving">
+      <div class="bonos-code-row" style="margin-top: 20px">
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="saveBannerConfig()"
+          [disabled]="bannerSaving"
+        >
           {{ bannerSaving ? 'Guardando...' : 'Guardar banner' }}
         </button>
       </div>
     </section>
+  </ng-container>
 
+  <!-- ═══════════════════════════ CARTEL VENTANA ════════════════════════════ -->
+  <ng-container *ngIf="seccion === 'cartel'">
+    <section class="bonos-config">
+      <h3>Cartel de la ventana</h3>
+      <p style="margin-top: 0; color: #6b6b6b; font-size: 14px">
+        Controla lo que se muestra en la pantalla de la ventana del local
+        (<strong>/display/horizontal</strong>). Elige un estado y, si quieres, personaliza el título
+        y el mensaje. Los cambios aparecen en la pantalla en menos de un minuto.
+      </p>
+
+      <!-- Preview -->
+      <div class="cartel-admin-preview" [attr.data-tema]="cartelPreset.tema">
+        <span class="cartel-admin-preview__emoji">{{ cartelPreset.emoji }}</span>
+        <span class="cartel-admin-preview__title">{{ cartelPreviewTitulo }}</span>
+        <span class="cartel-admin-preview__msg">{{ cartelPreviewMensaje }}</span>
+      </div>
+    </section>
+
+    <section class="bonos-config">
+      <h3>Configuración del cartel</h3>
+
+      <p class="status error" *ngIf="cartelError">{{ cartelError }}</p>
+      <p class="status message" *ngIf="cartelMessage">{{ cartelMessage }}</p>
+
+      <div class="modal-form">
+        <!-- Estado -->
+        <div>
+          <p style="font-size: 13px; font-weight: 600; margin-bottom: 8px">Estado</p>
+          <div class="banner-color-options">
+            <label *ngFor="let e of cartelEstados" class="banner-color-option">
+              <input
+                type="radio"
+                name="cartelEstado"
+                [value]="e.id"
+                [checked]="cartelConfig.estado === e.id"
+                (change)="setCartelEstado(e.id)"
+              />
+              {{ e.emoji }} {{ e.label }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Título personalizado -->
+        <label>
+          Título (opcional)
+          <input
+            type="text"
+            [(ngModel)]="cartelConfig.titulo"
+            [placeholder]="cartelPreset.titulo"
+          />
+        </label>
+
+        <!-- Mensaje personalizado -->
+        <label>
+          Mensaje (opcional)
+          <input
+            type="text"
+            [(ngModel)]="cartelConfig.mensaje"
+            [placeholder]="cartelPreset.mensaje"
+          />
+        </label>
+
+        <p style="font-size: 12px; color: #8a8a8a; margin: 0">
+          Deja el título o el mensaje en blanco para usar el texto por defecto del estado elegido.
+        </p>
+      </div>
+
+      <div class="bonos-code-row" style="margin-top: 20px">
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="saveCartelConfig()"
+          [disabled]="cartelSaving"
+        >
+          {{ cartelSaving ? 'Guardando...' : 'Guardar cartel' }}
+        </button>
+      </div>
+    </section>
   </ng-container>
 
   <!-- ══════════════════════════════ NEWSLETTER ════════════════════════════ -->
   <ng-container *ngIf="seccion === 'newsletter'">
-
     <p class="status error" *ngIf="newsletterError">{{ newsletterError }}</p>
     <p class="status" *ngIf="newsletterLoading && !suscriptores.length">Cargando suscriptores...</p>
 
     <!-- Feedback de envío -->
-    <p class="status message" *ngIf="nlToast && nlToast.tipo === 'exito'" role="status" aria-live="polite">✅ {{ nlToast.texto }}</p>
-    <p class="status nl-warn" *ngIf="nlToast && nlToast.tipo === 'parcial'" role="status" aria-live="polite">⚠️ {{ nlToast.texto }}</p>
-    <p class="status error" *ngIf="nlToast && nlToast.tipo === 'error'" role="status" aria-live="polite">❌ {{ nlToast.texto }}</p>
+    <p
+      class="status message"
+      *ngIf="nlToast && nlToast.tipo === 'exito'"
+      role="status"
+      aria-live="polite"
+    >
+      ✅ {{ nlToast.texto }}
+    </p>
+    <p
+      class="status nl-warn"
+      *ngIf="nlToast && nlToast.tipo === 'parcial'"
+      role="status"
+      aria-live="polite"
+    >
+      ⚠️ {{ nlToast.texto }}
+    </p>
+    <p
+      class="status error"
+      *ngIf="nlToast && nlToast.tipo === 'error'"
+      role="status"
+      aria-live="polite"
+    >
+      ❌ {{ nlToast.texto }}
+    </p>
 
     <!-- 1 — Estadísticas -->
-    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 20px;" *ngIf="!newsletterLoading">
-      <article class="stat-card"><p>Total suscriptores</p><strong>{{ newsletterStats.total }}</strong></article>
-      <article class="stat-card"><p>Activos</p><strong>{{ newsletterStats.activos }}</strong></article>
-      <article class="stat-card"><p>Dados de baja</p><strong>{{ newsletterStats.bajas }}</strong></article>
+    <div
+      class="stats-grid"
+      style="grid-template-columns: repeat(3, 1fr); margin-top: 20px"
+      *ngIf="!newsletterLoading"
+    >
+      <article class="stat-card">
+        <p>Total suscriptores</p>
+        <strong>{{ newsletterStats.total }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Activos</p>
+        <strong>{{ newsletterStats.activos }}</strong>
+      </article>
+      <article class="stat-card">
+        <p>Dados de baja</p>
+        <strong>{{ newsletterStats.bajas }}</strong>
+      </article>
     </div>
 
     <!-- 2 — Editor de envío -->
     <section class="bonos-config" *ngIf="!newsletterLoading">
-      <div class="bonos-code-row" style="justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+      <div
+        class="bonos-code-row"
+        style="justify-content: space-between; align-items: flex-start; flex-wrap: wrap"
+      >
         <div>
           <h3>Enviar newsletter</h3>
           <p>Se enviará a todos los suscriptores activos</p>
         </div>
-        <span class="nl-origen-badge" style="border-radius: 999px; padding: 6px 14px; font-size: 13px; align-self: flex-start;">
+        <span
+          class="nl-origen-badge"
+          style="border-radius: 999px; padding: 6px 14px; font-size: 13px; align-self: flex-start"
+        >
           📧 {{ nlEmailsActivos.length }} suscriptores activos
         </span>
       </div>
@@ -596,7 +982,13 @@
           class="btn-primary"
           [disabled]="!nlPuedeEnviar || nlEmailsActivos.length === 0"
           (click)="confirmarEnvioNewsletter()"
-          style="min-width: 180px; min-height: 44px; display: flex; align-items: center; justify-content: center;"
+          style="
+            min-width: 180px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
         >
           <span *ngIf="!nlEnviando">Enviar newsletter →</span>
           <span *ngIf="nlEnviando" class="nl-admin-spinner"></span>
@@ -607,11 +999,36 @@
     <!-- 3 — Filtros + Tabla -->
     <div class="toolbar">
       <div class="tabs" role="tablist" aria-label="Filtro newsletter">
-        <button type="button" [class.active]="filtroNewsletter === 'todos'" (click)="filtroNewsletter = 'todos'">Todos</button>
-        <button type="button" [class.active]="filtroNewsletter === 'activos'" (click)="filtroNewsletter = 'activos'">Activos</button>
-        <button type="button" [class.active]="filtroNewsletter === 'bajas'" (click)="filtroNewsletter = 'bajas'">Dados de baja</button>
+        <button
+          type="button"
+          [class.active]="filtroNewsletter === 'todos'"
+          (click)="filtroNewsletter = 'todos'"
+        >
+          Todos
+        </button>
+        <button
+          type="button"
+          [class.active]="filtroNewsletter === 'activos'"
+          (click)="filtroNewsletter = 'activos'"
+        >
+          Activos
+        </button>
+        <button
+          type="button"
+          [class.active]="filtroNewsletter === 'bajas'"
+          (click)="filtroNewsletter = 'bajas'"
+        >
+          Dados de baja
+        </button>
       </div>
-      <button type="button" class="btn-primary" (click)="exportarNewsletterCSV()" [disabled]="newsletterLoading">Exportar CSV</button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="exportarNewsletterCSV()"
+        [disabled]="newsletterLoading"
+      >
+        Exportar CSV
+      </button>
     </div>
 
     <div class="table-wrap" *ngIf="suscriptoresFiltrados.length">
@@ -628,11 +1045,18 @@
         <tbody>
           <tr *ngFor="let s of suscriptoresFiltrados">
             <td data-label="Email">{{ s.email }}</td>
-            <td data-label="Origen"><span class="nl-origen-badge">{{ s.origen }}</span></td>
-            <td data-label="Fecha">{{ s.created_at | date:'dd/MM/yyyy' }}</td>
+            <td data-label="Origen">
+              <span class="nl-origen-badge">{{ s.origen }}</span>
+            </td>
+            <td data-label="Fecha">{{ s.created_at | date: 'dd/MM/yyyy' }}</td>
             <td data-label="Activo">
               <label class="switch">
-                <input type="checkbox" [checked]="s.activo" (change)="toggleSuscriptorActivo(s, $event)" [disabled]="!!deletingNlId" />
+                <input
+                  type="checkbox"
+                  [checked]="s.activo"
+                  (change)="toggleSuscriptorActivo(s, $event)"
+                  [disabled]="!!deletingNlId"
+                />
                 <span></span>
               </label>
             </td>
@@ -642,18 +1066,22 @@
                 class="btn-danger"
                 (click)="eliminarSuscriptor(s)"
                 [disabled]="!!deletingNlId"
-              >{{ deletingNlId === s.id ? 'Eliminando...' : 'Eliminar' }}</button>
+              >
+                {{ deletingNlId === s.id ? 'Eliminando...' : 'Eliminar' }}
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <p class="status" *ngIf="!newsletterLoading && !suscriptoresFiltrados.length && !newsletterError">
+    <p
+      class="status"
+      *ngIf="!newsletterLoading && !suscriptoresFiltrados.length && !newsletterError"
+    >
       No hay suscriptores en este filtro.
     </p>
   </ng-container>
-
 </section>
 
 <!-- ═══════════════ Modal tarifas ════════════════ -->
@@ -685,21 +1113,37 @@
       <div class="horarios-editor" *ngIf="isPilatesSelected">
         <div class="horarios-editor__header">
           <span class="horarios-editor__label">Horarios</span>
-          <button type="button" class="btn-ghost btn-sm" (click)="adminNuevaFranjaActiva = true"
-                  *ngIf="!adminNuevaFranjaActiva">
+          <button
+            type="button"
+            class="btn-ghost btn-sm"
+            (click)="adminNuevaFranjaActiva = true"
+            *ngIf="!adminNuevaFranjaActiva"
+          >
             + Añadir horario
           </button>
         </div>
 
         <div class="horarios-lista" *ngIf="adminHorarios.length">
-          <div class="horario-item" *ngFor="let franja of adminHorarios; let i = index; trackBy: trackByIndex">
+          <div
+            class="horario-item"
+            *ngFor="let franja of adminHorarios; let i = index; trackBy: trackByIndex"
+          >
             <span class="horario-item__dias">{{ franja.dias.join(' ') }}</span>
             <span class="horario-item__hora">{{ franja.inicio }} – {{ franja.fin }}</span>
-            <button type="button" class="btn-danger btn-xs" (click)="eliminarAdminFranja(i)" aria-label="Eliminar franja">×</button>
+            <button
+              type="button"
+              class="btn-danger btn-xs"
+              (click)="eliminarAdminFranja(i)"
+              aria-label="Eliminar franja"
+            >
+              ×
+            </button>
           </div>
         </div>
 
-        <p class="horarios-empty" *ngIf="!adminHorarios.length && !adminNuevaFranjaActiva">Sin horarios añadidos</p>
+        <p class="horarios-empty" *ngIf="!adminHorarios.length && !adminNuevaFranjaActiva">
+          Sin horarios añadidos
+        </p>
 
         <div class="horario-nueva-franja" *ngIf="adminNuevaFranjaActiva">
           <div class="dias-toggles">
@@ -708,24 +1152,41 @@
               class="dia-toggle"
               *ngFor="let dia of diasSemana"
               [class.dia-toggle--activo]="adminNuevaFranjaDias.includes(dia)"
-              (click)="toggleAdminDia(dia)">
+              (click)="toggleAdminDia(dia)"
+            >
               {{ dia }}
             </button>
           </div>
-          <div class="grid-two" style="margin-top:10px">
+          <div class="grid-two" style="margin-top: 10px">
             <label>
               Inicio
-              <input type="time" [value]="adminNuevaFranjaInicio" (change)="onNuevaFranjaInicioChange($event)" />
+              <input
+                type="time"
+                [value]="adminNuevaFranjaInicio"
+                (change)="onNuevaFranjaInicioChange($event)"
+              />
             </label>
             <label>
               Fin
-              <input type="time" [value]="adminNuevaFranjaFin" (change)="onNuevaFranjaFinChange($event)" />
+              <input
+                type="time"
+                [value]="adminNuevaFranjaFin"
+                (change)="onNuevaFranjaFinChange($event)"
+              />
             </label>
           </div>
           <div class="horario-nueva-franja__actions">
-            <button type="button" class="btn-ghost btn-sm" (click)="adminNuevaFranjaActiva = false">Cancelar</button>
-            <button type="button" class="btn-primary btn-sm" (click)="confirmarNuevaFranja()"
-                    [disabled]="!adminNuevaFranjaDias.length || !adminNuevaFranjaInicio || !adminNuevaFranjaFin">
+            <button type="button" class="btn-ghost btn-sm" (click)="adminNuevaFranjaActiva = false">
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn-primary btn-sm"
+              (click)="confirmarNuevaFranja()"
+              [disabled]="
+                !adminNuevaFranjaDias.length || !adminNuevaFranjaInicio || !adminNuevaFranjaFin
+              "
+            >
               Añadir franja
             </button>
           </div>
@@ -765,8 +1226,12 @@
       </label>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="saving">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+        <button type="button" class="btn-ghost" (click)="closeModal()" [disabled]="saving">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="saving">
+          {{ saving ? 'Guardando...' : 'Guardar' }}
+        </button>
       </div>
     </form>
   </section>
@@ -799,8 +1264,12 @@
       </label>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeFaqModal()" [disabled]="faqSaving">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="faqSaving">{{ faqSaving ? 'Guardando...' : 'Guardar' }}</button>
+        <button type="button" class="btn-ghost" (click)="closeFaqModal()" [disabled]="faqSaving">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="faqSaving">
+          {{ faqSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
       </div>
     </form>
   </section>
@@ -812,7 +1281,6 @@
     <h2>{{ editingPost ? 'Editar post' : 'Nuevo post' }}</h2>
 
     <form [formGroup]="blogForm" (ngSubmit)="saveBlogPost()" class="modal-form">
-
       <!-- Metadatos -->
       <label>
         Título
@@ -842,7 +1310,9 @@
           Slug (URL)
           <div class="slug-row">
             <input type="text" formControlName="slug" placeholder="auto" />
-            <button type="button" class="btn-ghost btn-sm" (click)="autoFillSlug()">← Del título</button>
+            <button type="button" class="btn-ghost btn-sm" (click)="autoFillSlug()">
+              ← Del título
+            </button>
           </div>
         </label>
       </div>
@@ -863,22 +1333,58 @@
         <p class="block-section-title">Contenido</p>
 
         <div class="block-toolbar">
-          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('subtitulo')">+ Subtítulo</button>
-          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('parrafo')">+ Párrafo</button>
-          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('lista')">+ Lista</button>
-          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('cta')">+ CTA</button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('subtitulo')">
+            + Subtítulo
+          </button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('parrafo')">
+            + Párrafo
+          </button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('lista')">
+            + Lista
+          </button>
+          <button type="button" class="btn-ghost btn-sm" (click)="addBlogBlock('cta')">
+            + CTA
+          </button>
         </div>
 
-        <p class="block-empty" *ngIf="!blogBlocks.length">Sin bloques. Añade contenido con los botones de arriba.</p>
+        <p class="block-empty" *ngIf="!blogBlocks.length">
+          Sin bloques. Añade contenido con los botones de arriba.
+        </p>
 
         <div class="block-editor">
-          <div class="block-row" *ngFor="let block of blogBlocks; let i = index; trackBy: trackByIndex">
+          <div
+            class="block-row"
+            *ngFor="let block of blogBlocks; let i = index; trackBy: trackByIndex"
+          >
             <div class="block-header">
               <span class="block-type-label">{{ blockTypeLabels[block.tipo] }}</span>
               <div class="block-controls">
-                <button type="button" class="btn-ghost btn-xs" (click)="moveBlogBlockUp(i)" [disabled]="i === 0" title="Subir">↑</button>
-                <button type="button" class="btn-ghost btn-xs" (click)="moveBlogBlockDown(i)" [disabled]="i === blogBlocks.length - 1" title="Bajar">↓</button>
-                <button type="button" class="btn-danger btn-xs" (click)="removeBlogBlock(i)" title="Eliminar bloque">×</button>
+                <button
+                  type="button"
+                  class="btn-ghost btn-xs"
+                  (click)="moveBlogBlockUp(i)"
+                  [disabled]="i === 0"
+                  title="Subir"
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  class="btn-ghost btn-xs"
+                  (click)="moveBlogBlockDown(i)"
+                  [disabled]="i === blogBlocks.length - 1"
+                  title="Bajar"
+                >
+                  ↓
+                </button>
+                <button
+                  type="button"
+                  class="btn-danger btn-xs"
+                  (click)="removeBlogBlock(i)"
+                  title="Eliminar bloque"
+                >
+                  ×
+                </button>
               </div>
             </div>
 
@@ -892,7 +1398,10 @@
 
             <!-- Bloque lista -->
             <div *ngIf="block.tipo === 'lista'" class="list-items">
-              <div class="list-item-row" *ngFor="let item of block.items; let j = index; trackBy: trackByIndex">
+              <div
+                class="list-item-row"
+                *ngFor="let item of block.items; let j = index; trackBy: trackByIndex"
+              >
                 <input
                   type="text"
                   [value]="item"
@@ -905,45 +1414,84 @@
                   (click)="removeListItem(i, j)"
                   [disabled]="(block.items?.length ?? 0) <= 1"
                   title="Eliminar ítem"
-                >×</button>
+                >
+                  ×
+                </button>
               </div>
-              <button type="button" class="btn-ghost btn-sm" (click)="addListItem(i)">+ Añadir ítem</button>
+              <button type="button" class="btn-ghost btn-sm" (click)="addListItem(i)">
+                + Añadir ítem
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeBlogModal()" [disabled]="blogSaving">Cancelar</button>
-        <button type="submit" class="btn-primary" [disabled]="blogSaving">{{ blogSaving ? 'Guardando...' : 'Guardar' }}</button>
+        <button type="button" class="btn-ghost" (click)="closeBlogModal()" [disabled]="blogSaving">
+          Cancelar
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="blogSaving">
+          {{ blogSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
       </div>
     </form>
   </section>
 </div>
 
 <!-- ══════════════ Modal evento ════════════════ -->
-<div class="modal-overlay modal-overlay--evento" *ngIf="isEventoModalOpen" (click)="closeEventoModal()">
-  <section class="modal-card modal-card--wide modal-card--evento event-modal" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+<div
+  class="modal-overlay modal-overlay--evento"
+  *ngIf="isEventoModalOpen"
+  (click)="closeEventoModal()"
+>
+  <section
+    class="modal-card modal-card--wide modal-card--evento event-modal"
+    (click)="$event.stopPropagation()"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="event-modal-title"
+  >
     <div class="event-modal__header">
-      <h2 id="event-modal-title" class="modal-title">{{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}</h2>
-      <button type="button" class="btn-ghost btn-sm event-modal__close" (click)="closeEventoModal()" aria-label="Cerrar modal">Cerrar</button>
+      <h2 id="event-modal-title" class="modal-title">
+        {{ editingEvento ? 'Editar evento' : 'Nuevo evento' }}
+      </h2>
+      <button
+        type="button"
+        class="btn-ghost btn-sm event-modal__close"
+        (click)="closeEventoModal()"
+        aria-label="Cerrar modal"
+      >
+        Cerrar
+      </button>
     </div>
 
-    <form id="evento-modal-form" [formGroup]="eventoForm" (ngSubmit)="saveEvento()" class="modal-form modal-form--evento">
+    <form
+      id="evento-modal-form"
+      [formGroup]="eventoForm"
+      (ngSubmit)="saveEvento()"
+      class="modal-form modal-form--evento"
+    >
       <div class="event-modal__body">
         <!-- Título + slug -->
         <div class="slug-row full-width">
-          <label style="flex:1">
+          <label style="flex: 1">
             Título *
             <input type="text" formControlName="title" placeholder="Pilates terapéutico" />
           </label>
         </div>
         <div class="slug-row full-width">
-          <label style="flex:1">
+          <label style="flex: 1">
             Slug (URL)
             <input type="text" formControlName="slug" placeholder="pilates-terapeutico" />
           </label>
-          <button type="button" class="btn-ghost btn-sm" (click)="generateEventoSlug()" style="margin-top:22px">Auto</button>
+          <button
+            type="button"
+            class="btn-ghost btn-sm"
+            (click)="generateEventoSlug()"
+            style="margin-top: 22px"
+          >
+            Auto
+          </button>
         </div>
 
         <!-- Descripción corta -->
@@ -954,7 +1502,9 @@
             formControlName="short_description"
             placeholder="Mejora tu movilidad y reduce molestias desde la primera sesión."
           />
-          <small class="field-helper">Este texto se muestra en la home. Enfócalo en el beneficio para el paciente.</small>
+          <small class="field-helper"
+            >Este texto se muestra en la home. Enfócalo en el beneficio para el paciente.</small
+          >
         </label>
 
         <!-- Descripción larga -->
@@ -990,7 +1540,8 @@
         </div>
 
         <p class="field-notice" *ngIf="isEventoFreeSelected">
-          Este tipo de evento está pensado para primeras visitas. Evita crear demasiados seguidos para mantener exclusividad.
+          Este tipo de evento está pensado para primeras visitas. Evita crear demasiados seguidos
+          para mantener exclusividad.
         </p>
 
         <!-- Precio (solo pago) -->
@@ -1027,7 +1578,11 @@
         <div class="grid-two">
           <label>
             Ubicación
-            <input type="text" formControlName="location" placeholder="CBM Fisioterapia — Terrassa" />
+            <input
+              type="text"
+              formControlName="location"
+              placeholder="CBM Fisioterapia — Terrassa"
+            />
           </label>
           <label>
             Texto del botón CTA
@@ -1045,15 +1600,18 @@
         <label class="full-width">
           URL de imagen
           <input type="url" formControlName="image_url" placeholder="https://..." />
-          <small class="field-helper">Usa una imagen real del centro o sesión para aumentar confianza.</small>
+          <small class="field-helper"
+            >Usa una imagen real del centro o sesión para aumentar confianza.</small
+          >
         </label>
 
         <!-- Reglas para gratuitos -->
         <ng-container *ngIf="isEventoFreeSelected">
           <div class="block-section full-width">
             <p class="block-section-title">Restricciones para eventos gratuitos</p>
-            <p class="field-helper" style="margin:0">
-              Estas restricciones evitan que una misma persona reserve múltiples clases gratuitas. Recomendado para mantener la calidad del servicio.
+            <p class="field-helper" style="margin: 0">
+              Estas restricciones evitan que una misma persona reserve múltiples clases gratuitas.
+              Recomendado para mantener la calidad del servicio.
             </p>
             <div class="grid-two free-rules-grid">
               <label>
@@ -1094,17 +1652,34 @@
           </label>
           <label class="inline-check">
             <input type="checkbox" formControlName="is_new_clients_only" />
-            <span>Solo para nuevos pacientes (recomendado para eventos de primera experiencia)</span>
+            <span
+              >Solo para nuevos pacientes (recomendado para eventos de primera experiencia)</span
+            >
           </label>
         </div>
 
-        <p class="field-helper full-width" style="margin:0">Este evento será visible en la web para nuevos pacientes.</p>
+        <p class="field-helper full-width" style="margin: 0">
+          Este evento será visible en la web para nuevos pacientes.
+        </p>
 
-        <p class="status error full-width" *ngIf="eventosMessage && !eventosSaving" style="margin:0">{{ eventosMessage }}</p>
+        <p
+          class="status error full-width"
+          *ngIf="eventosMessage && !eventosSaving"
+          style="margin: 0"
+        >
+          {{ eventosMessage }}
+        </p>
       </div>
 
       <div class="modal-actions modal-footer full-width event-modal__footer">
-        <button type="button" class="btn-ghost" (click)="closeEventoModal()" [disabled]="eventosSaving">Cancelar</button>
+        <button
+          type="button"
+          class="btn-ghost"
+          (click)="closeEventoModal()"
+          [disabled]="eventosSaving"
+        >
+          Cancelar
+        </button>
         <button type="submit" class="btn-primary" [disabled]="eventosSaving">
           {{ eventosSaving ? 'Guardando...' : 'Guardar' }}
         </button>
@@ -1116,14 +1691,14 @@
 <!-- ══════════════ Modal registros ════════════════ -->
 <div class="modal-overlay" *ngIf="isRegistrosModalOpen" (click)="closeRegistrosModal()">
   <section class="modal-card modal-card--wide" (click)="$event.stopPropagation()">
-
     <div class="reg-modal-header">
       <div>
         <h2 class="reg-modal-title">Inscritos</h2>
         <p class="reg-modal-subtitle">{{ eventoRegistrosTitle }}</p>
       </div>
       <div class="reg-modal-counter" *ngIf="eventoRegistros.length">
-        {{ eventoRegistros.length }} {{ eventoRegistros.length === 1 ? 'inscripción' : 'inscripciones' }}
+        {{ eventoRegistros.length }}
+        {{ eventoRegistros.length === 1 ? 'inscripción' : 'inscripciones' }}
       </div>
     </div>
 
@@ -1131,7 +1706,11 @@
 
     <p class="status" *ngIf="registrosLoading">Cargando inscripciones...</p>
 
-    <div class="table-wrap" *ngIf="!registrosLoading && eventoRegistros.length" style="max-height:440px;overflow-y:auto">
+    <div
+      class="table-wrap"
+      *ngIf="!registrosLoading && eventoRegistros.length"
+      style="max-height: 440px; overflow-y: auto"
+    >
       <table class="reg-table">
         <thead>
           <tr>
@@ -1185,17 +1764,23 @@
                 class="reg-btn reg-btn--checkin"
                 (click)="checkInRegistro(reg)"
                 [disabled]="!!updatingRegistrationId"
-              >Check-in</button>
+              >
+                Check-in
+              </button>
               <span class="reg-checkedin" *ngIf="reg.checked_in_at">✓ Entró</span>
             </td>
 
             <!-- Fecha -->
-            <td class="reg-date" data-label="Fecha">{{ reg.created_at | date:'dd/MM/yy · HH:mm' }}</td>
+            <td class="reg-date" data-label="Fecha">
+              {{ reg.created_at | date: 'dd/MM/yy · HH:mm' }}
+            </td>
 
             <!-- Acciones de transición -->
             <td data-label="Acciones">
-              <div class="reg-actions" [class.reg-actions--busy]="updatingRegistrationId === reg.id">
-
+              <div
+                class="reg-actions"
+                [class.reg-actions--busy]="updatingRegistrationId === reg.id"
+              >
                 <!-- confirmed: cancelar -->
                 <ng-container *ngIf="reg.status === 'confirmed'">
                   <button
@@ -1204,7 +1789,9 @@
                     (click)="updateRegistroStatus(reg, 'cancelled')"
                     [disabled]="!!updatingRegistrationId"
                     title="Cancelar inscripción confirmada"
-                  >Cancelar</button>
+                  >
+                    Cancelar
+                  </button>
                 </ng-container>
 
                 <!-- rejected: confirmar (override admin) o cancelar -->
@@ -1215,7 +1802,9 @@
                     (click)="updateRegistroStatus(reg, 'confirmed')"
                     [disabled]="!!updatingRegistrationId"
                     title="Confirmar manualmente"
-                  >Confirmar</button>
+                  >
+                    Confirmar
+                  </button>
                 </ng-container>
 
                 <!-- cancelled: restaurar -->
@@ -1226,11 +1815,17 @@
                     (click)="updateRegistroStatus(reg, 'confirmed')"
                     [disabled]="!!updatingRegistrationId"
                     title="Restaurar inscripción"
-                  >Restaurar</button>
+                  >
+                    Restaurar
+                  </button>
                 </ng-container>
 
                 <!-- Spinner por fila -->
-                <span class="reg-spinner" *ngIf="updatingRegistrationId === reg.id" aria-label="Actualizando...">
+                <span
+                  class="reg-spinner"
+                  *ngIf="updatingRegistrationId === reg.id"
+                  aria-label="Actualizando..."
+                >
                   <span class="reg-spinner-dot"></span>
                   <span class="reg-spinner-dot"></span>
                   <span class="reg-spinner-dot"></span>
@@ -1242,7 +1837,9 @@
       </table>
     </div>
 
-    <p class="status" *ngIf="!registrosLoading && !eventoRegistros.length">No hay inscripciones todavía.</p>
+    <p class="status" *ngIf="!registrosLoading && !eventoRegistros.length">
+      No hay inscripciones todavía.
+    </p>
 
     <div class="modal-actions">
       <button type="button" class="btn-primary" (click)="closeRegistrosModal()">Cerrar</button>
@@ -1282,7 +1879,9 @@
           (click)="resetCheckin()"
           *ngIf="checkinResult || checkinError"
           title="Nueva búsqueda"
-        >↺</button>
+        >
+          ↺
+        </button>
       </div>
 
       <p class="checkin-error" *ngIf="checkinError && !checkinResult">{{ checkinError }}</p>
@@ -1290,24 +1889,37 @@
 
     <!-- Tarjeta de resultado -->
     <div class="checkin-card" *ngIf="checkinResult">
-
       <!-- Estado visual en cabecera -->
-      <div class="checkin-card-header"
-        [class.checkin-card-header--ok]="checkinResult.status === 'confirmed' && !checkinResult.checked_in_at"
+      <div
+        class="checkin-card-header"
+        [class.checkin-card-header--ok]="
+          checkinResult.status === 'confirmed' && !checkinResult.checked_in_at
+        "
         [class.checkin-card-header--done]="!!checkinResult.checked_in_at"
         [class.checkin-card-header--warn]="checkinResult.status !== 'confirmed'"
       >
         <span class="checkin-status-icon">
           <ng-container *ngIf="checkinResult.checked_in_at">✓</ng-container>
-          <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'">◎</ng-container>
+          <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'"
+            >◎</ng-container
+          >
           <ng-container *ngIf="checkinResult.status !== 'confirmed'">✕</ng-container>
         </span>
         <div>
           <p class="checkin-status-title">
-            <ng-container *ngIf="checkinResult.checked_in_at">Asistencia ya registrada</ng-container>
-            <ng-container *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'">Inscripción válida</ng-container>
-            <ng-container *ngIf="checkinResult.status === 'cancelled'">Inscripción cancelada</ng-container>
-            <ng-container *ngIf="checkinResult.status === 'rejected'">Inscripción rechazada</ng-container>
+            <ng-container *ngIf="checkinResult.checked_in_at"
+              >Asistencia ya registrada</ng-container
+            >
+            <ng-container
+              *ngIf="!checkinResult.checked_in_at && checkinResult.status === 'confirmed'"
+              >Inscripción válida</ng-container
+            >
+            <ng-container *ngIf="checkinResult.status === 'cancelled'"
+              >Inscripción cancelada</ng-container
+            >
+            <ng-container *ngIf="checkinResult.status === 'rejected'"
+              >Inscripción rechazada</ng-container
+            >
           </p>
           <p class="checkin-code-display">{{ checkinResult.access_code }}</p>
         </div>
@@ -1335,12 +1947,14 @@
             </div>
             <div class="checkin-data-item" *ngIf="ev.start_at">
               <span class="checkin-data-label">Fecha</span>
-              <span class="checkin-data-value">{{ ev.start_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+              <span class="checkin-data-value">{{ ev.start_at | date: 'dd/MM/yyyy · HH:mm' }}</span>
             </div>
           </ng-container>
           <div class="checkin-data-item" *ngIf="checkinResult.checked_in_at">
             <span class="checkin-data-label">Check-in</span>
-            <span class="checkin-data-value checkin-data-value--green">{{ checkinResult.checked_in_at | date:'dd/MM/yyyy · HH:mm' }}</span>
+            <span class="checkin-data-value checkin-data-value--green">{{
+              checkinResult.checked_in_at | date: 'dd/MM/yyyy · HH:mm'
+            }}</span>
           </div>
         </div>
 
@@ -1360,24 +1974,26 @@
             ✓ Asistencia confirmada
           </p>
 
-          <p class="checkin-blocked-msg"
-            *ngIf="checkinResult.status === 'cancelled' || checkinResult.status === 'rejected'">
-            No se puede registrar asistencia en una inscripción {{ registroStatusLabels[checkinResult.status] | lowercase }}.
+          <p
+            class="checkin-blocked-msg"
+            *ngIf="checkinResult.status === 'cancelled' || checkinResult.status === 'rejected'"
+          >
+            No se puede registrar asistencia en una inscripción
+            {{ registroStatusLabels[checkinResult.status] | lowercase }}.
           </p>
 
           <p class="checkin-error" *ngIf="checkinError">{{ checkinError }}</p>
         </div>
       </div>
-
     </div>
   </div>
 </ng-container>
 
 <!-- Modal confirmación envío newsletter -->
 <div class="modal-overlay" *ngIf="nlShowConfirm" (click)="cancelarEnvioNewsletter()">
-  <section class="modal-card" style="max-width: 420px;" (click)="$event.stopPropagation()">
+  <section class="modal-card" style="max-width: 420px" (click)="$event.stopPropagation()">
     <h2>¿Enviar newsletter?</h2>
-    <p style="margin: 8px 0 4px; font-size: 14px; color: #374151;">
+    <p style="margin: 8px 0 4px; font-size: 14px; color: #374151">
       Se enviará el email a <strong>{{ nlEmailsActivos.length }} suscriptores activos</strong>.
     </p>
     <p class="field-notice">📧 {{ nlAsunto }}</p>
@@ -1395,7 +2011,6 @@
   </div>
 </div>
 
-
 <div class="modal-overlay" *ngIf="isBonoModalOpen" (click)="closeBonoDetalle()">
   <section class="modal-card" (click)="$event.stopPropagation()" *ngIf="bonoDetalle">
     <h2>Detalle bono {{ bonoDetalle.codigo }}</h2>
@@ -1405,12 +2020,19 @@
     <p><strong>Teléfono:</strong> {{ bonoDetalle.telefono }}</p>
     <p><strong>Método:</strong> {{ bonoDetalle.metodo_pago }}</p>
     <p><strong>Estado:</strong> {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
-    <p *ngIf="bonoDetalle.mensaje_personal" class="bono-msg">"{{ bonoDetalle.mensaje_personal }}"</p>
-    <p><strong>Historial:</strong> Compra {{ bonoDetalle.fecha_compra | date:'dd/MM/yy HH:mm' }} · Estado actual {{ estadoBonoLabel(bonoDetalle.estado) }}</p>
+    <p *ngIf="bonoDetalle.mensaje_personal" class="bono-msg">
+      "{{ bonoDetalle.mensaje_personal }}"
+    </p>
+    <p>
+      <strong>Historial:</strong> Compra {{ bonoDetalle.fecha_compra | date: 'dd/MM/yy HH:mm' }} ·
+      Estado actual {{ estadoBonoLabel(bonoDetalle.estado) }}
+    </p>
     <div class="canjear-link-box">
       <p class="canjear-link-label"><strong>Link para canjear:</strong></p>
       <p class="canjear-link-url">https://cbmfisioterapia.com/canjear</p>
-      <p class="canjear-link-hint">Comparte este link junto al código: <strong>{{ bonoDetalle.codigo }}</strong></p>
+      <p class="canjear-link-hint">
+        Comparte este link junto al código: <strong>{{ bonoDetalle.codigo }}</strong>
+      </p>
       <button type="button" class="btn-copy" (click)="copiarLinkCanjear()">📋 Copiar link</button>
     </div>
     <div class="modal-actions">
@@ -1446,7 +2068,11 @@
 
       <label>
         Descripción (opcional)
-        <textarea rows="2" formControlName="descripcion" placeholder="Descripción breve..."></textarea>
+        <textarea
+          rows="2"
+          formControlName="descripcion"
+          placeholder="Descripción breve..."
+        ></textarea>
       </label>
 
       <div class="grid-two">
@@ -1477,9 +2103,13 @@
       </div>
 
       <div class="modal-actions">
-        <button type="button" class="btn-ghost" (click)="closeServicioRegaloModal()">Cancelar</button>
+        <button type="button" class="btn-ghost" (click)="closeServicioRegaloModal()">
+          Cancelar
+        </button>
         <button type="submit" class="btn-primary" [disabled]="serviciosRegaloSaving">
-          {{ serviciosRegaloSaving ? 'Guardando...' : (editingServicioRegalo ? 'Actualizar' : 'Crear') }}
+          {{
+            serviciosRegaloSaving ? 'Guardando...' : editingServicioRegalo ? 'Actualizar' : 'Crear'
+          }}
         </button>
       </div>
     </form>
@@ -1500,11 +2130,19 @@
 
 <!-- ═══════════════ Modal confirmación eliminar ════════════════ -->
 <div class="modal-overlay confirm-overlay" *ngIf="confirmOpen" (click)="onConfirmCancel()">
-  <section class="modal-card confirm-card" (click)="$event.stopPropagation()" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+  <section
+    class="modal-card confirm-card"
+    (click)="$event.stopPropagation()"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="confirm-title"
+  >
     <p id="confirm-title" class="confirm-message">¿Estás seguro de que quieres eliminar esto?</p>
     <div class="modal-actions confirm-actions">
       <button type="button" class="btn-ghost" (click)="onConfirmCancel()">Cancelar</button>
-      <button type="button" class="btn-danger confirm-btn-delete" (click)="onConfirmOk()">Eliminar</button>
+      <button type="button" class="btn-danger confirm-btn-delete" (click)="onConfirmOk()">
+        Eliminar
+      </button>
     </div>
   </section>
 </div>

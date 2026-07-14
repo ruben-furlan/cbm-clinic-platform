@@ -9,8 +9,65 @@ interface ConfiguracionRow {
   updated_at?: string;
 }
 
+export type CartelEstadoId = 'abierto' | 'timbre' | 'volvemos' | 'cerrado';
+
+export interface CartelEstadoPreset {
+  id: CartelEstadoId;
+  label: string;
+  emoji: string;
+  titulo: string;
+  mensaje: string;
+  tema: CartelEstadoId;
+}
+
+/**
+ * Estados predefinidos del cartel de la ventana (/display/horizontal).
+ * Fuente única compartida entre el panel de admin y la pantalla.
+ * El admin elige uno y, opcionalmente, sobrescribe título y mensaje con texto libre.
+ */
+export const CARTEL_DISPLAY_ESTADOS: CartelEstadoPreset[] = [
+  {
+    id: 'abierto',
+    label: 'Abierto',
+    emoji: '🟢',
+    titulo: '¡Estamos abiertos!',
+    mensaje: 'Entra, te atendemos con una sonrisa',
+    tema: 'abierto',
+  },
+  {
+    id: 'timbre',
+    label: 'Toca el timbre',
+    emoji: '🔔',
+    titulo: 'Toca el timbre',
+    mensaje: 'Estamos dentro atendiendo · Te abrimos enseguida',
+    tema: 'timbre',
+  },
+  {
+    id: 'volvemos',
+    label: 'Volvemos en 5 min',
+    emoji: '⏱️',
+    titulo: 'Volvemos en 5 minutos',
+    mensaje: 'Estamos aquí al lado · Espéranos un momentito',
+    tema: 'volvemos',
+  },
+  {
+    id: 'cerrado',
+    label: 'Cerrado por hoy',
+    emoji: '💤',
+    titulo: 'Cerrado por hoy',
+    mensaje: '¡Gracias por tu visita! Te esperamos mañana',
+    tema: 'cerrado',
+  },
+];
+
+export interface CartelDisplayConfig {
+  estado: CartelEstadoId;
+  titulo: string;
+  mensaje: string;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfiguracionService {
   async getConfiguracion(clave: string): Promise<string | null> {
@@ -29,9 +86,7 @@ export class ConfiguracionService {
 
   async updateConfiguracion(clave: string, valor: string): Promise<void> {
     const payload: Pick<ConfiguracionRow, 'clave' | 'valor'> = { clave, valor };
-    const { error } = await supabase
-      .from('configuracion')
-      .upsert(payload, { onConflict: 'clave' });
+    const { error } = await supabase.from('configuracion').upsert(payload, { onConflict: 'clave' });
 
     if (error) {
       throw error;
@@ -62,11 +117,13 @@ export class ConfiguracionService {
         'banner_anuncio_enlace_texto',
         'banner_anuncio_enlace_url',
         'banner_anuncio_color_fondo',
-        'banner_anuncio_color_texto'
+        'banner_anuncio_color_texto',
       ]);
 
     const cfg: Record<string, string> = {};
-    data?.forEach(item => { cfg[item.clave] = item.valor; });
+    data?.forEach((item) => {
+      cfg[item.clave] = item.valor;
+    });
 
     return {
       activo: cfg['banner_anuncio_activo'] === 'true',
@@ -75,7 +132,27 @@ export class ConfiguracionService {
       enlaceTexto: cfg['banner_anuncio_enlace_texto'] ?? '',
       enlaceUrl: cfg['banner_anuncio_enlace_url'] ?? '/',
       colorFondo: cfg['banner_anuncio_color_fondo'] ?? 'linear-gradient(135deg, #e879a8, #a78bfa)',
-      colorTexto: cfg['banner_anuncio_color_texto'] ?? '#ffffff'
+      colorTexto: cfg['banner_anuncio_color_texto'] ?? '#ffffff',
+    };
+  }
+
+  async getCartelDisplayConfig(): Promise<CartelDisplayConfig> {
+    const { data } = await supabase
+      .from('configuracion')
+      .select('clave, valor')
+      .in('clave', ['display_cartel_estado', 'display_cartel_titulo', 'display_cartel_mensaje']);
+
+    const cfg: Record<string, string> = {};
+    data?.forEach((item) => {
+      cfg[item.clave] = item.valor;
+    });
+
+    const estado = cfg['display_cartel_estado'] as CartelEstadoId;
+
+    return {
+      estado: CARTEL_DISPLAY_ESTADOS.some((e) => e.id === estado) ? estado : 'volvemos',
+      titulo: cfg['display_cartel_titulo'] ?? '',
+      mensaje: cfg['display_cartel_mensaje'] ?? '',
     };
   }
 }
