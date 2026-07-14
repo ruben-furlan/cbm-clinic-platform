@@ -2,9 +2,19 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { TarifasService, Tarifa, TarifaCategoria, HorarioFranja } from '../core/services/tarifas.service';
+import {
+  TarifasService,
+  Tarifa,
+  TarifaCategoria,
+  HorarioFranja,
+} from '../core/services/tarifas.service';
 import { FaqsService, Faq } from '../core/services/faqs.service';
-import { BlogService, BlogPost, BlogContentBlock, BlogContentBlockType } from '../core/services/blog.service';
+import {
+  BlogService,
+  BlogPost,
+  BlogContentBlock,
+  BlogContentBlockType,
+} from '../core/services/blog.service';
 import {
   EventsService,
   CbmEvent,
@@ -12,28 +22,52 @@ import {
   EventPricingType,
   EventStatus,
   EventRegistration,
-  RegistrationStatus
+  RegistrationStatus,
 } from '../core/services/events.service';
 import { supabase } from '../core/supabase.client';
 import { BonosRegaloService, BonoEstado, BonoRegalo } from '../core/services/bonos-regalo.service';
-import { ConfiguracionService } from '../core/services/configuracion.service';
-import { ServiciosRegaloService, ServicioRegalo, ServicioRegaloCategoria } from '../core/services/servicios-regalo.service';
+import {
+  CARTEL_DISPLAY_ESTADOS,
+  CartelEstadoId,
+  ConfiguracionService,
+} from '../core/services/configuracion.service';
+import {
+  ServiciosRegaloService,
+  ServicioRegalo,
+  ServicioRegaloCategoria,
+} from '../core/services/servicios-regalo.service';
 import { NewsletterService, NewsletterSuscriptor } from '../core/services/newsletter.service';
 import { SimpleEditorComponent } from '../shared/components/simple-editor/simple-editor.component';
 import { Step3CalendlyComponent } from '../features/booking-form/step3-calendly.component';
 import { BookingTreatmentService } from '../features/booking-form/booking-treatment.service';
 
 type FiltroCategoria = 'todas' | TarifaCategoria;
-type Seccion = 'tarifas' | 'faqs' | 'blog' | 'clases' | 'bonos' | 'checkin' | 'newsletter' | 'banner' | 'reservas';
+type Seccion =
+  | 'tarifas'
+  | 'faqs'
+  | 'blog'
+  | 'clases'
+  | 'bonos'
+  | 'checkin'
+  | 'newsletter'
+  | 'banner'
+  | 'reservas'
+  | 'cartel';
 type FiltroEventos = 'todos' | 'proximos' | 'gratis' | 'pago' | 'destacados' | 'completados';
 type FiltroNewsletter = 'todos' | 'activos' | 'bajas';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, SimpleEditorComponent, Step3CalendlyComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    SimpleEditorComponent,
+    Step3CalendlyComponent,
+  ],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.css'
+  styleUrl: './admin-dashboard.component.css',
 })
 export class AdminDashboardComponent implements OnInit {
   // ── Sección activa ────────────────────────────────────────────────────────
@@ -64,7 +98,7 @@ export class AdminDashboardComponent implements OnInit {
     { value: 'todas', label: 'Todas' },
     { value: 'fisioterapia', label: 'Fisioterapia' },
     { value: 'pilates', label: 'Pilates' },
-    { value: 'promocion', label: 'Bienestar' }
+    { value: 'promocion', label: 'Bienestar' },
   ];
 
   readonly tarifaForm;
@@ -100,10 +134,16 @@ export class AdminDashboardComponent implements OnInit {
     subtitulo: 'Subtítulo',
     parrafo: 'Párrafo',
     lista: 'Lista',
-    cta: 'CTA'
+    cta: 'CTA',
   };
 
-  readonly categoriasSugeridas = ['Dolor lumbar', 'Dolor cervical', 'Técnicas utilizadas', 'Pilates', 'Lesiones deportivas'];
+  readonly categoriasSugeridas = [
+    'Dolor lumbar',
+    'Dolor cervical',
+    'Técnicas utilizadas',
+    'Pilates',
+    'Lesiones deportivas',
+  ];
 
   // ── Clases / Eventos ──────────────────────────────────────────────────────
   eventos: CbmEvent[] = [];
@@ -133,7 +173,8 @@ export class AdminDashboardComponent implements OnInit {
   deletingNlId: string | null = null;
 
   // Editor de envío
-  @ViewChild('nlEditor') nlEditor?: import('../shared/components/simple-editor/simple-editor.component').SimpleEditorComponent;
+  @ViewChild('nlEditor')
+  nlEditor?: import('../shared/components/simple-editor/simple-editor.component').SimpleEditorComponent;
   nlAsunto = '';
   nlMensajeHtml = '';
   nlEnviando = false;
@@ -146,9 +187,11 @@ export class AdminDashboardComponent implements OnInit {
   checkinLoading = false;
   checkinUpdating = false;
   checkinError = '';
-  checkinResult: (EventRegistration & {
-    events: { title: string; start_at: string; location: string | null } | null
-  }) | null = null;
+  checkinResult:
+    | (EventRegistration & {
+        events: { title: string; start_at: string; location: string | null } | null;
+      })
+    | null = null;
 
   // ── Bonos regalo ─────────────────────────────────────────────────────────
   bonos: BonoRegalo[] = [];
@@ -170,7 +213,7 @@ export class AdminDashboardComponent implements OnInit {
     enlaceTexto: '',
     enlaceUrl: '',
     colorFondo: 'linear-gradient(135deg, #e879a8, #a78bfa)',
-    colorTexto: '#ffffff'
+    colorTexto: '#ffffff',
   };
   bannerColorFondoCustom = '';
   bannerUsaColorCustom = false;
@@ -180,9 +223,34 @@ export class AdminDashboardComponent implements OnInit {
 
   readonly bannerColoresPredefinidos = [
     { label: 'Rosa / Violeta', valor: 'linear-gradient(135deg, #e879a8, #a78bfa)' },
-    { label: 'Rosa sólido',    valor: '#c44b8e' },
-    { label: 'Violeta',        valor: '#7c3aed' }
+    { label: 'Rosa sólido', valor: '#c44b8e' },
+    { label: 'Violeta', valor: '#7c3aed' },
   ];
+
+  // ── Cartel de la ventana (/display/horizontal) ────────────────────────────
+  readonly cartelEstados = CARTEL_DISPLAY_ESTADOS;
+  cartelConfig = {
+    estado: 'volvemos' as CartelEstadoId,
+    titulo: '',
+    mensaje: '',
+  };
+  cartelSaving = false;
+  cartelMessage = '';
+  cartelError = '';
+
+  get cartelPreset() {
+    return (
+      this.cartelEstados.find((e) => e.id === this.cartelConfig.estado) ?? this.cartelEstados[0]
+    );
+  }
+
+  get cartelPreviewTitulo(): string {
+    return this.cartelConfig.titulo.trim() || this.cartelPreset.titulo;
+  }
+
+  get cartelPreviewMensaje(): string {
+    return this.cartelConfig.mensaje.trim() || this.cartelPreset.mensaje;
+  }
 
   // ── Reservas sin pago (admin) ─────────────────────────────────────────────
   readonly reservaCalendlyUrl =
@@ -204,8 +272,8 @@ export class AdminDashboardComponent implements OnInit {
 
   readonly registroStatusLabels: Record<string, string> = {
     confirmed: 'Confirmado',
-    rejected:  'Rechazado',
-    cancelled: 'Cancelado'
+    rejected: 'Rechazado',
+    cancelled: 'Cancelado',
   };
 
   readonly eventosFiltroTabs: { value: FiltroEventos; label: string }[] = [
@@ -214,7 +282,7 @@ export class AdminDashboardComponent implements OnInit {
     { value: 'gratis', label: 'Gratis' },
     { value: 'pago', label: 'De pago' },
     { value: 'destacados', label: 'Destacados' },
-    { value: 'completados', label: 'Completados' }
+    { value: 'completados', label: 'Completados' },
   ];
 
   readonly eventoCategoryLabels: Record<EventCategory, string> = {
@@ -222,14 +290,14 @@ export class AdminDashboardComponent implements OnInit {
     fisioterapia: 'Fisioterapia',
     taller: 'Taller',
     evento_especial: 'Evento especial',
-    otro: 'Otro'
+    otro: 'Otro',
   };
 
   readonly eventoStatusLabels: Record<EventStatus, string> = {
     active: 'Activo',
     completed: 'Completo',
     cancelled: 'Cancelado',
-    inactive: 'Inactivo'
+    inactive: 'Inactivo',
   };
   readonly ctaSuggestionsFree = ['Quiero probar', 'Reservar mi plaza', 'Quiero empezar'];
   readonly ctaSuggestionsPaid = ['Reservar sesión', 'Agendar cita'];
@@ -275,7 +343,7 @@ export class AdminDashboardComponent implements OnInit {
     private readonly bookingTreatmentService: BookingTreatmentService,
     private readonly router: Router,
     private readonly zone: NgZone,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
   ) {
     this.tarifaForm = this.fb.nonNullable.group({
       categoria: ['fisioterapia' as TarifaCategoria, Validators.required],
@@ -285,14 +353,14 @@ export class AdminDashboardComponent implements OnInit {
       unidad: ['€' as '€' | '€/mes', Validators.required],
       orden: [0, Validators.required],
       fecha_fin_promo: [''],
-      activo: [true]
+      activo: [true],
     });
 
     this.faqForm = this.fb.nonNullable.group({
       pregunta: ['', Validators.required],
       respuesta: ['', Validators.required],
       orden: [0, Validators.required],
-      activo: [true]
+      activo: [true],
     });
 
     this.blogForm = this.fb.nonNullable.group({
@@ -302,7 +370,7 @@ export class AdminDashboardComponent implements OnInit {
       destacado: [false],
       activo: [true],
       orden: [0, Validators.required],
-      slug: ['']
+      slug: [''],
     });
 
     this.eventoForm = this.fb.nonNullable.group({
@@ -327,7 +395,7 @@ export class AdminDashboardComponent implements OnInit {
       is_new_clients_only: [false],
       free_limit_per_person: [1, Validators.min(1)],
       free_cooldown_days: [30, Validators.min(0)],
-      status: ['active' as EventStatus]
+      status: ['active' as EventStatus],
     });
 
     this.servicioRegaloForm = this.fb.nonNullable.group({
@@ -338,7 +406,7 @@ export class AdminDashboardComponent implements OnInit {
       unidad: ['€'],
       categoria: ['fisioterapia' as ServicioRegaloCategoria, Validators.required],
       orden: [0, Validators.required],
-      activo: [true]
+      activo: [true],
     });
   }
 
@@ -369,12 +437,20 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   confirmarNuevaFranja(): void {
-    if (!this.adminNuevaFranjaDias.length || !this.adminNuevaFranjaInicio || !this.adminNuevaFranjaFin) {
+    if (
+      !this.adminNuevaFranjaDias.length ||
+      !this.adminNuevaFranjaInicio ||
+      !this.adminNuevaFranjaFin
+    ) {
       return;
     }
     this.adminHorarios = [
       ...this.adminHorarios,
-      { dias: [...this.adminNuevaFranjaDias], inicio: this.adminNuevaFranjaInicio, fin: this.adminNuevaFranjaFin }
+      {
+        dias: [...this.adminNuevaFranjaDias],
+        inicio: this.adminNuevaFranjaInicio,
+        fin: this.adminNuevaFranjaFin,
+      },
     ];
     this.adminNuevaFranjaDias = [];
     this.adminNuevaFranjaInicio = '';
@@ -405,7 +481,18 @@ export class AdminDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const { data } = await supabase.auth.getUser();
     this.userEmail = data.user?.email ?? '';
-    await Promise.all([this.loadTarifas(), this.loadFaqs(), this.loadBlogPosts(), this.loadEventos(), this.loadBonos(), this.loadBonosConfig(), this.loadServiciosRegalo(), this.loadNewsletter(), this.loadBannerConfig()]);
+    await Promise.all([
+      this.loadTarifas(),
+      this.loadFaqs(),
+      this.loadBlogPosts(),
+      this.loadEventos(),
+      this.loadBonos(),
+      this.loadBonosConfig(),
+      this.loadServiciosRegalo(),
+      this.loadNewsletter(),
+      this.loadBannerConfig(),
+      this.loadCartelConfig(),
+    ]);
   }
 
   setSeccion(seccion: Seccion): void {
@@ -432,7 +519,7 @@ export class AdminDashboardComponent implements OnInit {
     return order
       .map((categoria) => ({
         label: this.getCategoriaLabel(categoria),
-        tarifas: this.tarifas.filter((t) => t.categoria === categoria && t.activo)
+        tarifas: this.tarifas.filter((t) => t.categoria === categoria && t.activo),
       }))
       .filter((grupo) => grupo.tarifas.length > 0);
   }
@@ -451,7 +538,7 @@ export class AdminDashboardComponent implements OnInit {
     this.bookingTreatmentService.setSelectedTreatment({
       id: tarifa.id,
       nombre: tarifa.nombre,
-      precio: `${tarifa.precio}${tarifa.unidad}`
+      precio: `${tarifa.precio}${tarifa.unidad}`,
     });
     this.flushUiState();
 
@@ -468,7 +555,9 @@ export class AdminDashboardComponent implements OnInit {
   private withTimeout<T>(promise: Promise<T>): Promise<T> {
     return Promise.race([
       promise,
-      new Promise<T>((_, reject) => setTimeout(() => reject(new Error('timeout')), this.requestTimeoutMs))
+      new Promise<T>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), this.requestTimeoutMs),
+      ),
     ]);
   }
 
@@ -485,22 +574,32 @@ export class AdminDashboardComponent implements OnInit {
   private showMsg(
     section: 'tarifas' | 'faqs' | 'blog' | 'eventos' | 'registros',
     text: string,
-    ttl = 4000
+    ttl = 4000,
   ): void {
     switch (section) {
-      case 'tarifas':   this.message = text; break;
-      case 'faqs':      this.faqMessage = text; break;
-      case 'blog':      this.blogMessage = text; break;
-      case 'eventos':   this.eventosMessage = text; break;
-      case 'registros': this.registrosMessage = text; break;
+      case 'tarifas':
+        this.message = text;
+        break;
+      case 'faqs':
+        this.faqMessage = text;
+        break;
+      case 'blog':
+        this.blogMessage = text;
+        break;
+      case 'eventos':
+        this.eventosMessage = text;
+        break;
+      case 'registros':
+        this.registrosMessage = text;
+        break;
     }
     this.flushUiState();
     setTimeout(() => {
       this.zone.run(() => {
-        if (section === 'tarifas'   && this.message === text)         this.message = '';
-        if (section === 'faqs'      && this.faqMessage === text)      this.faqMessage = '';
-        if (section === 'blog'      && this.blogMessage === text)     this.blogMessage = '';
-        if (section === 'eventos'   && this.eventosMessage === text)  this.eventosMessage = '';
+        if (section === 'tarifas' && this.message === text) this.message = '';
+        if (section === 'faqs' && this.faqMessage === text) this.faqMessage = '';
+        if (section === 'blog' && this.blogMessage === text) this.blogMessage = '';
+        if (section === 'eventos' && this.eventosMessage === text) this.eventosMessage = '';
         if (section === 'registros' && this.registrosMessage === text) this.registrosMessage = '';
         this.flushUiState();
       });
@@ -516,7 +615,7 @@ export class AdminDashboardComponent implements OnInit {
   private async loadBannerConfig(): Promise<void> {
     try {
       this.bannerConfig = await this.configuracionService.getBannerAnuncioConfig();
-      const predefined = this.bannerColoresPredefinidos.map(c => c.valor);
+      const predefined = this.bannerColoresPredefinidos.map((c) => c.valor);
       if (!predefined.includes(this.bannerConfig.colorFondo)) {
         this.bannerColorFondoCustom = this.bannerConfig.colorFondo;
         this.bannerUsaColorCustom = true;
@@ -532,17 +631,24 @@ export class AdminDashboardComponent implements OnInit {
     this.bannerError = '';
     try {
       const claves: Array<[string, string]> = [
-        ['banner_anuncio_activo',       String(this.bannerConfig.activo)],
-        ['banner_anuncio_emoji',        this.bannerConfig.emoji],
-        ['banner_anuncio_texto',        this.bannerConfig.texto],
+        ['banner_anuncio_activo', String(this.bannerConfig.activo)],
+        ['banner_anuncio_emoji', this.bannerConfig.emoji],
+        ['banner_anuncio_texto', this.bannerConfig.texto],
         ['banner_anuncio_enlace_texto', this.bannerConfig.enlaceTexto],
-        ['banner_anuncio_enlace_url',   this.bannerConfig.enlaceUrl],
-        ['banner_anuncio_color_fondo',  this.bannerConfig.colorFondo],
-        ['banner_anuncio_color_texto',  this.bannerConfig.colorTexto]
+        ['banner_anuncio_enlace_url', this.bannerConfig.enlaceUrl],
+        ['banner_anuncio_color_fondo', this.bannerConfig.colorFondo],
+        ['banner_anuncio_color_texto', this.bannerConfig.colorTexto],
       ];
-      await Promise.all(claves.map(([clave, valor]) => this.configuracionService.updateConfiguracion(clave, valor)));
+      await Promise.all(
+        claves.map(([clave, valor]) => this.configuracionService.updateConfiguracion(clave, valor)),
+      );
       this.bannerMessage = 'Banner actualizado ✓';
-      setTimeout(() => { this.zone.run(() => { this.bannerMessage = ''; this.flushUiState(); }); }, 4000);
+      setTimeout(() => {
+        this.zone.run(() => {
+          this.bannerMessage = '';
+          this.flushUiState();
+        });
+      }, 4000);
     } catch {
       this.bannerError = 'Error al guardar el banner';
     } finally {
@@ -559,6 +665,49 @@ export class AdminDashboardComponent implements OnInit {
   setBannerColorFondoCustom(): void {
     this.bannerUsaColorCustom = true;
     this.bannerConfig = { ...this.bannerConfig, colorFondo: this.bannerColorFondoCustom };
+  }
+
+  // ── Cartel de la ventana (/display/horizontal) ────────────────────────────
+
+  private async loadCartelConfig(): Promise<void> {
+    try {
+      const cfg = await this.configuracionService.getCartelDisplayConfig();
+      this.cartelConfig = { estado: cfg.estado, titulo: cfg.titulo, mensaje: cfg.mensaje };
+    } catch {
+      // ignore — keeps defaults
+    }
+  }
+
+  setCartelEstado(estado: CartelEstadoId): void {
+    this.cartelConfig = { ...this.cartelConfig, estado };
+  }
+
+  async saveCartelConfig(): Promise<void> {
+    this.cartelSaving = true;
+    this.cartelMessage = '';
+    this.cartelError = '';
+    try {
+      const claves: Array<[string, string]> = [
+        ['display_cartel_estado', this.cartelConfig.estado],
+        ['display_cartel_titulo', this.cartelConfig.titulo.trim()],
+        ['display_cartel_mensaje', this.cartelConfig.mensaje.trim()],
+      ];
+      await Promise.all(
+        claves.map(([clave, valor]) => this.configuracionService.updateConfiguracion(clave, valor)),
+      );
+      this.cartelMessage = 'Cartel actualizado ✓';
+      setTimeout(() => {
+        this.zone.run(() => {
+          this.cartelMessage = '';
+          this.flushUiState();
+        });
+      }, 4000);
+    } catch {
+      this.cartelError = 'Error al guardar el cartel';
+    } finally {
+      this.cartelSaving = false;
+      this.flushUiState();
+    }
   }
 
   trackByIndex(index: number): number {
@@ -600,7 +749,9 @@ export class AdminDashboardComponent implements OnInit {
     const target = event.target as HTMLInputElement;
 
     try {
-      const updated = await this.withTimeout(this.tarifasService.toggleActivo(tarifa.id, target.checked));
+      const updated = await this.withTimeout(
+        this.tarifasService.toggleActivo(tarifa.id, target.checked),
+      );
       this.tarifas = this.tarifas.map((item) => (item.id === updated.id ? updated : item));
       this.message = 'Estado actualizado correctamente.';
     } catch {
@@ -621,7 +772,7 @@ export class AdminDashboardComponent implements OnInit {
       unidad: '€',
       orden: 0,
       fecha_fin_promo: '',
-      activo: true
+      activo: true,
     });
     this.adminHorarios = [];
     this.adminNuevaFranjaActiva = false;
@@ -642,9 +793,11 @@ export class AdminDashboardComponent implements OnInit {
       unidad: tarifa.unidad,
       orden: tarifa.orden,
       fecha_fin_promo: tarifa.fecha_fin_promo ?? '',
-      activo: tarifa.activo
+      activo: tarifa.activo,
     });
-    this.adminHorarios = Array.isArray(tarifa.horarios) ? tarifa.horarios.map((f) => ({ ...f, dias: [...f.dias] })) : [];
+    this.adminHorarios = Array.isArray(tarifa.horarios)
+      ? tarifa.horarios.map((f) => ({ ...f, dias: [...f.dias] }))
+      : [];
     this.adminNuevaFranjaActiva = false;
     this.adminNuevaFranjaDias = [];
     this.adminNuevaFranjaInicio = '';
@@ -681,13 +834,20 @@ export class AdminDashboardComponent implements OnInit {
       ...formValue,
       descripcion: formValue.descripcion.trim() ? formValue.descripcion.trim() : null,
       horarios: this.adminHorarios.length > 0 ? this.adminHorarios : null,
-      fecha_fin_promo: formValue.categoria === 'promocion' && formValue.fecha_fin_promo ? formValue.fecha_fin_promo : null
+      fecha_fin_promo:
+        formValue.categoria === 'promocion' && formValue.fecha_fin_promo
+          ? formValue.fecha_fin_promo
+          : null,
     };
 
     try {
       if (this.editingTarifa) {
-        const updated = await this.withTimeout(this.tarifasService.updateTarifa(this.editingTarifa.id, payload));
-        this.tarifas = this.sortTarifas(this.tarifas.map((item) => (item.id === updated.id ? updated : item)));
+        const updated = await this.withTimeout(
+          this.tarifasService.updateTarifa(this.editingTarifa.id, payload),
+        );
+        this.tarifas = this.sortTarifas(
+          this.tarifas.map((item) => (item.id === updated.id ? updated : item)),
+        );
         this.message = 'Tarifa actualizada correctamente.';
       } else {
         const created = await this.withTimeout(this.tarifasService.createTarifa(payload));
@@ -707,7 +867,7 @@ export class AdminDashboardComponent implements OnInit {
         unidad: '€',
         orden: 0,
         fecha_fin_promo: '',
-        activo: true
+        activo: true,
       });
       this.flushUiState();
     } catch {
@@ -759,7 +919,8 @@ export class AdminDashboardComponent implements OnInit {
       const data = await this.withTimeout(this.faqsService.getAllFaqs());
       this.faqs = [...data].sort((a, b) => a.orden - b.orden);
     } catch {
-      this.faqError = 'No se pudieron cargar las preguntas frecuentes. Recarga la página e inténtalo de nuevo.';
+      this.faqError =
+        'No se pudieron cargar las preguntas frecuentes. Recarga la página e inténtalo de nuevo.';
     } finally {
       this.faqLoading = false;
     }
@@ -793,7 +954,7 @@ export class AdminDashboardComponent implements OnInit {
       pregunta: faq.pregunta,
       respuesta: faq.respuesta,
       orden: faq.orden,
-      activo: faq.activo
+      activo: faq.activo,
     });
     this.faqMessage = '';
     this.isFaqModalOpen = true;
@@ -825,8 +986,12 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       if (this.editingFaq) {
-        const updated = await this.withTimeout(this.faqsService.updateFaq(this.editingFaq.id, payload));
-        this.faqs = [...this.faqs.map((item) => (item.id === updated.id ? updated : item))].sort((a, b) => a.orden - b.orden);
+        const updated = await this.withTimeout(
+          this.faqsService.updateFaq(this.editingFaq.id, payload),
+        );
+        this.faqs = [...this.faqs.map((item) => (item.id === updated.id ? updated : item))].sort(
+          (a, b) => a.orden - b.orden,
+        );
         this.faqMessage = 'Pregunta actualizada correctamente.';
       } else {
         const created = await this.withTimeout(this.faqsService.createFaq(payload));
@@ -854,7 +1019,9 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
 
-    const confirmed = window.confirm(`¿Seguro que quieres eliminar esta pregunta?\n\n"${faq.pregunta}"`);
+    const confirmed = window.confirm(
+      `¿Seguro que quieres eliminar esta pregunta?\n\n"${faq.pregunta}"`,
+    );
     if (!confirmed) {
       return;
     }
@@ -901,7 +1068,9 @@ export class AdminDashboardComponent implements OnInit {
     const target = event.target as HTMLInputElement;
 
     try {
-      const updated = await this.withTimeout(this.blogService.toggleActivo(post.id, target.checked));
+      const updated = await this.withTimeout(
+        this.blogService.toggleActivo(post.id, target.checked),
+      );
       this.blogPosts = this.blogPosts.map((p) => (p.id === updated.id ? updated : p));
       this.blogMessage = 'Estado actualizado correctamente.';
     } catch {
@@ -920,7 +1089,9 @@ export class AdminDashboardComponent implements OnInit {
       if (current) {
         try {
           await this.withTimeout(this.blogService.toggleDestacado(current.id, false));
-          this.blogPosts = this.blogPosts.map((p) => (p.id === current.id ? { ...p, destacado: false } : p));
+          this.blogPosts = this.blogPosts.map((p) =>
+            p.id === current.id ? { ...p, destacado: false } : p,
+          );
         } catch {
           target.checked = false;
           this.blogMessage = 'Error al actualizar el destacado.';
@@ -930,7 +1101,9 @@ export class AdminDashboardComponent implements OnInit {
     }
 
     try {
-      const updated = await this.withTimeout(this.blogService.toggleDestacado(post.id, target.checked));
+      const updated = await this.withTimeout(
+        this.blogService.toggleDestacado(post.id, target.checked),
+      );
       this.blogPosts = this.blogPosts.map((p) => (p.id === updated.id ? updated : p));
       this.blogMessage = 'Destacado actualizado.';
     } catch {
@@ -944,7 +1117,15 @@ export class AdminDashboardComponent implements OnInit {
   openBlogCreateModal(): void {
     this.editingPost = null;
     this.blogBlocks = [];
-    this.blogForm.reset({ titulo: '', categoria: '', resumen: '', destacado: false, activo: true, orden: 0, slug: '' });
+    this.blogForm.reset({
+      titulo: '',
+      categoria: '',
+      resumen: '',
+      destacado: false,
+      activo: true,
+      orden: 0,
+      slug: '',
+    });
     this.blogMessage = '';
     this.isBlogModalOpen = true;
   }
@@ -959,7 +1140,7 @@ export class AdminDashboardComponent implements OnInit {
       destacado: post.destacado,
       activo: post.activo,
       orden: post.orden,
-      slug: post.slug ?? ''
+      slug: post.slug ?? '',
     });
     this.blogMessage = '';
     this.isBlogModalOpen = true;
@@ -1071,7 +1252,7 @@ export class AdminDashboardComponent implements OnInit {
     const payload = {
       ...formValue,
       slug: formValue.slug.trim() || null,
-      contenido: this.blogBlocks
+      contenido: this.blogBlocks,
     };
 
     try {
@@ -1079,13 +1260,19 @@ export class AdminDashboardComponent implements OnInit {
         const current = this.blogPosts.find((p) => p.destacado && p.id !== this.editingPost?.id);
         if (current) {
           await this.withTimeout(this.blogService.toggleDestacado(current.id, false));
-          this.blogPosts = this.blogPosts.map((p) => (p.id === current.id ? { ...p, destacado: false } : p));
+          this.blogPosts = this.blogPosts.map((p) =>
+            p.id === current.id ? { ...p, destacado: false } : p,
+          );
         }
       }
 
       if (this.editingPost) {
-        const updated = await this.withTimeout(this.blogService.updatePost(this.editingPost.id, payload));
-        this.blogPosts = this.sortBlogPosts(this.blogPosts.map((p) => (p.id === updated.id ? updated : p)));
+        const updated = await this.withTimeout(
+          this.blogService.updatePost(this.editingPost.id, payload),
+        );
+        this.blogPosts = this.sortBlogPosts(
+          this.blogPosts.map((p) => (p.id === updated.id ? updated : p)),
+        );
         this.blogMessage = 'Post actualizado correctamente.';
       } else {
         const created = await this.withTimeout(this.blogService.createPost(payload));
@@ -1096,7 +1283,15 @@ export class AdminDashboardComponent implements OnInit {
       this.isBlogModalOpen = false;
       this.editingPost = null;
       this.blogBlocks = [];
-      this.blogForm.reset({ titulo: '', categoria: '', resumen: '', destacado: false, activo: true, orden: 0, slug: '' });
+      this.blogForm.reset({
+        titulo: '',
+        categoria: '',
+        resumen: '',
+        destacado: false,
+        activo: true,
+        orden: 0,
+        slug: '',
+      });
       this.flushUiState();
     } catch {
       this.blogMessage = 'No se pudo guardar el post.';
@@ -1147,12 +1342,18 @@ export class AdminDashboardComponent implements OnInit {
   get eventosFiltrados(): CbmEvent[] {
     const now = new Date().toISOString();
     switch (this.filtroEventos) {
-      case 'proximos': return this.eventos.filter((e) => e.start_at >= now);
-      case 'gratis': return this.eventos.filter((e) => e.pricing_type === 'free');
-      case 'pago': return this.eventos.filter((e) => e.pricing_type === 'paid');
-      case 'destacados': return this.eventos.filter((e) => e.highlight_on_home);
-      case 'completados': return this.eventos.filter((e) => e.status === 'completed');
-      default: return this.eventos;
+      case 'proximos':
+        return this.eventos.filter((e) => e.start_at >= now);
+      case 'gratis':
+        return this.eventos.filter((e) => e.pricing_type === 'free');
+      case 'pago':
+        return this.eventos.filter((e) => e.pricing_type === 'paid');
+      case 'destacados':
+        return this.eventos.filter((e) => e.highlight_on_home);
+      case 'completados':
+        return this.eventos.filter((e) => e.status === 'completed');
+      default:
+        return this.eventos;
     }
   }
 
@@ -1179,7 +1380,8 @@ export class AdminDashboardComponent implements OnInit {
     try {
       this.eventos = await this.withTimeout(this.eventsService.getEventsAdmin());
     } catch {
-      this.eventosError = 'No se pudieron cargar los eventos. Recarga la página e inténtalo de nuevo.';
+      this.eventosError =
+        'No se pudieron cargar los eventos. Recarga la página e inténtalo de nuevo.';
     } finally {
       this.eventosLoading = false;
     }
@@ -1189,7 +1391,9 @@ export class AdminDashboardComponent implements OnInit {
     const target = event.target as HTMLInputElement;
 
     try {
-      const updated = await this.withTimeout(this.eventsService.toggleActive(evento.id, target.checked));
+      const updated = await this.withTimeout(
+        this.eventsService.toggleActive(evento.id, target.checked),
+      );
       this.eventos = this.eventos.map((e) => (e.id === updated.id ? updated : e));
       this.eventosMessage = 'Estado actualizado correctamente.';
     } catch {
@@ -1205,7 +1409,7 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       const updated = await this.withTimeout(
-        this.eventsService.updateEvent(evento.id, { highlight_on_home: target.checked })
+        this.eventsService.updateEvent(evento.id, { highlight_on_home: target.checked }),
       );
       this.eventos = this.eventos.map((e) => (e.id === updated.id ? updated : e));
       this.eventosMessage = 'Destacado en home actualizado.';
@@ -1220,12 +1424,28 @@ export class AdminDashboardComponent implements OnInit {
   openEventoCreateModal(): void {
     this.editingEvento = null;
     this.eventoForm.reset({
-      title: '', slug: '', short_description: '', long_description: '',
-      category: 'pilates', pricing_type: 'free', price: null, currency: 'EUR',
-      start_at: '', end_at: '', duration_minutes: null, total_slots: 10,
-      image_url: '', location: '', cta_label: '', highlight_on_home: false,
-      is_active: true, is_visible: true, is_new_clients_only: false,
-      free_limit_per_person: 1, free_cooldown_days: 30, status: 'active'
+      title: '',
+      slug: '',
+      short_description: '',
+      long_description: '',
+      category: 'pilates',
+      pricing_type: 'free',
+      price: null,
+      currency: 'EUR',
+      start_at: '',
+      end_at: '',
+      duration_minutes: null,
+      total_slots: 10,
+      image_url: '',
+      location: '',
+      cta_label: '',
+      highlight_on_home: false,
+      is_active: true,
+      is_visible: true,
+      is_new_clients_only: false,
+      free_limit_per_person: 1,
+      free_cooldown_days: 30,
+      status: 'active',
     });
     this.eventosMessage = '';
     this.isEventoModalOpen = true;
@@ -1255,7 +1475,7 @@ export class AdminDashboardComponent implements OnInit {
       is_new_clients_only: evento.is_new_clients_only,
       free_limit_per_person: evento.free_limit_per_person,
       free_cooldown_days: evento.free_cooldown_days,
-      status: evento.status
+      status: evento.status,
     });
     this.eventosMessage = '';
     this.isEventoModalOpen = true;
@@ -1302,17 +1522,21 @@ export class AdminDashboardComponent implements OnInit {
       is_new_clients_only: v.is_new_clients_only,
       free_limit_per_person: v.pricing_type === 'free' ? v.free_limit_per_person : 1,
       free_cooldown_days: v.pricing_type === 'free' ? v.free_cooldown_days : 30,
-      status: v.status
+      status: v.status,
     };
 
     try {
       if (this.editingEvento) {
-        const updated = await this.withTimeout(this.eventsService.updateEvent(this.editingEvento.id, payload));
+        const updated = await this.withTimeout(
+          this.eventsService.updateEvent(this.editingEvento.id, payload),
+        );
         this.eventos = this.eventos.map((e) => (e.id === updated.id ? updated : e));
         this.eventosMessage = 'Evento actualizado correctamente.';
       } else {
         const created = await this.withTimeout(
-          this.eventsService.createEvent(payload as Parameters<typeof this.eventsService.createEvent>[0])
+          this.eventsService.createEvent(
+            payload as Parameters<typeof this.eventsService.createEvent>[0],
+          ),
         );
         this.eventos = [created, ...this.eventos];
         this.eventosMessage = 'Evento creado correctamente.';
@@ -1355,7 +1579,9 @@ export class AdminDashboardComponent implements OnInit {
   async deleteEvento(evento: CbmEvent): Promise<void> {
     if (this.eventosDeletingId) return;
 
-    const confirmed = window.confirm(`¿Seguro que quieres eliminar "${evento.title}"?\nEsta acción también eliminará todas las inscripciones asociadas.`);
+    const confirmed = window.confirm(
+      `¿Seguro que quieres eliminar "${evento.title}"?\nEsta acción también eliminará todas las inscripciones asociadas.`,
+    );
     if (!confirmed) return;
 
     this.eventosDeletingId = evento.id;
@@ -1384,7 +1610,7 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       this.eventoRegistros = await this.withTimeout(
-        this.eventsService.getRegistrationsByEvent(evento.id)
+        this.eventsService.getRegistrationsByEvent(evento.id),
       );
     } catch {
       this.eventosMessage = 'No se pudieron cargar las inscripciones.';
@@ -1410,18 +1636,21 @@ export class AdminDashboardComponent implements OnInit {
 
     // Actualización optimista
     this.eventoRegistros = this.eventoRegistros.map((r) =>
-      r.id === reg.id ? { ...r, status: newStatus as EventRegistration['status'] } : r
+      r.id === reg.id ? { ...r, status: newStatus as EventRegistration['status'] } : r,
     );
 
     try {
       await this.withTimeout(
-        this.eventsService.updateRegistrationStatus(reg.id, newStatus as EventRegistration['status'])
+        this.eventsService.updateRegistrationStatus(
+          reg.id,
+          newStatus as EventRegistration['status'],
+        ),
       );
       this.registrosMessage = `Estado actualizado a "${this.registroStatusLabels[newStatus]}".`;
     } catch {
       // Rollback
       this.eventoRegistros = this.eventoRegistros.map((r) =>
-        r.id === reg.id ? { ...r, status: previousStatus } : r
+        r.id === reg.id ? { ...r, status: previousStatus } : r,
       );
       this.registrosMessage = 'No se pudo actualizar el estado. Inténtalo de nuevo.';
     } finally {
@@ -1438,7 +1667,7 @@ export class AdminDashboardComponent implements OnInit {
 
     // Optimistic update
     this.eventoRegistros = this.eventoRegistros.map((r) =>
-      r.id === reg.id ? { ...r, checked_in_at: new Date().toISOString() } : r
+      r.id === reg.id ? { ...r, checked_in_at: new Date().toISOString() } : r,
     );
 
     try {
@@ -1447,7 +1676,7 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       // Rollback
       this.eventoRegistros = this.eventoRegistros.map((r) =>
-        r.id === reg.id ? { ...r, checked_in_at: null } : r
+        r.id === reg.id ? { ...r, checked_in_at: null } : r,
       );
       this.registrosMessage = 'No se pudo registrar el check-in. Inténtalo de nuevo.';
     } finally {
@@ -1464,7 +1693,7 @@ export class AdminDashboardComponent implements OnInit {
 
     try {
       const result = await this.withTimeout(
-        this.eventsService.findRegistrationByCode(this.checkinCode)
+        this.eventsService.findRegistrationByCode(this.checkinCode),
       );
       if (!result) {
         this.checkinError = 'No hemos encontrado ninguna inscripción con ese código.';
@@ -1474,7 +1703,10 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       this.checkinError = 'Error al buscar. Inténtalo de nuevo.';
     } finally {
-      this.zone.run(() => { this.checkinLoading = false; this.flushUiState(); });
+      this.zone.run(() => {
+        this.checkinLoading = false;
+        this.flushUiState();
+      });
     }
   }
 
@@ -1488,7 +1720,10 @@ export class AdminDashboardComponent implements OnInit {
     } catch {
       this.checkinError = 'No se pudo registrar la asistencia. Inténtalo de nuevo.';
     } finally {
-      this.zone.run(() => { this.checkinUpdating = false; this.flushUiState(); });
+      this.zone.run(() => {
+        this.checkinUpdating = false;
+        this.flushUiState();
+      });
     }
   }
 
@@ -1497,8 +1732,6 @@ export class AdminDashboardComponent implements OnInit {
     this.checkinResult = null;
     this.checkinError = '';
   }
-
-
 
   get bonosFiltrados(): BonoRegalo[] {
     if (this.filtroBonos === 'todos') {
@@ -1513,7 +1746,7 @@ export class AdminDashboardComponent implements OnInit {
       total: this.bonos.length,
       pendientes: this.bonos.filter((b) => b.estado === 'pendiente_pago').length,
       pagados: this.bonos.filter((b) => b.estado === 'pagado').length,
-      canjeados: this.bonos.filter((b) => b.estado === 'canjeado').length
+      canjeados: this.bonos.filter((b) => b.estado === 'canjeado').length,
     };
   }
 
@@ -1522,7 +1755,7 @@ export class AdminDashboardComponent implements OnInit {
       pendiente_pago: 'Pendiente pago',
       pagado: 'Pagado',
       enviado: 'Enviado',
-      canjeado: 'Canjeado'
+      canjeado: 'Canjeado',
     };
 
     return map[estado];
@@ -1541,7 +1774,12 @@ export class AdminDashboardComponent implements OnInit {
     const valor = target.checked;
 
     try {
-      await this.withTimeout(this.configuracionService.updateConfiguracion('bonos_regalo_activo', valor ? 'true' : 'false'));
+      await this.withTimeout(
+        this.configuracionService.updateConfiguracion(
+          'bonos_regalo_activo',
+          valor ? 'true' : 'false',
+        ),
+      );
       this.bonosActivosWeb = valor;
       this.showMsg('eventos', 'Configuración de bonos actualizada.');
     } catch {
@@ -1569,7 +1807,7 @@ export class AdminDashboardComponent implements OnInit {
     const estadoAnterior = bono.estado;
 
     // Actualización optimista para evitar que Angular CD revierta el select visualmente
-    this.bonos = this.bonos.map((item) => item.id === bono.id ? { ...item, estado } : item);
+    this.bonos = this.bonos.map((item) => (item.id === bono.id ? { ...item, estado } : item));
     this.flushUiState();
 
     try {
@@ -1579,10 +1817,21 @@ export class AdminDashboardComponent implements OnInit {
         this.bonosMessage = 'Estado actualizado';
         this.flushUiState();
       });
-      setTimeout(() => this.zone.run(() => { if (this.bonosMessage === 'Estado actualizado') { this.bonosMessage = ''; this.flushUiState(); } }), 3000);
+      setTimeout(
+        () =>
+          this.zone.run(() => {
+            if (this.bonosMessage === 'Estado actualizado') {
+              this.bonosMessage = '';
+              this.flushUiState();
+            }
+          }),
+        3000,
+      );
     } catch {
       this.zone.run(() => {
-        this.bonos = this.bonos.map((item) => item.id === bono.id ? { ...item, estado: estadoAnterior } : item);
+        this.bonos = this.bonos.map((item) =>
+          item.id === bono.id ? { ...item, estado: estadoAnterior } : item,
+        );
         this.bonosMessage = 'No se pudo actualizar el estado del bono.';
         this.flushUiState();
       });
@@ -1600,10 +1849,30 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   copiarLinkCanjear(): void {
-    void navigator.clipboard.writeText('https://cbmfisioterapia.com/canjear')
-      .then(() => { this.zone.run(() => { this.bonosMessage = 'Link copiado'; this.flushUiState(); }); })
-      .catch(() => { this.zone.run(() => { this.bonosMessage = 'No se pudo copiar'; this.flushUiState(); }); });
-    setTimeout(() => this.zone.run(() => { if (this.bonosMessage === 'Link copiado') { this.bonosMessage = ''; this.flushUiState(); } }), 3000);
+    void navigator.clipboard
+      .writeText('https://cbmfisioterapia.com/canjear')
+      .then(() => {
+        this.zone.run(() => {
+          this.bonosMessage = 'Link copiado';
+          this.flushUiState();
+        });
+      })
+      .catch(() => {
+        this.zone.run(() => {
+          this.bonosMessage = 'No se pudo copiar';
+          this.flushUiState();
+        });
+      });
+    setTimeout(
+      () =>
+        this.zone.run(() => {
+          if (this.bonosMessage === 'Link copiado') {
+            this.bonosMessage = '';
+            this.flushUiState();
+          }
+        }),
+      3000,
+    );
   }
 
   async deleteBono(bono: BonoRegalo): Promise<void> {
@@ -1628,7 +1897,9 @@ export class AdminDashboardComponent implements OnInit {
     this.serviciosRegaloError = '';
 
     try {
-      this.serviciosRegalo = await this.withTimeout(this.serviciosRegaloService.getAllServiciosRegalo());
+      this.serviciosRegalo = await this.withTimeout(
+        this.serviciosRegaloService.getAllServiciosRegalo(),
+      );
     } catch {
       this.serviciosRegaloError = 'No se pudieron cargar los servicios de regalo.';
     } finally {
@@ -1646,7 +1917,7 @@ export class AdminDashboardComponent implements OnInit {
       unidad: '€',
       categoria: 'fisioterapia',
       orden: 0,
-      activo: true
+      activo: true,
     });
     this.isServicioRegaloModalOpen = true;
   }
@@ -1661,7 +1932,7 @@ export class AdminDashboardComponent implements OnInit {
       unidad: servicio.unidad,
       categoria: servicio.categoria,
       orden: servicio.orden,
-      activo: servicio.activo
+      activo: servicio.activo,
     });
     this.isServicioRegaloModalOpen = true;
   }
@@ -1689,16 +1960,20 @@ export class AdminDashboardComponent implements OnInit {
       unidad: v.unidad,
       categoria: v.categoria,
       orden: v.orden,
-      activo: v.activo
+      activo: v.activo,
     };
 
     try {
       if (this.editingServicioRegalo) {
-        const updated = await this.withTimeout(this.serviciosRegaloService.updateServicioRegalo(this.editingServicioRegalo.id, payload));
-        this.serviciosRegalo = this.serviciosRegalo.map((s) => s.id === updated.id ? updated : s);
+        const updated = await this.withTimeout(
+          this.serviciosRegaloService.updateServicioRegalo(this.editingServicioRegalo.id, payload),
+        );
+        this.serviciosRegalo = this.serviciosRegalo.map((s) => (s.id === updated.id ? updated : s));
         this.serviciosRegaloMessage = 'Servicio actualizado.';
       } else {
-        const created = await this.withTimeout(this.serviciosRegaloService.createServicioRegalo(payload));
+        const created = await this.withTimeout(
+          this.serviciosRegaloService.createServicioRegalo(payload),
+        );
         this.serviciosRegalo = [created, ...this.serviciosRegalo];
         this.serviciosRegaloMessage = 'Servicio creado.';
       }
@@ -1720,8 +1995,10 @@ export class AdminDashboardComponent implements OnInit {
     const target = event.target as HTMLInputElement;
 
     try {
-      const updated = await this.withTimeout(this.serviciosRegaloService.toggleActivo(servicio.id, target.checked));
-      this.serviciosRegalo = this.serviciosRegalo.map((s) => s.id === updated.id ? updated : s);
+      const updated = await this.withTimeout(
+        this.serviciosRegaloService.toggleActivo(servicio.id, target.checked),
+      );
+      this.serviciosRegalo = this.serviciosRegalo.map((s) => (s.id === updated.id ? updated : s));
       this.serviciosRegaloMessage = 'Estado actualizado.';
     } catch {
       target.checked = servicio.activo;
@@ -1738,10 +2015,12 @@ export class AdminDashboardComponent implements OnInit {
     this.serviciosRegalo = this.serviciosRegalo.filter((s) => s.id !== servicio.id);
 
     try {
-      const result = await this.withTimeout(this.serviciosRegaloService.deleteServicioRegalo(servicio.id));
+      const result = await this.withTimeout(
+        this.serviciosRegaloService.deleteServicioRegalo(servicio.id),
+      );
       if (result.desactivado) {
         this.serviciosRegalo = previous.map((s) =>
-          s.id === servicio.id ? { ...s, activo: false } : s
+          s.id === servicio.id ? { ...s, activo: false } : s,
         );
         this.serviciosRegaloMessage =
           'Este servicio tiene reservas asociadas. Se ha desactivado en lugar de eliminar para mantener el historial 💜';
@@ -1798,7 +2077,7 @@ export class AdminDashboardComponent implements OnInit {
       const { enviados, errores } = await this.newsletterService.enviarNewsletter(
         this.nlAsunto.trim(),
         this.nlMensajeHtml.trim(),
-        emails
+        emails,
       );
 
       this.zone.run(() => {
@@ -1807,7 +2086,10 @@ export class AdminDashboardComponent implements OnInit {
           this.nlAsunto = '';
           this.nlMensajeHtml = '';
         } else if (enviados > 0) {
-          this.nlToast = { tipo: 'parcial', texto: `Enviada con algunos errores: ${enviados} enviados, ${errores} fallidos` };
+          this.nlToast = {
+            tipo: 'parcial',
+            texto: `Enviada con algunos errores: ${enviados} enviados, ${errores} fallidos`,
+          };
         } else {
           this.nlToast = { tipo: 'error', texto: 'Error al enviar la newsletter' };
         }
@@ -1854,7 +2136,9 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   get nlPuedeEnviar(): boolean {
-    return this.nlAsunto.trim().length > 0 && this.nlMensajeHtml.trim().length > 0 && !this.nlEnviando;
+    return (
+      this.nlAsunto.trim().length > 0 && this.nlMensajeHtml.trim().length > 0 && !this.nlEnviando
+    );
   }
 
   get suscriptoresFiltrados(): NewsletterSuscriptor[] {
@@ -1867,7 +2151,7 @@ export class AdminDashboardComponent implements OnInit {
     return {
       total: this.suscriptores.length,
       activos: this.suscriptores.filter((s) => s.activo).length,
-      bajas: this.suscriptores.filter((s) => !s.activo).length
+      bajas: this.suscriptores.filter((s) => !s.activo).length,
     };
   }
 
@@ -1912,7 +2196,7 @@ export class AdminDashboardComponent implements OnInit {
     try {
       await this.withTimeout(this.newsletterService.toggleActivo(suscriptor.id, valor));
       this.suscriptores = this.suscriptores.map((s) =>
-        s.id === suscriptor.id ? { ...s, activo: valor } : s
+        s.id === suscriptor.id ? { ...s, activo: valor } : s,
       );
     } catch {
       target.checked = suscriptor.activo;
