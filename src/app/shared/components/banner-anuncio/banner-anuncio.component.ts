@@ -18,7 +18,7 @@ interface BannerConfig {
   standalone: true,
   imports: [NgIf, RouterLink],
   templateUrl: './banner-anuncio.component.html',
-  styleUrl: './banner-anuncio.component.css'
+  styleUrl: './banner-anuncio.component.css',
 })
 export class BannerAnuncioComponent implements OnInit {
   config: BannerConfig = {
@@ -28,7 +28,7 @@ export class BannerAnuncioComponent implements OnInit {
     enlaceTexto: '',
     enlaceUrl: '/',
     colorFondo: 'linear-gradient(135deg, #e879a8, #a78bfa)',
-    colorTexto: '#ffffff'
+    colorTexto: '#ffffff',
   };
 
   visible = true;
@@ -51,6 +51,10 @@ export class BannerAnuncioComponent implements OnInit {
       console.error('Error cargando banner:', err);
     }
     this.cdr.markForCheck();
+  }
+
+  get enlaceEsExterno(): boolean {
+    return /^https?:\/\//i.test(this.config.enlaceUrl);
   }
 
   cerrar(): void {
