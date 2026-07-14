@@ -12,78 +12,10 @@
     <div class="cartel-orb cartel-orb--b" aria-hidden="true"></div>
 
     <div class="cartel-content">
-      <!-- Chow chow que sostiene el cartel -->
-      <div class="cartel-dog" aria-hidden="true">
-        <svg class="cartel-dog__svg" viewBox="0 0 120 112">
-          <defs>
-            <radialGradient id="cartelChowFur" cx="50%" cy="36%" r="68%">
-              <stop offset="0%" stop-color="#fcd9a8" />
-              <stop offset="55%" stop-color="#f2a65a" />
-              <stop offset="100%" stop-color="#d2772b" />
-            </radialGradient>
-            <radialGradient id="cartelChowFace" cx="50%" cy="40%" r="62%">
-              <stop offset="0%" stop-color="#fde3bb" />
-              <stop offset="70%" stop-color="#f6b76e" />
-              <stop offset="100%" stop-color="#e89344" />
-            </radialGradient>
-          </defs>
-
-          <!-- melena esponjosa -->
-          <g fill="url(#cartelChowFur)">
-            <circle cx="40" cy="30" r="14" />
-            <circle cx="80" cy="30" r="14" />
-            <circle cx="60" cy="24" r="15" />
-            <circle cx="26" cy="52" r="16" />
-            <circle cx="94" cy="52" r="16" />
-            <circle cx="32" cy="84" r="15" />
-            <circle cx="88" cy="84" r="15" />
-            <circle cx="60" cy="94" r="18" />
-            <circle cx="60" cy="60" r="42" />
-          </g>
-
-          <!-- orejas -->
-          <g fill="#c96f24">
-            <ellipse cx="34" cy="19" rx="9" ry="11" transform="rotate(-16 34 19)" />
-            <ellipse cx="86" cy="19" rx="9" ry="11" transform="rotate(16 86 19)" />
-          </g>
-          <g fill="#9c531a">
-            <ellipse cx="34.5" cy="20.5" rx="4.5" ry="6" transform="rotate(-16 34.5 20.5)" />
-            <ellipse cx="85.5" cy="20.5" rx="4.5" ry="6" transform="rotate(16 85.5 20.5)" />
-          </g>
-
-          <!-- cara -->
-          <circle cx="60" cy="59" r="30" fill="url(#cartelChowFace)" />
-
-          <!-- ojos -->
-          <circle cx="49" cy="53" r="4.2" fill="#3b2412" />
-          <circle cx="71" cy="53" r="4.2" fill="#3b2412" />
-          <circle cx="50.4" cy="51.6" r="1.5" fill="#ffffff" />
-          <circle cx="72.4" cy="51.6" r="1.5" fill="#ffffff" />
-
-          <!-- mejillas -->
-          <ellipse cx="41" cy="62" rx="5.2" ry="3.2" fill="#f49b9b" opacity="0.55" />
-          <ellipse cx="79" cy="62" rx="5.2" ry="3.2" fill="#f49b9b" opacity="0.55" />
-
-          <!-- hocico -->
-          <ellipse cx="60" cy="69" rx="13" ry="10" fill="#fdeccd" />
-          <ellipse cx="60" cy="63.5" rx="5.6" ry="4.2" fill="#43302a" />
-          <circle cx="58.2" cy="62.4" r="1.2" fill="#6e564d" />
-
-          <!-- boquita feliz -->
-          <path
-            d="M52.5 71.5 Q60 78 67.5 71.5"
-            stroke="#7a4a21"
-            stroke-width="2.2"
-            fill="none"
-            stroke-linecap="round"
-          />
-
-          <!-- patitas que sujetan el cartel -->
-          <g fill="url(#cartelChowFur)" stroke="#c96f24" stroke-width="1">
-            <ellipse cx="38" cy="103" rx="11" ry="7.5" />
-            <ellipse cx="82" cy="103" rx="11" ry="7.5" />
-          </g>
-        </svg>
+      <!-- Logo de CBM asomando sobre el cartel -->
+      <div class="cartel-emblem" aria-hidden="true">
+        <span class="cartel-emblem__aura"></span>
+        <img src="/favicon-192x192-witout-fondo.png" alt="" class="cartel-emblem__logo" />
       </div>
 
       <!-- El cartel propiamente dicho -->
@@ -91,10 +23,7 @@
         <span class="cartel-emoji" aria-hidden="true">{{ cartel.emoji }}</span>
         <h1 class="cartel-title">{{ cartel.titulo }}</h1>
         <p class="cartel-message">{{ cartel.mensaje }}</p>
-        <div class="cartel-brand">
-          <img src="/favicon-192x192-witout-fondo.png" alt="" class="cartel-brand__logo" />
-          <span class="cartel-brand__name">CBM Fisioterapia · Terrassa</span>
-        </div>
+        <span class="cartel-brand__name">CBM Fisioterapia · Terrassa</span>
       </div>
     </div>
   </div>
