@@ -533,7 +533,8 @@
   animation: cartel-orb 11s ease-in-out infinite reverse;
 }
 
-/* El equipo CBM paseando por la pantalla, por detrás del cartel */
+/* El equipo CBM paseando por la pantalla, por detrás del cartel.
+   La escena activa la fija el componente vía [attr.data-scene]. */
 .cartel-walkers {
   position: absolute;
   inset: auto 0 clamp(-3vh, -1.4vh, -8px) 0;
@@ -543,14 +544,59 @@
 .cartel-walkers__stride {
   width: fit-content;
   will-change: transform;
-  animation: cartel-walk-across 52s linear infinite;
+  transform: translateY(120%);
 }
 .cartel-walkers__img {
   display: block;
   height: clamp(200px, 46vh, 480px);
   width: auto;
   filter: drop-shadow(0 18px 26px rgba(31, 27, 45, 0.3));
+}
+.cartel-walkers__img--greet {
+  display: none;
+}
+
+/* Escena: caminar de izquierda a derecha (y a la inversa) */
+.cartel-walkers[data-scene='walk'] .cartel-walkers__stride {
+  animation: cartel-walk-cross 26s linear both;
+}
+.cartel-walkers[data-scene='walk-back'] .cartel-walkers__stride {
+  animation: cartel-walk-cross 26s linear reverse both;
+}
+.cartel-walkers[data-scene='walk-back'] .cartel-walkers__img--walk {
+  scale: -1 1;
+}
+.cartel-walkers[data-scene='walk'] .cartel-walkers__img--walk,
+.cartel-walkers[data-scene='walk-back'] .cartel-walkers__img--walk {
   animation: cartel-walk-bob 1.15s ease-in-out infinite;
+}
+
+/* Escena: asomarse por detrás del cartel, a un lado u otro */
+.cartel-walkers[data-scene='peek-left'] .cartel-walkers__stride {
+  margin-left: 5vw;
+  animation: cartel-peek 10s ease-in-out both;
+}
+.cartel-walkers[data-scene='peek-right'] .cartel-walkers__stride {
+  margin-left: auto;
+  margin-right: 5vw;
+  animation: cartel-peek 10s ease-in-out both;
+}
+.cartel-walkers[data-scene='peek-right'] .cartel-walkers__img--walk {
+  scale: -1 1;
+}
+
+/* Escena: saludo con la pelota, con rebote de dibujo animado */
+.cartel-walkers[data-scene='greet'] .cartel-walkers__stride {
+  margin-left: auto;
+  margin-right: 9vw;
+  animation: cartel-greet 9.5s ease-in-out both;
+}
+.cartel-walkers[data-scene='greet'] .cartel-walkers__img--walk {
+  display: none;
+}
+.cartel-walkers[data-scene='greet'] .cartel-walkers__img--greet {
+  display: block;
+  animation: cartel-greet-wiggle 1.6s ease-in-out infinite;
 }
 
 .cartel-content {
@@ -695,21 +741,12 @@
     filter: hue-rotate(-6deg) saturate(1.08);
   }
 }
-@keyframes cartel-walk-across {
-  0% {
-    transform: translateX(-42vw) scaleX(1);
+@keyframes cartel-walk-cross {
+  from {
+    transform: translateX(-42vw);
   }
-  46% {
-    transform: translateX(104vw) scaleX(1);
-  }
-  50% {
-    transform: translateX(104vw) scaleX(-1);
-  }
-  96% {
-    transform: translateX(-42vw) scaleX(-1);
-  }
-  100% {
-    transform: translateX(-42vw) scaleX(1);
+  to {
+    transform: translateX(104vw);
   }
 }
 @keyframes cartel-walk-bob {
@@ -719,6 +756,52 @@
   }
   50% {
     transform: translateY(-1.4%) rotate(1.4deg);
+  }
+}
+@keyframes cartel-peek {
+  0%,
+  100% {
+    transform: translateY(112%) rotate(0deg);
+  }
+  16% {
+    transform: translateY(34%) rotate(-4.5deg);
+  }
+  30% {
+    transform: translateY(30%) rotate(-3deg);
+  }
+  55% {
+    transform: translateY(32%) rotate(-4deg);
+  }
+  82% {
+    transform: translateY(30%) rotate(-3deg);
+  }
+}
+@keyframes cartel-greet {
+  0%,
+  100% {
+    transform: translateY(114%);
+  }
+  9% {
+    transform: translateY(2%);
+  }
+  14% {
+    transform: translateY(11%);
+  }
+  19% {
+    transform: translateY(5%);
+  }
+  24%,
+  86% {
+    transform: translateY(7%);
+  }
+}
+@keyframes cartel-greet-wiggle {
+  0%,
+  100% {
+    transform: rotate(-1.3deg);
+  }
+  50% {
+    transform: rotate(1.3deg);
   }
 }
 @keyframes cartel-orb {
