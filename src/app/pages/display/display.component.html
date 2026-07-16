@@ -11,6 +11,22 @@
     <div class="cartel-orb cartel-orb--a" aria-hidden="true"></div>
     <div class="cartel-orb cartel-orb--b" aria-hidden="true"></div>
 
+    <!-- El equipo CBM paseando por la pantalla (coreografía de escenas aleatorias) -->
+    <div class="cartel-walkers" aria-hidden="true" [attr.data-scene]="walkerScene">
+      <div class="cartel-walkers__stride">
+        <img
+          src="/team/cbm-team-walk.webp"
+          alt=""
+          class="cartel-walkers__img cartel-walkers__img--walk"
+        />
+        <img
+          src="/team/cbm-team-greet.webp"
+          alt=""
+          class="cartel-walkers__img cartel-walkers__img--greet"
+        />
+      </div>
+    </div>
+
     <div class="cartel-content">
       <!-- Logo de CBM asomando sobre el cartel -->
       <div class="cartel-emblem" aria-hidden="true">
