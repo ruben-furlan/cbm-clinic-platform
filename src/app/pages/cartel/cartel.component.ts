@@ -56,9 +56,27 @@ export class CartelComponent implements OnInit, OnDestroy {
   propuesta: CartelVozResultado | null = null;
   vozNoEntendida = '';
 
+  /** Instalación como acceso directo: prompt nativo en Android/Chrome. */
+  puedeInstalar = false;
+  /** iPhone/iPad: no hay prompt nativo, se muestra la mini-guía de Safari. */
+  mostrarGuiaIos = false;
+
   private clave = '';
   private reconocimiento: SpeechRecognitionLike | null = null;
   private toastTimer: ReturnType<typeof setTimeout> | null = null;
+  private promptInstalacion: BeforeInstallPromptLike | null = null;
+  private manifestHrefOriginal: string | null = null;
+  private readonly onBeforeInstallPrompt = (event: Event): void => {
+    event.preventDefault();
+    this.promptInstalacion = event as unknown as BeforeInstallPromptLike;
+    this.puedeInstalar = true;
+    this.cdr.markForCheck();
+  };
+  private readonly onAppInstalled = (): void => {
+    this.puedeInstalar = false;
+    this.promptInstalacion = null;
+    this.cdr.markForCheck();
+  };
 
   constructor(
     private readonly configuracion: ConfiguracionService,
@@ -73,6 +91,7 @@ export class CartelComponent implements OnInit, OnDestroy {
     }
 
     this.vozDisponible = getSpeechRecognitionCtor() !== null;
+    this.prepararInstalacion();
 
     const claveGuardada = localStorage.getItem(CLAVE_STORAGE_KEY);
     if (claveGuardada) {
@@ -87,6 +106,77 @@ export class CartelComponent implements OnInit, OnDestroy {
 
     if (this.toastTimer) {
       clearTimeout(this.toastTimer);
+    }
+
+    if (isPlatformBrowser(this.platformId)) {
+      window.removeEventListener('beforeinstallprompt', this.onBeforeInstallPrompt);
+      window.removeEventListener('appinstalled', this.onAppInstalled);
+      this.restaurarManifest();
+    }
+  }
+
+  // ── Acceso directo en la pantalla de inicio ────────────────────────────────
+
+  /**
+   * Mientras esta página está abierta se apunta el manifest al del cartel,
+   * de modo que "instalar" cree un icono que abre /cartel directamente
+   * (el manifest del sitio abre la home). Se restaura al salir.
+   */
+  private prepararInstalacion(): void {
+    const yaInstalada =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      (navigator as unknown as { standalone?: boolean }).standalone === true;
+
+    if (yaInstalada) {
+      return;
+    }
+
+    const manifestLink = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+    if (manifestLink) {
+      this.manifestHrefOriginal = manifestLink.getAttribute('href');
+      manifestLink.setAttribute('href', '/manifest-cartel.webmanifest');
+    }
+
+    const esIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (esIos) {
+      this.mostrarGuiaIos = true;
+      return;
+    }
+
+    window.addEventListener('beforeinstallprompt', this.onBeforeInstallPrompt);
+    window.addEventListener('appinstalled', this.onAppInstalled);
+  }
+
+  private restaurarManifest(): void {
+    if (this.manifestHrefOriginal === null) {
+      return;
+    }
+
+    const manifestLink = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+    manifestLink?.setAttribute('href', this.manifestHrefOriginal);
+    this.manifestHrefOriginal = null;
+  }
+
+  async instalarAccesoDirecto(): Promise<void> {
+    const prompt = this.promptInstalacion;
+    if (!prompt) {
+      return;
+    }
+
+    this.promptInstalacion = null;
+    this.puedeInstalar = false;
+
+    try {
+      await prompt.prompt();
+      const eleccion = await prompt.userChoice;
+      if (eleccion.outcome !== 'accepted') {
+        // Lo rechazó: se vuelve a ofrecer si el navegador re-emite el evento.
+        this.puedeInstalar = false;
+      }
+    } catch {
+      // El navegador no permitió mostrar el prompt; no pasa nada.
+    } finally {
+      this.cdr.markForCheck();
     }
   }
 
@@ -302,6 +392,13 @@ export class CartelComponent implements OnInit, OnDestroy {
     }
     this.escuchando = false;
   }
+}
+
+// ── Tipado mínimo del evento beforeinstallprompt (no está en lib.dom) ────────
+
+interface BeforeInstallPromptLike {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
 // ── Tipado mínimo de la Web Speech API (no está en lib.dom de TS) ────────────

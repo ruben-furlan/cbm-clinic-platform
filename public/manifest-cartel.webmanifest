@@ -1,0 +1,22 @@
+{
+  "name": "Cartel CBM",
+  "short_name": "Cartel CBM",
+  "description": "Mando del cartel de la ventana de CBM Fisioterapia.",
+  "id": "/cartel",
+  "start_url": "/cartel",
+  "display": "standalone",
+  "background_color": "#fdf2f8",
+  "theme_color": "#c44b8e",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

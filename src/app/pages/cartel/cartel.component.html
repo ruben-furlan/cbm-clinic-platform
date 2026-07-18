@@ -131,5 +131,32 @@
     </div>
 
     <p class="pie-nota">La pantalla del local se actualiza sola en menos de medio minuto.</p>
+
+    <!-- Acceso directo en la pantalla de inicio -->
+    <button
+      *ngIf="puedeInstalar"
+      class="btn-instalar"
+      type="button"
+      (click)="instalarAccesoDirecto()"
+    >
+      📲 Crear acceso directo en este móvil
+    </button>
+
+    <div class="guia-ios" *ngIf="mostrarGuiaIos">
+      <p class="guia-ios-titulo">📲 Para tener el acceso directo en tu iPhone:</p>
+      <ol>
+        <li>
+          Toca el botón <strong>Compartir</strong>
+          <span class="guia-ios-icono" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path fill="currentColor" d="M12 2l4 4h-3v9h-2V6H8l4-4zM5 10v10h14V10h2v12H3V10h2z" />
+            </svg>
+          </span>
+          de Safari (abajo, el cuadrado con la flecha)
+        </li>
+        <li>Elige <strong>«Añadir a pantalla de inicio»</strong></li>
+        <li>Toca <strong>Añadir</strong> y listo: tendrás el icono «Cartel CBM»</li>
+      </ol>
+    </div>
   </section>
 </main>

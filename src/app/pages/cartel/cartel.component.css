@@ -352,3 +352,51 @@ button.estado-card:active {
   font-size: 0.9rem;
   margin: 4px 0 0;
 }
+
+/* ── Acceso directo en la pantalla de inicio ─────────────────────────────── */
+
+.btn-instalar {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px dashed #c44b8e;
+  border-radius: 16px;
+  background: #fdf2f8;
+  color: #a13775;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-instalar:active {
+  transform: scale(0.97);
+}
+
+.guia-ios {
+  background: #ffffff;
+  border: 2px dashed #a78bfa;
+  border-radius: 18px;
+  padding: 16px 18px;
+  color: #55536e;
+  font-size: 0.98rem;
+}
+
+.guia-ios-titulo {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: #3f3d56;
+}
+
+.guia-ios ol {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.guia-ios-icono {
+  display: inline-flex;
+  vertical-align: text-bottom;
+  color: #2563eb;
+}
