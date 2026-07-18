@@ -1,6 +1,26 @@
 <section class="admin-dashboard">
   <header class="admin-header">
-    <h1>Panel CBM</h1>
+    <div class="admin-header-title">
+      <h1>Panel CBM</h1>
+      <div
+        class="pago-web-toggle"
+        title="ON: la seña se cobra por la web (Calendly + Stripe). OFF: solo agenda y la seña se cobra manualmente."
+      >
+        <span class="pago-web-toggle-label">💳 Pago web</span>
+        <label class="switch">
+          <input
+            type="checkbox"
+            [checked]="pagoWebActivo"
+            (click)="onPagoWebToggleClick($event)"
+            aria-label="Activar o desactivar el pago de la seña por la web"
+          />
+          <span></span>
+        </label>
+        <span class="pago-web-toggle-estado" [class.pago-web-toggle-estado--off]="!pagoWebActivo">{{
+          pagoWebActivo ? 'ON' : 'OFF'
+        }}</span>
+      </div>
+    </div>
     <div class="admin-user">
       <span>{{ userEmail }}</span>
       <button type="button" class="btn-ghost" (click)="signOut()">Cerrar sesión</button>
@@ -2142,6 +2162,67 @@
       <button type="button" class="btn-ghost" (click)="onConfirmCancel()">Cancelar</button>
       <button type="button" class="btn-danger confirm-btn-delete" (click)="onConfirmOk()">
         Eliminar
+      </button>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════ Modal confirmación pago web ON/OFF ════════════════ -->
+<div class="modal-overlay confirm-overlay" *ngIf="pagoWebModalOpen" (click)="closePagoWebModal()">
+  <section
+    class="modal-card pago-web-modal"
+    (click)="$event.stopPropagation()"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="pago-web-modal-title"
+  >
+    <h3 id="pago-web-modal-title">
+      {{ pagoWebPendingValue ? '💳 Activar pago por la web' : '✋ Pasar a cobro manual' }}
+    </h3>
+
+    <p *ngIf="pagoWebPendingValue">
+      La seña de 10€ volverá a cobrarse por la web (Calendly + Stripe).
+      <strong>
+        ⚠️ Antes de confirmar, cambia manualmente el calendario en Calendly al evento CON pago
+        (requiere el plan de pago de Calendly) y pega abajo su link.
+      </strong>
+    </p>
+    <p *ngIf="!pagoWebPendingValue">
+      La web solo agendará la cita y la seña se cobrará manualmente (transferencia o link de Stripe
+      enviado por WhatsApp).
+      <strong>
+        ⚠️ Antes de confirmar, cambia manualmente el calendario en Calendly al evento SIN pago (plan
+        free) y pega abajo su link.
+      </strong>
+    </p>
+
+    <label class="pago-web-modal-field">
+      Link del calendario de Calendly
+      <input
+        type="url"
+        [(ngModel)]="pagoWebCalendlyUrl"
+        [ngModelOptions]="{ standalone: true }"
+        placeholder="https://calendly.com/..."
+      />
+    </label>
+
+    <p class="status error" *ngIf="pagoWebError">{{ pagoWebError }}</p>
+
+    <div class="modal-actions confirm-actions">
+      <button type="button" class="btn-ghost" (click)="closePagoWebModal()">Cancelar</button>
+      <button
+        type="button"
+        class="btn-primary"
+        [disabled]="pagoWebSaving || !pagoWebCalendlyUrl.trim()"
+        (click)="confirmPagoWebToggle()"
+      >
+        {{
+          pagoWebSaving
+            ? 'Guardando…'
+            : pagoWebPendingValue
+              ? 'Activar pago web'
+              : 'Pasar a cobro manual'
+        }}
       </button>
     </div>
   </section>

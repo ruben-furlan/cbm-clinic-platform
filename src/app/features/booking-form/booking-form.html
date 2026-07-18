@@ -4,9 +4,13 @@
       <div class="section-heading" appRevealOnScroll>
         <p class="section-tag">Solicitar cita</p>
         <h2>Elige tu tratamiento y solicita tu cita</h2>
-        <p class="section-description">
+        <p class="section-description" *ngIf="pagoWebActivo">
           Selecciona tu tratamiento, aparta tu cita con una seña de 10€ y elige tu fecha y hora.
           Recibirás la confirmación automáticamente. 💜
+        </p>
+        <p class="section-description" *ngIf="!pagoWebActivo">
+          Selecciona tu tratamiento, elige tu fecha y hora y deja tu cita pre-reservada. La
+          confirmamos en cuanto recibamos tu seña de 10€. 💜
         </p>
       </div>
 
@@ -71,7 +75,8 @@
                 />
               </svg>
             </div>
-            <span class="stepper-label">Pago</span>
+            <span class="stepper-label" *ngIf="pagoWebActivo">Pago</span>
+            <span class="stepper-label" *ngIf="!pagoWebActivo">Tu seña</span>
           </div>
 
           <div class="stepper-line" [class.stepper-line--filled]="currentStep > 2"></div>
@@ -183,15 +188,25 @@
                 </section>
 
                 <section class="payment-signal-card" aria-label="Información sobre la seña">
-                  <p>
+                  <p *ngIf="pagoWebActivo">
                     Aparta tu cita hoy con solo 10€. El resto lo abonas el día de tu sesión en el
                     centro. Y si algo cambia, aquí estaremos para reagendar sin problema 💜
+                  </p>
+                  <p *ngIf="!pagoWebActivo">
+                    Elige tu fecha y hora y tu cita quedará pre-reservada. Para confirmarla del
+                    todo, abona una seña de 10€ por transferencia o con el link de pago que te
+                    enviaremos por WhatsApp. El resto lo abonas el día de tu sesión en el centro. Y
+                    si algo cambia, aquí estaremos para reagendar sin problema 💜
                   </p>
                 </section>
               </div>
 
-              <p class="payment-support-text">
+              <p class="payment-support-text" *ngIf="pagoWebActivo">
                 Recibirás la confirmación de tu cita por correo electrónico al finalizar la reserva.
+              </p>
+              <p class="payment-support-text" *ngIf="!pagoWebActivo">
+                Recibirás un correo con los detalles de tu pre-reserva y te escribiremos por
+                WhatsApp para completar la seña. En cuanto la recibamos, ¡tu cita queda confirmada!
               </p>
 
               <div class="step-actions step-actions--with-back">
@@ -225,7 +240,11 @@
               </button>
             </div>
 
-            <app-step3-calendly *ngIf="selectedTreatmentOption"></app-step3-calendly>
+            <app-step3-calendly
+              *ngIf="selectedTreatmentOption"
+              [calendlyUrl]="publicCalendlyUrl"
+              [manualPayment]="!pagoWebActivo"
+            ></app-step3-calendly>
 
             <div class="step-actions step-actions--with-back">
               <button type="button" class="step-btn-back" (click)="prevStep()">← Atrás</button>
