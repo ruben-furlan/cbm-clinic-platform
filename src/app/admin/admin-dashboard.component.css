@@ -26,6 +26,76 @@
   font-size: 14px;
 }
 
+.admin-header-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.pago-web-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid rgba(123, 77, 255, 0.18);
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+.pago-web-toggle-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b4560;
+  white-space: nowrap;
+}
+
+.pago-web-toggle-estado {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1f9d55;
+  min-width: 26px;
+}
+
+.pago-web-toggle-estado--off {
+  color: #c44b8e;
+}
+
+.pago-web-modal h3 {
+  margin: 0 0 12px;
+  color: #1f1b2d;
+}
+
+.pago-web-modal p {
+  font-size: 14px;
+  color: #4b4560;
+  line-height: 1.5;
+}
+
+.pago-web-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 14px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b4560;
+}
+
+.pago-web-modal-field input {
+  border: 1px solid rgba(123, 77, 255, 0.25);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: inherit;
+  font-weight: 400;
+  color: #1f1b2d;
+}
+
+.pago-web-modal-field input:focus {
+  outline: 2px solid rgba(123, 77, 255, 0.35);
+  outline-offset: 1px;
+}
+
 .section-tabs {
   max-width: 1200px;
   margin: 20px auto 0;

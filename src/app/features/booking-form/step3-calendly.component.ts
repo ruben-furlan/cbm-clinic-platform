@@ -5,10 +5,9 @@ import { BookingTreatmentService, SelectedTreatment } from './booking-treatment.
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-declare const Calendly: any;
+import { DEFAULT_PUBLIC_CALENDLY_URL } from '../../core/services/configuracion.service';
 
-const CALENDLY_URL =
-  'https://calendly.com/reservascbm25/cita-cbm-fisioterapia?primary_color=c44b8e&hide_gdpr_banner=1&hide_landing_page_details=1&hide_event_type_details=1';
+declare const Calendly: any;
 
 @Component({
   selector: 'app-step3-calendly',
@@ -40,7 +39,11 @@ const CALENDLY_URL =
         <span class="csg-sep" aria-hidden="true">→</span>
         <div class="csg-step">
           <span class="csg-circle">3</span>
-          <span class="csg-text">Reserva tu cita con una paga y seña de 10€ 💜</span>
+          <span class="csg-text">{{
+            manualPayment
+              ? 'Reserva tu cita · la confirmamos al recibir tu seña de 10€ 💜'
+              : 'Reserva tu cita con una paga y seña de 10€ 💜'
+          }}</span>
         </div>
       </div>
 
@@ -218,8 +221,10 @@ const CALENDLY_URL =
   ],
 })
 export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
-  @Input() calendlyUrl = CALENDLY_URL;
+  @Input() calendlyUrl = DEFAULT_PUBLIC_CALENDLY_URL;
   @Input() showGuide = true;
+  /** true cuando la seña se cobra manualmente (transferencia / link por WhatsApp). */
+  @Input() manualPayment = false;
 
   private readonly platformId = inject(PLATFORM_ID);
   private readonly bookingTreatmentService = inject(BookingTreatmentService);

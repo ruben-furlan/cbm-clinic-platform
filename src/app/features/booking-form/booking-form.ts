@@ -20,6 +20,10 @@ import { CbmLoaderComponent } from '../../shared/components/cbm-loader/cbm-loade
 import { HorarioChipsComponent } from '../../shared/components/horario-chips/horario-chips.component';
 import { Step3CalendlyComponent } from './step3-calendly.component';
 import { BookingTreatmentService } from './booking-treatment.service';
+import {
+  ConfiguracionService,
+  DEFAULT_PUBLIC_CALENDLY_URL,
+} from '../../core/services/configuracion.service';
 
 interface TreatmentOption {
   value: string;
@@ -55,6 +59,7 @@ export class BookingFormComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly ngZone: NgZone,
     private readonly bookingTreatmentService: BookingTreatmentService,
+    private readonly configuracionService: ConfiguracionService,
   ) {}
 
   currentStep = 1;
@@ -71,6 +76,11 @@ export class BookingFormComponent implements OnInit {
   availabilityType: 'green' | 'amber' = 'green';
   availabilityText = '';
 
+  // Modo de cobro de la seña: true = pago por la web (Calendly+Stripe),
+  // false = Calendly free solo agenda y cobro manual (transferencia / link por WhatsApp)
+  pagoWebActivo = true;
+  publicCalendlyUrl = DEFAULT_PUBLIC_CALENDLY_URL;
+
   @HostListener('window:resize')
   onResize(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -83,6 +93,14 @@ export class BookingFormComponent implements OnInit {
       this.isMobile = window.innerWidth < 768;
     }
     this.initAvailability();
+
+    try {
+      const pagoWeb = await this.configuracionService.getPagoWebConfig();
+      this.pagoWebActivo = pagoWeb.activo;
+      this.publicCalendlyUrl = pagoWeb.calendlyUrl;
+    } catch {
+      // Sin config accesible, se mantiene el modo por defecto (pago por la web)
+    }
 
     try {
       const tarifas = await this.tarifasService.getTarifas();

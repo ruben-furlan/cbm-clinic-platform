@@ -66,6 +66,21 @@ export interface CartelDisplayConfig {
   mensaje: string;
 }
 
+/** Calendario Calendly público por defecto (fallback si no hay valor en la BD). */
+export const DEFAULT_PUBLIC_CALENDLY_URL =
+  'https://calendly.com/reservascbm25/cita-cbm-fisioterapia?primary_color=c44b8e&hide_gdpr_banner=1&hide_landing_page_details=1&hide_event_type_details=1';
+
+/**
+ * Modo de cobro de la seña de reserva.
+ * activo=true  → pago por la web (Calendly + Stripe).
+ * activo=false → Calendly free solo agenda; la seña se cobra manualmente
+ *                (transferencia o link de pago enviado por WhatsApp).
+ */
+export interface PagoWebConfig {
+  activo: boolean;
+  calendlyUrl: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -133,6 +148,24 @@ export class ConfiguracionService {
       enlaceUrl: cfg['banner_anuncio_enlace_url'] ?? '/',
       colorFondo: cfg['banner_anuncio_color_fondo'] ?? 'linear-gradient(135deg, #e879a8, #a78bfa)',
       colorTexto: cfg['banner_anuncio_color_texto'] ?? '#ffffff',
+    };
+  }
+
+  async getPagoWebConfig(): Promise<PagoWebConfig> {
+    const { data } = await supabase
+      .from('configuracion')
+      .select('clave, valor')
+      .in('clave', ['pago_web_activo', 'pago_web_calendly_url']);
+
+    const cfg: Record<string, string> = {};
+    data?.forEach((item) => {
+      cfg[item.clave] = item.valor;
+    });
+
+    return {
+      // Si la clave no existe todavía, el modo por defecto es pago por la web
+      activo: cfg['pago_web_activo'] !== 'false',
+      calendlyUrl: cfg['pago_web_calendly_url']?.trim() || DEFAULT_PUBLIC_CALENDLY_URL,
     };
   }
 

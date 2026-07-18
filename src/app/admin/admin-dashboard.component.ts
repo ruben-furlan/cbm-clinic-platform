@@ -252,6 +252,14 @@ export class AdminDashboardComponent implements OnInit {
     return this.cartelConfig.mensaje.trim() || this.cartelPreset.mensaje;
   }
 
+  // ── Pago web (toggle ON = seña por la web / OFF = cobro manual) ───────────
+  pagoWebActivo = true;
+  pagoWebCalendlyUrl = '';
+  pagoWebModalOpen = false;
+  pagoWebSaving = false;
+  pagoWebError = '';
+  pagoWebPendingValue = true;
+
   // ── Reservas sin pago (admin) ─────────────────────────────────────────────
   readonly reservaCalendlyUrl =
     'https://calendly.com/reservascbm25/cbm-fisioterapia-clone?primary_color=c44b8e&hide_gdpr_banner=1&hide_landing_page_details=1&hide_event_type_details=1';
@@ -492,6 +500,7 @@ export class AdminDashboardComponent implements OnInit {
       this.loadNewsletter(),
       this.loadBannerConfig(),
       this.loadCartelConfig(),
+      this.loadPagoWebConfig(),
     ]);
   }
 
@@ -1759,6 +1768,59 @@ export class AdminDashboardComponent implements OnInit {
     };
 
     return map[estado];
+  }
+
+  async loadPagoWebConfig(): Promise<void> {
+    try {
+      const cfg = await this.configuracionService.getPagoWebConfig();
+      this.pagoWebActivo = cfg.activo;
+      this.pagoWebCalendlyUrl = cfg.calendlyUrl;
+    } catch {
+      this.pagoWebActivo = true;
+    }
+  }
+
+  onPagoWebToggleClick(event: Event): void {
+    // El switch no cambia solo: abre el modal de confirmación y se aplica al confirmar
+    event.preventDefault();
+    this.pagoWebPendingValue = !this.pagoWebActivo;
+    this.pagoWebError = '';
+    this.pagoWebModalOpen = true;
+  }
+
+  closePagoWebModal(): void {
+    this.pagoWebModalOpen = false;
+  }
+
+  async confirmPagoWebToggle(): Promise<void> {
+    const url = this.pagoWebCalendlyUrl.trim();
+    if (!url) {
+      this.pagoWebError = 'Pega el link del calendario de Calendly antes de confirmar.';
+      return;
+    }
+
+    this.pagoWebSaving = true;
+    this.pagoWebError = '';
+
+    try {
+      await this.withTimeout(
+        Promise.all([
+          this.configuracionService.updateConfiguracion(
+            'pago_web_activo',
+            this.pagoWebPendingValue ? 'true' : 'false',
+          ),
+          this.configuracionService.updateConfiguracion('pago_web_calendly_url', url),
+        ]),
+      );
+      this.pagoWebActivo = this.pagoWebPendingValue;
+      this.pagoWebCalendlyUrl = url;
+      this.pagoWebModalOpen = false;
+    } catch {
+      this.pagoWebError = 'No se pudo guardar la configuración. Inténtalo de nuevo.';
+    } finally {
+      this.pagoWebSaving = false;
+      this.flushUiState();
+    }
   }
 
   async loadBonosConfig(): Promise<void> {
