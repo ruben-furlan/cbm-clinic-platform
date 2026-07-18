@@ -1,0 +1,354 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.cartel-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 16px 40px;
+  background: linear-gradient(160deg, #fdf2f8 0%, #f5f3ff 55%, #eef2ff 100%);
+  font-family: inherit;
+}
+
+/* ── Acceso ──────────────────────────────────────────────────────────────── */
+
+.clave-card {
+  width: min(420px, 100%);
+  margin-top: clamp(24px, 14vh, 120px);
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 32px 24px;
+  box-shadow: 0 18px 45px rgba(196, 75, 142, 0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.clave-emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.clave-card h1 {
+  font-size: 1.5rem;
+  color: #3f3d56;
+  margin: 0;
+}
+
+.clave-ayuda {
+  color: #6b6a83;
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.clave-input {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 2px solid #eadcf0;
+  font-size: 1.15rem;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.clave-input:focus {
+  border-color: #c44b8e;
+}
+
+/* ── Botones genéricos ───────────────────────────────────────────────────── */
+
+.btn-principal {
+  width: 100%;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #e879a8, #a78bfa);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn-principal:active {
+  transform: scale(0.97);
+}
+
+.btn-principal:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn-secundario {
+  width: 100%;
+  padding: 14px 20px;
+  border: 2px solid #d9d6ea;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #55536e;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── Panel ───────────────────────────────────────────────────────────────── */
+
+.panel {
+  width: min(480px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.panel-cabecera {
+  text-align: center;
+  margin-top: 8px;
+}
+
+.panel-cabecera h1 {
+  font-size: 1.45rem;
+  color: #3f3d56;
+  margin: 0 0 6px;
+}
+
+.estado-actual {
+  margin: 0;
+  color: #6b6a83;
+  font-size: 1rem;
+}
+
+.estado-actual strong {
+  color: #3f3d56;
+}
+
+.toast {
+  background: #ecfdf5;
+  border: 2px solid #6ee7b7;
+  color: #047857;
+  border-radius: 14px;
+  padding: 12px 16px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.mensaje-error {
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  color: #b91c1c;
+  border-radius: 14px;
+  padding: 10px 14px;
+  text-align: center;
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+/* ── Voz ─────────────────────────────────────────────────────────────────── */
+
+.btn-voz {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 18px 20px;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #c44b8e, #7c3aed);
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.22);
+  transition: transform 0.15s ease;
+}
+
+.btn-voz:active {
+  transform: scale(0.97);
+}
+
+.btn-voz--escuchando {
+  animation: pulso-voz 1.4s ease-in-out infinite;
+}
+
+.btn-voz-icono {
+  font-size: 1.5rem;
+}
+
+@keyframes pulso-voz {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(196, 75, 142, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 14px rgba(196, 75, 142, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-voz--escuchando {
+    animation: none;
+  }
+}
+
+.voz-transcripcion {
+  margin: 0;
+  text-align: center;
+  color: #55536e;
+  font-size: 1.05rem;
+  font-style: italic;
+  min-height: 1.4em;
+}
+
+.voz-no-entendida {
+  margin: 0;
+  text-align: center;
+  color: #92400e;
+  background: #fffbeb;
+  border: 2px solid #fde68a;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.98rem;
+}
+
+/* ── Propuesta dictada ───────────────────────────────────────────────────── */
+
+.propuesta {
+  background: #ffffff;
+  border: 3px solid #a78bfa;
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  box-shadow: 0 14px 34px rgba(167, 139, 250, 0.2);
+}
+
+.propuesta-etiqueta {
+  margin: 0;
+  color: #6b6a83;
+  font-size: 0.95rem;
+}
+
+.propuesta-cartel {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #3f3d56;
+}
+
+.propuesta-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+/* ── Botones de estado ───────────────────────────────────────────────────── */
+
+.estados {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.estados--ocupado {
+  opacity: 0.75;
+}
+
+.estado-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 20px 22px;
+  border: 3px solid transparent;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(63, 61, 86, 0.08);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #3f3d56;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform 0.15s ease,
+    border-color 0.2s ease;
+}
+
+button.estado-card:active {
+  transform: scale(0.98);
+}
+
+.estado-card:disabled {
+  cursor: default;
+}
+
+.estado-emoji {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.estado-nombre {
+  flex: 1;
+}
+
+.estado-card--activo {
+  border-color: #c44b8e;
+  background: #fdf2f8;
+}
+
+.estado-card--volvemos {
+  flex-wrap: wrap;
+  cursor: default;
+}
+
+.chips-minutos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+}
+
+.chip {
+  flex: 1 1 60px;
+  min-width: 60px;
+  padding: 14px 8px;
+  border: 2px solid #eadcf0;
+  border-radius: 14px;
+  background: #faf7fd;
+  color: #3f3d56;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease;
+}
+
+.chip:active {
+  transform: scale(0.94);
+  background: #f3e8ff;
+}
+
+.chip:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.pie-nota {
+  text-align: center;
+  color: #8a88a3;
+  font-size: 0.9rem;
+  margin: 4px 0 0;
+}

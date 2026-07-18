@@ -1,0 +1,135 @@
+<main class="cartel-page">
+  <!-- ── Acceso: clave compartida, solo la primera vez en cada móvil ──────── -->
+  <section *ngIf="pantalla === 'clave'" class="clave-card" aria-label="Acceso al cartel">
+    <span class="clave-emoji" aria-hidden="true">🪟</span>
+    <h1>Cartel de la ventana</h1>
+    <p class="clave-ayuda">Escribe la clave del equipo. Solo la pedimos una vez en este móvil.</p>
+
+    <input
+      class="clave-input"
+      type="password"
+      inputmode="text"
+      autocomplete="off"
+      enterkeyhint="go"
+      placeholder="Clave del equipo"
+      aria-label="Clave del equipo"
+      [(ngModel)]="claveInput"
+      (keyup.enter)="entrar()"
+    />
+
+    <button class="btn-principal" type="button" [disabled]="validandoClave" (click)="entrar()">
+      {{ validandoClave ? 'Comprobando…' : 'Entrar' }}
+    </button>
+
+    <p *ngIf="claveError" class="mensaje-error" role="alert">{{ claveError }}</p>
+  </section>
+
+  <!-- ── Panel: un toque y listo ──────────────────────────────────────────── -->
+  <section *ngIf="pantalla === 'panel'" class="panel" aria-label="Cambiar el cartel">
+    <header class="panel-cabecera">
+      <h1>🪟 Cartel de la ventana</h1>
+      <p class="estado-actual" *ngIf="estadoActivo && !cargandoEstado">
+        Ahora mismo: <strong>{{ preset(estadoActivo).emoji }} {{ tituloActivo }}</strong>
+      </p>
+      <p class="estado-actual" *ngIf="cargandoEstado">Cargando estado actual…</p>
+    </header>
+
+    <div class="toast" *ngIf="mensajeOk" role="status">{{ mensajeOk }} ✓</div>
+    <p class="mensaje-error" *ngIf="errorGuardar" role="alert">{{ errorGuardar }}</p>
+    <p class="mensaje-error" *ngIf="claveError" role="alert">{{ claveError }}</p>
+
+    <!-- Dictado por voz -->
+    <button
+      *ngIf="vozDisponible"
+      class="btn-voz"
+      type="button"
+      [class.btn-voz--escuchando]="escuchando"
+      (click)="alternarVoz()"
+    >
+      <span class="btn-voz-icono" aria-hidden="true">🎤</span>
+      {{ escuchando ? 'Escuchando… toca para parar' : 'Decirlo con la voz' }}
+    </button>
+
+    <p class="voz-transcripcion" *ngIf="escuchando">
+      {{ transcripcion || 'Di por ejemplo: «volvemos en 20» o «cerrado por hoy»' }}
+    </p>
+    <p class="voz-no-entendida" *ngIf="vozNoEntendida">{{ vozNoEntendida }}</p>
+
+    <!-- Confirmación de lo dictado -->
+    <div class="propuesta" *ngIf="propuesta">
+      <p class="propuesta-etiqueta">He entendido:</p>
+      <p class="propuesta-cartel">
+        <span aria-hidden="true">{{ preset(propuesta.estado).emoji }}</span>
+        {{ propuesta.titulo }}
+      </p>
+      <div class="propuesta-acciones">
+        <button
+          class="btn-principal"
+          type="button"
+          [disabled]="guardando"
+          (click)="aceptarPropuesta()"
+        >
+          Aceptar ✓
+        </button>
+        <button class="btn-secundario" type="button" (click)="cancelarPropuesta()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Botones grandes de un toque -->
+    <div class="estados" [class.estados--ocupado]="guardando">
+      <button
+        class="estado-card estado-card--abierto"
+        type="button"
+        [class.estado-card--activo]="estadoActivo === 'abierto'"
+        [disabled]="guardando"
+        (click)="ponerEstado('abierto')"
+      >
+        <span class="estado-emoji" aria-hidden="true">🟢</span>
+        <span class="estado-nombre">Abierto</span>
+      </button>
+
+      <button
+        class="estado-card estado-card--timbre"
+        type="button"
+        [class.estado-card--activo]="estadoActivo === 'timbre'"
+        [disabled]="guardando"
+        (click)="ponerEstado('timbre')"
+      >
+        <span class="estado-emoji" aria-hidden="true">🔔</span>
+        <span class="estado-nombre">Toca el timbre</span>
+      </button>
+
+      <div
+        class="estado-card estado-card--volvemos"
+        [class.estado-card--activo]="estadoActivo === 'volvemos'"
+      >
+        <span class="estado-emoji" aria-hidden="true">⏱️</span>
+        <span class="estado-nombre">Volvemos en…</span>
+        <div class="chips-minutos">
+          <button
+            *ngFor="let min of minutosRapidos"
+            class="chip"
+            type="button"
+            [disabled]="guardando"
+            (click)="ponerVolvemos(min)"
+          >
+            {{ min }}′
+          </button>
+        </div>
+      </div>
+
+      <button
+        class="estado-card estado-card--cerrado"
+        type="button"
+        [class.estado-card--activo]="estadoActivo === 'cerrado'"
+        [disabled]="guardando"
+        (click)="ponerEstado('cerrado')"
+      >
+        <span class="estado-emoji" aria-hidden="true">💤</span>
+        <span class="estado-nombre">Cerrado por hoy</span>
+      </button>
+    </div>
+
+    <p class="pie-nota">La pantalla del local se actualiza sola en menos de medio minuto.</p>
+  </section>
+</main>

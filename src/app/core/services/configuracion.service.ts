@@ -169,6 +169,55 @@ export class ConfiguracionService {
     };
   }
 
+  /**
+   * Valida la clave compartida del equipo para /cartel sin tocar el estado.
+   * La clave real vive en el RPC (SECURITY DEFINER), nunca en el frontend.
+   */
+  async validarClaveCartel(clave: string): Promise<boolean> {
+    const { data, error } = await supabase.rpc('actualizar_cartel_display', {
+      p_clave: clave,
+      p_solo_validar: true,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return data?.ok === true;
+  }
+
+  /**
+   * Actualiza el cartel de la ventana usando la clave compartida del equipo.
+   * Devuelve false si la clave es incorrecta; lanza en errores de red/BD.
+   */
+  async actualizarCartelConClave(
+    clave: string,
+    estado: CartelEstadoId,
+    titulo: string,
+    mensaje: string,
+  ): Promise<boolean> {
+    const { data, error } = await supabase.rpc('actualizar_cartel_display', {
+      p_clave: clave,
+      p_estado: estado,
+      p_titulo: titulo,
+      p_mensaje: mensaje,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (data?.ok === true) {
+      return true;
+    }
+
+    if (data?.error === 'clave_incorrecta') {
+      return false;
+    }
+
+    throw new Error(data?.error ?? 'error_desconocido');
+  }
+
   async getCartelDisplayConfig(): Promise<CartelDisplayConfig> {
     const { data } = await supabase
       .from('configuracion')

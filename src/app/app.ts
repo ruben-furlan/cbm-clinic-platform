@@ -40,6 +40,7 @@ export class App implements OnInit, OnDestroy {
   isBajaNewsletterRoute = false;
   isAdminRoute = false;
   isComunidadRoute = false;
+  isCartelRoute = false;
   isSolicitudCitaRoute = false;
   showScrollTop = false;
   showScrollTopHint = false;
@@ -142,12 +143,14 @@ export class App implements OnInit, OnDestroy {
     const isBajaNewsletter = url.startsWith('/baja-newsletter');
     const isAdmin = url.startsWith('/admin');
     const isComunidad = url.startsWith('/comunidad');
+    const isCartel = url.startsWith('/cartel');
     const isSolicitudCita = url.split('?')[0] === '/solicitar-cita';
 
     this.isCanjearRoute = isCanjear;
     this.isBajaNewsletterRoute = isBajaNewsletter;
     this.isAdminRoute = isAdmin;
     this.isComunidadRoute = isComunidad;
+    this.isCartelRoute = isCartel;
     this.isSolicitudCitaRoute = isSolicitudCita;
 
     if (this.isDisplayRoute === isDisplay) {

@@ -17,105 +17,110 @@ import { ComunidadComponent } from './comunidad/comunidad.component';
 export const routes: Routes = [
   {
     path: '',
-    component: HomePage
+    component: HomePage,
   },
   {
     path: 'solicitar-cita',
-    component: SolicitarCitaPage
+    component: SolicitarCitaPage,
   },
   {
     path: 'display',
     pathMatch: 'full',
-    redirectTo: 'display/vertical'
+    redirectTo: 'display/vertical',
   },
   {
     path: 'display/:orientation',
-    component: DisplayComponent
+    component: DisplayComponent,
+  },
+  {
+    path: 'cartel',
+    loadComponent: () => import('./pages/cartel/cartel.component').then((m) => m.CartelComponent),
   },
   {
     path: 'espacio-cbm',
-    component: EspacioCbmPage
+    component: EspacioCbmPage,
   },
   {
     path: 'filosofia-cbm',
-    component: FilosofiaCbmPage
+    component: FilosofiaCbmPage,
   },
   {
     path: 'blog',
-    component: BlogPage
+    component: BlogPage,
   },
   {
     path: 'cookies',
-    component: CookiesPage
+    component: CookiesPage,
   },
   {
     path: 'tratamientos',
-    component: TreatmentsPage
+    component: TreatmentsPage,
   },
   {
     path: 'tratamientos/:categoria',
-    component: TreatmentsPage
+    component: TreatmentsPage,
   },
   {
     path: 'regalo',
-    component: RegaloComponent
+    component: RegaloComponent,
   },
   {
     path: 'canjear',
-    component: CanjearRegaloComponent
+    component: CanjearRegaloComponent,
   },
   {
     path: 'baja-newsletter',
-    component: BajaNewsletterComponent
+    component: BajaNewsletterComponent,
   },
   {
     path: 'comunidad',
-    component: ComunidadComponent
+    component: ComunidadComponent,
   },
   {
     path: 'admin',
-    loadComponent: () => import('./admin/admin-dashboard.component').then(m => m.AdminDashboardComponent),
-    canActivate: [adminAuthGuard]
+    loadComponent: () =>
+      import('./admin/admin-dashboard.component').then((m) => m.AdminDashboardComponent),
+    canActivate: [adminAuthGuard],
   },
   {
     path: 'admin/login',
-    loadComponent: () => import('./admin/admin-login.component').then(m => m.AdminLoginComponent)
+    loadComponent: () => import('./admin/admin-login.component').then((m) => m.AdminLoginComponent),
   },
   {
     path: 'admin/dashboard',
     pathMatch: 'full',
-    redirectTo: 'admin'
+    redirectTo: 'admin',
   },
   {
     path: 'fisioterapia-dolor-lumbar-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'fisioterapia-cervical-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'puncion-seca-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'pilates-terapeutico-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'fisioterapia-lesiones-deportivas-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'fisioterapia-tendinitis-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'fisioterapia-recuperacion-postquirurgica-terrassa',
-    component: SeoPageComponent
+    component: SeoPageComponent,
   },
   {
     path: 'fisioterapia-dolor-hombro-terrassa',
-    component: SeoPageComponent
-  }
+    component: SeoPageComponent,
+  },
 ];
