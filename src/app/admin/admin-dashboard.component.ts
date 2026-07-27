@@ -688,7 +688,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   setCartelEstado(estado: CartelEstadoId): void {
-    this.cartelConfig = { ...this.cartelConfig, estado };
+    this.cartelConfig = { estado, titulo: '', mensaje: '' };
   }
 
   async saveCartelConfig(): Promise<void> {

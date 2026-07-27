@@ -533,12 +533,12 @@
   animation: cartel-orb 11s ease-in-out infinite reverse;
 }
 
-/* El equipo CBM paseando por la pantalla, por detrás del cartel.
+/* El equipo CBM paseando por la pantalla, por delante del cartel.
    La escena activa la fija el componente vía [attr.data-scene]. */
 .cartel-walkers {
   position: absolute;
   inset: auto 0 clamp(-3vh, -1.4vh, -8px) 0;
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
 }
 .cartel-walkers__stride {
