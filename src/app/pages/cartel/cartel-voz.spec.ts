@@ -31,6 +31,30 @@ describe('interpretarComandoCartel', () => {
     expect(interpretarComandoCartel('vuelvo en 1 minuto')?.titulo).toBe('Volvemos en 1 minuto');
   });
 
+  it('entiende "una hora"', () => {
+    const r = interpretarComandoCartel('volvemos en una hora');
+    expect(r?.minutos).toBe(60);
+    expect(r?.titulo).toBe('Volvemos en 1 hora');
+  });
+
+  it('entiende "dos horas" sin confundirlo con "2 minutos"', () => {
+    const r = interpretarComandoCartel('volvemos en dos horas');
+    expect(r?.minutos).toBe(120);
+    expect(r?.titulo).toBe('Volvemos en 2 horas');
+  });
+
+  it('entiende "2 horas" en dígitos', () => {
+    const r = interpretarComandoCartel('volvemos en 2 horas');
+    expect(r?.minutos).toBe(120);
+    expect(r?.titulo).toBe('Volvemos en 2 horas');
+  });
+
+  it('entiende "hora y media"', () => {
+    const r = interpretarComandoCartel('volvemos en una hora y media');
+    expect(r?.minutos).toBe(90);
+    expect(r?.titulo).toBe('Volvemos en 1 hora y media');
+  });
+
   it('entiende cerrado, con y sin acentos', () => {
     expect(interpretarComandoCartel('cerrado por hoy')?.estado).toBe('cerrado');
     expect(interpretarComandoCartel('ya cerramos hasta mañana')?.estado).toBe('cerrado');

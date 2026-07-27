@@ -700,6 +700,9 @@ export class AdminDashboardComponent implements OnInit {
         ['display_cartel_estado', this.cartelConfig.estado],
         ['display_cartel_titulo', this.cartelConfig.titulo.trim()],
         ['display_cartel_mensaje', this.cartelConfig.mensaje.trim()],
+        // El admin no tiene selector de minutos: siempre limpia una cuenta
+        // atrás que se hubiera dejado activa desde /cartel.
+        ['display_cartel_volvemos_fin', ''],
       ];
       await Promise.all(
         claves.map(([clave, valor]) => this.configuracionService.updateConfiguracion(clave, valor)),

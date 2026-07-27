@@ -64,6 +64,8 @@ export interface CartelDisplayConfig {
   estado: CartelEstadoId;
   titulo: string;
   mensaje: string;
+  /** ISO de cuándo termina la cuenta atrás de "volvemos"; vacío si no hay ninguna activa. */
+  volvemosFin: string;
 }
 
 /** Calendario Calendly público por defecto (fallback si no hay valor en la BD). */
@@ -188,6 +190,8 @@ export class ConfiguracionService {
 
   /**
    * Actualiza el cartel de la ventana usando la clave compartida del equipo.
+   * `minutos` solo aplica al estado "volvemos": arma la cuenta atrás en el
+   * servidor (evita depender del reloj del móvil que hace la llamada).
    * Devuelve false si la clave es incorrecta; lanza en errores de red/BD.
    */
   async actualizarCartelConClave(
@@ -195,12 +199,14 @@ export class ConfiguracionService {
     estado: CartelEstadoId,
     titulo: string,
     mensaje: string,
+    minutos?: number,
   ): Promise<boolean> {
     const { data, error } = await supabase.rpc('actualizar_cartel_display', {
       p_clave: clave,
       p_estado: estado,
       p_titulo: titulo,
       p_mensaje: mensaje,
+      p_minutos: minutos ?? null,
     });
 
     if (error) {
@@ -222,7 +228,12 @@ export class ConfiguracionService {
     const { data } = await supabase
       .from('configuracion')
       .select('clave, valor')
-      .in('clave', ['display_cartel_estado', 'display_cartel_titulo', 'display_cartel_mensaje']);
+      .in('clave', [
+        'display_cartel_estado',
+        'display_cartel_titulo',
+        'display_cartel_mensaje',
+        'display_cartel_volvemos_fin',
+      ]);
 
     const cfg: Record<string, string> = {};
     data?.forEach((item) => {
@@ -235,6 +246,7 @@ export class ConfiguracionService {
       estado: CARTEL_DISPLAY_ESTADOS.some((e) => e.id === estado) ? estado : 'volvemos',
       titulo: cfg['display_cartel_titulo'] ?? '',
       mensaje: cfg['display_cartel_mensaje'] ?? '',
+      volvemosFin: cfg['display_cartel_volvemos_fin'] ?? '',
     };
   }
 }

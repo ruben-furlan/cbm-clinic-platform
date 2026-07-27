@@ -15,6 +15,7 @@ import {
   CartelEstadoId,
   ConfiguracionService,
 } from '../../core/services/configuracion.service';
+import { formatearTituloVolvemos } from '../../shared/volvemos-titulo';
 
 interface DisplaySlide {
   id: string;
@@ -26,6 +27,8 @@ interface CartelView {
   emoji: string;
   titulo: string;
   mensaje: string;
+  /** epoch ms de cuándo termina el "volvemos"; null = sin cuenta atrás activa. */
+  volvemosFinMs: number | null;
 }
 
 type DisplayOrientation = 'vertical' | 'horizontal';
@@ -84,6 +87,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
     emoji: '⏱️',
     titulo: 'Volvemos en 5 minutos',
     mensaje: 'Estamos aquí al lado · Espéranos un momentito',
+    volvemosFinMs: null,
   };
 
   walkerScene: WalkerScene = 'rest';
@@ -91,6 +95,7 @@ export class DisplayComponent implements OnInit, OnDestroy {
   private sliderTimer: ReturnType<typeof setInterval> | null = null;
   private refreshTimer: ReturnType<typeof setInterval> | null = null;
   private cartelTimer: ReturnType<typeof setInterval> | null = null;
+  private countdownTimer: ReturnType<typeof setInterval> | null = null;
   private walkerTimer: ReturnType<typeof setTimeout> | null = null;
   private lastWalkerScene: WalkerScene = 'rest';
   private routeSubscription: Subscription | null = null;
@@ -151,6 +156,10 @@ export class DisplayComponent implements OnInit, OnDestroy {
       clearInterval(this.cartelTimer);
     }
 
+    if (this.countdownTimer) {
+      clearInterval(this.countdownTimer);
+    }
+
     if (this.walkerTimer) {
       clearTimeout(this.walkerTimer);
     }
@@ -167,12 +176,21 @@ export class DisplayComponent implements OnInit, OnDestroy {
       this.cartelTimer = null;
     }
 
+    if (this.countdownTimer) {
+      clearInterval(this.countdownTimer);
+      this.countdownTimer = null;
+    }
+
     if (this.orientation !== 'horizontal' || !isPlatformBrowser(this.platformId)) {
       return;
     }
 
     void this.loadCartel();
     this.cartelTimer = setInterval(() => void this.loadCartel(), this.cartelPollMs);
+
+    // Refresca el texto de "Volvemos en…" cada pocos segundos, sin esperar al
+    // siguiente poll a la BD: la cuenta atrás se calcula toda en el cliente.
+    this.countdownTimer = setInterval(() => this.cdr.markForCheck(), 15000);
   }
 
   private async loadCartel(): Promise<void> {
@@ -180,17 +198,32 @@ export class DisplayComponent implements OnInit, OnDestroy {
       const cfg = await this.configuracion.getCartelDisplayConfig();
       const preset =
         CARTEL_DISPLAY_ESTADOS.find((e) => e.id === cfg.estado) ?? CARTEL_DISPLAY_ESTADOS[0];
+      const volvemosFinMs = cfg.volvemosFin ? Date.parse(cfg.volvemosFin) : NaN;
 
       this.cartel = {
         tema: preset.tema,
         emoji: preset.emoji,
         titulo: cfg.titulo.trim() || preset.titulo,
         mensaje: cfg.mensaje.trim() || preset.mensaje,
+        volvemosFinMs: Number.isNaN(volvemosFinMs) ? null : volvemosFinMs,
       };
       this.cdr.markForCheck();
     } catch {
       // Sin conexión con Supabase: se mantienen los valores por defecto.
     }
+  }
+
+  /**
+   * Título mostrado del cartel: si hay una cuenta atrás de "volvemos" activa,
+   * recalcula los minutos restantes en cada tick; si no, usa el texto guardado.
+   */
+  get cartelTituloMostrado(): string {
+    if (this.cartel.tema !== 'volvemos' || this.cartel.volvemosFinMs === null) {
+      return this.cartel.titulo;
+    }
+
+    const minutosRestantes = Math.ceil((this.cartel.volvemosFinMs - Date.now()) / 60000);
+    return formatearTituloVolvemos(minutosRestantes);
   }
 
   /**

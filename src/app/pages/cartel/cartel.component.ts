@@ -16,6 +16,7 @@ import {
   ConfiguracionService,
 } from '../../core/services/configuracion.service';
 import { CartelVozResultado, interpretarComandoCartel } from './cartel-voz';
+import { formatearTituloVolvemos } from '../../shared/volvemos-titulo';
 
 const CLAVE_STORAGE_KEY = 'cbm_cartel_clave';
 
@@ -34,7 +35,7 @@ const CLAVE_STORAGE_KEY = 'cbm_cartel_clave';
 })
 export class CartelComponent implements OnInit, OnDestroy {
   readonly estados = CARTEL_DISPLAY_ESTADOS;
-  readonly minutosRapidos = [5, 10, 15, 20, 30, 45];
+  readonly minutosRapidos = [5, 10, 15, 20, 30, 45, 60, 90, 120];
 
   pantalla: 'clave' | 'panel' = 'clave';
 
@@ -220,13 +221,27 @@ export class CartelComponent implements OnInit, OnDestroy {
     await this.guardar(estado, '', '');
   }
 
-  /** Chips de "Volvemos en X min": guarda con el título ya montado. */
+  /** Chips de "Volvemos en X min": guarda con el título ya montado y arranca la cuenta atrás. */
   async ponerVolvemos(minutos: number): Promise<void> {
-    const titulo = minutos === 1 ? 'Volvemos en 1 minuto' : `Volvemos en ${minutos} minutos`;
-    await this.guardar('volvemos', titulo, '');
+    await this.guardar('volvemos', formatearTituloVolvemos(minutos), '', minutos);
   }
 
-  private async guardar(estado: CartelEstadoId, titulo: string, mensaje: string): Promise<void> {
+  /** Etiqueta corta de cada chip: "45′" para minutos, "1h" / "1h30" para horas. */
+  etiquetaMinutos(minutos: number): string {
+    if (minutos < 60) {
+      return `${minutos}′`;
+    }
+    const horas = Math.floor(minutos / 60);
+    const resto = minutos % 60;
+    return resto === 0 ? `${horas}h` : `${horas}h${resto}`;
+  }
+
+  private async guardar(
+    estado: CartelEstadoId,
+    titulo: string,
+    mensaje: string,
+    minutos?: number,
+  ): Promise<void> {
     if (this.guardando) {
       return;
     }
@@ -241,6 +256,7 @@ export class CartelComponent implements OnInit, OnDestroy {
         estado,
         titulo,
         mensaje,
+        minutos,
       );
 
       if (!ok) {
@@ -367,13 +383,18 @@ export class CartelComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { estado, titulo } = this.propuesta;
+    const { estado, titulo, minutos } = this.propuesta;
     this.propuesta = null;
     this.transcripcion = '';
 
     // Los presets van con textos vacíos para que el display use sus defaults;
-    // solo "volvemos en X" necesita el título montado con los minutos.
-    await this.guardar(estado, estado === 'volvemos' ? titulo : '', '');
+    // solo "volvemos en X" necesita el título montado y los minutos para la cuenta atrás.
+    await this.guardar(
+      estado,
+      estado === 'volvemos' ? titulo : '',
+      '',
+      estado === 'volvemos' ? minutos : undefined,
+    );
   }
 
   cancelarPropuesta(): void {

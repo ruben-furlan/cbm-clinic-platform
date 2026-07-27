@@ -4,7 +4,8 @@
 
 INSERT INTO configuracion (clave, valor, descripcion)
 VALUES
-  ('display_cartel_estado',  'volvemos', 'Estado del cartel de la ventana: abierto | timbre | volvemos | cerrado'),
-  ('display_cartel_titulo',  '',         'Título personalizado del cartel (vacío = usa el texto por defecto del estado)'),
-  ('display_cartel_mensaje', '',         'Mensaje personalizado del cartel (vacío = usa el texto por defecto del estado)')
+  ('display_cartel_estado',       'volvemos', 'Estado del cartel de la ventana: abierto | timbre | volvemos | cerrado'),
+  ('display_cartel_titulo',       '',         'Título personalizado del cartel (vacío = usa el texto por defecto del estado)'),
+  ('display_cartel_mensaje',      '',         'Mensaje personalizado del cartel (vacío = usa el texto por defecto del estado)'),
+  ('display_cartel_volvemos_fin', '',         'ISO de cuándo termina la cuenta atrás de "volvemos" (la arma el RPC actualizar_cartel_display); vacío = sin cuenta atrás activa')
 ON CONFLICT (clave) DO NOTHING;

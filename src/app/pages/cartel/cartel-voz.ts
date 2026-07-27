@@ -1,4 +1,5 @@
 import { CARTEL_DISPLAY_ESTADOS, CartelEstadoId } from '../../core/services/configuracion.service';
+import { formatearTituloVolvemos } from '../../shared/volvemos-titulo';
 
 /** Resultado de interpretar una frase dicha por voz para el cartel. */
 export interface CartelVozResultado {
@@ -32,26 +33,53 @@ const NUMEROS_EN_PALABRAS: Record<string, number> = {
 };
 
 function normalizar(texto: string): string {
-  return texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  return texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
 }
 
 function extraerMinutos(frase: string): number | null {
-  const digitos = frase.match(/\d+/);
-  if (digitos) {
-    const valor = parseInt(digitos[0], 10);
-    return valor > 0 && valor <= 480 ? valor : null;
+  // Las frases con "hora(s)" se resuelven antes que los dígitos sueltos: si no,
+  // "2 horas" se leería como "2 minutos" (el primer dígito de la frase).
+  if (/hora y media/.test(frase)) {
+    return 90;
   }
 
-  if (/media hora/.test(frase)) {
-    return 30;
+  if (/hora y cuarto/.test(frase)) {
+    return 75;
   }
 
   if (/cuarto de hora/.test(frase)) {
     return 15;
   }
 
-  if (/una? hora/.test(frase)) {
+  if (/media hora/.test(frase)) {
+    return 30;
+  }
+
+  const horasEnDigitos = frase.match(/(\d+)\s+horas?\b/);
+  if (horasEnDigitos) {
+    const horas = parseInt(horasEnDigitos[1], 10);
+    if (horas > 0 && horas <= 8) {
+      return horas * 60;
+    }
+  }
+
+  for (const [palabra, valor] of Object.entries(NUMEROS_EN_PALABRAS)) {
+    if (new RegExp(`\\b${palabra}\\s+horas?\\b`).test(frase)) {
+      return valor * 60;
+    }
+  }
+
+  if (/\bhora\b/.test(frase)) {
     return 60;
+  }
+
+  const digitos = frase.match(/\d+/);
+  if (digitos) {
+    const valor = parseInt(digitos[0], 10);
+    return valor > 0 && valor <= 480 ? valor : null;
   }
 
   for (const [palabra, valor] of Object.entries(NUMEROS_EN_PALABRAS)) {
@@ -95,7 +123,7 @@ export function interpretarComandoCartel(transcripcion: string): CartelVozResult
     return {
       estado: 'volvemos',
       minutos,
-      titulo: minutos === 1 ? 'Volvemos en 1 minuto' : `Volvemos en ${minutos} minutos`,
+      titulo: formatearTituloVolvemos(minutos),
       mensaje: p.mensaje,
     };
   }
