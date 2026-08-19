@@ -1,0 +1,162 @@
+/* ── Botón flotante ───────────────────────────────────────────────────────── */
+
+.assistant-fab {
+  position: fixed;
+  right: 24px;
+  bottom: var(--fab-stack-bottom);
+  z-index: var(--z-fab);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+
+  height: var(--fab-size);
+  padding: 0 20px 0 16px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+
+  background: var(--gradient-brand);
+  color: var(--color-white);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+
+  box-shadow: var(--premium-floating-shadow);
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.24s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .assistant-fab:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--premium-floating-shadow-hover);
+  }
+}
+
+.assistant-fab:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.assistant-fab:active {
+  transform: scale(0.96);
+}
+
+/* Abierto: se reduce a un botón de cierre circular para no competir con el panel. */
+.assistant-fab--open .assistant-fab__label {
+  display: none;
+}
+
+.assistant-fab--open {
+  width: var(--fab-size);
+  padding: 0;
+  justify-content: center;
+  background: var(--color-dark);
+}
+
+/* ── Aviso discreto (nudge) ───────────────────────────────────────────────── */
+
+.assistant-nudge {
+  position: fixed;
+  right: 24px;
+  bottom: var(--fab-stack-next);
+  z-index: var(--z-fab);
+
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  max-width: 254px;
+  padding: 12px 12px 12px 14px;
+  border-radius: 16px;
+
+  background: var(--color-white);
+  border: var(--card-border);
+  box-shadow: var(--premium-floating-shadow);
+
+  animation: assistant-nudge-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.assistant-nudge__text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.assistant-nudge__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.assistant-nudge__close:hover {
+  background: var(--bg-soft);
+  color: var(--color-dark);
+}
+
+.assistant-nudge__close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@keyframes assistant-nudge-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Móvil ────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .assistant-fab {
+    right: 16px;
+    width: var(--fab-size);
+    padding: 0;
+    justify-content: center;
+  }
+
+  .assistant-fab__label {
+    /* El icono basta en móvil; el texto sigue disponible vía aria-label. */
+    display: none;
+  }
+
+  .assistant-nudge {
+    right: 16px;
+    max-width: calc(100vw - 32px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-fab {
+    transition: none;
+  }
+
+  .assistant-fab:hover,
+  .assistant-fab:active {
+    transform: none;
+  }
+
+  .assistant-nudge {
+    animation: none;
+  }
+}

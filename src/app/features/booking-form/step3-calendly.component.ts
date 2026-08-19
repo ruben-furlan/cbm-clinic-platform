@@ -311,8 +311,13 @@ export class Step3CalendlyComponent implements AfterViewInit, OnDestroy {
     const utm: any = {};
 
     if (treatment) {
+      // Se concatena al mismo campo `a2` en lugar de crear uno nuevo: es la
+      // única respuesta personalizada que el evento de Calendly tiene definida.
+      const motivo = this.bookingTreatmentService.getMotivo();
+      const resumen = `${treatment.nombre} - ${treatment.precio}`;
+
       prefill.customAnswers = {
-        a2: `${treatment.nombre} - ${treatment.precio}`,
+        a2: motivo ? `${resumen} · Motivo: ${motivo}` : resumen,
       };
     }
 

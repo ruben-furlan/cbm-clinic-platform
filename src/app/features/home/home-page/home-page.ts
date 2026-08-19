@@ -56,7 +56,7 @@ export class HomePage implements OnInit, OnDestroy {
       chipMobile: 'Dolor cervical',
       titulo: 'Fisioterapia para dolor cervical en Terrassa',
       descripcion: 'El cuello cargado por el trabajo de oficina o el estrés tiene solución. Combinamos terapia manual y ejercicio adaptado para reducir la tensión y prevenir recaídas.',
-      url: '/fisioterapia-dolor-cervical-terrassa'
+      url: '/fisioterapia-cervical-terrassa'
     },
     {
       key: 'deportivas',

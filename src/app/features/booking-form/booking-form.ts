@@ -121,6 +121,10 @@ export class BookingFormComponent implements OnInit {
   }
 
   private applyPreselectionFromQuery(): void {
+    // El motivo llega del asistente de orientación y viaja hasta el prefill de
+    // Calendly. Se guarda aunque no haya tarifa que preseleccionar.
+    this.bookingTreatmentService.setMotivo(this.route.snapshot.queryParamMap.get('motivo'));
+
     const tarifaId = this.route.snapshot.queryParamMap.get('tarifaId');
     if (!tarifaId) return;
 
