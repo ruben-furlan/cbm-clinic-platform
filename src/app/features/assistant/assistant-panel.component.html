@@ -1,0 +1,79 @@
+<div class="assistant-scrim" (click)="triage.close()" aria-hidden="true"></div>
+
+<section
+  #panel
+  id="assistant-panel"
+  class="assistant-panel"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="assistant-title"
+  tabindex="-1"
+  (keydown)="onKeydown($event)"
+>
+  <header class="assistant-panel__head">
+    <div>
+      <h2 id="assistant-title" class="assistant-panel__title">Te orientamos</h2>
+      <p class="assistant-panel__subtitle">Dos preguntas y te decimos qué encaja mejor.</p>
+    </div>
+    <button
+      type="button"
+      class="assistant-panel__close"
+      (click)="triage.close()"
+      aria-label="Cerrar el asistente"
+    >
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path
+          fill="currentColor"
+          d="M18.3 5.7 12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"
+        />
+      </svg>
+    </button>
+  </header>
+
+  <div #thread class="assistant-thread" aria-live="polite">
+    @for (step of triage.history(); track $index) {
+      <p class="assistant-msg assistant-msg--bot">{{ step.pregunta }}</p>
+      <p class="assistant-msg assistant-msg--user">{{ step.label }}</p>
+    }
+
+    @if (isTyping()) {
+      <p class="assistant-msg assistant-msg--bot assistant-typing" aria-label="Escribiendo">
+        <span class="assistant-typing__dot"></span>
+        <span class="assistant-typing__dot"></span>
+        <span class="assistant-typing__dot"></span>
+      </p>
+    } @else {
+      @if (triage.currentNode(); as node) {
+        <p class="assistant-msg assistant-msg--bot">{{ node.pregunta }}</p>
+        <div class="assistant-options">
+          @for (option of node.opciones; track option.id) {
+            <button type="button" class="assistant-chip" (click)="select(option)">
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      }
+
+      @if (triage.result(); as result) {
+        <app-assistant-result [result]="result" />
+      }
+    }
+  </div>
+
+  <footer class="assistant-panel__foot">
+    <div class="assistant-panel__nav">
+      @if (triage.canGoBack()) {
+        <button type="button" class="assistant-link" (click)="back()">← Volver</button>
+        <button type="button" class="assistant-link" (click)="restart()">Empezar de nuevo</button>
+      }
+    </div>
+    <div class="assistant-panel__contact">
+      <span class="assistant-panel__contact-label">¿Prefieres hablar con nosotros?</span>
+      <a class="assistant-panel__contact-link" [href]="whatsappHref" target="_blank" rel="noopener"
+        >WhatsApp</a
+      >
+      <span aria-hidden="true">·</span>
+      <a class="assistant-panel__contact-link" [href]="phoneHref">Llamar</a>
+    </div>
+  </footer>
+</section>

@@ -1,0 +1,39 @@
+<article class="assistant-result">
+  <p class="assistant-result__ack">{{ result().outcome.reconocimiento }}</p>
+
+  <h3 class="assistant-result__service">{{ result().outcome.servicio }}</h3>
+  <p class="assistant-result__why">{{ result().outcome.porQue }}</p>
+
+  @if (result().pasos.length > 0) {
+    <p class="assistant-result__label">Qué haríamos</p>
+    <ul class="assistant-result__steps">
+      @for (paso of result().pasos; track paso) {
+        <li>{{ paso }}</li>
+      }
+    </ul>
+  }
+
+  <button type="button" class="assistant-result__cta" (click)="reservar()">Reservar cita</button>
+
+  @if (result().landingPath; as landing) {
+    <a class="assistant-result__more" [routerLink]="landing" (click)="cerrar()">
+      Ver más sobre esto →
+    </a>
+  }
+
+  @if (result().outcome.alternativa; as alternativa) {
+    <p class="assistant-result__alt">{{ alternativa }}</p>
+  }
+
+  <p class="assistant-result__disclaimer">{{ avisoNoDiagnostico }}</p>
+
+  <details class="assistant-result__flags">
+    <summary>Cuándo conviene consultar antes</summary>
+    <ul>
+      @for (aviso of result().avisos; track aviso) {
+        <li>{{ aviso }}</li>
+      }
+      <li>{{ avisoDerivacion }}</li>
+    </ul>
+  </details>
+</article>

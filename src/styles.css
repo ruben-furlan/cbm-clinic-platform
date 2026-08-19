@@ -21,6 +21,31 @@
   --premium-glass-shadow: 0 14px 32px rgba(31, 27, 45, 0.1);
   --premium-floating-shadow: 0 16px 34px rgba(31, 27, 45, 0.1);
   --premium-floating-shadow-hover: 0 22px 44px rgba(31, 27, 45, 0.14);
+
+  /* Capas de la UI flotante. Antes eran literales dispersos por cada CSS, lo que
+     provocaba empates (cookies tapaba el botón flotante en desktop). */
+  --z-header: 1000;
+  --z-cookie: 1050;
+  --z-mascot: 1080;
+  --z-fab: 1100;
+  --z-booking-bar: 1200;
+  --z-panel: 1250;
+  --z-top: 1300;
+
+  /* Rail flotante inferior derecho. Cada elemento se apila sobre el anterior a
+     partir de estos tokens en lugar de recalcular offsets a mano. */
+  --fab-size: 52px;
+  --fab-gap: 12px;
+  --fab-stack-bottom: calc(24px + var(--cookie-banner-height, 0px));
+  --fab-stack-next: calc(var(--fab-stack-bottom) + var(--fab-size) + var(--fab-gap));
+}
+
+@media (max-width: 768px) {
+  :root {
+    --fab-size: 56px;
+    /* Por encima de la barra de reserva y del banner de cookies. */
+    --fab-stack-bottom: calc(84px + var(--cookie-banner-height, 0px) + env(safe-area-inset-bottom));
+  }
 }
 
 *{
@@ -335,9 +360,25 @@ body.display-mode {
 }
 
 /* Modal abierto: bloquear scroll iOS y ocultar botones flotantes ─────────── */
-body.modal-abierto .floating-whatsapp-button,
+body.modal-abierto .assistant-fab,
 body.modal-abierto .fbb-bar {
   display: none !important;
+}
+
+/* El botón de volver arriba vive por encima del panel para no quedar sepultado
+   por el resto de la UI, así que hay que apartarlo mientras el asistente está
+   abierto: en móvil el panel ocupa toda la pantalla y en escritorio comparten
+   esquina. */
+body.assistant-open .back-to-top {
+  display: none !important;
+}
+
+/* Con el asistente abierto en móvil ocupa toda la pantalla: se bloquea el
+   scroll de fondo para que el gesto se quede dentro del panel. */
+@media (max-width: 768px) {
+  body.assistant-open {
+    overflow: hidden;
+  }
 }
 
 /* Fade-in para contenido que aparece tras loading ─────── */

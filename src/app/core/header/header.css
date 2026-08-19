@@ -1,7 +1,7 @@
 .header{
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: var(--z-header);
   background: rgba(255, 255, 255, 0.88);
   border-bottom: 1px solid rgba(241, 216, 230, 0.9);
   box-shadow: 0 8px 24px rgba(31, 27, 45, 0.08);
@@ -309,7 +309,7 @@
 
   /* Menú abierto: sube el header sobre los floating buttons */
   .header:has(.mobile-menu.is-open){
-    z-index: 1300;
+    z-index: var(--z-top);
   }
 
   .mobile-menu{

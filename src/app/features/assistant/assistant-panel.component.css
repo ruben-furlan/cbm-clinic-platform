@@ -1,0 +1,317 @@
+/* Scrim: solo en móvil, donde el panel ocupa toda la pantalla. */
+.assistant-scrim {
+  display: none;
+}
+
+.assistant-panel {
+  position: fixed;
+  right: 24px;
+  bottom: var(--fab-stack-next);
+  z-index: var(--z-panel);
+
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  max-height: min(620px, calc(100vh - var(--fab-stack-next) - 96px));
+
+  border-radius: var(--radius-card);
+  border: var(--card-border);
+  background: var(--color-white);
+  box-shadow: 0 24px 60px rgba(31, 27, 45, 0.18);
+  overflow: hidden;
+
+  animation: assistant-panel-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.assistant-panel:focus {
+  outline: none;
+}
+
+@keyframes assistant-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Cabecera ─────────────────────────────────────────────────────────────── */
+
+.assistant-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 14px;
+  background: var(--gradient-brand);
+  color: var(--color-white);
+}
+
+.assistant-panel__title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.assistant-panel__subtitle {
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  opacity: 0.92;
+}
+
+.assistant-panel__close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.assistant-panel__close:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.assistant-panel__close:focus-visible {
+  outline: 2px solid var(--color-white);
+  outline-offset: 2px;
+}
+
+/* ── Hilo de mensajes ─────────────────────────────────────────────────────── */
+
+.assistant-thread {
+  position: relative; /* el auto-scroll mide `offsetTop` contra este contenedor */
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 16px 8px;
+  background: var(--bg-soft);
+}
+
+.assistant-msg {
+  margin: 0 0 10px;
+  max-width: 88%;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.45;
+  border-radius: 16px;
+}
+
+.assistant-msg--bot {
+  background: var(--color-white);
+  border: var(--card-border);
+  color: var(--color-dark);
+  border-bottom-left-radius: 6px;
+}
+
+.assistant-msg--user {
+  margin-left: auto;
+  background: var(--gradient-brand);
+  color: var(--color-white);
+  font-weight: 600;
+  border-bottom-right-radius: 6px;
+}
+
+/* ── Indicador de escritura ───────────────────────────────────────────────── */
+
+.assistant-typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  padding: 14px;
+}
+
+.assistant-typing__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-muted);
+  animation: assistant-blink 1.2s infinite ease-in-out;
+}
+
+.assistant-typing__dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.assistant-typing__dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes assistant-blink {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+/* ── Opciones ─────────────────────────────────────────────────────────────── */
+
+.assistant-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 8px;
+}
+
+.assistant-chip {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 16px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 79, 163, 0.28);
+  background: var(--color-white);
+  color: var(--color-dark);
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.16s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .assistant-chip:hover {
+    border-color: var(--color-primary);
+    background: rgba(255, 79, 163, 0.06);
+  }
+}
+
+.assistant-chip:active {
+  transform: scale(0.985);
+}
+
+.assistant-chip:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Pie ──────────────────────────────────────────────────────────────────── */
+
+.assistant-panel__foot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(241, 216, 230, 0.86);
+  background: var(--color-white);
+}
+
+.assistant-panel__nav {
+  display: flex;
+  gap: 14px;
+}
+
+.assistant-link {
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--color-secondary);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.assistant-link:hover {
+  text-decoration: underline;
+}
+
+.assistant-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.assistant-panel__contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.assistant-panel__contact-label {
+  margin-right: 2px;
+}
+
+.assistant-panel__contact-link {
+  color: var(--color-secondary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.assistant-panel__contact-link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ── Móvil: hoja a pantalla completa ──────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .assistant-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-panel);
+    background: rgba(31, 27, 45, 0.45);
+  }
+
+  .assistant-panel {
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    width: auto;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+  }
+
+  @supports (height: 100dvh) {
+    .assistant-panel {
+      height: 100dvh;
+    }
+  }
+
+  .assistant-panel__head {
+    padding-top: calc(18px + env(safe-area-inset-top));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-panel {
+    animation: none;
+  }
+
+  .assistant-chip {
+    transition: none;
+  }
+
+  .assistant-chip:active {
+    transform: none;
+  }
+
+  .assistant-typing__dot {
+    animation: none;
+    opacity: 0.6;
+  }
+}

@@ -300,8 +300,8 @@
 .back-to-top {
   position: fixed;
   right: 24px;
-  bottom: 82px; /* 24px (WA bottom) + ~48px (WA height) + 10px gap */
-  z-index: 1300;
+  bottom: var(--fab-stack-next);
+  z-index: var(--z-top);
 
   display: flex;
   align-items: center;
@@ -348,7 +348,6 @@
 @media (max-width: 768px) {
   .back-to-top {
     right: 16px;
-    bottom: calc(212px + env(safe-area-inset-bottom)); /* 148px (WA bottom) + 52px (WA height) + 12px gap */
     width: 52px;
     height: 52px;
   }
@@ -389,33 +388,5 @@
   .back-to-top__hint {
     transition: opacity 0.1s;
     transform: translateX(-50%) !important;
-  }
-}
-
-/* Floating phone button — mobile only */
-.floating-phone-btn {
-  display: none;
-}
-
-@media (max-width: 767px) {
-  .floating-phone-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #f472b6, #c44b8e);
-    box-shadow: 0 4px 12px rgba(196, 75, 142, 0.4);
-    position: fixed;
-    right: 16px;
-    bottom: calc(84px + env(safe-area-inset-bottom));
-    z-index: 1050;
-    text-decoration: none;
-    transition: transform 150ms ease, box-shadow 150ms ease;
-  }
-
-  .floating-phone-btn:active {
-    transform: scale(0.95);
   }
 }
